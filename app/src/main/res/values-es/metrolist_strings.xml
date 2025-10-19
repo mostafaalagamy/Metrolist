@@ -63,7 +63,7 @@
     <string name="slim">Delgado</string>
     <string name="slim_navbar">Barra de navegación inferior delgada</string>
     <string name="auto_playlists">Listas de reproducción automáticas</string>
-    <string name="show_liked_playlist">Ver lista de reproducción \"Me gusta\"</string>
+    <string name="show_liked_playlist">Ver lista de reproducción \"Canciones que me gustan\"</string>
     <string name="show_downloaded_playlist">Ver lista de reproducción \"Descargado\"</string>
     <string name="show_top_playlist">Ver lista de reproducción \"Top\"</string>
     <string name="show_cached_playlist">Ver lista de reproducción \"En caché\"</string>
@@ -72,7 +72,7 @@
     <string name="advanced_login">Iniciar sesión con token</string>
     <string name="token_hidden">Toca para mostrar el token</string>
     <string name="token_shown">Toca de nuevo para copiar o editar</string>
-    <string name="token_adv_login_description">Este es un método de inicio de sesión AVANZADO. Como alternativa al portal web, puedes introducir o actualizar directamente tu token de inicio de sesión aquí. Por ejemplo, esto puede acelerar el inicio de sesión en algunos dispositivos. Ten en cuenta que cualquier formato de token inválido que la aplicación no pueda analizar no será aceptado.</string>
+    <string name="token_adv_login_description">Este es un método de inicio de sesión AVANZADO. Como alternativa al portal web, puedes introducir o actualizar directamente tu token de inicio de sesión aquí. Por ejemplo, esto puede acelerar el inicio de sesión en algunos dispositivos. Ten en cuenta que cualquier formato de token inválido que la aplicación no pueda analizar no será aceptado</string>
     <string name="ytm_sync">Sincronizar automáticamente con tu cuenta de YouTube Music</string>
     <string name="general">General</string>
     <string name="proxy">Proxy</string>
@@ -134,7 +134,7 @@
     <string name="max_selection_limit">Límite máximo de selección</string>
     <string name="share_selected">Compartir selección</string>
     <string name="secondary_text_color">Color del texto secundario</string>
-    <string name="lyrics_auto_scroll">Desplazamiento automático de letras</string>
+    <string name="lyrics_auto_scroll">Desplazamiento automático de la letra</string>
     <string name="import_csv">Importar una lista de reproducción \"csv\"</string>
     <string name="import_online">Importar una lista de reproducción \"m3u\"</string>
     <string name="playlist_add_local_to_synced_note">Nota: No se permite agregar canciones locales a listas de reproducción sincronizadas o remotas. Cualquier otra combinación es válida</string>
@@ -225,4 +225,5 @@
     <string name="scrobble_min_track_duration">Scrobble a canciones más largas que</string>
     <string name="scrobble_delay_percent">Porcentaje de retraso de Scrobble</string>
     <string name="scrobble_delay_minutes">Minutos de retraso de Scrobble</string>
+    <string name="swipe_song_to_remove">Desliza la canción para quitarla de la playlist</string>
 </resources>
