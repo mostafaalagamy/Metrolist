@@ -220,4 +220,6 @@
     <string name="minimum_volume">Минимална сила на звука</string>
     <string name="maximum_volume">Максимална сила на звука</string>
     <string name="seek_seconds_addup">Кумулативно превъртане</string>
+    <string name="swipe_song_to_remove">Плъзнете върху песента, за да я премахнете от плейлиста</string>
+    <string name="default_lib_chips">Промяна на \'дефолтния\' чип на библиотеката</string>
 </resources>

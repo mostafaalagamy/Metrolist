@@ -1,3 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="retry_button">Паўтарыць</string>
+    <string name="album_cover_desc">Вокладка альбома</string>
+    <string name="trending">У трэндзе</string>
+    <string name="weeks">Тыдні</string>
+    <string name="months">Месяцы</string>
+    <string name="years">Гады</string>
+    <string name="charts">Чарты</string>
+    <string name="back_button_desc">Назад</string>
+    <string name="no_title">Без назвы</string>
+    <string name="unknown_artist">Невядомы артыст</string>
+    <string name="unknown_item_type">Невядомы тып элемента</string>
+    <string name="loading_charts">Загрузка чартаў…</string>
+    <string name="top_music_videos">Топ музычных відэа</string>
+    <string name="liked">Упадабаныя</string>
+    <string name="offline">Спампоўкі</string>
+    <string name="my_top">Мой топ</string>
+    <string name="sync_playlist">Сінхранізаваць плей-ліст</string>
+    <string name="sync_disabled">Сінхранізацыя адключана</string>
+    <string name="elements_selected">%1$d элементаў выбрана</string>
+    <string name="allows_for_sync_witch_youtube">Заўвага: Гэта дазволіць сінхранізацыю з YouTube Music. Гэта НЕЛЬГА змяніць пазней.</string>
+    <string name="generating_image">Генерацыя відарыса</string>
+    <string name="please_wait">Пачакайце, калі ласка</string>
+    <string name="cancel">Скасаваць</string>
+    <string name="share_lyrics">Падзяліцца тэкстам песні</string>
+    <string name="share_as_text">Абагуліць як тэкст</string>
+    <string name="share_as_image">Абагуліць як відарыс</string>
+    <plurals name="n_element">
+        <item quantity="one">%d элемент</item>
+        <item quantity="few">%d элемента</item>
+        <item quantity="many">%d элементаў</item>
+        <item quantity="other">%d элементаў</item>
+    </plurals>
 </resources>
