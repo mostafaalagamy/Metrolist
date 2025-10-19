@@ -23,21 +23,34 @@ class SleepTimer(
         private set
     val isActive: Boolean
         get() = triggerTime != -1L || pauseWhenSongEnd
+    var timeLeft by mutableLongStateOf(0L)
+        private set
 
     fun start(minute: Int) {
         sleepTimerJob?.cancel()
         sleepTimerJob = null
+
         if (minute == -1) {
             pauseWhenSongEnd = true
         } else {
             triggerTime = System.currentTimeMillis() + minute.minutes.inWholeMilliseconds
-            sleepTimerJob =
-                scope.launch {
-                    delay(minute.minutes)
-                    player.pause()
-                    triggerTime = -1L
-                }
         }
+
+        sleepTimerJob =
+            scope.launch {
+                while (isActive) {
+                    timeLeft = when (pauseWhenSongEnd) {
+                        true -> player.duration - player.currentPosition
+                        false -> triggerTime - System.currentTimeMillis()
+                    }
+
+                    if (timeLeft <= 0) break
+                    delay(1000)
+                }
+
+                player.pause()
+                clear()
+            }
     }
 
     fun clear() {
