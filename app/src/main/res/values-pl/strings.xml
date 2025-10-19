@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">Główna</string>
     <string name="songs">Utwory</string>
     <string name="artists">Artyści</string>
     <string name="albums">Albumy</string>
     <string name="playlists">Playlisty</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d zaznaczony</item>
         <item quantity="few">%d zaznaczone</item>
         <item quantity="many">%d zaznaczonych</item>
         <item quantity="other">%d zaznaczonych</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Historia</string>
     <string name="stats">Statystyki</string>
     <string name="mood_and_genres">Nastroje i gatunki</string>
@@ -21,16 +18,13 @@
     <string name="quick_picks">Szybki wybór</string>
     <string name="quick_picks_empty">Słuchaj utworów, aby wygenerować szybkie wybory</string>
     <string name="new_release_albums">Nowo wydane albumy</string>
-    <!-- History -->
     <string name="today">Dzisiaj</string>
     <string name="yesterday">Wczoraj</string>
     <string name="this_week">Ten tydzień</string>
     <string name="last_week">Ostatni tydzień</string>
-    <!-- Stats -->
     <string name="most_played_songs">Najczęściej słuchane utwory</string>
     <string name="most_played_artists">Najczęściej słuchani artyści</string>
     <string name="most_played_albums">Najczęściej słuchane albumy</string>
-    <!-- Search -->
     <string name="search">Szukaj</string>
     <string name="search_yt_music">Szukaj w YouTube Music…</string>
     <string name="search_library">Szukaj w bibliotece…</string>
@@ -47,18 +41,14 @@
     <string name="filter_featured_playlists">Polecane playlisty</string>
     <string name="filter_bookmarked">Zapisane</string>
     <string name="no_results_found">Brak wyników</string>
-    <!-- Artist screen -->
     <string name="from_your_library">Z Twojej biblioteki</string>
-    <!-- Playlist -->
     <string name="liked_songs">Polubione utwory</string>
     <string name="downloaded_songs">Pobrane utwory</string>
     <string name="playlist_is_empty">Playlista jest pusta</string>
-    <!-- Button -->
     <string name="retry">Ponów</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Losuj</string>
     <string name="reset">Reset</string>
-    <!-- Menu -->
     <string name="details">Szczegóły</string>
     <string name="edit">Edytuj</string>
     <string name="start_radio">Włącz radio</string>
@@ -81,7 +71,6 @@
     <string name="search_online">Szukaj online</string>
     <string name="action_sync">Synchronizuj</string>
     <string name="advanced">Zaawansowane</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Data dodania</string>
     <string name="sort_by_name">Nazwa</string>
     <string name="sort_by_artist">Wykonawca</string>
@@ -90,7 +79,6 @@
     <string name="sort_by_length">Długość</string>
     <string name="sort_by_play_time">Długość utworu</string>
     <string name="sort_by_custom">Niestandardowa kolejność</string>
-    <!-- Dialog -->
     <string name="media_id">ID media</string>
     <string name="mime_type">Typ MIME</string>
     <string name="codecs">Kodeki</string>
@@ -117,7 +105,6 @@
     <string name="edit_artist">Edytuj artystę</string>
     <string name="artist_name">Nazwa artysty</string>
     <string name="error_artist_name_empty">Nazwa artysty nie może być pusta.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utworów</item>
@@ -160,12 +147,10 @@
         <item quantity="many">%d lat</item>
         <item quantity="other">%d lat</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Playlista zaimportowana</string>
     <string name="removed_song_from_playlist">Usunięto \"%s\" z playlisty</string>
     <string name="playlist_synced">Playlista zsynchronizowana</string>
     <string name="undo">Cofnij</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Nie znaleziono tekstu</string>
     <string name="sleep_timer">Wyłącznik czasowy</string>
     <string name="end_of_song">Koniec utworu</string>
@@ -179,7 +164,6 @@
     <string name="error_no_internet">Brak połączenia z Internetem</string>
     <string name="error_timeout">Limit czasu</string>
     <string name="error_unknown">Nieznany błąd</string>
-    <!-- Player action -->
     <string name="action_like">Polub</string>
     <string name="action_remove_like">Usuń polubienie</string>
     <string name="action_shuffle_on">Losowanie włączone</string>
@@ -187,12 +171,9 @@
     <string name="repeat_mode_off">Powtarzanie wyłączone</string>
     <string name="repeat_mode_one">Powtórz bieżący utwór</string>
     <string name="repeat_mode_all">Powtórz kolejkę</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Wszystkie utwory</string>
     <string name="queue_searched_songs">Wyszukane utwory</string>
-    <!-- Notification name -->
     <string name="music_player">Odtwarzacz</string>
-    <!-- Settings -->
     <string name="settings">Ustawienia</string>
     <string name="appearance">Wygląd</string>
     <string name="enable_dynamic_theme">Włącz motyw dynamiczny</string>

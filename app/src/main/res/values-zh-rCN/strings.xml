@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
     <string name="home">首页</string>
     <string name="songs">歌曲</string>
     <string name="artists">音乐人</string>
     <string name="albums">专辑</string>
     <string name="playlists">播放列表</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="other">已选择 %d 项</item>
     </plurals>
-    <!-- Home -->
     <string name="history">历史</string>
     <string name="stats">统计</string>
     <string name="mood_and_genres">曲调和流派</string>
@@ -18,16 +15,13 @@
     <string name="quick_picks">歌曲快选</string>
     <string name="quick_picks_empty">听一些歌曲来生成歌曲快选</string>
     <string name="new_release_albums">新专辑</string>
-    <!-- History -->
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="this_week">本周</string>
     <string name="last_week">上周</string>
-    <!-- Stats -->
     <string name="most_played_songs">最常播放的歌曲</string>
     <string name="most_played_artists">最常播放的音乐人</string>
     <string name="most_played_albums">最常播放的专辑</string>
-    <!-- Search -->
     <string name="search">搜索</string>
     <string name="search_yt_music">搜索 YouTube Music…</string>
     <string name="search_library">搜索媒体库…</string>
@@ -44,18 +38,14 @@
     <string name="filter_featured_playlists">精选播放列表</string>
     <string name="filter_bookmarked">收藏</string>
     <string name="no_results_found">未找到结果</string>
-    <!-- Artist screen -->
     <string name="from_your_library">来自您的媒体库</string>
-    <!-- Playlist -->
     <string name="liked_songs">喜欢的歌曲</string>
     <string name="downloaded_songs">已下载的歌曲</string>
     <string name="playlist_is_empty">播放列表为空</string>
-    <!-- Button -->
     <string name="retry">重试</string>
     <string name="radio">电台</string>
     <string name="shuffle">随机播放</string>
     <string name="reset">重置</string>
-    <!-- Menu -->
     <string name="details">详情</string>
     <string name="edit">编辑</string>
     <string name="start_radio">收听电台</string>
@@ -78,7 +68,6 @@
     <string name="search_online">在线搜索</string>
     <string name="action_sync">同步</string>
     <string name="advanced">高级</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">添加日期</string>
     <string name="sort_by_name">名称</string>
     <string name="sort_by_artist">音乐人</string>
@@ -87,7 +76,6 @@
     <string name="sort_by_length">长度</string>
     <string name="sort_by_play_time">播放时间</string>
     <string name="sort_by_custom">自定义顺序</string>
-    <!-- Dialog -->
     <string name="media_id">媒体 ID</string>
     <string name="mime_type">MIME 类型</string>
     <string name="codecs">编码</string>
@@ -114,7 +102,6 @@
     <string name="edit_artist">编辑音乐人</string>
     <string name="artist_name">音乐人名称</string>
     <string name="error_artist_name_empty">音乐人名称不能为空。</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="other">%d 首歌曲</item>
     </plurals>
@@ -136,12 +123,10 @@
     <plurals name="n_year">
         <item quantity="other">%d 年</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">播放列表已导入</string>
     <string name="removed_song_from_playlist">已从播放列表中移除“%s”</string>
     <string name="playlist_synced">播放列表已同步</string>
     <string name="undo">撤销</string>
-    <!-- Player -->
     <string name="lyrics_not_found">未找到歌词</string>
     <string name="sleep_timer">睡眠定时器</string>
     <string name="end_of_song">这首歌曲播放完毕</string>
@@ -152,7 +137,6 @@
     <string name="error_no_internet">没有网络连接</string>
     <string name="error_timeout">连接超时</string>
     <string name="error_unknown">未知错误</string>
-    <!-- Player action -->
     <string name="action_like">喜欢</string>
     <string name="action_remove_like">取消喜欢</string>
     <string name="action_shuffle_on">随机播放打开</string>
@@ -160,12 +144,9 @@
     <string name="repeat_mode_off">循环播放关闭</string>
     <string name="repeat_mode_one">循环播放当前歌曲</string>
     <string name="repeat_mode_all">循环播放队列</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">全部歌曲</string>
     <string name="queue_searched_songs">搜索的歌曲</string>
-    <!-- Notification name -->
     <string name="music_player">音乐播放器</string>
-    <!-- Settings -->
     <string name="settings">设置</string>
     <string name="appearance">外观</string>
     <string name="enable_dynamic_theme">启用动态主题</string>
