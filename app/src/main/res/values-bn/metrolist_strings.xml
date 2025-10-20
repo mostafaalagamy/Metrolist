@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">অনুসন্ধান</string>
-    <string name="local_history">স্থানীয়</string>
+    <string name="local_history">ফোন স্টোরেজ</string>
     <string name="remote_history">দুরবর্তী</string>
-    <string name="charts">তালিকা</string>
+    <string name="charts">শীর্ষ তালিকা</string>
     <string name="back_button_desc">পূর্ববর্তী</string>
     <string name="no_title">নামহীন</string>
     <string name="unknown_artist">আর্টিস্ট অজানা</string>
@@ -11,7 +11,7 @@
     <string name="loading_charts">তালিকা লোড হচ্ছে…</string>
     <string name="retry_button">পুনঃচেষ্টা</string>
     <string name="album_cover_desc">এ্যালবাম কভার</string>
-    <string name="top_music_videos">সর্বোত্তম গানের ভিডিও</string>
+    <string name="top_music_videos">শীর্ষ মিউজিক ভিডিও</string>
     <string name="trending">ট্রেন্ডিং</string>
     <string name="weeks">সপ্তাহ</string>
     <string name="months">মাস</string>
