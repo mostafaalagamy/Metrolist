@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">Domů</string>
     <string name="songs">Skladby</string>
     <string name="artists">Umělci</string>
     <string name="albums">Alba</string>
     <string name="playlists">Playlisty</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">Vybrána %d</item>
         <item quantity="few">Vybrány %d</item>
         <item quantity="other">Vybráno %d</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Historie</string>
     <string name="stats">Statistiky</string>
     <string name="mood_and_genres">Nálada a žánry</string>
@@ -20,16 +17,13 @@
     <string name="quick_picks">Rychlý výběr</string>
     <string name="quick_picks_empty">Pro vytvoření rychlého výběru si nejprve poslechněte pár skladeb</string>
     <string name="new_release_albums">Nově vydaná alba</string>
-    <!-- History -->
     <string name="today">Dnes</string>
     <string name="yesterday">Včera</string>
     <string name="this_week">Tento týden</string>
     <string name="last_week">Minulý týden</string>
-    <!-- Stats -->
     <string name="most_played_songs">Nejčastěji přehrávané skladby</string>
     <string name="most_played_artists">Nejčastěji přehrávaní umělci</string>
     <string name="most_played_albums">Nejčastěji přehrávaná alba</string>
-    <!-- Search -->
     <string name="search">Vyhledávání</string>
     <string name="search_yt_music">Hledat v YouTube Music…</string>
     <string name="search_library">Hledat v knihovně…</string>
@@ -46,18 +40,14 @@
     <string name="filter_featured_playlists">Doporučené playlisty</string>
     <string name="filter_bookmarked">Záložky</string>
     <string name="no_results_found">Nenalezeny žádné výsledky</string>
-    <!-- Artist screen -->
     <string name="from_your_library">Z vaší knihovny</string>
-    <!-- Playlist -->
     <string name="liked_songs">Oblíbené skladby</string>
     <string name="downloaded_songs">Stažené skladby</string>
     <string name="playlist_is_empty">Playlist je prázdný</string>
-    <!-- Button -->
     <string name="retry">Zkusit znovu</string>
     <string name="radio">Rádio</string>
     <string name="shuffle">Náhodně</string>
     <string name="reset">Resetovat</string>
-    <!-- Menu -->
     <string name="details">Podrobnosti</string>
     <string name="edit">Upravit</string>
     <string name="start_radio">Spustit rádio</string>
@@ -80,7 +70,6 @@
     <string name="search_online">Hledat online</string>
     <string name="action_sync">Synchronizace</string>
     <string name="advanced">Pokročilé</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Datum přidání</string>
     <string name="sort_by_name">Název</string>
     <string name="sort_by_artist">Umělec</string>
@@ -89,7 +78,6 @@
     <string name="sort_by_length">Délka</string>
     <string name="sort_by_play_time">Doba přehrávání</string>
     <string name="sort_by_custom">Vlastní pořadí</string>
-    <!-- Dialog -->
     <string name="media_id">ID média</string>
     <string name="mime_type">Typ MIME</string>
     <string name="codecs">Kodeky</string>
@@ -116,7 +104,6 @@
     <string name="edit_artist">Upravit umělce</string>
     <string name="artist_name">Jméno umělce</string>
     <string name="error_artist_name_empty">Jméno umělce nemůže být prázdné.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
@@ -152,12 +139,10 @@
         <item quantity="few">%d roky</item>
         <item quantity="other">%d let</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Playlist importován</string>
     <string name="removed_song_from_playlist">Skladba „%s“ odebrána z playlistu</string>
     <string name="playlist_synced">Playlist synchronizován</string>
     <string name="undo">Zrušit</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Texty nenalezeny</string>
     <string name="sleep_timer">Časovač spánku</string>
     <string name="end_of_song">Konec skladby</string>
@@ -170,7 +155,6 @@
     <string name="error_no_internet">Není dostupné připojení k internetu</string>
     <string name="error_timeout">Vypršel čas</string>
     <string name="error_unknown">Neznámá chyba</string>
-    <!-- Player action -->
     <string name="action_like">Oblíbené</string>
     <string name="action_remove_like">Odebrat z oblíbených</string>
     <string name="action_shuffle_on">Náhodně zapnuto</string>
@@ -178,12 +162,9 @@
     <string name="repeat_mode_off">Režim opakování vypnut</string>
     <string name="repeat_mode_one">Opakovat aktuální skladbu</string>
     <string name="repeat_mode_all">Opakovat frontu</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Všechny skladby</string>
     <string name="queue_searched_songs">Hledané skladby</string>
-    <!-- Notification name -->
     <string name="music_player">Hudební přehrávač</string>
-    <!-- Settings -->
     <string name="settings">Nastavení</string>
     <string name="appearance">Vzhled</string>
     <string name="enable_dynamic_theme">Povolit dynamický motiv</string>
