@@ -386,25 +386,23 @@ fun BottomSheetPlayer(
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
     }
-    AddToPlaylistDialog(
-        isVisible = showChoosePlaylistDialog,
-        onGetSong = { playlist ->
-            mediaMetadata?.let { metadata ->
-                database.transaction {
-                    insert(metadata)
-                }
-                coroutineScope.launch(Dispatchers.IO) {
-                    playlist.playlist.browseId?.let {
-                        YouTube.addToPlaylist(it, metadata?.id ?: return@launch)
+    if (showChoosePlaylistDialog) {
+        AddToPlaylistDialog(
+            isVisible = true,
+            onGetSong = { playlist ->
+                mediaMetadata?.let { metadata ->
+                    database.transaction { insert(metadata) }
+                    coroutineScope.launch(Dispatchers.IO) {
+                        playlist.playlist.browseId?.let {
+                            YouTube.addToPlaylist(it, metadata.id)
+                        }
                     }
-                }
-                mediaMetadata?.let { listOf(it.id) } ?: emptyList()
-            } ?: emptyList()
-        },
-        onDismiss = {
-            showChoosePlaylistDialog = false
-        }
-    )
+                    listOf(metadata.id)
+                } ?: emptyList()
+            },
+            onDismiss = { showChoosePlaylistDialog = false }
+        )
+    }
 
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
