@@ -70,6 +70,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -734,21 +743,85 @@ fun Lyrics(
                             LyricsPosition.RIGHT -> Alignment.End
                         }
                     ) {
-                        Text(
-                            text = item.text,
-                            fontSize = 24.sp, // Uniform size for all lines matching latest enh version
-                            color = if (index == displayedCurrentLineIndex && isSynced) {
-                                textColor // Full color for active line
+                        val isActiveLine = index == displayedCurrentLineIndex && isSynced
+                        val lineColor = if (isActiveLine) textColor else textColor.copy(alpha = 0.8f)
+                        val alignment = when (lyricsTextPosition) {
+                            LyricsPosition.LEFT -> TextAlign.Left
+                            LyricsPosition.CENTER -> TextAlign.Center
+                            LyricsPosition.RIGHT -> TextAlign.Right
+                        }
+                        
+                        if (isActiveLine) {
+                            // Word-by-word glow reveal with single smooth bounce
+                            val words = item.text.split(" ")
+                            val animProgress = remember { Animatable(0f) }
+                            
+                            LaunchedEffect(index) {
+                                animProgress.snapTo(0f)
+                                animProgress.animateTo(
+                                    targetValue = 1f,
+                                    animationSpec = tween(
+                                        durationMillis = 1000,
+                                        easing = LinearEasing
+                                    )
+                                )
+                            }
+                            
+                            val progress = animProgress.value
+                            val totalWords = words.size.coerceAtLeast(1)
+                            
+                            val styledText = buildAnnotatedString {
+                                words.forEachIndexed { wordIndex, word ->
+                                    val wordProgress = ((progress * totalWords) - wordIndex).coerceIn(0f, 1f)
+                                    val glowAlpha = (wordProgress * 1.5f).coerceIn(0f, 1f)
+                                    
+                                    withStyle(
+                                        style = SpanStyle(
+                                            shadow = Shadow(
+                                                color = lineColor.copy(alpha = 0.7f * glowAlpha),
+                                                offset = Offset(0f, 0f),
+                                                blurRadius = 20f * glowAlpha
+                                            )
+                                        )
+                                    ) {
+                                        append(word)
+                                    }
+                                    if (wordIndex < words.size - 1) append(" ")
+                                }
+                            }
+                            
+                            // Single smooth bounce for the entire line
+                            val bounceScale = if (progress < 0.5f) {
+                                // Smooth rise
+                                1f + (kotlin.math.sin(progress * 2f * Math.PI.toFloat()) * 0.03f)
+                            } else if (progress < 1f) {
+                                // Gentle settle
+                                1f + (0.03f * (1f - progress) * kotlin.math.cos((progress - 0.5f) * 4f * Math.PI.toFloat()))
                             } else {
-                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
-                            },
-                            textAlign = when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> TextAlign.Left
-                                LyricsPosition.CENTER -> TextAlign.Center
-                                LyricsPosition.RIGHT -> TextAlign.Right
-                            },
-                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                        )
+                                1f
+                            }
+                            
+                            Text(
+                                text = styledText,
+                                fontSize = 24.sp,
+                                color = lineColor,
+                                textAlign = alignment,
+                                fontWeight = FontWeight.ExtraBold,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        scaleX = bounceScale
+                                        scaleY = bounceScale
+                                    }
+                            )
+                        } else {
+                            Text(
+                                text = item.text,
+                                fontSize = 24.sp,
+                                color = lineColor,
+                                textAlign = alignment,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                         if (currentSong?.romanizeLyrics == true
                             && (romanizeJapaneseLyrics ||
                                     romanizeKoreanLyrics ||
