@@ -752,52 +752,64 @@ fun Lyrics(
                         }
                         
                         if (isActiveLine) {
-                            // Word-by-word glow reveal with single smooth bounce
-                            val words = item.text.split(" ")
+                            // Initial animation for glow and bounce
                             val animProgress = remember { Animatable(0f) }
+                            // Continuous pulsing animation for the glow
+                            val pulseProgress = remember { Animatable(0f) }
                             
                             LaunchedEffect(index) {
                                 animProgress.snapTo(0f)
                                 animProgress.animateTo(
                                     targetValue = 1f,
                                     animationSpec = tween(
-                                        durationMillis = 1000,
+                                        durationMillis = 800,
                                         easing = LinearEasing
                                     )
                                 )
                             }
                             
-                            val progress = animProgress.value
-                            val totalWords = words.size.coerceAtLeast(1)
-                            
-                            val styledText = buildAnnotatedString {
-                                words.forEachIndexed { wordIndex, word ->
-                                    val wordProgress = ((progress * totalWords) - wordIndex).coerceIn(0f, 1f)
-                                    val glowAlpha = (wordProgress * 1.5f).coerceIn(0f, 1f)
-                                    
-                                    withStyle(
-                                        style = SpanStyle(
-                                            shadow = Shadow(
-                                                color = lineColor.copy(alpha = 0.7f * glowAlpha),
-                                                offset = Offset(0f, 0f),
-                                                blurRadius = 20f * glowAlpha
-                                            )
+                            // Continuous slow pulsing animation
+                            LaunchedEffect(Unit) {
+                                while (true) {
+                                    pulseProgress.animateTo(
+                                        targetValue = 1f,
+                                        animationSpec = tween(
+                                            durationMillis = 3000,
+                                            easing = LinearEasing
                                         )
-                                    ) {
-                                        append(word)
-                                    }
-                                    if (wordIndex < words.size - 1) append(" ")
+                                    )
+                                    pulseProgress.snapTo(0f)
                                 }
                             }
                             
-                            // Single smooth bounce for the entire line
-                            val bounceScale = if (progress < 0.5f) {
-                                // Smooth rise
-                                1f + (kotlin.math.sin(progress * 2f * Math.PI.toFloat()) * 0.03f)
-                            } else if (progress < 1f) {
-                                // Gentle settle
-                                1f + (0.03f * (1f - progress) * kotlin.math.cos((progress - 0.5f) * 4f * Math.PI.toFloat()))
+                            val progress = animProgress.value
+                            val pulse = pulseProgress.value
+                            
+                            // Combine initial glow with subtle pulse
+                            val baseGlowAlpha = progress.coerceIn(0f, 1f)
+                            val pulseEffect = (kotlin.math.sin(pulse * Math.PI.toFloat()) * 0.15f).coerceIn(0f, 0.15f)
+                            val glowAlpha = (baseGlowAlpha + pulseEffect).coerceIn(0f, 1f)
+                            
+                            val styledText = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        shadow = Shadow(
+                                            color = lineColor.copy(alpha = 0.7f * glowAlpha),
+                                            offset = Offset(0f, 0f),
+                                            blurRadius = 20f * (1f + pulseEffect)
+                                        )
+                                    )
+                                ) {
+                                    append(item.text)
+                                }
+                            }
+                            
+                            // Single smooth bounce animation
+                            val bounceScale = if (progress < 0.4f) {
+                                // Gentler rise
+                                1f + (kotlin.math.sin(progress * 2.5f * Math.PI.toFloat()) * 0.02f)
                             } else {
+                                // Hold at normal scale
                                 1f
                             }
                             
