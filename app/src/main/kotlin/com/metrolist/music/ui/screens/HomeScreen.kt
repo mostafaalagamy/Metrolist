@@ -154,7 +154,6 @@ fun HomeScreen(
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
-    val selectedChip by viewModel.selectedChip.collectAsState()
 
     val isLoading: Boolean by viewModel.isLoading.collectAsState()
     val isMoodAndGenresLoading = isLoading && explorePage?.moodAndGenres == null
@@ -193,13 +192,6 @@ fun HomeScreen(
                     viewModel.loadMoreYouTubeItems(homePage?.continuation)
                 }
             }
-    }
-
-    if (selectedChip != null) {
-        BackHandler {
-            // if a chip is selected, go back to the normal homepage first
-            viewModel.toggleChip(selectedChip)
-        }
     }
 
     val localGridItem: @Composable (LocalItem) -> Unit = {
@@ -384,17 +376,6 @@ fun HomeScreen(
             state = lazylistState,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
-            item {
-                ChipsRow(
-                    chips = homePage?.chips?.map { it to it.title } ?: emptyList(),
-                    currentValue = selectedChip,
-                    onValueUpdate = {
-                        viewModel.toggleChip(it)
-                    }
-                )
-            }
-
-            if (selectedChip == null) {
                 quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
                     item(key = "quick_picks_title") {
                         NavigationTitle(
@@ -694,7 +675,6 @@ fun HomeScreen(
                         }
                     }
                 }
-            }
 
             homePage?.sections?.forEachIndexed { index, section ->
                 item(key = "home_section_title_$index") {
@@ -762,10 +742,6 @@ fun HomeScreen(
                         }
                     }
                 }
-            }
-
-            if (selectedChip == null) {
-                // Mood and genres section removed per user request
             }
         }
 
