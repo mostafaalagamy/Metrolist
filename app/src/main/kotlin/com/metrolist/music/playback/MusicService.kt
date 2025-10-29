@@ -63,6 +63,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.lastfm.LastFM
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
+import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AudioQualityKey
@@ -127,6 +128,7 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.enumPreference
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
+import com.metrolist.sync.LocalSyncManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -162,6 +164,9 @@ class MusicService :
     MediaLibraryService(),
     Player.Listener,
     PlaybackStatsListener.Callback {
+    @Inject
+    lateinit var localSyncManager: LocalSyncManager
+
     @Inject
     lateinit var database: MusicDatabase
 
@@ -521,6 +526,13 @@ class MusicService :
                 if (dataStore.get(PersistentQueueKey, true) && player.isPlaying) {
                     saveQueueToDisk()
                 }
+            }
+        }
+
+        scope.launch {
+            val userEmail = dataStore.data.map { it[AccountEmailKey] }.first()
+            if (userEmail != null) {
+                localSyncManager.registerService(8080, userEmail)
             }
         }
     }
@@ -1552,6 +1564,7 @@ class MusicService :
         player.removeListener(sleepTimer)
         player.release()
         discordUpdateJob?.cancel()
+        localSyncManager.unregisterService()
         super.onDestroy()
     }
 

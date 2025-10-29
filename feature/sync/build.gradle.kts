@@ -33,4 +33,5 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
     implementation(libs.compose.runtime)
+    implementation(libs.timber)
 }
