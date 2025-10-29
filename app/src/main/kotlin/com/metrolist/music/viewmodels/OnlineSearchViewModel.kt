@@ -12,8 +12,10 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.SearchSummaryPage
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +29,7 @@ class OnlineSearchViewModel
 @Inject
 constructor(
     @ApplicationContext val context: Context,
+    val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val query = savedStateHandle.get<String>("query")!!
@@ -41,14 +44,19 @@ constructor(
                     if (summaryPage == null) {
                         YouTube
                             .searchSummary(query)
-                            .onSuccess {
-                                summaryPage =
-                                    it.filterExplicit(
-                                        context.dataStore.get(
-                                            HideExplicitKey,
-                                            false,
-                                        ),
-                                    )
+                            .onSuccess { page ->
+                                val filteredPage = page.filterExplicit(
+                                    context.dataStore.get(
+                                        HideExplicitKey,
+                                        false,
+                                    ),
+                                )
+                                summaryPage = SearchSummaryPage(
+                                    summaries = filteredPage.summaries.mapNotNull { summary ->
+                                        val filteredItems = summary.items.filterWhitelisted(database)
+                                        if (filteredItems.isEmpty()) null else summary.copy(items = filteredItems)
+                                    }
+                                )
                             }.onFailure {
                                 reportException(it)
                             }
@@ -67,7 +75,8 @@ constructor(
                                                     HideExplicitKey,
                                                     false
                                                 )
-                                            ),
+                                            )
+                                            .filterWhitelisted(database),
                                         result.continuation,
                                     )
                             }.onFailure {
@@ -88,8 +97,12 @@ constructor(
             if (continuation != null) {
                 val searchResult =
                     YouTube.searchContinuation(continuation).getOrNull() ?: return@launch
+                val hideExplicit = context.dataStore.get(HideExplicitKey, false)
                 viewStateMap[filter] = ItemsPage(
-                    (viewState.items + searchResult.items).distinctBy { it.id },
+                    (viewState.items + searchResult.items)
+                        .distinctBy { it.id }
+                        .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database),
                     searchResult.continuation
                 )
             }

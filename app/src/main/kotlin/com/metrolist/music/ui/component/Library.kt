@@ -3,12 +3,19 @@ package com.metrolist.music.ui.component
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.R
@@ -65,6 +72,52 @@ fun LibraryArtistGridItem(
     modifier: Modifier = Modifier
 ) = ArtistGridItem(
     artist = artist,
+    fillMaxWidth = true,
+    modifier = modifier
+        .fillMaxWidth()
+        .combinedClickable(
+            onClick = {
+                navController.navigate("artist/${artist.id}")
+            },
+            onLongClick = {
+                menuState.show {
+                    ArtistMenu(
+                        originalArtist = artist,
+                        coroutineScope = coroutineScope,
+                        onDismiss = menuState::dismiss
+                    )
+                }
+            }
+        )
+)
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun WhitelistedArtistGridItem(
+    navController: NavController,
+    menuState: MenuState,
+    coroutineScope: CoroutineScope,
+    artist: Artist,
+    modifier: Modifier = Modifier
+) = GridItem(
+    title = artist.artist.name,
+    subtitle = "", // No song count for whitelisted artists
+    badges = {}, // No badges for whitelisted artists
+    thumbnailContent = {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artist.artist.thumbnailUrl)
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+        )
+    },
     fillMaxWidth = true,
     modifier = modifier
         .fillMaxWidth()

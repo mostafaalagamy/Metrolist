@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,9 +37,11 @@ class SyncUtils @Inject constructor(
     private val isSyncingUploadedAlbums = MutableStateFlow(false)
     private val isSyncingArtists = MutableStateFlow(false)
     private val isSyncingPlaylists = MutableStateFlow(false)
+    private val isSyncingWhitelist = MutableStateFlow(false)
 
     fun runAllSyncs() {
         syncScope.launch {
+            syncArtistWhitelist()
             syncLikedSongs()
             syncLibrarySongs()
             syncUploadedSongs()
@@ -331,6 +334,79 @@ class SyncUtils @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    suspend fun syncArtistWhitelist() {
+        if (isSyncingWhitelist.value) return
+        isSyncingWhitelist.value = true
+        try {
+            Timber.d("Whitelist sync starting...")
+            WhitelistFetcher.fetchWhitelist().onSuccess { whitelistEntries ->
+                Timber.d("Whitelist sync: Fetched ${whitelistEntries.size} artists from GitHub")
+                database.transaction {
+                    clearWhitelist()
+                    insertWhitelist(whitelistEntries)
+                }
+                Timber.d("Whitelist sync: Successfully synced ${whitelistEntries.size} artists to whitelist table")
+
+                // Now fetch full metadata for each whitelisted artist
+                var successCount = 0
+                var failureCount = 0
+                whitelistEntries.forEach { whitelistEntry ->
+                    try {
+                        val existingArtist = database.artist(whitelistEntry.artistId).firstOrNull()
+
+                        // Fetch artist details from YouTube
+                        YouTube.artist(whitelistEntry.artistId).onSuccess { artistPage ->
+                            database.transaction {
+                                if (existingArtist == null) {
+                                    // Insert new artist with full metadata
+                                    insert(
+                                        ArtistEntity(
+                                            id = whitelistEntry.artistId,
+                                            name = artistPage.artist.title,
+                                            thumbnailUrl = artistPage.artist.thumbnail,
+                                            channelId = artistPage.artist.channelId,
+                                            lastUpdateTime = LocalDateTime.now()
+                                        )
+                                    )
+                                    Timber.d("Whitelist sync: Inserted artist '${artistPage.artist.title}' with thumbnail")
+                                } else {
+                                    // Update existing artist with fresh metadata
+                                    update(
+                                        existingArtist.artist.copy(
+                                            name = artistPage.artist.title,
+                                            thumbnailUrl = artistPage.artist.thumbnail,
+                                            channelId = artistPage.artist.channelId,
+                                            lastUpdateTime = LocalDateTime.now()
+                                        )
+                                    )
+                                    Timber.d("Whitelist sync: Updated artist '${artistPage.artist.title}' with thumbnail")
+                                }
+                            }
+                            successCount++
+                        }.onFailure { e ->
+                            Timber.w("Whitelist sync: Failed to fetch metadata for artist ${whitelistEntry.artistId}: ${e.message}")
+                            failureCount++
+                        }
+                    } catch (e: Exception) {
+                        Timber.w(e, "Whitelist sync: Exception fetching artist ${whitelistEntry.artistId}")
+                        failureCount++
+                    }
+                }
+                Timber.d("Whitelist sync: Fetched metadata for $successCount artists ($failureCount failures)")
+            }.onFailure { e ->
+                Timber.e(e, "Whitelist sync failed: ${e.message}")
+                e.printStackTrace()
+                // On failure, keep using cached whitelist
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Whitelist sync exception: ${e.message}")
+            e.printStackTrace()
+        } finally {
+            isSyncingWhitelist.value = false
+            Timber.d("Whitelist sync finished")
         }
     }
 

@@ -265,7 +265,7 @@ fun HistoryScreen(
                                             playerConnection.player.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
-                                                YouTubeQueue.radio(song.toMediaMetadata())
+                                                YouTubeQueue.radio(song.toMediaMetadata(), database)
                                             )
                                         }
                                     },

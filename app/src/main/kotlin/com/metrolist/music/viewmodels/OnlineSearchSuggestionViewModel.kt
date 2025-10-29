@@ -10,6 +10,7 @@ import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,7 +28,7 @@ class OnlineSearchSuggestionViewModel
 @Inject
 constructor(
     @ApplicationContext val context: Context,
-    database: MusicDatabase,
+    val database: MusicDatabase,
 ) : ViewModel() {
     val query = MutableStateFlow("")
     private val _viewState = MutableStateFlow(SearchSuggestionViewState())
@@ -47,25 +48,42 @@ constructor(
                         val result = YouTube.searchSuggestions(query).getOrNull()
                         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
 
+                        // Filter items with whitelist (suspend function)
+                        val filteredItems = result
+                            ?.recommendedItems
+                            ?.distinctBy { it.id }
+                            ?.filterExplicit(hideExplicit)
+                            ?.filterWhitelisted(database)
+                            .orEmpty()
+
+                        // Get whitelisted artist names for filtering query suggestions
+                        val whitelistedArtists = database.getAllWhitelistedArtists().map { entries ->
+                            entries.map { it.artistName.lowercase() }
+                        }
+
                         database
                             .searchHistory(query)
                             .map { it.take(3) }
-                            .map { history ->
-                                SearchSuggestionViewState(
-                                    history = history,
-                                    suggestions =
-                                    result
-                                        ?.queries
-                                        ?.filter { suggestionQuery ->
-                                            history.none { it.query == suggestionQuery }
-                                        }.orEmpty(),
-                                    items =
-                                    result
-                                        ?.recommendedItems
-                                        ?.distinctBy { it.id }
-                                        ?.filterExplicit(hideExplicit)
-                                        .orEmpty(),
-                                )
+                            .flatMapLatest { history ->
+                                whitelistedArtists.map { artistNames ->
+                                    SearchSuggestionViewState(
+                                        history = history,
+                                        suggestions =
+                                        result
+                                            ?.queries
+                                            ?.filter { suggestionQuery ->
+                                                // Only show suggestions that contain a whitelisted artist name
+                                                val lowerQuery = suggestionQuery.lowercase()
+                                                artistNames.any { artistName ->
+                                                    lowerQuery.contains(artistName)
+                                                }
+                                            }
+                                            ?.filter { suggestionQuery ->
+                                                history.none { it.query == suggestionQuery }
+                                            }.orEmpty(),
+                                        items = filteredItems,
+                                    )
+                                }
                             }
                     }
                 }.collect {

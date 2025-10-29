@@ -830,7 +830,9 @@ class MusicService :
 
         scope.launch(SilentHandler) {
             val radioQueue = YouTubeQueue(
-                endpoint = WatchEndpoint(videoId = currentMediaMetadata.id)
+                endpoint = WatchEndpoint(videoId = currentMediaMetadata.id),
+                preloadItem = null,
+                database = database
             )
             val initialStatus = radioQueue.getInitialStatus()
 

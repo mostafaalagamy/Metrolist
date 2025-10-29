@@ -363,7 +363,7 @@ fun AlbumScreen(
                             onClick = {
                                 playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
-                                    LocalAlbumRadio(albumWithSongs),
+                                    LocalAlbumRadio(albumWithSongs, database = database),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -384,7 +384,7 @@ fun AlbumScreen(
                             onClick = {
                                 playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
-                                    LocalAlbumRadio(albumWithSongs.copy(songs = albumWithSongs.songs.shuffled())),
+                                    LocalAlbumRadio(albumWithSongs.copy(songs = albumWithSongs.songs.shuffled()), database = database),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -445,7 +445,7 @@ fun AlbumScreen(
                                         } else {
                                             playerConnection.service.getAutomix(playlistId)
                                             playerConnection.playQueue(
-                                                LocalAlbumRadio(albumWithSongs, startIndex = index),
+                                                LocalAlbumRadio(albumWithSongs, startIndex = index, database = database),
                                             )
                                         }
                                     } else {

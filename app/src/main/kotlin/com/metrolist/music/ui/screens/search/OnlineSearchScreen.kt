@@ -202,7 +202,7 @@ fun OnlineSearchScreen(
                                         playerConnection.player.togglePlayPause()
                                     } else {
                                         playerConnection.playQueue(
-                                            YouTubeQueue.radio(item.toMediaMetadata())
+                                            YouTubeQueue.radio(item.toMediaMetadata(), database)
                                         )
                                         onDismiss()
                                     }

@@ -608,7 +608,7 @@ fun AlbumGridItem(
                         database.albumWithSongs(album.id).firstOrNull()
                     }
                     albumWithSongs?.let {
-                        playerConnection.playQueue(LocalAlbumRadio(it))
+                        playerConnection.playQueue(LocalAlbumRadio(it, database = database))
                     }
                 }
             }
@@ -949,7 +949,7 @@ fun YouTubeGridItem(
                     }
                     albumWithSongs?.let {
                         withContext(Dispatchers.Main) {
-                            playerConnection.playQueue(LocalAlbumRadio(it))
+                            playerConnection.playQueue(LocalAlbumRadio(it, database = database))
                         }
                     }
                 }

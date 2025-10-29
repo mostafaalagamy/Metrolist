@@ -23,6 +23,7 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
@@ -97,7 +98,11 @@ class HomeViewModel @Inject constructor(
 
         if (YouTube.cookie != null) {
             YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                accountPlaylists.value = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
+                accountPlaylists.value = it.items
+                    .filterIsInstance<PlaylistItem>()
+                    .filterNot { it.id == "SE" }
+                    .filterWhitelisted(database)
+                    .filterIsInstance<PlaylistItem>()
             }.onFailure {
                 reportException(it)
             }
@@ -114,7 +119,11 @@ class HomeViewModel @Inject constructor(
                 }
                 SimilarRecommendation(
                     title = it,
-                    items = items.filterExplicit(hideExplicit).shuffled().ifEmpty { return@mapNotNull null }
+                    items = items
+                        .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database)
+                        .shuffled()
+                        .ifEmpty { return@mapNotNull null }
                 )
             }
 
@@ -131,6 +140,7 @@ class HomeViewModel @Inject constructor(
                             page.artists.shuffled().take(4) +
                             page.playlists.shuffled().take(4))
                         .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database)
                         .shuffled()
                         .ifEmpty { return@mapNotNull null }
                 )
@@ -139,8 +149,11 @@ class HomeViewModel @Inject constructor(
 
         YouTube.home().onSuccess { page ->
             homePage.value = page.copy(
-                sections = page.sections.map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                sections = page.sections.mapNotNull { section ->
+                    val filteredItems = section.items
+                        .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database)
+                    if (filteredItems.isEmpty()) null else section.copy(items = filteredItems)
                 }
             )
         }.onFailure {
@@ -149,7 +162,10 @@ class HomeViewModel @Inject constructor(
 
         YouTube.explore().onSuccess { page ->
             explorePage.value = page.copy(
-                newReleaseAlbums = page.newReleaseAlbums.filterExplicit(hideExplicit)
+                newReleaseAlbums = page.newReleaseAlbums
+                    .filterExplicit(hideExplicit)
+                    .filterWhitelisted(database)
+                    .filterIsInstance<com.metrolist.innertube.models.AlbumItem>()
             )
         }.onFailure {
             reportException(it)
@@ -177,8 +193,11 @@ class HomeViewModel @Inject constructor(
 
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,
-                sections = (homePage.value?.sections.orEmpty() + nextSections.sections).map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                sections = (homePage.value?.sections.orEmpty() + nextSections.sections).mapNotNull { section ->
+                    val filteredItems = section.items
+                        .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database)
+                    if (filteredItems.isEmpty()) null else section.copy(items = filteredItems)
                 }
             )
             _isLoadingMore.value = false
@@ -203,8 +222,11 @@ class HomeViewModel @Inject constructor(
 
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,
-                sections = nextSections.sections.map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                sections = nextSections.sections.mapNotNull { section ->
+                    val filteredItems = section.items
+                        .filterExplicit(hideExplicit)
+                        .filterWhitelisted(database)
+                    if (filteredItems.isEmpty()) null else section.copy(items = filteredItems)
                 }
             )
             selectedChip.value = chip

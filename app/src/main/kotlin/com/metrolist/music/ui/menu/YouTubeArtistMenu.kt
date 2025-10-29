@@ -98,7 +98,7 @@ fun YouTubeArtistMenu(
                                 },
                                 text = stringResource(R.string.start_radio),
                                 onClick = {
-                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint, preloadItem = null, database))
                                     onDismiss()
                                 }
                             )
@@ -118,7 +118,7 @@ fun YouTubeArtistMenu(
                                 },
                                 text = stringResource(R.string.shuffle),
                                 onClick = {
-                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint, preloadItem = null, database))
                                     onDismiss()
                                 }
                             )

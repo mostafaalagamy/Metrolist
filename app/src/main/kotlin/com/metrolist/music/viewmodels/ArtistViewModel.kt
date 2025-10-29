@@ -22,6 +22,7 @@ import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.extensions.filterExplicit
 import com.metrolist.music.extensions.filterExplicitAlbums
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
@@ -33,7 +34,7 @@ import kotlinx.coroutines.flow.map
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    database: MusicDatabase,
+    private val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val artistId = savedStateHandle.get<String>("artistId")!!
@@ -77,7 +78,11 @@ class ArtistViewModel @Inject constructor(
                             section.moreEndpoint?.browseId?.startsWith("MPLAUC") == true
                         }
                         .map { section ->
-                            section.copy(items = section.items.filterExplicit(hideExplicit))
+                            section.copy(
+                                items = section.items
+                                    .filterExplicit(hideExplicit)
+                                    .filterWhitelisted(database)
+                            )
                         }
 
                     artistPage = page.copy(sections = filteredSections)

@@ -48,6 +48,7 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -78,6 +79,7 @@ fun YouTubeBrowseScreen(
     viewModel: YouTubeBrowseViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
+    val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -181,7 +183,8 @@ fun YouTubeBrowseScreen(
                                                     } else {
                                                         playerConnection.playQueue(
                                                             YouTubeQueue.radio(
-                                                                song.toMediaMetadata()
+                                                                song.toMediaMetadata(),
+                                                                database
                                                             )
                                                         )
                                                     }

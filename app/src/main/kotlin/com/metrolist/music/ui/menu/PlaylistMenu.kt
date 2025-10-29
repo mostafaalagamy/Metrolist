@@ -369,7 +369,7 @@ fun PlaylistMenu(
                             YouTube.playlist(browseId).getOrNull()?.playlist?.let { playlistItem ->
                                 playlistItem.radioEndpoint?.let { radioEndpoint ->
                                     withContext(Dispatchers.Main) {
-                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint, preloadItem = null, database))
                                     }
                                 }
                             }

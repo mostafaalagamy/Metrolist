@@ -319,7 +319,7 @@ fun YouTubeSongMenu(
                     )
                 },
                 modifier = Modifier.clickable {
-                    playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()))
+                    playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata(), database))
                     onDismiss()
                 }
             )

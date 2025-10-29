@@ -2,14 +2,18 @@ package com.metrolist.music.playback.queues
 
 import androidx.media3.common.MediaItem
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.utils.filterWhitelisted
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class YouTubeAlbumRadio(
     private var playlistId: String,
+    private val database: MusicDatabase,
 ) : Queue {
     override val preloadItem: MediaMetadata? = null
 
@@ -26,9 +30,13 @@ class YouTubeAlbumRadio(
     override suspend fun getInitialStatus(): Queue.Status = withContext(IO) {
         val albumSongs = YouTube.albumSongs(playlistId).getOrThrow()
         albumSongCount = albumSongs.size
+
+        // Filter by whitelist before converting to MediaItems
+        val filteredSongs = albumSongs.filterWhitelisted(database).filterIsInstance<SongItem>()
+
         Queue.Status(
-            title = albumSongs.first().album?.name.orEmpty(),
-            items = albumSongs.map { it.toMediaItem() },
+            title = albumSongs.firstOrNull()?.album?.name.orEmpty(),
+            items = filteredSongs.map { it.toMediaItem() },
             mediaItemIndex = 0
         )
     }
@@ -38,11 +46,15 @@ class YouTubeAlbumRadio(
     override suspend fun nextPage(): List<MediaItem> = withContext(IO) {
         val nextResult = YouTube.next(endpoint, continuation).getOrThrow()
         continuation = nextResult.continuation
-        if (!firstTimeLoaded) {
+
+        // Filter by whitelist before converting to MediaItems
+        val filteredItems = if (!firstTimeLoaded) {
             firstTimeLoaded = true
-            nextResult.items.subList(albumSongCount, nextResult.items.size).map { it.toMediaItem() }
+            nextResult.items.subList(albumSongCount, nextResult.items.size).filterWhitelisted(database).filterIsInstance<SongItem>()
         } else {
-            nextResult.items.map { it.toMediaItem() }
+            nextResult.items.filterWhitelisted(database).filterIsInstance<SongItem>()
         }
+
+        filteredItems.map { it.toMediaItem() }
     }
 }

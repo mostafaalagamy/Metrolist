@@ -9,6 +9,7 @@ import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ class NewReleaseViewModel
 @Inject
 constructor(
     @ApplicationContext val context: Context,
-    database: MusicDatabase,
+    val database: MusicDatabase,
 ) : ViewModel() {
     private val _newReleaseAlbums = MutableStateFlow<List<AlbumItem>>(emptyList())
     val newReleaseAlbums = _newReleaseAlbums.asStateFlow()
@@ -59,7 +60,10 @@ constructor(
                                         }
                                     } ?: Int.MAX_VALUE
                                 firstArtistKey
-                            }.filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                            }
+                            .filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                            .filterWhitelisted(database)
+                            .filterIsInstance<AlbumItem>()
                 }.onFailure {
                     reportException(it)
                 }

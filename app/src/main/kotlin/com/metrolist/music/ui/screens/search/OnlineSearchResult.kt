@@ -48,6 +48,7 @@ import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
+import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -77,6 +78,7 @@ fun OnlineSearchResult(
     viewModel: OnlineSearchViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
+    val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val haptic = LocalHapticFeedback.current
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -169,7 +171,8 @@ fun OnlineSearchResult(
                                     playerConnection.playQueue(
                                         YouTubeQueue(
                                             WatchEndpoint(videoId = item.id),
-                                            item.toMediaMetadata()
+                                            item.toMediaMetadata(),
+                                            database
                                         )
                                     )
                                 }

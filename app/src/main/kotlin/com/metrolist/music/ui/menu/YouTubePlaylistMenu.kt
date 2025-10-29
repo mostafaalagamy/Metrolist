@@ -342,7 +342,7 @@ fun YouTubePlaylistMenu(
                                 },
                                 text = stringResource(R.string.play),
                                 onClick = {
-                                    playerConnection.playQueue(YouTubeQueue(playEndpoint))
+                                    playerConnection.playQueue(YouTubeQueue(playEndpoint, preloadItem = null, database))
                                     onDismiss()
                                 }
                             )
@@ -361,7 +361,7 @@ fun YouTubePlaylistMenu(
                                 },
                                 text = stringResource(R.string.shuffle),
                                 onClick = {
-                                    playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                                    playerConnection.playQueue(YouTubeQueue(shuffleEndpoint, preloadItem = null, database))
                                     onDismiss()
                                 }
                             )
@@ -380,7 +380,7 @@ fun YouTubePlaylistMenu(
                                 },
                                 text = stringResource(R.string.start_radio),
                                 onClick = {
-                                    playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                    playerConnection.playQueue(YouTubeQueue(radioEndpoint, preloadItem = null, database))
                                     onDismiss()
                                 }
                             )

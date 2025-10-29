@@ -35,6 +35,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.innertube.models.*
+import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -63,6 +64,7 @@ fun ExploreScreen(
     chartsViewModel: ChartsViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
+    val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -276,6 +278,7 @@ fun ExploreScreen(
                                                         YouTubeQueue(
                                                             endpoint = WatchEndpoint(videoId = song.id),
                                                             preloadItem = song.toMediaMetadata(),
+                                                            database = database,
                                                         ),
                                                     )
                                                 }
@@ -368,6 +371,7 @@ fun ExploreScreen(
                                                     YouTubeQueue(
                                                         endpoint = WatchEndpoint(videoId = video.id),
                                                         preloadItem = video.toMediaMetadata(),
+                                                        database = database,
                                                     ),
                                                 )
                                             }

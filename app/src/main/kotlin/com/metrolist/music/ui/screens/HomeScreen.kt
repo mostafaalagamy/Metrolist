@@ -214,7 +214,7 @@ fun HomeScreen(
                                 playerConnection.player.togglePlayPause()
                             } else {
                                 playerConnection.playQueue(
-                                    YouTubeQueue.radio(it.toMediaMetadata()),
+                                    YouTubeQueue.radio(it.toMediaMetadata(), database),
                                 )
                             }
                         },
@@ -301,7 +301,7 @@ fun HomeScreen(
                                 YouTubeQueue(
                                     item.endpoint ?: WatchEndpoint(
                                         videoId = item.id
-                                    ), item.toMediaMetadata()
+                                    ), item.toMediaMetadata(), database
                                 )
                             )
 
@@ -456,7 +456,7 @@ fun HomeScreen(
                                                 } else {
                                                     playerConnection.playQueue(
                                                         YouTubeQueue.radio(
-                                                            song!!.toMediaMetadata()
+                                                            song!!.toMediaMetadata(), database
                                                         )
                                                     )
                                                 }
@@ -627,7 +627,7 @@ fun HomeScreen(
                                                 } else {
                                                     playerConnection.playQueue(
                                                         YouTubeQueue.radio(
-                                                            song!!.toMediaMetadata()
+                                                            song!!.toMediaMetadata(), database
                                                         )
                                                     )
                                                 }
@@ -765,67 +765,7 @@ fun HomeScreen(
             }
 
             if (selectedChip == null) {
-                explorePage?.moodAndGenres?.let { moodAndGenres ->
-                    item(key = "mood_and_genres_title") {
-                        NavigationTitle(
-                            title = stringResource(R.string.mood_and_genres),
-                            onClick = {
-                                navController.navigate("mood_and_genres")
-                            },
-                            modifier = Modifier.animateItem()
-                        )
-                    }
-                    item(key = "mood_and_genres_list") {
-                        LazyHorizontalGrid(
-                            rows = GridCells.Fixed(4),
-                            contentPadding = PaddingValues(6.dp),
-                            modifier = Modifier
-                                .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
-                                .animateItem()
-                        ) {
-                            items(moodAndGenres) {
-                                MoodAndGenresButton(
-                                    title = it.title,
-                                    onClick = {
-                                        navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-                                    },
-                                    modifier = Modifier
-                                        .padding(6.dp)
-                                        .width(180.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (isMoodAndGenresLoading) {
-                    item(key = "mood_and_genres_shimmer") {
-                        ShimmerHost(
-                            modifier = Modifier.animateItem()
-                        ) {
-                            TextPlaceholder(
-                                height = 36.dp,
-                                modifier = Modifier
-                                    .padding(vertical = 12.dp, horizontal = 12.dp)
-                                    .width(250.dp),
-                            )
-
-                            repeat(4) {
-                                Row {
-                                    repeat(2) {
-                                        TextPlaceholder(
-                                            height = MoodAndGenresButtonHeight,
-                                            shape = RoundedCornerShape(6.dp),
-                                            modifier = Modifier
-                                                .padding(horizontal = 12.dp)
-                                                .width(200.dp)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                // Mood and genres section removed per user request
             }
         }
 
@@ -842,13 +782,13 @@ fun HomeScreen(
                 scope.launch(Dispatchers.Main) {
                     if (local) {
                         when (val luckyItem = allLocalItems.random()) {
-                            is Song -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
+                            is Song -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata(), database))
                             is Album -> {
                                 val albumWithSongs = withContext(Dispatchers.IO) {
                                     database.albumWithSongs(luckyItem.id).first()
                                 }
                                 albumWithSongs?.let {
-                                    playerConnection.playQueue(LocalAlbumRadio(it))
+                                    playerConnection.playQueue(LocalAlbumRadio(it, database = database))
                                 }
                             }
                             is Artist -> {}
@@ -856,13 +796,13 @@ fun HomeScreen(
                         }
                     } else {
                         when (val luckyItem = allYtItems.random()) {
-                            is SongItem -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
-                            is AlbumItem -> playerConnection.playQueue(YouTubeAlbumRadio(luckyItem.playlistId))
+                            is SongItem -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata(), database))
+                            is AlbumItem -> playerConnection.playQueue(YouTubeAlbumRadio(luckyItem.playlistId, database))
                             is ArtistItem -> luckyItem.radioEndpoint?.let {
-                                playerConnection.playQueue(YouTubeQueue(it))
+                                playerConnection.playQueue(YouTubeQueue(it, preloadItem = null, database))
                             }
                             is PlaylistItem -> luckyItem.playEndpoint?.let {
-                                playerConnection.playQueue(YouTubeQueue(it))
+                                playerConnection.playQueue(YouTubeQueue(it, preloadItem = null, database))
                             }
                         }
                     }

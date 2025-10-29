@@ -8,8 +8,10 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ class ArtistItemsViewModel
 @Inject
 constructor(
     @ApplicationContext val context: Context,
+    val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val browseId = savedStateHandle.get<String>("browseId")!!
@@ -41,10 +44,14 @@ constructor(
                         params = params,
                     ),
                 ).onSuccess { artistItemsPage ->
+                    val hideExplicit = context.dataStore.get(HideExplicitKey, false)
                     title.value = artistItemsPage.title
                     itemsPage.value =
                         ItemsPage(
-                            items = artistItemsPage.items.distinctBy { it.id },
+                            items = artistItemsPage.items
+                                .distinctBy { it.id }
+                                .filterExplicit(hideExplicit)
+                                .filterWhitelisted(database),
                             continuation = artistItemsPage.continuation,
                         )
                 }.onFailure {
@@ -65,7 +72,8 @@ constructor(
                             items =
                             (oldItemsPage.items + artistItemsContinuationPage.items)
                                 .distinctBy { it.id }
-                                .filterExplicit(context.dataStore.get(HideExplicitKey, false)),
+                                .filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                                .filterWhitelisted(database),
                             continuation = artistItemsContinuationPage.continuation,
                         )
                     }

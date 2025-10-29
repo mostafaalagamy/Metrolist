@@ -1330,7 +1330,8 @@ class MainActivity : ComponentActivity() {
                                 playerConnection?.playQueue(
                                     YouTubeQueue(
                                         WatchEndpoint(videoId = queue.firstOrNull()?.id, playlistId = playlistId),
-                                        queue.firstOrNull()?.toMediaMetadata()
+                                        queue.firstOrNull()?.toMediaMetadata(),
+                                        database
                                     )
                                 )
                             }

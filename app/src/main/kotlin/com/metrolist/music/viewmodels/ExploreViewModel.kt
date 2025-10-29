@@ -9,6 +9,7 @@ import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,7 +60,10 @@ constructor(
                                         }
                                     } ?: Int.MAX_VALUE
                                 firstArtistKey
-                            }.filterExplicit(context.dataStore.get(HideExplicitKey, false)),
+                            }
+                            .filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                            .filterWhitelisted(database)
+                            .filterIsInstance<com.metrolist.innertube.models.AlbumItem>(),
                     )
             }.onFailure {
                 reportException(it)

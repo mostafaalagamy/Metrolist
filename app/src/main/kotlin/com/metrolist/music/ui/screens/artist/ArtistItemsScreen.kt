@@ -36,6 +36,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -65,6 +66,7 @@ fun ArtistItemsScreen(
     viewModel: ArtistItemsViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
+    val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -175,7 +177,8 @@ fun ArtistItemsScreen(
                                         playerConnection.playQueue(
                                             YouTubeQueue(
                                                 item.endpoint ?: WatchEndpoint(videoId = item.id),
-                                                item.toMediaMetadata()
+                                                item.toMediaMetadata(),
+                                                database
                                             ),
                                         )
                                     }
@@ -226,7 +229,8 @@ fun ArtistItemsScreen(
                                     is SongItem -> playerConnection.playQueue(
                                         YouTubeQueue(
                                             item.endpoint ?: WatchEndpoint(videoId = item.id),
-                                            item.toMediaMetadata()
+                                            item.toMediaMetadata(),
+                                            database
                                         )
                                     )
 

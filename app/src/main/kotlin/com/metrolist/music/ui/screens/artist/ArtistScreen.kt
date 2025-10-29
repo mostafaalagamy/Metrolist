@@ -376,7 +376,7 @@ fun ArtistScreen(
                                             artistPage?.artist?.radioEndpoint?.let { radioEndpoint ->
                                                 OutlinedButton(
                                                     onClick = {
-                                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint, preloadItem = null, database))
                                                     },
                                                     shape = RoundedCornerShape(50),
                                                     modifier = Modifier.height(40.dp)
@@ -400,7 +400,7 @@ fun ArtistScreen(
                                             artistPage?.artist?.shuffleEndpoint?.let { shuffleEndpoint ->
                                                 IconButton(
                                                     onClick = {
-                                                        playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                                                        playerConnection.playQueue(YouTubeQueue(shuffleEndpoint, preloadItem = null, database))
                                                     },
                                                     modifier = Modifier
                                                         .size(48.dp)
@@ -634,7 +634,8 @@ fun ArtistScreen(
                                                     playerConnection.playQueue(
                                                         YouTubeQueue(
                                                             WatchEndpoint(videoId = song.id),
-                                                            song.toMediaMetadata()
+                                                            song.toMediaMetadata(),
+                                                            database
                                                         ),
                                                     )
                                                 }
@@ -679,7 +680,8 @@ fun ArtistScreen(
                                                                 playerConnection.playQueue(
                                                                     YouTubeQueue(
                                                                         WatchEndpoint(videoId = item.id),
-                                                                        item.toMediaMetadata()
+                                                                        item.toMediaMetadata(),
+                                                                        database
                                                                     ),
                                                                 )
 
