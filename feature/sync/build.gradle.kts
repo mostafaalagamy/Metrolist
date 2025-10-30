@@ -34,5 +34,10 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
     implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.material3)
+    implementation(libs.hilt.navigation)
+    implementation(libs.viewmodel)
     implementation(libs.timber)
 }
