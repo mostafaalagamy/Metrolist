@@ -1,0 +1,119 @@
+name: Build ARM64 APKs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ '**' ]
+    paths-ignore:
+      - 'README.md'
+      - 'fastlane/**'
+      - 'assets/**'
+      - '.github/**/*.md'
+      - '.github/FUNDING.yml'
+      - '.github/ISSUE_TEMPLATE/**'
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  build_arm64_release:
+    name: Build ARM64 Release
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
+          cache-cleanup: on-success
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build ARM64 Release APK and Run Lint
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleArm64Release :app:lintArm64Release --warning-mode summary
+        env:
+          PULL_REQUEST: 'false'
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+
+      - name: Sign APK
+        uses: ilharp/sign-android-release@v2.0.0
+        with:
+          releaseDir: app/build/outputs/apk/arm64/release/
+          signingKey: ${{ secrets.KEYSTORE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 35.0.0
+
+      - name: Move signed APK
+        run: |
+          mkdir -p app/build/outputs/apk/arm64/release/out
+          find app/build/outputs/apk/arm64/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/arm64/release/out/app-arm64-release.apk
+
+      - name: Upload ARM64 Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-arm64-release
+          path: app/build/outputs/apk/arm64/release/out/*
+
+  build_arm64_debug:
+    name: Build ARM64 Debug
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK components
+        run: |
+          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          yes | sdkmanager --licenses
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
+          cache-cleanup: on-success
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Restore Persistent Keystore
+        run: |
+          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
+
+      - name: Build ARM64 Debug APK and Run Lint
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleArm64Debug :app:lintArm64Debug --warning-mode summary
+        env:
+          PULL_REQUEST: 'false'
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+
+      - name: Upload ARM64 Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-arm64-debug
+          path: app/build/outputs/apk/arm64/debug/*.apk
