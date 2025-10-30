@@ -3,11 +3,10 @@ plugins {
     kotlin("android")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "com.metrolist.feature.sync"
+    namespace = "com.metrolist.music.common"
     compileSdk = 36
 
     defaultConfig {
@@ -23,16 +22,29 @@ android {
     kotlin {
         jvmToolchain(21)
     }
+}
 
-    buildFeatures {
-        compose = true
-    }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
-    implementation(project(":common"))
+    // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
-    implementation(libs.compose.runtime)
+
+    // Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
+
+    // DataStore
+    implementation(libs.datastore)
+
+    // Coroutines
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+    // Timber
     implementation(libs.timber)
 }
