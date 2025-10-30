@@ -182,6 +182,7 @@ import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
 import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
+import com.metrolist.music.ui.screens.SplashScreen
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
 import com.metrolist.music.ui.utils.backToMain
@@ -434,6 +435,15 @@ class MainActivity : ComponentActivity() {
                     val windowsInsets = WindowInsets.systemBars
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
                     val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+
+                    // Check whitelist sync status
+                    val syncProgress by syncUtils.whitelistSyncProgress.collectAsState()
+
+                    // Show splash screen while syncing
+                    if (!syncProgress.isComplete) {
+                        SplashScreen(syncProgress = syncProgress)
+                        return@BoxWithConstraints
+                    }
 
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()
