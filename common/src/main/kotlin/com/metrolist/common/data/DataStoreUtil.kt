@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.metrolist.common.constants.AccountEmailKey
+import com.metrolist.common.constants.IS_SYNC_ENABLED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -21,5 +22,9 @@ class DataStoreUtil @Inject constructor(
 
     fun getEmail(): Flow<String?> = dataStore.data.map {
         it[AccountEmailKey]
+    }
+
+    fun isSyncEnabled(): Flow<Boolean> = dataStore.data.map {
+        it[IS_SYNC_ENABLED] ?: false
     }
 }

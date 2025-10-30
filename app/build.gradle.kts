@@ -182,6 +182,7 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.animation)
     implementation(libs.compose.reorderable)
+    implementation(libs.compose.material.icons.extended)
 
     implementation(libs.viewmodel)
     implementation(libs.viewmodel.compose)

@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -74,6 +75,7 @@ import com.metrolist.music.ui.screens.settings.UpdaterScreen
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import com.metrolist.sync.ui.SyncScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -330,5 +332,8 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("login") {
         LoginScreen(navController)
+    }
+    composable("sync") {
+        SyncScreen(hiltViewModel())
     }
 }

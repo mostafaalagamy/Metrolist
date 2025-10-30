@@ -16,9 +16,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.common.constants.IS_SYNC_ENABLED
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,12 +28,24 @@ fun IntegrationScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    val (isSyncEnabled, onSyncEnabledChange) = rememberPreference(
+        key = IS_SYNC_ENABLED,
+        defaultValue = false
+    )
+
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .verticalScroll(rememberScrollState()),
     ) {
         PreferenceGroupTitle(title = stringResource(R.string.general))
+
+        SwitchPreference(
+            title = { Text("Local Sync") },
+            description = "Enable or disable local sync functionality.",
+            checked = isSyncEnabled,
+            onCheckedChange = onSyncEnabledChange
+        )
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.discord_integration)) },
@@ -48,8 +62,6 @@ fun IntegrationScreen(
                 navController.navigate("settings/integrations/lastfm")
             }
         )
-
-
     }
 
     TopAppBar(

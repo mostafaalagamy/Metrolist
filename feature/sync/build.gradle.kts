@@ -40,4 +40,5 @@ dependencies {
     implementation(libs.hilt.navigation)
     implementation(libs.viewmodel)
     implementation(libs.timber)
+    implementation(libs.datastore)
 }

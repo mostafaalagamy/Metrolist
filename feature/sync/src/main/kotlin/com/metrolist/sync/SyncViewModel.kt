@@ -3,13 +3,11 @@ package com.metrolist.sync
 import android.net.nsd.NsdServiceInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.common.constants.IS_SYNC_ENABLED
 import com.metrolist.common.data.DataStoreUtil
+import com.metrolist.common.utils.get
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,7 +30,15 @@ class SyncViewModel @Inject constructor(
     val discoveredDevices: StateFlow<List<DiscoveredDevice>> = _discoveredDevices
 
     init {
-        startDiscovery()
+        viewModelScope.launch {
+            dataStoreUtil.isSyncEnabled().collect { isSyncEnabled ->
+                if (isSyncEnabled) {
+                    startDiscovery()
+                } else {
+                    serviceDiscoverer.stopDiscovery()
+                }
+            }
+        }
     }
 
     private fun startDiscovery() {

@@ -64,6 +64,7 @@ import com.metrolist.lastfm.LastFM
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.common.constants.AccountEmailKey
+import com.metrolist.common.constants.IS_SYNC_ENABLED
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AudioQualityKey
@@ -530,9 +531,17 @@ class MusicService :
         }
 
         scope.launch {
-            val userEmail = dataStore.data.map { it[AccountEmailKey] }.first()
-            if (userEmail != null) {
-                localSyncManager.registerService(8080, userEmail)
+            combine(
+                dataStore.data.map { it[IS_SYNC_ENABLED] ?: false },
+                dataStore.data.map { it[AccountEmailKey] }
+            ) { isSyncEnabled, userEmail ->
+                isSyncEnabled to userEmail
+            }.collect { (isSyncEnabled, userEmail) ->
+                if (isSyncEnabled && userEmail != null) {
+                    localSyncManager.registerService(8080, userEmail)
+                } else {
+                    localSyncManager.unregisterService()
+                }
             }
         }
     }
