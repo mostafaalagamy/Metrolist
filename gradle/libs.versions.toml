@@ -17,6 +17,7 @@ multidex = "2.0.1"
 coil = "3.3.0"
 ucrop = "2.2.11"
 guava = "33.5.0-android"
+coroutines = "1.8.1"
 coroutinesGuava = "1.10.2"
 concurrentFutures = "1.3.0"
 activity = "1.11.0"
@@ -39,6 +40,8 @@ extractor = "8773f0d"
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutinesGuava" }
 concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFutures" }
 
