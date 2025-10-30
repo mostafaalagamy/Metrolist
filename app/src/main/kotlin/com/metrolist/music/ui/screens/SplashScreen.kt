@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import com.metrolist.music.utils.WhitelistSyncProgress
 @Composable
 fun SplashScreen(
     syncProgress: WhitelistSyncProgress,
+    onSkip: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -85,6 +87,13 @@ fun SplashScreen(
                 LinearProgressIndicator(
                     modifier = Modifier.size(width = 200.dp, height = 4.dp),
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Skip button
+            Button(onClick = onSkip) {
+                Text(text = "Load in background")
             }
         }
     }
