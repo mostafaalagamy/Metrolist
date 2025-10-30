@@ -63,7 +63,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.lastfm.LastFM
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
-import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.common.constants.AccountEmailKey
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AudioQualityKey

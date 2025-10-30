@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AccountChannelHandleKey
-import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.common.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.DataSyncIdKey
 import com.metrolist.music.constants.InnerTubeCookieKey
