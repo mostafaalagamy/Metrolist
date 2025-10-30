@@ -3,6 +3,7 @@ package com.metrolist.common.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.metrolist.common.data.DataStoreUtil
 import com.metrolist.common.utils.dataStore
 import dagger.Module
 import dagger.Provides
@@ -14,5 +15,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object CommonModule {
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.dataStore
+    }
 
+    @Provides
+    @Singleton
+    fun provideDataStoreUtil(dataStore: DataStore<Preferences>): DataStoreUtil {
+        return DataStoreUtil(dataStore)
+    }
 }
