@@ -52,7 +52,13 @@ class ArtistViewModel @Inject constructor(
         .map { it[HideExplicitKey] ?: false }
         .distinctUntilChanged()
         .flatMapLatest { hideExplicit ->
-            database.artistAlbumsPreview(artistId).map { it.filterExplicitAlbums(hideExplicit) }
+            database.artistAlbumsPreview(artistId).map { albums ->
+                timber.log.Timber.d("ArtistViewModel: artistId=$artistId, albums from query=${albums.size}, hideExplicit=$hideExplicit")
+                albums.forEach { album ->
+                    timber.log.Timber.d("ArtistViewModel: album=${album.album.title}, explicit=${album.album.explicit}")
+                }
+                albums.filterExplicitAlbums(hideExplicit)
+            }
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -73,16 +79,21 @@ class ArtistViewModel @Inject constructor(
             val hideExplicit = context.dataStore.get(HideExplicitKey, false)
             YouTube.artist(artistId)
                 .onSuccess { page ->
+                    timber.log.Timber.d("ArtistViewModel: Fetched YouTube page with ${page.sections.size} sections")
+                    page.sections.forEach { section ->
+                        timber.log.Timber.d("ArtistViewModel: Section '${section.title}' has ${section.items.size} items")
+                    }
+
                     val filteredSections = page.sections
                         .filterNot { section ->
                             section.moreEndpoint?.browseId?.startsWith("MPLAUC") == true
                         }
                         .map { section ->
-                            section.copy(
-                                items = section.items
-                                    .filterExplicit(hideExplicit)
-                                    .filterWhitelisted(database)
-                            )
+                            val originalCount = section.items.size
+                            // Only filter explicit content, not by whitelist (we're already on a whitelisted artist's page)
+                            val filtered = section.items.filterExplicit(hideExplicit)
+                            timber.log.Timber.d("ArtistViewModel: Section '${section.title}': ${originalCount} items -> ${filtered.size} after filtering")
+                            section.copy(items = filtered)
                         }
 
                     artistPage = page.copy(sections = filteredSections)

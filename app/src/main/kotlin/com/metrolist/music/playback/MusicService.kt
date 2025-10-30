@@ -118,6 +118,7 @@ import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
+import com.metrolist.music.utils.filterWhitelisted
 import com.metrolist.music.utils.DiscordRPC
 import com.metrolist.music.utils.NetworkConnectivityObserver
 import com.metrolist.music.utils.ScrobbleManager
@@ -747,8 +748,9 @@ class MusicService :
                 YouTube.next(WatchEndpoint(videoId = mediaId)).getOrNull()?.relatedEndpoint
                     ?: return
             val relatedPage = YouTube.related(relatedEndpoint).getOrNull() ?: return
+            val filteredSongs = relatedPage.songs.filterWhitelisted(database).filterIsInstance<SongItem>()
             database.query {
-                relatedPage.songs
+                filteredSongs
                     .map(SongItem::toMediaMetadata)
                     .onEach(::insert)
                     .map {

@@ -433,13 +433,26 @@ interface DatabaseDao {
     @Transaction
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("""
-        SELECT album.*, count(song.dateDownload) downloadCount
-        FROM album_artist_map
-            JOIN album ON album_artist_map.albumId = album.id
-            JOIN song ON album_artist_map.albumId = song.albumId
-        WHERE artistId = :artistId
-          AND album.id IN (SELECT albumId FROM album_artist_map WHERE artistId IN (SELECT artistId FROM artist_whitelist))
-        GROUP BY album.id
+        SELECT album.*,
+               (SELECT COUNT(song.dateDownload)
+                FROM song
+                WHERE song.albumId = album.id
+                  AND song.dateDownload IS NOT NULL) as downloadCount
+        FROM album
+        WHERE album.id IN (
+            SELECT DISTINCT albumId
+            FROM album_artist_map
+            WHERE artistId = :artistId
+        )
+        AND album.id IN (
+            SELECT albumId
+            FROM album_artist_map
+            WHERE artistId IN (SELECT artistId FROM artist_whitelist)
+        )
+        AND EXISTS(
+            SELECT 1 FROM song
+            WHERE song.albumId = album.id
+        )
         LIMIT :previewSize
     """)
     fun artistAlbumsPreview(artistId: String, previewSize: Int = 6): Flow<List<Album>>
@@ -1146,7 +1159,7 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-        "SELECT song.* FROM (SELECT * from related_song_map GROUP BY relatedSongId) map JOIN song ON song.id = map.relatedSongId where songId = :songId",
+        "SELECT song.* FROM (SELECT * from related_song_map GROUP BY relatedSongId) map JOIN song ON song.id = map.relatedSongId WHERE songId = :songId AND song.id IN (SELECT songId FROM song_artist_map WHERE artistId IN (SELECT artistId FROM artist_whitelist))",
     )
     fun getRelatedSongs(songId: String): Flow<List<Song>>
 
@@ -1161,6 +1174,7 @@ interface DatabaseDao {
              song
              ON song.id = map.relatedSongId
         WHERE songId = :songId
+        AND song.id IN (SELECT songId FROM song_artist_map WHERE artistId IN (SELECT artistId FROM artist_whitelist))
         """
     )
     fun relatedSongs(songId: String): List<Song>

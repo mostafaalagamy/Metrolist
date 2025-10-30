@@ -33,6 +33,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -217,12 +219,31 @@ class HomeViewModel @Inject constructor(
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
                 .first()
-            
+
             load()
 
             val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
             if (isSyncEnabled) {
                 syncUtils.runAllSyncs()
+            }
+        }
+
+        // Observe Quick Picks changes continuously
+        viewModelScope.launch(Dispatchers.IO) {
+            quickPicksEnum.flatMapLatest { mode ->
+                when (mode) {
+                    QuickPicks.QUICK_PICKS -> database.quickPicks().map { it.shuffled().take(20) }
+                    QuickPicks.LAST_LISTEN -> database.events().flatMapLatest { events ->
+                        val song = events.firstOrNull()?.song
+                        if (song != null && database.hasRelatedSongs(song.id)) {
+                            database.getRelatedSongs(song.id).map { it.shuffled().take(20) }
+                        } else {
+                            flowOf(emptyList())
+                        }
+                    }
+                }
+            }.collect { songs ->
+                quickPicks.value = songs
             }
         }
 
