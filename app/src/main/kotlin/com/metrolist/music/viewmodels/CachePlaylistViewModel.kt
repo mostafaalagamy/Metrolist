@@ -7,8 +7,8 @@ import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.filterExplicit
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay

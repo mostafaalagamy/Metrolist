@@ -5,8 +5,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.YtmSyncKey
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import com.metrolist.innertube.utils.parseCookieString
 import kotlinx.coroutines.runBlocking
 

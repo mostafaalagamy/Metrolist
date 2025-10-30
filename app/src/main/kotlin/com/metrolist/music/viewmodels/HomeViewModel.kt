@@ -20,10 +20,10 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.toEnum
+import com.metrolist.common.extensions.toEnum
 import com.metrolist.music.models.SimilarRecommendation
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
 import dagger.hilt.android.lifecycle.HiltViewModel

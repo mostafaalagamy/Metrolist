@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

@@ -124,9 +124,9 @@ import com.metrolist.music.utils.NetworkConnectivityObserver
 import com.metrolist.music.utils.ScrobbleManager
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.enumPreference
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.enumPreference
+import com.metrolist.common.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.sync.LocalSyncManager
 import dagger.hilt.android.AndroidEntryPoint

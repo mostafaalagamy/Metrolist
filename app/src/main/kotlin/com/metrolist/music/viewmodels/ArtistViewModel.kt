@@ -21,8 +21,8 @@ import android.content.Context
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.extensions.filterExplicit
 import com.metrolist.music.extensions.filterExplicitAlbums
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
