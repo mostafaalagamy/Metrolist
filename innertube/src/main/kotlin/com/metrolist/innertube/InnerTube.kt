@@ -22,8 +22,11 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.encodeBase64
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.ConnectionPool
+import okhttp3.Dispatcher
 import java.net.Proxy
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Provide access to InnerTube endpoints.
@@ -60,6 +63,42 @@ class InnerTube {
     private fun createClient() = HttpClient(OkHttp) {
         expectSuccess = true
 
+        // Optimize HTTP client for high concurrency
+        engine {
+            config {
+                // Increase connection pool for parallel requests
+                connectionPool(ConnectionPool(
+                    maxIdleConnections = 200,  // Keep 200 connections alive
+                    keepAliveDuration = 5,     // Keep alive for 5 minutes
+                    TimeUnit.MINUTES
+                ))
+
+                // Increase max concurrent requests
+                dispatcher(Dispatcher().apply {
+                    maxRequests = 500            // Total max requests
+                    maxRequestsPerHost = 100     // Per-host max requests
+                })
+
+                // Aggressive timeouts
+                connectTimeout(5, TimeUnit.SECONDS)
+                readTimeout(10, TimeUnit.SECONDS)
+                writeTimeout(10, TimeUnit.SECONDS)
+            }
+
+            proxy?.let {
+                proxy = this@InnerTube.proxy
+                proxyAuth?.let {
+                    config {
+                        proxyAuthenticator { _, response ->
+                            response.request.newBuilder()
+                                .header("Proxy-Authorization", proxyAuth!!)
+                                .build()
+                        }
+                    }
+                }
+            }
+        }
+
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -73,19 +112,10 @@ class InnerTube {
             deflate(0.8F)
         }
 
-        proxy?.let {
-            engine {
-                proxy = this@InnerTube.proxy
-                proxyAuth?.let {
-                    config {
-                        proxyAuthenticator { _, response ->
-                            response.request.newBuilder()
-                                .header("Proxy-Authorization", proxyAuth!!)
-                                .build()
-                        }
-                    }
-                }
-            }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15000  // 15 second total request timeout
+            connectTimeoutMillis = 5000    // 5 second connect timeout
+            socketTimeoutMillis = 10000    // 10 second socket read timeout
         }
 
         defaultRequest {

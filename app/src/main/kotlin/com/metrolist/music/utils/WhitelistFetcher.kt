@@ -9,7 +9,8 @@ import java.time.LocalDateTime
 
 object WhitelistFetcher {
     private val client = HttpClient()
-    private const val WHITELIST_URL = "https://api.github.com/repos/alltechdev/ytmusicjson/contents/artists.json?ref=main"
+    // Use raw.githubusercontent.com for direct JSON access (faster, no base64 decoding needed)
+    private const val WHITELIST_URL = "https://raw.githubusercontent.com/alltechdev/ytmusicjson/main/artists.json"
 
     var lastFetchTime = -1L
         private set
@@ -17,12 +18,9 @@ object WhitelistFetcher {
     suspend fun fetchWhitelist(): Result<List<ArtistWhitelistEntity>> =
         runCatching {
             val response = client.get(WHITELIST_URL).bodyAsText()
-            val json = JSONObject(response)
 
-            // GitHub API returns base64 encoded content
-            val content = json.getString("content")
-            val decodedContent = String(android.util.Base64.decode(content, android.util.Base64.DEFAULT))
-            val artistsJson = JSONObject(decodedContent)
+            // Direct JSON parsing (no base64 decoding needed with raw URL)
+            val artistsJson = JSONObject(response)
             val artistsArray = artistsJson.getJSONArray("artists")
 
             val now = LocalDateTime.now()

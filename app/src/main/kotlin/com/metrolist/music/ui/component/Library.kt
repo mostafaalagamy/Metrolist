@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import coil3.request.ImageRequest
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.R
+import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
@@ -37,6 +39,56 @@ fun LibraryArtistListItem(
     modifier: Modifier = Modifier
 ) = ArtistListItem(
     artist = artist,
+    trailingContent = {
+        androidx.compose.material3.IconButton(
+            onClick = {
+                menuState.show {
+                    ArtistMenu(
+                        originalArtist = artist,
+                        coroutineScope = coroutineScope,
+                        onDismiss = menuState::dismiss
+                    )
+                }
+            }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.more_vert),
+                contentDescription = null
+            )
+        }
+    },
+    modifier = modifier
+        .fillMaxWidth()
+        .clickable {
+            navController.navigate("artist/${artist.id}")
+        }
+)
+
+@Composable
+fun WhitelistedArtistListItem(
+    navController: NavController,
+    menuState: MenuState,
+    coroutineScope: CoroutineScope,
+    artist: Artist,
+    modifier: Modifier = Modifier
+) = ListItem(
+    title = artist.artist.name,
+    subtitle = "", // No song count for whitelisted artists
+    badges = {}, // No badges for whitelisted artists
+    thumbnailContent = {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artist.artist.thumbnailUrl)
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier
+                .size(ListThumbnailSize)
+                .clip(CircleShape),
+        )
+    },
     trailingContent = {
         androidx.compose.material3.IconButton(
             onClick = {

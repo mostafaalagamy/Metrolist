@@ -24,6 +24,9 @@ constructor(
 ) : ViewModel() {
     val searchQuery = MutableStateFlow("")
 
+    // Expose sync progress from SyncUtils
+    val syncProgress = syncUtils.whitelistSyncProgress
+
     val allArtists =
         combine(
             database.allWhitelistedArtistsByName(),
@@ -47,6 +50,8 @@ constructor(
         }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+        viewModelScope.launch(Dispatchers.IO) {
+            syncUtils.syncArtistWhitelist()  // Fixed: was calling syncArtistsSubscriptions() by mistake
+        }
     }
 }

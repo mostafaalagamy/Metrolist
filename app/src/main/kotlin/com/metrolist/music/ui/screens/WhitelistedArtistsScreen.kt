@@ -1,13 +1,17 @@
 package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -17,8 +21,11 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -55,6 +62,7 @@ import com.metrolist.music.ui.component.LibraryArtistGridItem
 import com.metrolist.music.ui.component.LibraryArtistListItem
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.WhitelistedArtistGridItem
+import com.metrolist.music.ui.component.WhitelistedArtistListItem
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.WhitelistedArtistsViewModel
@@ -73,16 +81,11 @@ fun WhitelistedArtistsScreen(
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
-    LaunchedEffect(Unit) {
-        if (ytmSync) {
-            withContext(Dispatchers.IO) {
-                viewModel.sync()
-            }
-        }
-    }
+    // Sync moved to App.kt - now happens once at app startup instead of every tab visit
 
     val artists by viewModel.allArtists.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val syncProgress by viewModel.syncProgress.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     val lazyListState = rememberLazyListState()
@@ -220,7 +223,7 @@ fun WhitelistedArtistsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_ARTIST },
                     ) { artist ->
-                        LibraryArtistListItem(
+                        WhitelistedArtistListItem(
                             navController = navController,
                             menuState = menuState,
                             coroutineScope = coroutineScope,
@@ -284,5 +287,7 @@ fun WhitelistedArtistsScreen(
                     }
                 }
         }
+
+        // Sync now happens at app startup, no blocking overlay needed
     }
 }
