@@ -8,8 +8,8 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
+import com.metrolist.common.utils.dataStore
+import com.metrolist.common.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
