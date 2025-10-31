@@ -67,6 +67,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
@@ -350,14 +351,12 @@ fun Lyrics(
             !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
         }
 
-    val textColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if (useDarkTheme)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
+    // Use Material 3 expressive accents and keep glow/text colors unified
+    val expressiveAccent = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.tertiary
     }
+    val textColor = expressiveAccent
 
     var currentLineIndex by remember {
         mutableIntStateOf(-1)
@@ -744,7 +743,7 @@ fun Lyrics(
                         }
                     ) {
                         val isActiveLine = index == displayedCurrentLineIndex && isSynced
-                        val lineColor = if (isActiveLine) textColor else textColor.copy(alpha = 0.8f)
+                        val lineColor = if (isActiveLine) expressiveAccent else expressiveAccent.copy(alpha = 0.7f)
                         val alignment = when (lyricsTextPosition) {
                             LyricsPosition.LEFT -> TextAlign.Left
                             LyricsPosition.CENTER -> TextAlign.Center
@@ -752,18 +751,18 @@ fun Lyrics(
                         }
                         
                         if (isActiveLine) {
-                            // Initial animation for glow and bounce
-                            val animProgress = remember { Animatable(0f) }
+                            // Initial animation for glow fill from left to right
+                            val fillProgress = remember { Animatable(0f) }
                             // Continuous pulsing animation for the glow
                             val pulseProgress = remember { Animatable(0f) }
                             
                             LaunchedEffect(index) {
-                                animProgress.snapTo(0f)
-                                animProgress.animateTo(
+                                fillProgress.snapTo(0f)
+                                fillProgress.animateTo(
                                     targetValue = 1f,
                                     animationSpec = tween(
-                                        durationMillis = 800,
-                                        easing = LinearEasing
+                                        durationMillis = 1200,
+                                        easing = FastOutSlowInEasing
                                     )
                                 )
                             }
@@ -782,22 +781,31 @@ fun Lyrics(
                                 }
                             }
                             
-                            val progress = animProgress.value
+                            val fill = fillProgress.value
                             val pulse = pulseProgress.value
                             
-                            // Combine initial glow with subtle pulse
-                            val baseGlowAlpha = progress.coerceIn(0f, 1f)
+                            // Combine fill animation with subtle pulse
                             val pulseEffect = (kotlin.math.sin(pulse * Math.PI.toFloat()) * 0.15f).coerceIn(0f, 0.15f)
-                            val glowAlpha = (baseGlowAlpha + pulseEffect).coerceIn(0f, 1f)
+                            val glowIntensity = (fill + pulseEffect).coerceIn(0f, 1.2f)
+                            
+                            // Create left-to-right gradient fill with glow
+                            val glowBrush = Brush.horizontalGradient(
+                                0.0f to expressiveAccent.copy(alpha = 0.3f),
+                                (fill * 0.7f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.9f),
+                                fill to expressiveAccent,
+                                (fill + 0.1f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.7f),
+                                1.0f to expressiveAccent.copy(alpha = if (fill >= 1f) 1f else 0.3f)
+                            )
                             
                             val styledText = buildAnnotatedString {
                                 withStyle(
                                     style = SpanStyle(
                                         shadow = Shadow(
-                                            color = lineColor.copy(alpha = 0.7f * glowAlpha),
+                                            color = expressiveAccent.copy(alpha = 0.8f * glowIntensity),
                                             offset = Offset(0f, 0f),
-                                            blurRadius = 20f * (1f + pulseEffect)
-                                        )
+                                            blurRadius = 28f * (1f + pulseEffect)
+                                        ),
+                                        brush = glowBrush
                                     )
                                 ) {
                                     append(item.text)
@@ -805,9 +813,9 @@ fun Lyrics(
                             }
                             
                             // Single smooth bounce animation
-                            val bounceScale = if (progress < 0.4f) {
-                                // Gentler rise
-                                1f + (kotlin.math.sin(progress * 2.5f * Math.PI.toFloat()) * 0.02f)
+                            val bounceScale = if (fill < 0.3f) {
+                                // Gentler rise during fill
+                                1f + (kotlin.math.sin(fill * 3.33f * Math.PI.toFloat()) * 0.03f)
                             } else {
                                 // Hold at normal scale
                                 1f
@@ -816,7 +824,6 @@ fun Lyrics(
                             Text(
                                 text = styledText,
                                 fontSize = 24.sp,
-                                color = lineColor,
                                 textAlign = alignment,
                                 fontWeight = FontWeight.ExtraBold,
                                 modifier = Modifier
@@ -850,7 +857,7 @@ fun Lyrics(
                                 Text(
                                     text = romanized,
                                     fontSize = 18.sp,
-                                    color = textColor.copy(alpha = 0.8f),
+                                    color = expressiveAccent.copy(alpha = 0.6f),
                                     textAlign = when (lyricsTextPosition) {
                                         LyricsPosition.LEFT -> TextAlign.Left
                                         LyricsPosition.CENTER -> TextAlign.Center
