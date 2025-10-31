@@ -29,7 +29,6 @@
     <string name="forgotten_favorites">Forgotten favorites</string>
     <string name="keep_listening">Keep listening</string>
     <string name="your_youtube_playlists">Your YouTube playlists</string>
-    <string name="similar_to">Similar to</string>
     <string name="new_release_albums">New release albums</string>
 
     <!-- History -->
@@ -72,7 +71,6 @@
     <string name="from_your_library">From your library</string>
 
     <!-- Album screen -->
-    <string name="other_versions">Other versions</string>
 
     <!-- Playlist -->
     <string name="liked_songs">Liked songs</string>

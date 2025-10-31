@@ -125,7 +125,6 @@ fun AlbumScreen(
 
     val playlistId by viewModel.playlistId.collectAsState()
     val albumWithSongs by viewModel.albumWithSongs.collectAsState()
-    val otherVersions by viewModel.otherVersions.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val wrappedSongs = remember(albumWithSongs, hideExplicit) {
@@ -464,48 +463,6 @@ fun AlbumScreen(
                                 },
                             ),
                     )
-                }
-            }
-
-            if (otherVersions.isNotEmpty()) {
-                item(key = "other_versions_title") {
-                    NavigationTitle(
-                        title = stringResource(R.string.other_versions),
-                        modifier = Modifier.animateItem()
-                    )
-                }
-                item(key = "other_versions_list") {
-                    LazyRow(
-                        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
-                    ) {
-                        items(
-                            items = otherVersions.distinctBy { it.id },
-                            key = { it.id },
-                        ) { item ->
-                            YouTubeGridItem(
-                                item = item,
-                                isActive = mediaMetadata?.album?.id == item.id,
-                                isPlaying = isPlaying,
-                                coroutineScope = scope,
-                                modifier =
-                                Modifier
-                                    .combinedClickable(
-                                        onClick = { navController.navigate("album/${item.id}") },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeAlbumMenu(
-                                                    albumItem = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    )
-                                    .animateItem(),
-                            )
-                        }
-                    }
                 }
             }
         } else {

@@ -50,7 +50,6 @@
     <string name="library_album_empty">Тут будуть відображатися альбоми з вашої бібліотеки</string>
     <string name="library_playlist_empty">Тут будуть відображатися ваші плейлисти</string>
     <string name="from_your_library">З вашої бібліотеки</string>
-    <string name="other_versions">Інші версії</string>
     <string name="liked_songs">Улюблені треки</string>
     <string name="downloaded_songs">Завантажена музика</string>
     <string name="playlist_is_empty">Плейлист порожній</string>

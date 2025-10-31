@@ -261,7 +261,6 @@
     <string name="login_failed">Błąd logowania</string>
     <string name="similar_to">Podobne do</string>
     <string name="library_playlist_empty">Twoje playlisty pojawią się tutaj</string>
-    <string name="other_versions">Inne wersje</string>
     <string name="duplicates_description_single">Utwór jest już obecny w Twojej playliście</string>
     <string name="action_remove_like_all">Usuń wszystkie polubienia</string>
     <string name="player_text_alignment">Wyrównanie tekstu odtwarzacza</string>

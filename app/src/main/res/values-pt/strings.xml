@@ -36,7 +36,6 @@
     <string name="library_playlist_empty">As listas de reprodução aparecerão aqui</string>
     <string name="library_song_empty">As músicas da biblioteca aparecerão aqui</string>
     <string name="library_artist_empty">Os artistas da biblioteca aparecerão aqui</string>
-    <string name="other_versions">Outras versões</string>
     <string name="downloaded_songs">Músicas transferidas</string>
     <string name="playlist_is_empty">A lista de reprodução está vazia</string>
     <string name="remove_download_playlist_confirm">Deseja remover do armazenamento das \"Músicas Transferidas\" todas as músicas da lista de reprodução \"%s\"?</string>

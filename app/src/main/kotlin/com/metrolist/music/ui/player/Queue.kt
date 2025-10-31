@@ -834,11 +834,6 @@ fun Queue(
                                 .padding(vertical = 8.dp, horizontal = 4.dp)
                                 .animateItem(),
                         )
-
-                        Text(
-                            text = stringResource(R.string.similar_content),
-                            modifier = Modifier.padding(start = 16.dp),
-                        )
                     }
 
                     itemsIndexed(

@@ -89,7 +89,6 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
-import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
@@ -360,7 +359,7 @@ class MusicService :
         }
 
         dataStore.data
-            .map { it[SkipSilenceKey] ?: false }
+            .map { it[SkipSilenceKey] ?: true }
             .distinctUntilChanged()
             .collectLatest(scope) {
                 player.skipSilenceEnabled = it
@@ -859,23 +858,7 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        if (dataStore[SimilarContent] == true &&
-            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
-            scope.launch(SilentHandler) {
-                YouTube
-                    .next(WatchEndpoint(playlistId = playlistId))
-                    .onSuccess {
-                        YouTube
-                            .next(WatchEndpoint(playlistId = it.endpoint.playlistId))
-                            .onSuccess {
-                                automixItems.value =
-                                    it.items.map { song ->
-                                        song.toMediaItem()
-                                    }
-                            }
-                    }
-            }
-        }
+        // Automix/similar content feature disabled
     }
 
     fun addToQueueAutomix(

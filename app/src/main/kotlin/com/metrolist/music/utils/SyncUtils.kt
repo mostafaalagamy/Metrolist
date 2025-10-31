@@ -8,6 +8,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
+import com.metrolist.music.constants.LastWhitelistHashKey
 import com.metrolist.music.constants.LastWhitelistSyncTimeKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
@@ -360,33 +361,48 @@ class SyncUtils @Inject constructor(
     suspend fun syncArtistWhitelist(forceSync: Boolean = false) {
         if (isSyncingWhitelist.value) return
 
-        // Check if sync is needed based on timestamp (24 hours)
+        // Fetch JSON and check hash to detect changes
         if (!forceSync) {
-            val lastSyncTime = context.dataStore.data.first()[LastWhitelistSyncTimeKey] ?: 0L
-            val currentTime = System.currentTimeMillis()
-            val timeSinceLastSync = currentTime - lastSyncTime
-            val twentyFourHours = 24 * 60 * 60 * 1000L
+            Timber.d("Whitelist sync: Fetching JSON to check for changes...")
 
-            if (timeSinceLastSync < twentyFourHours) {
-                Timber.d("Whitelist sync skipped: last sync was ${timeSinceLastSync / 1000 / 60} minutes ago (< 24 hours)")
-                return
-            }
-        }
+            WhitelistFetcher.fetchWhitelistHash().onSuccess { (jsonString, newHash) ->
+                val storedHash = context.dataStore.data.first()[LastWhitelistHashKey]
 
-        isSyncingWhitelist.value = true
+                if (storedHash == newHash) {
+                    // Hash matches - no changes, skip sync
+                    Timber.d("Whitelist sync: No changes detected (hash matches), skipping sync")
+                    _whitelistSyncProgress.value = WhitelistSyncProgress(isComplete = true)
+                    return
+                }
 
-        // Reset progress
-        _whitelistSyncProgress.value = WhitelistSyncProgress()
+                // Hash differs or no stored hash - proceed with sync
+                Timber.d("Whitelist sync: Changes detected (hash: $newHash), proceeding with sync")
+                isSyncingWhitelist.value = true
 
-        try {
-            Timber.d("Whitelist sync starting...")
-            WhitelistFetcher.fetchWhitelist().onSuccess { whitelistEntries ->
+                // Reset progress
+                _whitelistSyncProgress.value = WhitelistSyncProgress()
+
+                try {
+                    Timber.d("Whitelist sync starting...")
+                    val whitelistEntries = WhitelistFetcher.parseWhitelistJson(jsonString)
                 Timber.d("Whitelist sync: Fetched ${whitelistEntries.size} artists from GitHub")
 
                 // Update progress with total count
                 _whitelistSyncProgress.value = WhitelistSyncProgress(
                     total = whitelistEntries.size
                 )
+
+                // Get current whitelist IDs before clearing (for deletion comparison)
+                val currentWhitelistIds = database.getAllWhitelistedArtistIdsSync()
+                val newWhitelistIds = whitelistEntries.map { it.artistId }.toSet()
+                val removedArtistIds = currentWhitelistIds.filterNot { it in newWhitelistIds }
+
+                if (removedArtistIds.isNotEmpty()) {
+                    Timber.d("Whitelist sync: Detected ${removedArtistIds.size} removed artists, deleting their content")
+                    deleteRemovedArtists(removedArtistIds)
+                } else {
+                    Timber.d("Whitelist sync: No artists removed from whitelist")
+                }
 
                 database.transaction {
                     clearWhitelist()
@@ -484,22 +500,83 @@ class SyncUtils @Inject constructor(
                     isComplete = true
                 )
 
-                // Save sync timestamp
-                context.dataStore.edit { settings ->
-                    settings[LastWhitelistSyncTimeKey] = System.currentTimeMillis()
+                    // Save sync timestamp and hash
+                    context.dataStore.edit { settings ->
+                        settings[LastWhitelistSyncTimeKey] = System.currentTimeMillis()
+                        settings[LastWhitelistHashKey] = newHash
+                    }
+                    Timber.d("Whitelist sync: Saved sync timestamp and hash")
+
+                } catch (e: Exception) {
+                    Timber.e(e, "Whitelist sync exception: ${e.message}")
+                    e.printStackTrace()
+                } finally {
+                    isSyncingWhitelist.value = false
+                    Timber.d("Whitelist sync finished")
                 }
-                Timber.d("Whitelist sync: Saved sync timestamp")
             }.onFailure { e ->
-                Timber.e(e, "Whitelist sync failed: ${e.message}")
+                Timber.e(e, "Whitelist sync failed to fetch JSON: ${e.message}")
                 e.printStackTrace()
-                // On failure, keep using cached whitelist
+                // Set complete to avoid stuck splash screen
+                _whitelistSyncProgress.value = WhitelistSyncProgress(isComplete = true)
             }
-        } catch (e: Exception) {
-            Timber.e(e, "Whitelist sync exception: ${e.message}")
-            e.printStackTrace()
-        } finally {
-            isSyncingWhitelist.value = false
-            Timber.d("Whitelist sync finished")
+        } else {
+            // Force sync requested - use old method (fetch and sync regardless)
+            Timber.d("Whitelist sync: Force sync requested")
+            isSyncingWhitelist.value = true
+
+            // Reset progress
+            _whitelistSyncProgress.value = WhitelistSyncProgress()
+
+            try {
+                Timber.d("Whitelist sync starting...")
+                WhitelistFetcher.fetchWhitelist().onSuccess { whitelistEntries ->
+                    Timber.d("Whitelist sync: Fetched ${whitelistEntries.size} artists from GitHub")
+
+                    // Update progress with total count
+                    _whitelistSyncProgress.value = WhitelistSyncProgress(
+                        total = whitelistEntries.size
+                    )
+
+                    // Get current whitelist IDs before clearing (for deletion comparison)
+                    val currentWhitelistIds = database.getAllWhitelistedArtistIdsSync()
+                    val newWhitelistIds = whitelistEntries.map { it.artistId }.toSet()
+                    val removedArtistIds = currentWhitelistIds.filterNot { it in newWhitelistIds }
+
+                    if (removedArtistIds.isNotEmpty()) {
+                        Timber.d("Whitelist sync: Detected ${removedArtistIds.size} removed artists, deleting their content")
+                        deleteRemovedArtists(removedArtistIds)
+                    } else {
+                        Timber.d("Whitelist sync: No artists removed from whitelist")
+                    }
+
+                    database.transaction {
+                        clearWhitelist()
+                        insertWhitelist(whitelistEntries)
+                    }
+                    Timber.d("Whitelist sync: Successfully synced ${whitelistEntries.size} artists to whitelist table")
+
+                    // Update timestamp (no hash for force sync, will be updated on next normal sync)
+                    context.dataStore.edit { settings ->
+                        settings[LastWhitelistSyncTimeKey] = System.currentTimeMillis()
+                    }
+
+                    // Mark as complete immediately for force sync
+                    _whitelistSyncProgress.value = WhitelistSyncProgress(isComplete = true)
+                    Timber.d("Whitelist sync: Force sync complete")
+
+                }.onFailure { e ->
+                    Timber.e(e, "Whitelist sync failed: ${e.message}")
+                    e.printStackTrace()
+                    _whitelistSyncProgress.value = WhitelistSyncProgress(isComplete = true)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Whitelist sync exception: ${e.message}")
+                e.printStackTrace()
+            } finally {
+                isSyncingWhitelist.value = false
+                Timber.d("Whitelist sync finished")
+            }
         }
     }
 
@@ -531,6 +608,76 @@ class SyncUtils @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Deletes artists and all their associated content from the database.
+     * This includes: songs, albums, play history, cached formats, lyrics, and user data.
+     * Deletion follows proper order to respect foreign key constraints.
+     */
+    suspend fun deleteRemovedArtists(removedArtistIds: List<String>) {
+        if (removedArtistIds.isEmpty()) return
+
+        try {
+            Timber.d("Artist deletion: Deleting ${removedArtistIds.size} removed artists and their content")
+
+            // Process each removed artist
+            for (artistId in removedArtistIds) {
+                try {
+                    Timber.d("Artist deletion: Processing artist $artistId")
+
+                    // Step 1: Get all song IDs for this artist
+                    val songIds = database.getSongIdsByArtist(artistId)
+                    Timber.d("Artist deletion: Found ${songIds.size} songs for artist $artistId")
+
+                    // Step 2: Get all album IDs for this artist
+                    val albumIds = database.getAlbumIdsByArtist(artistId)
+                    Timber.d("Artist deletion: Found ${albumIds.size} albums for artist $artistId")
+
+                    // Step 3: Delete song-related data without foreign keys (must be done first)
+                    if (songIds.isNotEmpty()) {
+                        Timber.d("Artist deletion: Deleting play counts, formats, and lyrics for ${songIds.size} songs")
+                        database.deletePlayCountBySongs(songIds)
+                        database.deleteFormatBySongs(songIds)
+                        database.deleteLyricsBySongs(songIds)
+                    }
+
+                    // Step 4: Delete songs (this will CASCADE DELETE to related tables)
+                    // Cascades: song_artist_map, song_album_map, playlist_song_map, related_song_map, event
+                    if (songIds.isNotEmpty()) {
+                        Timber.d("Artist deletion: Deleting ${songIds.size} songs")
+                        database.deleteSongsByIds(songIds)
+                    }
+
+                    // Step 5: Check and delete albums that have no songs left
+                    val albumsToDelete = mutableListOf<String>()
+                    for (albumId in albumIds) {
+                        val remainingSongCount = database.getAlbumSongCount(albumId)
+                        if (remainingSongCount == 0) {
+                            albumsToDelete.add(albumId)
+                        }
+                    }
+                    if (albumsToDelete.isNotEmpty()) {
+                        Timber.d("Artist deletion: Deleting ${albumsToDelete.size} orphaned albums")
+                        database.deleteAlbumsByIds(albumsToDelete)
+                    }
+
+                    // Step 6: Delete the artist (this will CASCADE DELETE remaining mappings)
+                    Timber.d("Artist deletion: Deleting artist $artistId")
+                    database.deleteArtistById(artistId)
+
+                    Timber.d("Artist deletion: Successfully deleted artist $artistId and all associated content")
+                } catch (e: Exception) {
+                    Timber.e(e, "Artist deletion: Failed to delete artist $artistId")
+                    e.printStackTrace()
+                }
+            }
+
+            Timber.d("Artist deletion: Completed deletion of ${removedArtistIds.size} artists")
+        } catch (e: Exception) {
+            Timber.e(e, "Artist deletion: Exception during batch deletion")
             e.printStackTrace()
         }
     }

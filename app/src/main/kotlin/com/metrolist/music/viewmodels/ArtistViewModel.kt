@@ -86,7 +86,37 @@ class ArtistViewModel @Inject constructor(
 
                     val filteredSections = page.sections
                         .filterNot { section ->
-                            section.moreEndpoint?.browseId?.startsWith("MPLAUC") == true
+                            // Filter "Fans might also like" / similar artist sections
+                            val browseId = section.moreEndpoint?.browseId ?: ""
+                            val hasSimilarBrowseId = browseId.startsWith("MPLAUC") ||
+                                                    browseId.startsWith("MPLART") ||
+                                                    browseId.startsWith("MPLREL")
+
+                            // Check for title keywords
+                            val hasSimilarTitle = section.title.contains("fans", ignoreCase = true) ||
+                                                 section.title.contains("similar", ignoreCase = true) ||
+                                                 section.title.contains("also like", ignoreCase = true) ||
+                                                 section.title.contains("you might", ignoreCase = true) ||
+                                                 section.title.contains("from your library", ignoreCase = true)
+
+                            // Check if section contains only artist recommendations
+                            val isOnlyArtists = section.items.isNotEmpty() &&
+                                               section.items.all { it is com.metrolist.innertube.models.ArtistItem }
+
+                            // Filter if it matches browseId OR (has similar title AND is only artists)
+                            hasSimilarBrowseId || (hasSimilarTitle && isOnlyArtists)
+                        }
+                        .filterNot { section ->
+                            // Filter Videos sections
+                            section.title.contains("video", ignoreCase = true) ||
+                            section.title.contains("vidéo", ignoreCase = true) || // French
+                            section.title.contains("vídeo", ignoreCase = true)    // Spanish/Portuguese
+                        }
+                        .filterNot { section ->
+                            // Filter "Playlists by [Artist]" sections
+                            section.items.any { it is com.metrolist.innertube.models.PlaylistItem } &&
+                            (section.title.contains("playlist", ignoreCase = true) ||
+                             section.title.contains("liste", ignoreCase = true))  // French variations
                         }
                         .map { section ->
                             val originalCount = section.items.size

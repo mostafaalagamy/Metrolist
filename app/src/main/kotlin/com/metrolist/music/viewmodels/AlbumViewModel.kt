@@ -28,7 +28,6 @@ constructor(
         database
             .albumWithSongs(albumId)
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
 
     init {
         viewModelScope.launch {
@@ -37,7 +36,6 @@ constructor(
                 .album(albumId)
                 .onSuccess {
                     playlistId.value = it.album.playlistId
-                    otherVersions.value = it.otherVersions
                     database.transaction {
                         if (album == null) {
                             insert(it)

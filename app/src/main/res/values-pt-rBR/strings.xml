@@ -264,7 +264,6 @@
     <string name="library_song_empty">Músicas na biblioteca aparecerão aqui</string>
     <string name="library_artist_empty">Artistas na biblioteca aparecerão aqui</string>
     <string name="library_album_empty">Álbuns na biblioteca aparecerão aqui</string>
-    <string name="other_versions">Outras versões</string>
     <string name="keep_listening">Continue ouvindo</string>
     <string name="add_all_to_library">Adicionar tudo à biblioteca</string>
     <string name="remove_from_queue">Remover da fila</string>

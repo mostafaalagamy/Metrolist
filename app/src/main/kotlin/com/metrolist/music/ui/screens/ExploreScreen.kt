@@ -343,56 +343,6 @@ fun ExploreScreen(
                     }
                 }
 
-                chartsPage?.sections?.find { it.title == "Top music videos" }?.let { topVideosSection ->
-                    NavigationTitle(
-                        title = stringResource(R.string.top_music_videos),
-                    )
-                    LazyRow(
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                    ) {
-                        items(
-                            items = topVideosSection.items.filterIsInstance<SongItem>().distinctBy { it.id },
-                            key = { it.id },
-                        ) { video ->
-                            YouTubeGridItem(
-                                item = video,
-                                isActive = video.id == mediaMetadata?.id,
-                                isPlaying = isPlaying,
-                                coroutineScope = coroutineScope,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (video.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        endpoint = WatchEndpoint(videoId = video.id),
-                                                        preloadItem = video.toMediaMetadata(),
-                                                        database = database,
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeSongMenu(
-                                                    song = video,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    )
-                                    .animateItem(),
-                            )
-                        }
-                    }
-                }
-
                 explorePage?.moodAndGenres?.let { moodAndGenres ->
                     NavigationTitle(
                         title = stringResource(R.string.mood_and_genres),

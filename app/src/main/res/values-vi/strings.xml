@@ -237,7 +237,6 @@
     <string name="library_artist_empty">Nghệ sĩ thư viện sẽ xuất hiện ở đây</string>
     <string name="library_album_empty">Album thư viện sẽ hiển thị ở đây</string>
     <string name="library_playlist_empty">Danh sách phát của bạn sẽ hiển thị ở đây</string>
-    <string name="other_versions">Các phiên bản khác</string>
     <string name="tempo_and_pitch">Nhịp độ và Cao độ</string>
     <string name="player">Trình phát</string>
     <string name="player_slider_style">Kiểu thanh trượt của trình phát</string>

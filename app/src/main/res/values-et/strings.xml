@@ -70,7 +70,6 @@
     <string name="search">Otsi</string>
     <string name="filter_bookmarked">Lisatud järjehoidjaks</string>
     <string name="from_your_library">Sinu muusikakogust</string>
-    <string name="other_versions">Muud versioonid</string>
     <string name="liked_songs">Meeldivaks märgitud lood</string>
     <string name="downloaded_songs">Allalaaditud lood</string>
     <string name="playlist_is_empty">Esitusloend on tühi</string>

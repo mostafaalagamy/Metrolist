@@ -194,7 +194,6 @@
     <string name="library_song_empty">Kirjaston kappaleet näkyvät täällä</string>
     <string name="library_album_empty">Kirjaston albumit näkyvät täällä</string>
     <string name="library_playlist_empty">Soittolistasi näkyvät täällä</string>
-    <string name="other_versions">Muita versioita</string>
     <string name="remove_download_playlist_confirm">Haluatko varmasti poistaa kaikki \"%s\" soittolistan kappaleet Ladattujen kappaleiden tallennustilasta?</string>
     <string name="delete_playlist_confirm">Haluatko varmasti poistaa soittolistan \"%s\"?</string>
     <string name="duplicates">Kaksoiskappaleet</string>

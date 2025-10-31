@@ -1543,9 +1543,59 @@ interface DatabaseDao {
     @Query("SELECT EXISTS(SELECT 1 FROM artist_whitelist WHERE artistId = :artistId)")
     suspend fun isArtistWhitelisted(artistId: String): Boolean
 
+    @Query("SELECT artistId FROM artist_whitelist ORDER BY RANDOM() LIMIT :limit")
+    suspend fun getRandomWhitelistedArtistIds(limit: Int): List<String>
+
     @Query("DELETE FROM artist_whitelist")
     fun clearWhitelist()
 
     @Query("DELETE FROM artist_whitelist WHERE artistId = :artistId")
     fun removeFromWhitelist(artistId: String)
+
+    // Artist deletion methods
+    @Query("SELECT id FROM song WHERE id IN (SELECT songId FROM song_artist_map WHERE artistId = :artistId)")
+    suspend fun getSongIdsByArtist(artistId: String): List<String>
+
+    @Query("SELECT albumId FROM album_artist_map WHERE artistId = :artistId")
+    suspend fun getAlbumIdsByArtist(artistId: String): List<String>
+
+    @Query("DELETE FROM playCount WHERE song = :songId")
+    suspend fun deletePlayCountBySong(songId: String)
+
+    @Query("DELETE FROM format WHERE id = :songId")
+    suspend fun deleteFormatBySong(songId: String)
+
+    @Query("DELETE FROM lyrics WHERE id = :songId")
+    suspend fun deleteLyricsBySong(songId: String)
+
+    @Query("DELETE FROM song WHERE id = :songId")
+    suspend fun deleteSongById(songId: String)
+
+    @Query("SELECT COUNT(*) FROM song_album_map WHERE albumId = :albumId")
+    suspend fun getAlbumSongCount(albumId: String): Int
+
+    @Query("DELETE FROM album WHERE id = :albumId")
+    suspend fun deleteAlbumById(albumId: String)
+
+    @Query("DELETE FROM artist WHERE id = :artistId")
+    suspend fun deleteArtistById(artistId: String)
+
+    // Batch operations for efficiency
+    @Query("DELETE FROM playCount WHERE song IN (:songIds)")
+    suspend fun deletePlayCountBySongs(songIds: List<String>)
+
+    @Query("DELETE FROM format WHERE id IN (:songIds)")
+    suspend fun deleteFormatBySongs(songIds: List<String>)
+
+    @Query("DELETE FROM lyrics WHERE id IN (:songIds)")
+    suspend fun deleteLyricsBySongs(songIds: List<String>)
+
+    @Query("DELETE FROM song WHERE id IN (:songIds)")
+    suspend fun deleteSongsByIds(songIds: List<String>)
+
+    @Query("DELETE FROM album WHERE id IN (:albumIds)")
+    suspend fun deleteAlbumsByIds(albumIds: List<String>)
+
+    @Query("DELETE FROM artist WHERE id IN (:artistIds)")
+    suspend fun deleteArtistsByIds(artistIds: List<String>)
 }

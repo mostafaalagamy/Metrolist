@@ -119,7 +119,6 @@
     <string name="no_results_found">Nema rezultata</string>
     <string name="library_album_empty">Albumi biblioteke će se ovdje pojaviti</string>
     <string name="liked_songs">Pjesme koje vam se sviđaju</string>
-    <string name="other_versions">Druge verzije</string>
     <string name="playlist_is_empty">Popis je prazan</string>
     <string name="remove_download_playlist_confirm">Da li zaista želite da obrišete sve \"%s\" pjesme iz spiska iz skladišta Preuzetih Pjesama?</string>
     <string name="retry">Probaj ponovo</string>

@@ -103,18 +103,25 @@ The project is organized into multiple Gradle modules:
 2. **innertube** - YouTube InnerTube API client (pure Kotlin/JVM)
    - Handles communication with YouTube Music's private API
    - Independent of Android framework
+   - Uses Ktor + OkHttp + NewPipe Extractor
 
-3. **kugou** - KuGou lyrics provider integration
+3. **kugou** - KuGou lyrics provider integration (pure Kotlin/JVM)
    - Chinese lyrics database provider
+   - Uses Ktor client
 
-4. **lrclib** - LRCLib lyrics provider
+4. **lrclib** - LRCLib lyrics provider (pure Kotlin/JVM)
    - Open-source synced lyrics database
+   - Uses Ktor client
 
-5. **kizzy** - Discord Rich Presence integration
+5. **kizzy** - Discord Rich Presence integration (pure Kotlin/JVM)
    - Shows currently playing music on Discord
+   - Uses Ktor + JSON library
 
-6. **lastfm** - Last.fm scrobbling client
+6. **lastfm** - Last.fm scrobbling client (pure Kotlin/JVM)
    - Requires API keys (optional for local builds)
+   - Uses Ktor client
+
+**Note**: All non-app modules are pure JVM/Kotlin with no Android dependencies, making them independently testable.
 
 ### Key Directories
 
@@ -128,8 +135,11 @@ app/src/main/kotlin/com/metrolist/music/
 │   └── DatabaseDao.kt        # All database queries
 ├── di/                       # Hilt dependency injection modules
 ├── playback/                 # Media3 playback service
-│   ├── MediaSessionService.kt
-│   └── ExoPlayer setup
+│   ├── MusicService.kt       # MediaLibraryService implementation
+│   ├── PlayerConnection.kt   # Service binding
+│   ├── DownloadUtil.kt       # Download management
+│   ├── ExoDownloadService.kt # Media3 download service
+│   └── queues/               # Queue management
 ├── ui/
 │   ├── component/            # Reusable Compose components
 │   ├── screens/              # Feature screens (Home, Library, Search, etc.)
@@ -149,10 +159,11 @@ app/schemas/                  # Room database schema exports for testing
 
 The Room database (`song.db`) is the core of the app with **25 schema versions**. It uses:
 
-- **Entities**: SongEntity, ArtistEntity, AlbumEntity, PlaylistEntity, LyricsEntity, FormatEntity, Event, PlayCountEntity, SearchHistory, ArtistWhitelistEntity
-- **Mapping tables**: SongArtistMap, SongAlbumMap, AlbumArtistMap, PlaylistSongMap, RelatedSongMap
-- **Views**: SortedSongArtistMap, SortedSongAlbumMap, PlaylistSongMapPreview
-- **Features**: Artist whitelist filtering, format caching, play count tracking, lyrics storage
+- **16 Entities**: SongEntity, ArtistEntity, AlbumEntity, PlaylistEntity, LyricsEntity, FormatEntity, Event, PlayCountEntity, SearchHistory, ArtistWhitelistEntity, plus 6 mapping tables
+- **Mapping tables**: SongArtistMap, SongAlbumMap, AlbumArtistMap, PlaylistSongMap, RelatedSongMap, SongArtistMapPreview
+- **3 Views**: SortedSongArtistMap, SortedSongAlbumMap, PlaylistSongMapPreview
+- **24 Migrations**: Mix of AutoMigrations and manual migrations from version 1 to 25
+- **Features**: Artist whitelist filtering, format caching, play count tracking, lyrics storage, event tracking
 
 Schema exports are located in `app/schemas/` and configured via KSP:
 ```kotlin
@@ -164,10 +175,10 @@ ksp {
 ### Dependency Injection
 
 Hilt is used throughout the app. Key modules in `app/src/main/kotlin/com/metrolist/music/di/`:
-- Database module provides `MusicDatabase` singleton
-- Network modules provide Ktor clients
-- Player module provides Media3 ExoPlayer
-- Repository modules provide data layer access
+- **AppModule.kt** - Provides MusicDatabase singleton, application scope, player/download caches
+- **NetworkModule.kt** - Provides network connectivity observer
+- **Qualifiers.kt** - DI qualifiers (@PlayerCache, @DownloadCache, @ApplicationScope)
+- **LyricsHelperEntryPoint.kt** - Entry point for lyrics helpers
 
 ## Build Configuration
 
@@ -209,6 +220,7 @@ For CI/CD, set GitHub Secrets:
 - `KEYSTORE_PASSWORD`
 - `KEY_PASSWORD`
 - `DEBUG_KEYSTORE` (base64-encoded, for persistent debug signing)
+- `RELEASE_TOKEN` (GitHub token for creating releases)
 
 ### Core Library Desugaring
 
@@ -235,6 +247,11 @@ GitHub Actions workflows in `.github/workflows/`:
    - Creates GitHub releases with all ABI APKs
 
 3. **build_pr.yml** - Pull request validation
+   - Builds universal debug APK only
+   - Runs lint checks
+   - Uploads APK with PR number
+
+4. **build-arm64.yml** - ARM64-specific workflow (manual trigger only)
 
 ### Versioning
 
@@ -262,10 +279,13 @@ Debug builds use a persistent keystore (`app/persistent-debug.keystore`) for con
 ### Media3 Integration
 
 The app uses Media3 (ExoPlayer) for playback with:
+- **MusicService.kt** - MediaLibraryService implementation with custom audio processing
 - MediaSession for media controls and Android Auto support
 - OkHttp integration for network streaming
-- Custom audio processing (normalization, tempo/pitch adjustment)
+- Custom audio processors: SonicAudioProcessor (tempo/pitch), SilenceSkippingAudioProcessor, LoudnessEnhancer
+- Separate player cache and download cache
 - Background playback with notification controls
+- Audio offload support for battery efficiency
 
 ### YouTube InnerTube API
 
@@ -277,7 +297,11 @@ The app uses a single-activity architecture with Compose Navigation. All screens
 
 ### DataStore Preferences
 
-User preferences are stored using Jetpack DataStore (not SharedPreferences). See `app/src/main/kotlin/com/metrolist/music/utils/DataStoreManager.kt` or similar for preference keys.
+User preferences are stored using Jetpack DataStore (not SharedPreferences). See `app/src/main/kotlin/com/metrolist/music/constants/PreferenceKeys.kt` and related DataStore utilities for preference keys.
+
+### Artist Whitelist
+
+The app includes an artist whitelist feature that syncs on app launch (blocking) and hourly in the background. See `app/src/main/kotlin/com/metrolist/music/utils/SyncUtils.kt` for sync logic.
 
 ### Room Migrations
 

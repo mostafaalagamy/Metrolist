@@ -47,7 +47,6 @@
     <string name="library_album_empty">アルバムのライブラリはここに表示されます</string>
     <string name="library_playlist_empty">あなたの再生リストはここに表示されます</string>
     <string name="from_your_library">ライブラリから</string>
-    <string name="other_versions">別のバージョン</string>
     <string name="liked_songs">いいねした曲</string>
     <string name="downloaded_songs">ダウンロードした曲</string>
     <string name="playlist_is_empty">再生リストが空です</string>

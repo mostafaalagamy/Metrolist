@@ -147,10 +147,13 @@ fun HomeScreen(
     val quickPicks by viewModel.quickPicks.collectAsState()
     val forgottenFavorites by viewModel.forgottenFavorites.collectAsState()
     val keepListening by viewModel.keepListening.collectAsState()
-    val similarRecommendations by viewModel.similarRecommendations.collectAsState()
     val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
+    val trendingSongs by viewModel.trendingSongs.collectAsState()
+    val featuredAlbums by viewModel.featuredAlbums.collectAsState()
+    val featuredArtists by viewModel.featuredArtists.collectAsState()
+    val isNewUser by viewModel.isNewUser.collectAsState()
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
@@ -630,51 +633,57 @@ fun HomeScreen(
                     }
                 }
 
-                similarRecommendations?.forEachIndexed { index, recommendation ->
-                    item(key = "similar_to_title_$index") {
-                        NavigationTitle(
-                            label = stringResource(R.string.similar_to),
-                            title = recommendation.title.title,
-                            thumbnail = recommendation.title.thumbnailUrl?.let { thumbnailUrl ->
-                                {
-                                    val shape =
-                                        if (recommendation.title is Artist) CircleShape else RoundedCornerShape(
-                                            ThumbnailCornerRadius
-                                        )
-                                    AsyncImage(
-                                        model = thumbnailUrl,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(ListThumbnailSize)
-                                            .clip(shape)
-                                    )
-                                }
-                            },
-                            onClick = {
-                                when (recommendation.title) {
-                                    is Song -> navController.navigate("album/${recommendation.title.album!!.id}")
-                                    is Album -> navController.navigate("album/${recommendation.title.id}")
-                                    is Artist -> navController.navigate("artist/${recommendation.title.id}")
-                                    is Playlist -> {}
-                                }
-                            },
-                            modifier = Modifier.animateItem()
-                        )
-                    }
+            // Show featured artists
+            if (featuredArtists.isNotEmpty()) {
+                item(key = "featured_artists_title") {
+                    NavigationTitle(
+                        title = stringResource(R.string.featured_artists),
+                        modifier = Modifier.animateItem()
+                    )
+                }
 
-                    item(key = "similar_to_list_$index") {
-                        LazyRow(
-                            contentPadding = WindowInsets.systemBars
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues(),
-                            modifier = Modifier.animateItem()
-                        ) {
-                            items(recommendation.items) { item ->
-                                ytGridItem(item)
-                            }
+                item(key = "featured_artists_list") {
+                    LazyRow(
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
+                        modifier = Modifier.animateItem()
+                    ) {
+                        items(
+                            items = featuredArtists.distinctBy { it.id },
+                            key = { "featured_artist_${it.id}" }
+                        ) { artist ->
+                            ytGridItem(artist)
                         }
                     }
                 }
+            }
+
+            // Show featured albums
+            if (featuredAlbums.isNotEmpty()) {
+                item(key = "featured_albums_title") {
+                    NavigationTitle(
+                        title = stringResource(R.string.featured_albums),
+                        modifier = Modifier.animateItem()
+                    )
+                }
+
+                item(key = "featured_albums_list") {
+                    LazyRow(
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
+                        modifier = Modifier.animateItem()
+                    ) {
+                        items(
+                            items = featuredAlbums.distinctBy { it.id },
+                            key = { "featured_album_${it.id}" }
+                        ) { album ->
+                            ytGridItem(album)
+                        }
+                    }
+                }
+            }
 
             homePage?.sections?.forEachIndexed { index, section ->
                 item(key = "home_section_title_$index") {

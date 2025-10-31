@@ -195,7 +195,6 @@
     <string name="filter_songs">Sanger</string>
     <string name="filter_artists">Artister</string>
     <string name="library_album_empty">Biblioteksalbum dukker opp her</string>
-    <string name="other_versions">Andre utgaver</string>
     <string name="liked_songs">Likte sanger</string>
     <string name="downloaded_songs">Nedlastede sanger</string>
     <string name="playlist_is_empty">Spillelisten er tom</string>

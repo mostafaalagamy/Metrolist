@@ -228,7 +228,6 @@
     <string name="library_artist_empty">هنرمندان کتابخانه اینجا نمایش داده می شوند</string>
     <string name="library_album_empty">آلبوم‌ های کتابخانه اینجا نمایش داده می‌ شوند</string>
     <string name="library_playlist_empty">لیست‌های پخش شما اینجا نمایش داده می‌ شوند</string>
-    <string name="other_versions">نسخه های دیگر</string>
     <string name="remove_download_playlist_confirm">آیا واقعاً می‌ خواهید همه آهنگ‌های لیست پخش «%s» را از حافظه آهنگ‌ های دانلود شده حذف کنید؟</string>
     <string name="delete_playlist_confirm">آیا واقعاً می‌ خواهید لیست پخش «%s» را حذف کنید؟</string>
     <string name="add_all_to_library">همه را به کتابخانه اضافه کنید</string>

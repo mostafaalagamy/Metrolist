@@ -44,7 +44,6 @@
     <string name="library_song_empty">Pesme biblioteke će se prikazati ovde</string>
     <string name="library_playlist_empty">Tvoje plejliste će se pojaviti ovde</string>
     <string name="from_your_library">Iz tvoje biblioteke</string>
-    <string name="other_versions">Druge verzije</string>
     <string name="downloaded_songs">Preuzete pesme</string>
     <string name="playlist_is_empty">Plejlista je prazna</string>
     <string name="delete_playlist_confirm">Da li zaista želite da obrišete plejlistu \"%s\"?</string>

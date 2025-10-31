@@ -210,8 +210,7 @@ object YouTube {
                 album = albumItem,
                 songs = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer?.contents?.getItems()?.mapNotNull {
                     AlbumPage.getSong(it, albumItem)
-                }!!.toMutableList(),
-                otherVersions = emptyList()
+                }!!.toMutableList()
             )
         } else {
             val playlistId =
@@ -235,13 +234,7 @@ object YouTube {
                 album = albumItem,
                 songs = if (withSongs) albumSongs(
                     playlistId, albumItem
-                ).getOrThrow() else emptyList(),
-                otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
-                    1
-                )?.musicCarouselShelfRenderer?.contents
-                    ?.mapNotNull { it.musicTwoRowItemRenderer }
-                    ?.mapNotNull(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
-                    .orEmpty()
+                ).getOrThrow() else emptyList()
             )
         }
     }

@@ -182,7 +182,6 @@
     <string name="library_album_empty">లైబ్రరీ ఆల్బమ్‌లు ఇక్కడ కనిపిస్తాయి</string>
     <string name="library_playlist_empty">మీ ప్లేలిస్ట్‌లు ఇక్కడ కనిపిస్తాయి</string>
     <string name="from_your_library">మీ లైబ్రరీ నుండి</string>
-    <string name="other_versions">ఇతర వెర్షన్లు</string>
     <string name="downloaded_songs">డౌన్‌లోడ్ చేసిన పాటలు</string>
     <string name="playlist_is_empty">ప్లేలిస్ట్ ఖాళీగా ఉంది</string>
     <string name="remove_download_playlist_confirm">డౌన్‌లోడ్ చేసిన పాటల నిల్వ నుండి అన్ని \"%s\" ప్లేలిస్ట్ పాటలను మీరు నిజంగా తీసివేయాలనుకుంటున్నారా?</string>

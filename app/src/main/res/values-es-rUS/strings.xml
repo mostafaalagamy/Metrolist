@@ -50,7 +50,6 @@
     <string name="library_album_empty">Los álbumes de la biblioteca aparecerán aquí</string>
     <string name="library_playlist_empty">Las listas de reproducción aparecerán aquí</string>
     <string name="from_your_library">Desde tu biblioteca</string>
-    <string name="other_versions">Otras versiones</string>
     <string name="liked_songs">Canciones favoritas</string>
     <string name="downloaded_songs">Canciones descargadas</string>
     <string name="playlist_is_empty">La lista de reproducción está vacía</string>

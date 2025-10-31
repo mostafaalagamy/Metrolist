@@ -41,7 +41,6 @@ import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_ARTIST
 import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_COMMUNITY_PLAYLIST
 import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_FEATURED_PLAYLIST
 import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_SONG
-import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_VIDEO
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
@@ -261,7 +260,6 @@ fun OnlineSearchResult(
         listOf(
             null to stringResource(R.string.filter_all),
             FILTER_SONG to stringResource(R.string.filter_songs),
-            FILTER_VIDEO to stringResource(R.string.filter_videos),
             FILTER_ALBUM to stringResource(R.string.filter_albums),
             FILTER_ARTIST to stringResource(R.string.filter_artists),
             FILTER_COMMUNITY_PLAYLIST to stringResource(R.string.filter_community_playlists),

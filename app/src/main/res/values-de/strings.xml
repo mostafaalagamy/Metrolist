@@ -225,7 +225,6 @@
     <string name="auto_load_more">Automatisch mehr Songs laden</string>
     <string name="action_logout">Abmelden</string>
     <string name="theme">Thema</string>
-    <string name="other_versions">Andere Versionen</string>
     <string name="stop_music_on_task_clear">Musik stoppen wenn die App aus dem Hintergrund gelöscht wird</string>
     <string name="library_album_empty">Alben aus der Bibliothek werden hier angezeigt</string>
     <string name="add_all_to_library">Alle zur Bibliothek hinzufügen</string>

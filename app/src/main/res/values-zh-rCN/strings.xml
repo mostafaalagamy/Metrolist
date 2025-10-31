@@ -214,7 +214,6 @@
     <string name="delete_playlist_confirm">是否确定要删除播放列表“%s”？</string>
     <string name="remove_download_playlist_confirm">是否确定要从已下载的歌曲存储中移除所有“%s”播放列表歌曲？</string>
     <string name="your_youtube_playlists">您的 YouTube 播放列表</string>
-    <string name="other_versions">其他版本</string>
     <string name="library_artist_empty">媒体库音乐人将显示在此处</string>
     <string name="library_album_empty">媒体库专辑将显示在此处</string>
     <string name="library_playlist_empty">您的播放列表将显示在此处</string>

@@ -46,7 +46,6 @@ import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
-import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
@@ -77,7 +76,7 @@ fun PlayerSettings(
     )
     val (skipSilence, onSkipSilenceChange) = rememberPreference(
         SkipSilenceKey,
-        defaultValue = false
+        defaultValue = true
     )
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
         AudioNormalizationKey,
@@ -105,10 +104,6 @@ fun PlayerSettings(
     val (autoDownloadOnLike, onAutoDownloadOnLikeChange) = rememberPreference(
         AutoDownloadOnLikeKey,
         defaultValue = false
-    )
-    val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(
-        key = SimilarContent,
-        defaultValue = true
     )
     val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(
         AutoSkipNextOnErrorKey,
@@ -225,14 +220,6 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.download), null) },
             checked = autoDownloadOnLike,
             onCheckedChange = onAutoDownloadOnLikeChange
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.enable_similar_content)) },
-            description = stringResource(R.string.similar_content_desc),
-            icon = { Icon(painterResource(R.drawable.similar), null) },
-            checked = similarContentEnabled,
-            onCheckedChange = similarContentEnabledChange,
         )
 
         SwitchPreference(

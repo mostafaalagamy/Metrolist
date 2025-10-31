@@ -283,7 +283,6 @@
     <string name="auto_load_more">Cargar automáticamente más canciones</string>
     <string name="disable_screenshot_desc">Cuando esta opción está activada, las capturas de pantalla y la vista de la aplicación en Recientes estará deshabilitada.</string>
     <string name="auto_load_more_desc">Añade automáticamente más canciones cuando llegues al final de la cola, si es posible</string>
-    <string name="other_versions">Otras versiones</string>
     <string name="add_all_to_library">Añadir todo a la biblioteca</string>
     <string name="use_login_for_browse">Utilice el inicio de sesión para ver el contenido</string>
     <string name="use_login_for_browse_desc">Esto puede influir en el contenido que ve y, por ejemplo, muestra álbumes exclusivos si ha iniciado sesión con una cuenta Premium</string>

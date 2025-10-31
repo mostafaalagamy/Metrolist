@@ -138,7 +138,6 @@
     <string name="library_artist_empty">ലൈബ്രറി ആർട്ടിസ്റ്റുകൾ ഇവിടെ കാണിക്കും</string>
     <string name="library_album_empty">ലൈബ്രറി ആൽബങ്ങൾ ഇവിടെ കാണിക്കും</string>
     <string name="library_playlist_empty">നിങ്ങളുടെ പ്ലേലിസ്റ്റുകൾ ഇവിടെ കാണിക്കും</string>
-    <string name="other_versions">മറ്റ് പതിപ്പുകൾ</string>
     <string name="remove_download_playlist_confirm">ഡൗൺലോഡ് ചെയ്ത പാട്ടുകളുടെ സംഭരണത്തിൽ നിന്ന് എല്ലാ \"%s\" പ്ലേലിസ്റ്റ് ഗാനങ്ങളും ഡിലീറ്റ് ചെയ്യണോ?</string>
     <string name="add_all_to_library">എല്ലാം ലൈബ്രറിയിലേക്ക് ചേർക്കുക</string>
     <string name="remove_all_from_library">ലൈബ്രറിയിൽ നിന്ന് എല്ലാം നീക്കം ചെയ്യുക</string>

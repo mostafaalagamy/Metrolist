@@ -233,7 +233,6 @@
     <string name="library_song_empty">Bibliotheeknummers worden hier weergegeven</string>
     <string name="library_artist_empty">Bibliotheekartiesten worden hier weergegeven</string>
     <string name="library_album_empty">Bibliotheekalbums worden hier weergegeven</string>
-    <string name="other_versions">Andere versies</string>
     <string name="remove_download_playlist_confirm">Wilt u echt alle nummers van de afspeellijst “%s” verwijderen uit de opslag Gedownloade nummers?</string>
     <string name="delete_playlist_confirm">Wil je echt de afspeellijst “%s” verwijderen?</string>
     <string name="add_all_to_library">Alles toevoegen aan bibliotheek</string>

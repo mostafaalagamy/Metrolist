@@ -30,7 +30,6 @@
     <string name="library_artist_empty">سيظهر الفنانون هنا</string>
     <string name="library_album_empty">ستظهر الألبومات هنا</string>
     <string name="library_playlist_empty">قوائم أغانيك ستظهر هنا</string>
-    <string name="other_versions">نسخ اخرى</string>
     <string name="songs">أغاني</string>
     <string name="playlists">قوائم الأغاني</string>
     <string name="mood_and_genres">الأوضاع والتصنيف</string>

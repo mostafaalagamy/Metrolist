@@ -227,7 +227,6 @@
     <string name="library_artist_empty">A könyvtárában levő előadók itt jelennek meg</string>
     <string name="library_album_empty">A könyvtárában szereplő albumok itt jelennek meg</string>
     <string name="library_playlist_empty">A lejátszási listái itt jelennek meg</string>
-    <string name="other_versions">Egyéb verziók</string>
     <string name="remove_download_playlist_confirm">Biztosan el akarja távolítani a \"%s\" lejátszási listán szereplő összes zenét a Letöltött Zenék tárhelyről?</string>
     <string name="delete_playlist_confirm">Biztosan törölni szeretné a \"%s\" lejátszási listát?</string>
     <string name="remove_all_from_library">Az összes eltávolítása a könyvtárból</string>

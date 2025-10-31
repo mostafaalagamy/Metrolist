@@ -68,7 +68,6 @@
     <string name="library_album_empty">Albumi zbirke će se ovdje pojaviti</string>
     <string name="library_playlist_empty">Vaše playliste će se ovdje pojaviti</string>
     <string name="from_your_library">Iz vaše zbirke</string>
-    <string name="other_versions">Druge verzije</string>
     <string name="liked_songs">Pjesme koje mi se sviđaju</string>
     <string name="delete_playlist_confirm">Zaista želite izbrisati playlistu „%s“?</string>
     <string name="retry">Pokušaj ponovo</string>

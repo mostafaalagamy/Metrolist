@@ -259,7 +259,6 @@
     <string name="library_song_empty">Les titres de la bibliothèque s\'afficheront ici</string>
     <string name="library_artist_empty">Les artistes de la bibliothèque s\'afficheront ici</string>
     <string name="library_playlist_empty">Vos playlists s\'afficheront ici</string>
-    <string name="other_versions">Autres versions</string>
     <string name="remove_download_playlist_confirm">Voulez-vous vraiment supprimer tous les titres de la playlist « %s » du stockage des titres téléchargés ?</string>
     <string name="add_all_to_library">Tout ajouter à la bibliothèque</string>
     <string name="tempo_and_pitch">Tempo et Pitch</string>

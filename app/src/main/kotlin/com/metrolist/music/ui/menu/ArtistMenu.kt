@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -42,10 +42,14 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ArtistSongSortType
+import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.queues.ListQueue
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.metrolist.music.ui.component.ArtistListItem
+import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import kotlinx.coroutines.CoroutineScope
@@ -66,9 +70,36 @@ fun ArtistMenu(
     val artistState = database.artist(originalArtist.id).collectAsState(initial = originalArtist)
     val artist = artistState.value ?: originalArtist
 
-    ArtistListItem(
-        artist = artist,
-        badges = {},
+    // Artist menu header without song count
+    ListItem(
+        title = artist.artist.name,
+        subtitle = null, // Hide song count in menu
+        badges = {
+            if (artist.artist.bookmarkedAt != null) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .padding(end = 2.dp),
+                )
+            }
+        },
+        thumbnailContent = {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(artist.artist.thumbnailUrl)
+                    .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(ListThumbnailSize)
+                    .clip(CircleShape),
+            )
+        },
         trailingContent = {},
     )
 
@@ -189,8 +220,8 @@ fun ArtistMenu(
         }
 
         item {
-            ListItem(
-                headlineContent = { 
+            androidx.compose.material3.ListItem(
+                headlineContent = {
                     Text(text = if (artist.artist.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
                 },
                 leadingContent = {

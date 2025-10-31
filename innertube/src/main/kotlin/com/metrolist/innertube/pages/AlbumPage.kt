@@ -15,7 +15,6 @@ import com.metrolist.innertube.utils.parseTime
 data class AlbumPage(
     val album: AlbumItem,
     val songs: List<SongItem>,
-    val otherVersions: List<AlbumItem>,
 ) {
     companion object {
         fun getPlaylistId(response: BrowseResponse): String? {
