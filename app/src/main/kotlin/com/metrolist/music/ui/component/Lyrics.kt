@@ -7,6 +7,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -636,15 +637,6 @@ fun Lyrics(
                 ) { index, item ->
                     val isSelected = selectedIndices.contains(index)
 
-                    val fontSize by animateFloatAsState(
-                        targetValue = if (index == displayedCurrentLineIndex && isSynced) 28f else 24f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessMedium
-                        ),
-                        label = "font-size"
-                    )
-
                     val alpha by animateFloatAsState(
                         targetValue = when {
                             !isSynced || (isSelectionModeActive && isSelected) -> 1f
@@ -747,7 +739,12 @@ fun Lyrics(
                         }
 
                     Column(
-                        modifier = itemModifier,
+                        modifier = itemModifier.animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessMedium
+                            )
+                        ),
                         horizontalAlignment = when (lyricsTextPosition) {
                             LyricsPosition.LEFT -> Alignment.Start
                             LyricsPosition.CENTER -> Alignment.CenterHorizontally
@@ -756,7 +753,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = fontSize.sp,
+                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 28.sp else 24.sp,
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {
