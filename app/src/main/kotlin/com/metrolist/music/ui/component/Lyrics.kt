@@ -7,7 +7,9 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -636,7 +638,10 @@ fun Lyrics(
 
                     val fontSize by animateFloatAsState(
                         targetValue = if (index == displayedCurrentLineIndex && isSynced) 28f else 24f,
-                        animationSpec = tween(durationMillis = 300),
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
                         label = "font-size"
                     )
 
@@ -648,7 +653,10 @@ fun Lyrics(
                             kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f
                             else -> 0.2f
                         },
-                        animationSpec = tween(durationMillis = 300),
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
                         label = "alpha"
                     )
 
