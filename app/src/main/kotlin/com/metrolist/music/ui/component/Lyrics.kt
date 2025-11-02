@@ -7,7 +7,6 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -637,6 +636,15 @@ fun Lyrics(
                 ) { index, item ->
                     val isSelected = selectedIndices.contains(index)
 
+                    val scale by animateFloatAsState(
+                        targetValue = if (index == displayedCurrentLineIndex && isSynced) 1f else 0.9f,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessMedium
+                        ),
+                        label = "scale"
+                    )
+
                     val alpha by animateFloatAsState(
                         targetValue = when {
                             !isSynced || (isSelectionModeActive && isSelected) -> 1f
@@ -723,28 +731,14 @@ fun Lyrics(
                             else Color.Transparent
                         )
                         .padding(horizontal = 24.dp, vertical = 8.dp)
-                        // Metrolist-style depth effect with professional alpha transitions
-                        .alpha(alpha)
-                        // Add subtle scale effect for depth
                         .graphicsLayer {
-                            val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
-                            val scale = when {
-                                !isSynced || index == displayedCurrentLineIndex -> 1f
-                                distance == 1 -> 0.95f // Slightly smaller
-                                distance >= 2 -> 0.9f // Even smaller for distant lines
-                                else -> 1f
-                            }
                             scaleX = scale
                             scaleY = scale
+                            this.alpha = alpha
                         }
 
                     Column(
-                        modifier = itemModifier.animateContentSize(
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                stiffness = Spring.StiffnessMedium
-                            )
-                        ),
+                        modifier = itemModifier,
                         horizontalAlignment = when (lyricsTextPosition) {
                             LyricsPosition.LEFT -> Alignment.Start
                             LyricsPosition.CENTER -> Alignment.CenterHorizontally
@@ -753,7 +747,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 28.sp else 24.sp,
+                            fontSize = 28.sp,
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {
