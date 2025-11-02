@@ -639,8 +639,8 @@ fun Lyrics(
                     val fontSize by animateFloatAsState(
                         targetValue = if (index == displayedCurrentLineIndex && isSynced) 28f else 24f,
                         animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessMedium
                         ),
                         label = "font-size"
                     )
@@ -654,8 +654,8 @@ fun Lyrics(
                             else -> 0.2f
                         },
                         animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessMedium
                         ),
                         label = "alpha"
                     )
