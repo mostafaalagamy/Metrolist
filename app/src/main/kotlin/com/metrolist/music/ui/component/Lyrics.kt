@@ -7,6 +7,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -632,6 +633,17 @@ fun Lyrics(
                     key = { index, item -> "$index-${item.time}" } // Add stable key
                 ) { index, item ->
                     val isSelected = selectedIndices.contains(index)
+                    val alpha by animateFloatAsState(
+                        targetValue = when {
+                            !isSynced || (isSelectionModeActive && isSelected) -> 1f
+                            index == displayedCurrentLineIndex -> 1f // Active line - full opacity
+                            kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f // Adjacent lines - medium opacity
+                            kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f // 2 lines away - low opacity
+                            else -> 0.2f // Far lines - very low opacity (deep water effect)
+                        },
+                        animationSpec = tween(durationMillis = 1500),
+                        label = "alpha"
+                    )
                     val itemModifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp)) // Clip for background
@@ -704,15 +716,7 @@ fun Lyrics(
                         )
                         .padding(horizontal = 24.dp, vertical = 8.dp)
                         // Metrolist-style depth effect with professional alpha transitions
-                        .alpha(
-                            when {
-                                !isSynced || (isSelectionModeActive && isSelected) -> 1f
-                                index == displayedCurrentLineIndex -> 1f // Active line - full opacity
-                                kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f // Adjacent lines - medium opacity
-                                kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f // 2 lines away - low opacity  
-                                else -> 0.2f // Far lines - very low opacity (deep water effect)
-                            }
-                        )
+                        .alpha(alpha)
                         // Add subtle scale effect for depth
                         .graphicsLayer {
                             val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
