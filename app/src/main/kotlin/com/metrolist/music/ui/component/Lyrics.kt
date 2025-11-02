@@ -740,7 +740,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = 24.sp, // Uniform size for all lines matching latest enh version
+                            fontSize = fontSize.sp,
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {
