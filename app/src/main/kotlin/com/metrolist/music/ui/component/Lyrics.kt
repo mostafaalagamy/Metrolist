@@ -640,7 +640,7 @@ fun Lyrics(
                         targetValue = if (index == displayedCurrentLineIndex && isSynced) 1f else 0.9f,
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessMedium
+                            stiffness = Spring.StiffnessVeryLow
                         ),
                         label = "scale"
                     )
@@ -649,13 +649,13 @@ fun Lyrics(
                         targetValue = when {
                             !isSynced || (isSelectionModeActive && isSelected) -> 1f
                             index == displayedCurrentLineIndex -> 1f
-                            kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f
-                            kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f
-                            else -> 0.2f
+                            kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.6f
+                            kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.3f
+                            else -> 0.1f
                         },
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessMedium
+                            stiffness = Spring.StiffnessVeryLow
                         ),
                         label = "alpha"
                     )
