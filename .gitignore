@@ -97,3 +97,4 @@ core
 core.*
 *.so
 *.bin
+app/persistent-debug.keystore
