@@ -26,13 +26,17 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,7 +45,15 @@ class HomeViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     val database: MusicDatabase,
     val syncUtils: SyncUtils,
+    val networkConnectivityObserver: NetworkConnectivityObserver,
 ) : ViewModel() {
+    val isOffline: StateFlow<Boolean> = combine(
+        context.dataStore.data.map { it[EnableAutomaticOfflineModeKey] ?: true },
+        context.dataStore.data.map { it[ForceOfflineModeKey] ?: false },
+        networkConnectivityObserver.networkStatus
+    ) { enableAutomatic, forceOffline, isConnected ->
+        forceOffline || (enableAutomatic && !isConnected)
+    }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), false)
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
 

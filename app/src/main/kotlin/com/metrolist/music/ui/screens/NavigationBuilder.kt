@@ -295,6 +295,9 @@ fun NavGraphBuilder.navigationBuilder(
     composable("settings/content") {
         ContentSettings(navController, scrollBehavior)
     }
+    composable("settings/library") {
+        LibrarySettings(navController, scrollBehavior)
+    }
     composable("settings/content/romanization") {
         RomanizationSettings(navController, scrollBehavior)
     }
