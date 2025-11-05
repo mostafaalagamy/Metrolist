@@ -12,6 +12,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
+import coil3.imageLoader
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.MediaItemsWithStartPosition
@@ -607,8 +608,17 @@ constructor(
                 .build(),
         ).build()
 
-    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false) =
-        MediaItem
+    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false): MediaItem {
+        val artworkUri = song.thumbnailUrl?.let {
+            val snapshot = context.imageLoader.diskCache?.openSnapshot(it)
+            if (snapshot != null) {
+                snapshot.use { snapshot -> snapshot.data.toFile().toUri() }
+            } else {
+                it.toUri()
+            }
+        }
+
+        return MediaItem
             .Builder()
             .setMediaId("$path/$id")
             .setMediaMetadata(
@@ -617,10 +627,11 @@ constructor(
                     .setTitle(song.title)
                     .setSubtitle(artists.joinToString { it.name })
                     .setArtist(artists.joinToString { it.name })
-                    .setArtworkUri(song.thumbnailUrl?.toUri())
+                    .setArtworkUri(artworkUri)
                     .setIsPlayable(isPlayable)
                     .setIsBrowsable(isBrowsable)
                     .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .build(),
             ).build()
+    }
 }
