@@ -11,6 +11,8 @@ import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completed
+import com.metrolist.music.constants.EnableAutomaticOfflineModeKey
+import com.metrolist.music.constants.ForceOfflineModeKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.QuickPicks
@@ -24,9 +26,9 @@ import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
+import com.metrolist.music.di.NetworkConnectivityObserver
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
-import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -45,15 +47,7 @@ class HomeViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     val database: MusicDatabase,
     val syncUtils: SyncUtils,
-    val networkConnectivityObserver: NetworkConnectivityObserver,
 ) : ViewModel() {
-    val isOffline: StateFlow<Boolean> = combine(
-        context.dataStore.data.map { it[EnableAutomaticOfflineModeKey] ?: true },
-        context.dataStore.data.map { it[ForceOfflineModeKey] ?: false },
-        networkConnectivityObserver.networkStatus
-    ) { enableAutomatic, forceOffline, isConnected ->
-        forceOffline || (enableAutomatic && !isConnected)
-    }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), false)
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
 

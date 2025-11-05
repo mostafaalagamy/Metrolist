@@ -1,4 +1,4 @@
-package com.metrolist.music.utils
+package com.metrolist.music.di
 
 import android.content.Context
 import android.net.ConnectivityManager

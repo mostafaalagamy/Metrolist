@@ -48,16 +48,16 @@ fun LibrarySettings(
 
         SwitchPreference(
             title = { Text("Enable Automatic Offline Mode") },
-            description = { Text("Automatically switch to offline mode when no internet connection is detected.") },
-            icon = { Icon(painterResource(R.drawable.wifi_off), null) },
+            description = "Automatically switch to offline mode when no internet connection is detected.",
+            icon = { Icon(painterResource(R.drawable.offline), null) },
             checked = enableAutomaticOfflineMode,
             onCheckedChange = onEnableAutomaticOfflineModeChange,
         )
 
         SwitchPreference(
             title = { Text("Force Offline Mode") },
-            description = { Text("Only show downloaded content, regardless of internet connection.") },
-            icon = { Icon(painterResource(R.drawable.signal_cellular_off), null) },
+            description = "Only show downloaded content, regardless of internet connection.",
+            icon = { Icon(painterResource(R.drawable.security), null) },
             checked = forceOfflineMode,
             onCheckedChange = onForceOfflineModeChange,
         )
