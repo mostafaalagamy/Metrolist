@@ -77,16 +77,4 @@ object AppModule {
         )
     }
 
-    @Singleton
-    @Provides
-    fun provideNetworkConnectivityObserver(
-        @ApplicationContext context: Context
-    ): NetworkConnectivityObserver = NetworkConnectivityObserver(context)
-
-    @Singleton
-    @Provides
-    fun provideOfflineStateRepository(
-        @ApplicationContext context: Context,
-        networkConnectivityObserver: NetworkConnectivityObserver
-    ): OfflineStateRepository = OfflineStateRepository(context, networkConnectivityObserver)
 }
