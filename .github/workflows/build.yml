@@ -17,8 +17,63 @@ permissions:
   discussions: write
 
 jobs:
+  build:
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
+
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
+          cache-cleanup: on-success
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Release APK and Run Lint
+        run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
+        env:
+          PULL_REQUEST: 'false'
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+
+      - name: Sign APK
+        uses: ilharp/sign-android-release@v2.0.0
+        with:
+          releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+          signingKey: ${{ secrets.KEYSTORE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 35.0.0
+
+      - name: Move signed APK
+        run: |
+          mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
+          find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
+  
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.abi }}-release
+          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
+
   build_debug:
-    name: build
+    name: build (debug)
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
 
