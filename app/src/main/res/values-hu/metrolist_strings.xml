@@ -8,7 +8,7 @@
     <string name="no_title">Nincs cím</string>
     <string name="unknown_artist">Ismeretlen előadó</string>
     <string name="unknown_item_type">Ismeretlen elem típus</string>
-    <string name="loading_charts">Slágerlisták betöltése...</string>
+    <string name="loading_charts">Slágerlisták betöltése…</string>
     <string name="retry_button">Újra</string>
     <string name="album_cover_desc">Album borító</string>
     <string name="top_music_videos">Top zene klippek</string>
@@ -172,4 +172,10 @@
     <string name="settings_section_system">Rendszer és történet</string>
     <string name="seek_backward_dynamic">%1$d másodperc visszafelé</string>
     <string name="settings_section_ui">Anyag 3 beállítás szekció</string>
+    <string name="uploaded_playlist">Feltöltve</string>
+    <string name="filter_uploaded">Feltöltve</string>
+    <string name="starting_radio">Rádió indítása</string>
+    <string name="swipe_song_to_remove">Húzd el a zeneszámot a lejátszási listából való eltávolításhoz</string>
+    <string name="show_uploaded_playlist">\"Feltöltött\" lejátszási lista mutatása</string>
+    <string name="edit_playlist_cover">Lejátszási lista borítóképének szerkesztése</string>
 </resources>
