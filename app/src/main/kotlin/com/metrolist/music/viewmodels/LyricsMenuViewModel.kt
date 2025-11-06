@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.di.NetworkConnectivityObserver
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.lyrics.LyricsResult
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

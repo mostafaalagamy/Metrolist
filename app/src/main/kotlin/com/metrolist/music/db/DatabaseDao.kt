@@ -82,18 +82,17 @@ interface DatabaseDao {
     fun songs(
         sortType: SongSortType,
         descending: Boolean,
-        offline: Boolean = false,
     ) = when (sortType) {
-        SongSortType.CREATE_DATE -> if (offline) downloadedSongsByCreateDateAsc() else songsByCreateDateAsc()
+        SongSortType.CREATE_DATE -> songsByCreateDateAsc()
         SongSortType.NAME ->
-            (if (offline) downloadedSongsByNameAsc() else songsByNameAsc()).map { songs ->
+            songsByNameAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 songs.sortedWith(compareBy(collator) { it.song.title })
             }
 
         SongSortType.ARTIST ->
-            (if (offline) downloadedSongsByRowIdAsc() else songsByRowIdAsc()).map { songs ->
+            songsByRowIdAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 songs
@@ -111,12 +110,8 @@ interface DatabaseDao {
                     }
             }
 
-        SongSortType.PLAY_TIME -> if (offline) downloadedSongsByPlayTimeAsc() else songsByPlayTimeAsc()
+        SongSortType.PLAY_TIME -> songsByPlayTimeAsc()
     }.map { it.reversed(descending) }
-
-    @Transaction
-    @Query("SELECT * FROM song WHERE isDownloaded = 1 ORDER BY rowId")
-    fun downloadedSongsByRowIdAsc(): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT * FROM song WHERE liked ORDER BY rowId")
@@ -636,50 +631,12 @@ interface DatabaseDao {
     )
     fun artistsBookmarkedByPlayTimeAsc(): Flow<List<Artist>>
 
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.isDownloaded = 1) AS songCount FROM artist WHERE songCount > 0 ORDER BY rowId")
-    fun artistsByCreateDateAscOffline(): Flow<List<Artist>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.isDownloaded = 1) AS songCount FROM artist WHERE songCount > 0 ORDER BY name")
-    fun artistsByNameAscOffline(): Flow<List<Artist>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.isDownloaded = 1) AS songCount FROM artist WHERE songCount > 0 ORDER BY songCount")
-    fun artistsBySongCountAscOffline(): Flow<List<Artist>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query(
-        """
-        SELECT artist.*,
-               (SELECT COUNT(1)
-                FROM song_artist_map
-                         JOIN song ON song_artist_map.songId = song.id
-                WHERE artistId = artist.id
-                  AND song.isDownloaded = 1) AS songCount
-        FROM artist
-                 JOIN(SELECT artistId, SUM(totalPlayTime) AS totalPlayTime
-                      FROM song_artist_map
-                               JOIN song
-                                    ON song_artist_map.songId = song.id
-                      GROUP BY artistId
-                      ORDER BY totalPlayTime)
-                     ON artist.id = artistId
-        WHERE songCount > 0
-    """
-    )
-    fun artistsByPlayTimeAscOffline(): Flow<List<Artist>>
-
-    fun artists(sortType: ArtistSortType, descending: Boolean, offlineOnly: Boolean = false) =
+    fun artists(sortType: ArtistSortType, descending: Boolean) =
         when (sortType) {
-            ArtistSortType.CREATE_DATE -> if (offlineOnly) artistsByCreateDateAscOffline() else artistsByCreateDateAsc()
-            ArtistSortType.NAME -> if (offlineOnly) artistsByNameAscOffline() else artistsByNameAsc()
-            ArtistSortType.SONG_COUNT -> if (offlineOnly) artistsBySongCountAscOffline() else artistsBySongCountAsc()
-            ArtistSortType.PLAY_TIME -> if (offlineOnly) artistsByPlayTimeAscOffline() else artistsByPlayTimeAsc()
+            ArtistSortType.CREATE_DATE -> artistsByCreateDateAsc()
+            ArtistSortType.NAME -> artistsByNameAsc()
+            ArtistSortType.SONG_COUNT -> artistsBySongCountAsc()
+            ArtistSortType.PLAY_TIME -> artistsByPlayTimeAsc()
         }.map { artists ->
             artists
                 .filter { it.artist.isYouTubeArtist || it.artist.isLocal } // TODO: add ui to filter by local or remote or something idk
@@ -822,70 +779,29 @@ interface DatabaseDao {
     )
     fun albumsUploadedByPlayTimeAsc(): Flow<List<Album>>
 
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1) ORDER BY rowId")
-    fun albumsByCreateDateAscOffline(): Flow<List<Album>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1) ORDER BY title")
-    fun albumsByNameAscOffline(): Flow<List<Album>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1) ORDER BY year")
-    fun albumsByYearAscOffline(): Flow<List<Album>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1) ORDER BY songCount")
-    fun albumsBySongCountAscOffline(): Flow<List<Album>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1) ORDER BY duration")
-    fun albumsByLengthAscOffline(): Flow<List<Album>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query(
-        """
-        SELECT album.*
-        FROM album
-                 JOIN song
-                      ON song.albumId = album.id
-        WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.isDownloaded = 1)
-        GROUP BY album.id
-        ORDER BY SUM(song.totalPlayTime)
-    """
-    )
-    fun albumsByPlayTimeAscOffline(): Flow<List<Album>>
-
     fun albums(
         sortType: AlbumSortType,
         descending: Boolean,
-        offlineOnly: Boolean = false,
     ) = when (sortType) {
-        AlbumSortType.CREATE_DATE -> if (offlineOnly) albumsByCreateDateAscOffline() else albumsByCreateDateAsc()
+        AlbumSortType.CREATE_DATE -> albumsByCreateDateAsc()
         AlbumSortType.NAME ->
-            (if (offlineOnly) albumsByNameAscOffline() else albumsByNameAsc()).map { albums ->
+            albumsByNameAsc().map { albums ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { it.album.title })
             }
 
         AlbumSortType.ARTIST ->
-            (if (offlineOnly) albumsByCreateDateAscOffline() else albumsByCreateDateAsc()).map { albums ->
+            albumsByCreateDateAsc().map { albums ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
             }
 
-        AlbumSortType.YEAR -> if (offlineOnly) albumsByYearAscOffline() else albumsByYearAsc()
-        AlbumSortType.SONG_COUNT -> if (offlineOnly) albumsBySongCountAscOffline() else albumsBySongCountAsc()
-        AlbumSortType.LENGTH -> if (offlineOnly) albumsByLengthAscOffline() else albumsByLengthAsc()
-        AlbumSortType.PLAY_TIME -> if (offlineOnly) albumsByPlayTimeAscOffline() else albumsByPlayTimeAsc()
+        AlbumSortType.YEAR -> albumsByYearAsc()
+        AlbumSortType.SONG_COUNT -> albumsBySongCountAsc()
+        AlbumSortType.LENGTH -> albumsByLengthAsc()
+        AlbumSortType.PLAY_TIME -> albumsByPlayTimeAsc()
     }.map { it.reversed(descending) }
 
     fun albumsLiked(
