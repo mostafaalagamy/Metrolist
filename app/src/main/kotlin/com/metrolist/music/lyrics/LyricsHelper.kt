@@ -6,10 +6,10 @@ import com.metrolist.music.constants.PreferredLyricsProvider
 import com.metrolist.music.constants.PreferredLyricsProviderKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.extensions.toEnum
-import com.metrolist.music.di.NetworkConnectivityObserver
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
