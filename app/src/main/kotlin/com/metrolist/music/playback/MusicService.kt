@@ -70,6 +70,8 @@ import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
+import com.metrolist.music.constants.EnableAutomaticOfflineModeKey
+import com.metrolist.music.constants.ForceOfflineModeKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
@@ -117,9 +119,9 @@ import com.metrolist.music.playback.queues.EmptyQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
+import com.metrolist.music.di.NetworkConnectivityObserver
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
-import com.metrolist.music.utils.NetworkConnectivityObserver
 import com.metrolist.music.utils.ScrobbleManager
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
@@ -174,17 +176,26 @@ class MusicService :
     @Inject
     lateinit var mediaLibrarySessionCallback: MediaLibrarySessionCallback
 
+    @Inject
+    lateinit var networkConnectivityObserver: NetworkConnectivityObserver
+
+    @Inject
+    lateinit var offlineStateRepository: OfflineStateRepository
+
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
     private var lastAudioFocusState = AudioManager.AUDIOFOCUS_NONE
     private var wasPlayingBeforeAudioFocusLoss = false
     private var hasAudioFocus = false
 
+    val isOffline by lazy {
+        offlineStateRepository.isOffline
+    }
+
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
 
     private lateinit var connectivityManager: ConnectivityManager
-    lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
 
@@ -302,10 +313,9 @@ class MusicService :
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
 
         connectivityManager = getSystemService()!!
-        connectivityObserver = NetworkConnectivityObserver(this)
 
         scope.launch {
-            connectivityObserver.networkStatus.collect { isConnected ->
+            networkConnectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
                 if (isConnected && waitingForNetworkConnection.value) {
                     // Simple auto-play logic like OuterTune

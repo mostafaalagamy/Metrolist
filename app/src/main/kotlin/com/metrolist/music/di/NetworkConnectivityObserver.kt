@@ -1,18 +1,22 @@
-package com.metrolist.music.utils
+package com.metrolist.music.di
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Simple NetworkConnectivityObserver based on OuterTune's implementation
  * Provides network connectivity monitoring for auto-play functionality
  */
-class NetworkConnectivityObserver(context: Context) {
+@Singleton
+class NetworkConnectivityObserver @Inject constructor(@ApplicationContext context: Context) {
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

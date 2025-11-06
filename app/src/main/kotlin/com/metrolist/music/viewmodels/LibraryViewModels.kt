@@ -39,6 +39,7 @@ import com.metrolist.music.extensions.filterExplicit
 import com.metrolist.music.extensions.filterExplicitAlbums
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.di.OfflineStateRepository
 import com.metrolist.music.playback.DownloadUtil
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
@@ -49,6 +50,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -69,28 +71,31 @@ constructor(
     database: MusicDatabase,
     downloadUtil: DownloadUtil,
     private val syncUtils: SyncUtils,
+    offlineStateRepository: OfflineStateRepository
 ) : ViewModel() {
     val allSongs =
-        context.dataStore.data
-            .map {
-                Pair(
-                    Triple(
-                        it[SongFilterKey].toEnum(SongFilter.LIKED),
-                        it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
-                        (it[SongSortDescendingKey] ?: true),
-                    ),
-                    it[HideExplicitKey] ?: false
-                )
-            }.distinctUntilChanged()
-            .flatMapLatest { (filterSort, hideExplicit) ->
-                val (filter, sortType, descending) = filterSort
-                when (filter) {
-                    SongFilter.LIBRARY -> database.songs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.DOWNLOADED -> database.downloadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                }
-            }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        combine(
+            context.dataStore.data
+                .map {
+                    Pair(
+                        Triple(
+                            it[SongFilterKey].toEnum(SongFilter.LIKED),
+                            it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
+                            (it[SongSortDescendingKey] ?: true),
+                        ),
+                        it[HideExplicitKey] ?: false
+                    )
+                }.distinctUntilChanged(),
+            offlineStateRepository.isOffline
+        ) { (filterSort, hideExplicit), isOffline ->
+            val (filter, sortType, descending) = filterSort
+            when (filter) {
+                SongFilter.LIBRARY -> database.songs(sortType, descending, isOffline).map { it.filterExplicit(hideExplicit) }
+                SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
+                SongFilter.DOWNLOADED -> database.downloadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
+                SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
+            }
+        }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun syncLikedSongs() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
@@ -112,22 +117,25 @@ constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
+    offlineStateRepository: OfflineStateRepository
 ) : ViewModel() {
     val allArtists =
-        context.dataStore.data
-            .map {
-                Triple(
-                    it[ArtistFilterKey].toEnum(ArtistFilter.LIKED),
-                    it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
-                    it[ArtistSortDescendingKey] ?: true,
-                )
-            }.distinctUntilChanged()
-            .flatMapLatest { (filter, sortType, descending) ->
-                when (filter) {
-                    ArtistFilter.LIBRARY -> database.artists(sortType, descending)
-                    ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
-                }
-            }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        combine(
+            context.dataStore.data
+                .map {
+                    Triple(
+                        it[ArtistFilterKey].toEnum(ArtistFilter.LIKED),
+                        it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
+                        it[ArtistSortDescendingKey] ?: true,
+                    )
+                }.distinctUntilChanged(),
+            offlineStateRepository.isOffline
+        ) { (filter, sortType, descending), isOffline ->
+            when (filter) {
+                ArtistFilter.LIBRARY -> database.artists(sortType, descending, isOffline)
+                ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+            }
+        }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
@@ -162,27 +170,30 @@ constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
+    offlineStateRepository: OfflineStateRepository
 ) : ViewModel() {
     val allAlbums =
-        context.dataStore.data
-            .map {
-                Pair(
-                    Triple(
-                        it[AlbumFilterKey].toEnum(AlbumFilter.LIKED),
-                        it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
-                        it[AlbumSortDescendingKey] ?: true,
-                    ),
-                    it[HideExplicitKey] ?: false
-                )
-            }.distinctUntilChanged()
-            .flatMapLatest { (filterSort, hideExplicit) ->
-                val (filter, sortType, descending) = filterSort
-                when (filter) {
-                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
-                    AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
-                    AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
-                }
-            }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        combine(
+            context.dataStore.data
+                .map {
+                    Pair(
+                        Triple(
+                            it[AlbumFilterKey].toEnum(AlbumFilter.LIKED),
+                            it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
+                            it[AlbumSortDescendingKey] ?: true,
+                        ),
+                        it[HideExplicitKey] ?: false
+                    )
+                }.distinctUntilChanged(),
+            offlineStateRepository.isOffline
+        ) { (filterSort, hideExplicit), isOffline ->
+            val (filter, sortType, descending) = filterSort
+            when (filter) {
+                AlbumFilter.LIBRARY -> database.albums(sortType, descending, isOffline).map { it.filterExplicitAlbums(hideExplicit) }
+                AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+                AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+            }
+        }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }

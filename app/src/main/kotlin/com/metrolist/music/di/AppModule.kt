@@ -9,6 +9,7 @@ import androidx.media3.datasource.cache.SimpleCache
 import com.metrolist.music.constants.MaxSongCacheSizeKey
 import com.metrolist.music.db.InternalDatabase
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import dagger.Module
@@ -75,4 +76,5 @@ object AppModule {
             databaseProvider
         )
     }
+
 }
