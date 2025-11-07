@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,8 +46,11 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.ChipSortTypeKey
+import com.metrolist.music.constants.CustomDensityScaleKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
+import com.metrolist.music.constants.DensityScale
+import com.metrolist.music.constants.DensityScaleKey
 import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
@@ -120,6 +124,28 @@ fun AppearanceSettings(
             defaultValue = PlayerBackgroundStyle.DEFAULT,
         )
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
+    val (densityScale, setDensityScale) = rememberPreference(DensityScaleKey, defaultValue = 1.0f)
+    val (customDensityValue, setCustomDensityValue) = rememberPreference(CustomDensityScaleKey, defaultValue = 0.85f)
+    val context = LocalContext.current
+    var showRestartDialog by rememberSaveable { mutableStateOf(false) }
+    var showCustomDensityDialog by rememberSaveable { mutableStateOf(false) }
+
+    val onDensityScaleChange: (Float) -> Unit = { newScale ->
+        if (newScale == -1f) {
+            // Custom option selected - show dialog for input
+            showCustomDensityDialog = true
+        } else {
+            // Preset option selected - apply immediately
+            setDensityScale(newScale)
+            // Also write to SharedPreferences for DensityScaler to read on next startup
+            context.getSharedPreferences("metrolist_settings", android.content.Context.MODE_PRIVATE)
+                .edit()
+                .putFloat("density_scale_factor", newScale)
+                .apply()
+            showRestartDialog = true
+        }
+    }
+
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(
         DefaultOpenTabKey,
         defaultValue = NavigationTab.HOME
@@ -381,6 +407,23 @@ fun AppearanceSettings(
                 onCheckedChange = onPureBlackChange,
             )
         }
+
+        ListPreference(
+            title = { Text("Display Density") },
+            icon = { Icon(painterResource(R.drawable.grid_view), null) },
+            selectedValue = densityScale,
+            values = DensityScale.entries.map { it.value },
+            valueText = { scale ->
+                val densityEnum = DensityScale.fromValue(scale)
+                if (densityEnum == DensityScale.CUSTOM) {
+                    // Show the actual custom percentage value
+                    "Custom (${(customDensityValue * 100).toInt()}%)"
+                } else {
+                    densityEnum.label
+                }
+            },
+            onValueSelected = onDensityScaleChange,
+        )
 
         PreferenceGroupTitle(
             title = stringResource(R.string.player),
@@ -668,6 +711,100 @@ fun AppearanceSettings(
             checked = showUploadedPlaylist,
             onCheckedChange = onShowUploadedPlaylistChange
         )
+    }
+
+    if (showRestartDialog) {
+        DefaultDialog(
+            buttons = {
+                TextButton(
+                    onClick = { showRestartDialog = false }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            },
+            onDismiss = { showRestartDialog = false }
+        ) {
+            Text(
+                text = "Please restart the app for the density changes to take effect.",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+
+    if (showCustomDensityDialog) {
+        var inputText by remember { mutableStateOf((customDensityValue * 100).toInt().toString()) }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
+
+        DefaultDialog(
+            buttons = {
+                TextButton(
+                    onClick = { showCustomDensityDialog = false }
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                TextButton(
+                    onClick = {
+                        val percentValue = inputText.toIntOrNull()
+                        if (percentValue == null) {
+                            errorMessage = "Please enter a valid number"
+                            return@TextButton
+                        }
+                        if (percentValue !in 50..120) {
+                            errorMessage = "Value must be between 50 and 120"
+                            return@TextButton
+                        }
+
+                        val value = percentValue / 100f
+
+                        if (value != null && value in 0.5f..1.2f) {
+                            setCustomDensityValue(value)
+                            setDensityScale(value)
+
+                            // Write to SharedPreferences
+                            context.getSharedPreferences("metrolist_settings", android.content.Context.MODE_PRIVATE)
+                                .edit()
+                                .putFloat("density_scale_factor", value)
+                                .apply()
+
+                            showCustomDensityDialog = false
+                            showRestartDialog = true
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            },
+            onDismiss = { showCustomDensityDialog = false }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Custom Display Density",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Enter a value between 50% and 120%. Lower values show more content, higher values make everything larger.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                androidx.compose.material3.OutlinedTextField(
+                    value = inputText,
+                    onValueChange = {
+                        inputText = it
+                        errorMessage = null
+                    },
+                    label = { Text("Percentage") },
+                    suffix = { Text("%") },
+                    isError = errorMessage != null,
+                    supportingText = errorMessage?.let { { Text(it) } },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 
     TopAppBar(
