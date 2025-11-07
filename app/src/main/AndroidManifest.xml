@@ -135,6 +135,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <provider
+            android:name="com.dpi.DensityScaler"
+            android:authorities="${applicationId}.com.dpi.DensityScaler"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="fullSensor"
