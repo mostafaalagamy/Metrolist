@@ -993,6 +993,7 @@ class MusicService :
     }
 
     private fun setupLoudnessEnhancer() {
+    private fun setupLoudnessEnhancer() {
     val audioSessionId = player.audioSessionId
 
     if (audioSessionId == C.AUDIO_SESSION_ID_UNSET || audioSessionId <= 0) {
@@ -1031,24 +1032,14 @@ class MusicService :
 
                 withContext(Dispatchers.Main) {
                     if (loudnessDb != null) {
-                        // Normalización mejorada con target LUFS
-                        val targetLufs = -14.0 // Estándar de streaming (YouTube Music usa aproximadamente -14 LUFS)
-                        val gainDb = targetLufs - loudnessDb
-                        
-                        // Aplicar compresión suave para evitar cambios bruscos
-                        val compressedGainDb = when {
-                            gainDb > 6.0 -> 6.0 + (gainDb - 6.0) * 0.3  // Comprimir ganancias muy altas
-                            gainDb < -6.0 -> -6.0 + (gainDb + 6.0) * 0.5 // Comprimir atenuaciones muy altas
-                            else -> gainDb
-                        }
-                        
-                        val targetGain = (compressedGainDb * 100).toInt()
+                        val extraDb = 2.0f // +2 dB extra
+                        val targetGain = (-(loudnessDb - extraDb) * 100).toInt() // aplicar corrección + amplificación
                         val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
-                        
+
                         try {
                             loudnessEnhancer?.setTargetGain(clampedGain)
                             loudnessEnhancer?.enabled = true
-                            Log.d(TAG, "LoudnessEnhancer - loudnessDb: $loudnessDb LUFS, gainDb: $gainDb dB, compressed: $compressedGainDb dB, final: $clampedGain mB")
+                            Log.d(TAG, "LoudnessEnhancer gain applied: $clampedGain mB (loudnessDb=$loudnessDb, +${extraDb}dB extra)")
                         } catch (e: Exception) {
                             reportException(e)
                             releaseLoudnessEnhancer()
