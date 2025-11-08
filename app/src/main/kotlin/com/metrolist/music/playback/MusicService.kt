@@ -993,7 +993,6 @@ class MusicService :
     }
 
     private fun setupLoudnessEnhancer() {
-    private fun setupLoudnessEnhancer() {
     val audioSessionId = player.audioSessionId
 
     if (audioSessionId == C.AUDIO_SESSION_ID_UNSET || audioSessionId <= 0) {
