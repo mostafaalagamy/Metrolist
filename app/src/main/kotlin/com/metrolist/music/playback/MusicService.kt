@@ -1031,9 +1031,8 @@ class MusicService :
 
                 withContext(Dispatchers.Main) {
                     if (loudnessDb != null) {
-                        // Offset global para suavizar la reducción en pistas muy fuertes
-                        //val offsetDb = 4.0f // súbelo o bájalo según preferencia
-                        val targetGain = ((loudnessDb) * 100).toInt()
+                        // Aplicar directamente la corrección proporcionada por YouTube Music
+                        val targetGain = (loudnessDb * 100).toInt()
                         val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
 
                         try {
@@ -1041,7 +1040,7 @@ class MusicService :
                             loudnessEnhancer?.enabled = true
                             Log.d(
                                 TAG,
-                                "LoudnessEnhancer gain aplicado: $clampedGain mB (loudnessDb=$loudnessDb, offset=$offsetDb)"
+                                "LoudnessEnhancer gain aplicado: $clampedGain mB (loudnessDb=$loudnessDb)"
                             )
                         } catch (e: Exception) {
                             reportException(e)
@@ -1063,8 +1062,7 @@ class MusicService :
             releaseLoudnessEnhancer()
         }
     }
-}
-
+    }
 
     private fun releaseLoudnessEnhancer() {
         try {
