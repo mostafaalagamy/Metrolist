@@ -1032,8 +1032,8 @@ class MusicService :
                 withContext(Dispatchers.Main) {
                     if (loudnessDb != null) {
                         // Offset global para suavizar la reducción en pistas muy fuertes
-                        val offsetDb = 4.0f // súbelo o bájalo según preferencia
-                        val targetGain = ((loudnessDb + offsetDb) * 100).toInt()
+                        //val offsetDb = 4.0f // súbelo o bájalo según preferencia
+                        val targetGain = ((loudnessDb) * 100).toInt()
                         val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
 
                         try {
