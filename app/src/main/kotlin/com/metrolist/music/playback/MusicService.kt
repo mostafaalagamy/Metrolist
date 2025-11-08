@@ -993,71 +993,77 @@ class MusicService :
     }
 
     private fun setupLoudnessEnhancer() {
-        val audioSessionId = player.audioSessionId
+    val audioSessionId = player.audioSessionId
 
-        if (audioSessionId == C.AUDIO_SESSION_ID_UNSET || audioSessionId <= 0) {
-            Log.w(TAG, "setupLoudnessEnhancer: invalid audioSessionId ($audioSessionId), cannot create effect yet")
+    if (audioSessionId == C.AUDIO_SESSION_ID_UNSET || audioSessionId <= 0) {
+        Log.w(TAG, "setupLoudnessEnhancer: invalid audioSessionId ($audioSessionId), cannot create effect yet")
+        return
+    }
+
+    // Crear o recrear el LoudnessEnhancer si es necesario
+    if (loudnessEnhancer == null) {
+        try {
+            loudnessEnhancer = LoudnessEnhancer(audioSessionId)
+            Log.d(TAG, "LoudnessEnhancer creado para sessionId=$audioSessionId")
+        } catch (e: Exception) {
+            reportException(e)
+            loudnessEnhancer = null
             return
         }
+    }
 
-        // Create or recreate enhancer if needed
-        if (loudnessEnhancer == null) {
-            try {
-                loudnessEnhancer = LoudnessEnhancer(audioSessionId)
-                Log.d(TAG, "LoudnessEnhancer created for sessionId=$audioSessionId")
-            } catch (e: Exception) {
-                reportException(e)
-                loudnessEnhancer = null
-                return
+    scope.launch {
+        try {
+            val currentMediaId = withContext(Dispatchers.Main) {
+                player.currentMediaItem?.mediaId
             }
-        }
 
-        scope.launch {
-            try {
-                val currentMediaId = withContext(Dispatchers.Main) {
-                    player.currentMediaItem?.mediaId
+            val normalizeAudio = withContext(Dispatchers.IO) {
+                dataStore.data.map { it[AudioNormalizationKey] ?: true }.first()
+            }
+
+            if (normalizeAudio && currentMediaId != null) {
+                val format = withContext(Dispatchers.IO) {
+                    database.format(currentMediaId).first()
                 }
 
-                val normalizeAudio = withContext(Dispatchers.IO) {
-                    dataStore.data.map { it[AudioNormalizationKey] ?: true }.first()
-                }
+                val loudnessDb = format?.loudnessDb
 
-                if (normalizeAudio && currentMediaId != null) {
-                    val format = withContext(Dispatchers.IO) {
-                        database.format(currentMediaId).first()
-                    }
+                withContext(Dispatchers.Main) {
+                    if (loudnessDb != null) {
+                        // Offset global para suavizar la reducción en pistas muy fuertes
+                        val offsetDb = 2.0f // súbelo o bájalo según preferencia
+                        val targetGain = ((loudnessDb + offsetDb) * 100).toInt()
+                        val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
 
-                    val loudnessDb = format?.loudnessDb
-
-                    withContext(Dispatchers.Main) {
-                        if (loudnessDb != null) {
-                            val targetGain = (-loudnessDb * 100).toInt()
-                            val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
-                            try {
-                                loudnessEnhancer?.setTargetGain(clampedGain)
-                                loudnessEnhancer?.enabled = true
-                                Log.d(TAG, "LoudnessEnhancer gain applied: $clampedGain mB")
-                            } catch (e: Exception) {
-                                reportException(e)
-                                releaseLoudnessEnhancer()
-                            }
-                        } else {
-                            loudnessEnhancer?.enabled = false
-                            Log.w(TAG, "setupLoudnessEnhancer: loudnessDb is null, enhancer disabled")
+                        try {
+                            loudnessEnhancer?.setTargetGain(clampedGain)
+                            loudnessEnhancer?.enabled = true
+                            Log.d(
+                                TAG,
+                                "LoudnessEnhancer gain aplicado: $clampedGain mB (loudnessDb=$loudnessDb, offset=$offsetDb)"
+                            )
+                        } catch (e: Exception) {
+                            reportException(e)
+                            releaseLoudnessEnhancer()
                         }
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
+                    } else {
                         loudnessEnhancer?.enabled = false
-                        Log.d(TAG, "setupLoudnessEnhancer: normalization disabled or mediaId unavailable")
+                        Log.w(TAG, "setupLoudnessEnhancer: loudnessDb es null, enhancer desactivado")
                     }
                 }
-            } catch (e: Exception) {
-                reportException(e)
-                releaseLoudnessEnhancer()
+            } else {
+                withContext(Dispatchers.Main) {
+                    loudnessEnhancer?.enabled = false
+                    Log.d(TAG, "setupLoudnessEnhancer: normalización desactivada o mediaId no disponible")
+                }
             }
+        } catch (e: Exception) {
+            reportException(e)
+            releaseLoudnessEnhancer()
         }
     }
+}
 
 
     private fun releaseLoudnessEnhancer() {
