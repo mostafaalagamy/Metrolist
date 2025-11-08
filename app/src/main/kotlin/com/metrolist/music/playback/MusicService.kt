@@ -1000,11 +1000,11 @@ class MusicService :
         return
     }
 
-    // Crear o recrear el LoudnessEnhancer si es necesario
+    // Create or recreate enhancer if needed
     if (loudnessEnhancer == null) {
         try {
             loudnessEnhancer = LoudnessEnhancer(audioSessionId)
-            Log.d(TAG, "LoudnessEnhancer creado para sessionId=$audioSessionId")
+            Log.d(TAG, "LoudnessEnhancer created for sessionId=$audioSessionId")
         } catch (e: Exception) {
             reportException(e)
             loudnessEnhancer = null
@@ -1031,30 +1031,27 @@ class MusicService :
 
                 withContext(Dispatchers.Main) {
                     if (loudnessDb != null) {
-                        // Aplicar directamente la corrección proporcionada por YouTube Music
-                        val targetGain = (loudnessDb * 100).toInt()
+                        val extraDb = 2.0f // +2 dB extra
+                        val targetGain = (-(loudnessDb - extraDb) * 100).toInt() // aplicar corrección + amplificación
                         val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
 
                         try {
                             loudnessEnhancer?.setTargetGain(clampedGain)
                             loudnessEnhancer?.enabled = true
-                            Log.d(
-                                TAG,
-                                "LoudnessEnhancer gain aplicado: $clampedGain mB (loudnessDb=$loudnessDb)"
-                            )
+                            Log.d(TAG, "LoudnessEnhancer gain applied: $clampedGain mB (loudnessDb=$loudnessDb, +${extraDb}dB extra)")
                         } catch (e: Exception) {
                             reportException(e)
                             releaseLoudnessEnhancer()
                         }
                     } else {
                         loudnessEnhancer?.enabled = false
-                        Log.w(TAG, "setupLoudnessEnhancer: loudnessDb es null, enhancer desactivado")
+                        Log.w(TAG, "setupLoudnessEnhancer: loudnessDb is null, enhancer disabled")
                     }
                 }
             } else {
                 withContext(Dispatchers.Main) {
                     loudnessEnhancer?.enabled = false
-                    Log.d(TAG, "setupLoudnessEnhancer: normalización desactivada o mediaId no disponible")
+                    Log.d(TAG, "setupLoudnessEnhancer: normalization disabled or mediaId unavailable")
                 }
             }
         } catch (e: Exception) {
@@ -1062,7 +1059,7 @@ class MusicService :
             releaseLoudnessEnhancer()
         }
     }
-    }
+}
 
     private fun releaseLoudnessEnhancer() {
         try {
