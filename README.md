@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
-<p>YouTube Music client for Android</p>
+<p>Adriel's Metrolist Fork for experiments</p>
 
 <div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
 <h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
