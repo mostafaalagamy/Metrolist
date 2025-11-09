@@ -179,6 +179,7 @@ class MusicService :
     private var lastAudioFocusState = AudioManager.AUDIOFOCUS_NONE
     private var wasPlayingBeforeAudioFocusLoss = false
     private var hasAudioFocus = false
+    private var reentrantFocusGain = false
 
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
@@ -542,75 +543,58 @@ class MusicService :
 
     private fun handleAudioFocusChange(focusChange: Int) {
         when (focusChange) {
-            AudioManager.AUDIOFOCUS_GAIN -> {
+
+            AudioManager.AUDIOFOCUS_GAIN,
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
                 hasAudioFocus = true
 
-                if (wasPlayingBeforeAudioFocusLoss) {
-                    player.play()
-                    wasPlayingBeforeAudioFocusLoss = false
+                if (wasPlayingBeforeAudioFocusLoss && !player.isPlaying && !reentrantFocusGain) {
+                    reentrantFocusGain = true
+                    scope.launch {
+                        delay(300)
+                        if (hasAudioFocus && wasPlayingBeforeAudioFocusLoss && !player.isPlaying) {
+                            player.play()
+                            wasPlayingBeforeAudioFocusLoss = false
+                        }
+                        reentrantFocusGain = false
+                    }
                 }
 
                 player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS -> {
                 hasAudioFocus = false
-                wasPlayingBeforeAudioFocusLoss = false
-
+                wasPlayingBeforeAudioFocusLoss = player.isPlaying
                 if (player.isPlaying) {
                     player.pause()
                 }
-
                 abandonAudioFocus()
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
                 hasAudioFocus = false
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
-
                 if (player.isPlaying) {
                     player.pause()
                 }
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-
                 hasAudioFocus = false
-
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
-
                 if (player.isPlaying) {
                     player.volume = (playerVolume.value * 0.2f)
                 }
-
-                lastAudioFocusState = focusChange
-            }
-
-            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
-
-                hasAudioFocus = true
-
-                if (wasPlayingBeforeAudioFocusLoss) {
-                    player.play()
-                    wasPlayingBeforeAudioFocusLoss = false
-                }
-
-                player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
-
                 player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
         }
@@ -1051,7 +1035,7 @@ class MusicService :
 
                     withContext(Dispatchers.Main) {
                         if (loudnessDb != null) {
-                            val targetGain = (-loudnessDb * 100).toInt()
+                            val targetGain = (-loudnessDb * 100).toInt() + 400
                             val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
                             try {
                                 loudnessEnhancer?.setTargetGain(clampedGain)
@@ -1585,8 +1569,8 @@ class MusicService :
         const val PERSISTENT_PLAYER_STATE_FILE = "persistent_player_state.data"
         const val MAX_CONSECUTIVE_ERR = 5
         // Constants for audio normalization
-        private const val MAX_GAIN_MB = 800 // Maximum gain in millibels (8 dB)
-        private const val MIN_GAIN_MB = -800 // Minimum gain in millibels (-8 dB)
+        private const val MAX_GAIN_MB = 1000 // Maximum gain in millibels (8 dB)
+        private const val MIN_GAIN_MB = -1000 // Minimum gain in millibels (-8 dB)
 
         private const val TAG = "MusicService"
     }
