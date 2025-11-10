@@ -68,8 +68,8 @@ import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.ui.component.BigSeekBar
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.ListDialog
-import com.metrolist.music.ui.component.Material3SettingsGroup
-import com.metrolist.music.ui.component.Material3SettingsItem
+import com.metrolist.music.ui.component.CardMenuGroup
+import com.metrolist.music.ui.component.CardMenuItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.log2
@@ -176,12 +176,15 @@ fun PlayerMenu(
                 .padding(WindowInsets.systemBars.asPaddingValues()),
     ) {
         if (isQueueTrigger != true) {
-            Material3SettingsGroup(
+            CardMenuGroup(
                 title = stringResource(R.string.volume),
                 items =
-                    listOf(
-                        Material3SettingsItem(
-                            title = {
+                    listOf {
+                        CardMenuItem(
+                            icon = painterResource(R.drawable.volume_up),
+                            title = { },
+                            description = { },
+                            trailingContent = {
                                 BigSeekBar(
                                     progressProvider = playerVolume::value,
                                     onProgressChange = {
@@ -193,65 +196,71 @@ fun PlayerMenu(
                                             .height(36.dp),
                                 )
                             },
-                            icon = painterResource(R.drawable.volume_up),
-                        ),
-                    ),
+                        )
+                    },
             )
         }
 
-        Material3SettingsGroup(
+        CardMenuGroup(
             title = stringResource(R.string.actions),
             items =
                 listOf(
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.radio),
-                        title = { Text(stringResource(R.string.start_radio)) },
-                        onClick = {
-                            Toast
-                                .makeText(
-                                    context,
-                                    context.getString(R.string.starting_radio),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            playerConnection.startRadioSeamlessly()
-                            onDismiss()
-                        },
-                    ),
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.playlist_add),
-                        title = { Text(stringResource(R.string.add_to_playlist)) },
-                        onClick = { showChoosePlaylistDialog = true },
-                    ),
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.link),
-                        title = { Text(stringResource(R.string.copy_link)) },
-                        onClick = {
-                            val clipboard =
-                                context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as
-                                    android.content.ClipboardManager
-                            val clip =
-                                ClipData.newPlainText(
-                                    "Song Link",
-                                    "https://music.youtube.com/watch?v=${mediaMetadata.id}",
-                                )
-                            clipboard.setPrimaryClip(clip)
-                            android.widget.Toast
-                                .makeText(
-                                    context,
-                                    R.string.link_copied,
-                                    android.widget.Toast.LENGTH_SHORT,
-                                )
-                                .show()
-                            onDismiss()
-                        },
-                    ),
+                    {
+                        CardMenuItem(
+                            icon = painterResource(R.drawable.radio),
+                            title = { Text(stringResource(R.string.start_radio)) },
+                            onClick = {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        context.getString(R.string.starting_radio),
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
+                                playerConnection.startRadioSeamlessly()
+                                onDismiss()
+                            },
+                        )
+                    },
+                    {
+                        CardMenuItem(
+                            icon = painterResource(R.drawable.playlist_add),
+                            title = { Text(stringResource(R.string.add_to_playlist)) },
+                            onClick = { showChoosePlaylistDialog = true },
+                        )
+                    },
+                    {
+                        CardMenuItem(
+                            icon = painterResource(R.drawable.link),
+                            title = { Text(stringResource(R.string.copy_link)) },
+                            onClick = {
+                                val clipboard =
+                                    context.getSystemService(
+                                        android.content.Context.CLIPBOARD_SERVICE,
+                                    ) as android.content.ClipboardManager
+                                val clip =
+                                    ClipData.newPlainText(
+                                        "Song Link",
+                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                    )
+                                clipboard.setPrimaryClip(clip)
+                                android.widget.Toast
+                                    .makeText(
+                                        context,
+                                        R.string.link_copied,
+                                        android.widget.Toast.LENGTH_SHORT,
+                                    )
+                                    .show()
+                                onDismiss()
+                            },
+                        )
+                    },
                 ),
         )
 
-        val detailItems = mutableListOf<Material3SettingsItem>()
+        val detailItems = mutableListOf<@Composable () -> Unit>()
         if (artists.isNotEmpty()) {
-            detailItems.add(
-                Material3SettingsItem(
+            detailItems.add {
+                CardMenuItem(
                     title = { Text(stringResource(R.string.view_artist)) },
                     icon = painterResource(R.drawable.artist),
                     onClick = {
@@ -263,12 +272,12 @@ fun PlayerMenu(
                             showSelectArtistDialog = true
                         }
                     },
-                ),
-            )
+                )
+            }
         }
         if (mediaMetadata.album != null) {
-            detailItems.add(
-                Material3SettingsItem(
+            detailItems.add {
+                CardMenuItem(
                     title = { Text(stringResource(R.string.view_album)) },
                     icon = painterResource(R.drawable.album),
                     onClick = {
@@ -276,13 +285,13 @@ fun PlayerMenu(
                         playerBottomSheetState.collapseSoft()
                         onDismiss()
                     },
-                ),
-            )
+                )
+            }
         }
-        detailItems.add(
+        detailItems.add {
             when (download?.state) {
                 Download.STATE_COMPLETED -> {
-                    Material3SettingsItem(
+                    CardMenuItem(
                         title = { Text(stringResource(R.string.remove_download)) },
                         icon = painterResource(R.drawable.offline),
                         onClick = {
@@ -296,7 +305,7 @@ fun PlayerMenu(
                     )
                 }
                 Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
-                    Material3SettingsItem(
+                    CardMenuItem(
                         title = { Text(stringResource(R.string.downloading)) },
                         icon = painterResource(R.drawable.download),
                         onClick = {
@@ -310,7 +319,7 @@ fun PlayerMenu(
                     )
                 }
                 else -> {
-                    Material3SettingsItem(
+                    CardMenuItem(
                         title = { Text(stringResource(R.string.action_download)) },
                         icon = painterResource(R.drawable.download),
                         onClick = {
@@ -332,62 +341,66 @@ fun PlayerMenu(
                         },
                     )
                 }
-            },
-        )
-        detailItems.add(
-            Material3SettingsItem(
+            }
+        }
+        detailItems.add {
+            CardMenuItem(
                 title = { Text(stringResource(R.string.details)) },
                 icon = painterResource(R.drawable.info),
                 onClick = {
                     onShowDetailsDialog()
                     onDismiss()
                 },
-            ),
-        )
-        Material3SettingsGroup(
+            )
+        }
+        CardMenuGroup(
             title = stringResource(R.string.details),
             items = detailItems,
         )
 
         if (isQueueTrigger != true) {
-            Material3SettingsGroup(
+            CardMenuGroup(
                 title = "Audio",
                 items =
                     listOf(
-                        Material3SettingsItem(
-                            title = { Text(stringResource(R.string.equalizer)) },
-                            icon = painterResource(R.drawable.equalizer),
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL,
-                                    ).apply {
-                                        putExtra(
-                                            AudioEffect.EXTRA_AUDIO_SESSION,
-                                            playerConnection.player.audioSessionId,
-                                        )
-                                        putExtra(
-                                            AudioEffect.EXTRA_PACKAGE_NAME,
-                                            context.packageName,
-                                        )
-                                        putExtra(
-                                            AudioEffect.EXTRA_CONTENT_TYPE,
-                                            AudioEffect.CONTENT_TYPE_MUSIC,
-                                        )
+                        {
+                            CardMenuItem(
+                                title = { Text(stringResource(R.string.equalizer)) },
+                                icon = painterResource(R.drawable.equalizer),
+                                onClick = {
+                                    val intent =
+                                        Intent(
+                                            AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL,
+                                        ).apply {
+                                            putExtra(
+                                                AudioEffect.EXTRA_AUDIO_SESSION,
+                                                playerConnection.player.audioSessionId,
+                                            )
+                                            putExtra(
+                                                AudioEffect.EXTRA_PACKAGE_NAME,
+                                                context.packageName,
+                                            )
+                                            putExtra(
+                                                AudioEffect.EXTRA_CONTENT_TYPE,
+                                                AudioEffect.CONTENT_TYPE_MUSIC,
+                                            )
+                                        }
+                                    if (intent.resolveActivity(context.packageManager) != null) {
+                                        activityResultLauncher.launch(intent)
                                     }
-                                if (intent.resolveActivity(context.packageManager) != null) {
-                                    activityResultLauncher.launch(intent)
-                                }
-                                onDismiss()
-                            },
-                        ),
-                        Material3SettingsItem(
-                            title = { Text(stringResource(R.string.advanced)) },
-                            icon = painterResource(R.drawable.tune),
-                            onClick = {
-                                showPitchTempoDialog = true
-                            },
-                        ),
+                                    onDismiss()
+                                },
+                            )
+                        },
+                        {
+                            CardMenuItem(
+                                title = { Text(stringResource(R.string.advanced)) },
+                                icon = painterResource(R.drawable.tune),
+                                onClick = {
+                                    showPitchTempoDialog = true
+                                },
+                            )
+                        },
                     ),
             )
         }
