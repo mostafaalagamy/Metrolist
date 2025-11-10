@@ -26,7 +26,6 @@ fun Material3SettingsGroup(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Section title
         title?.let {
             Text(
                 text = it,
@@ -36,7 +35,6 @@ fun Material3SettingsGroup(
             )
         }
         
-        // Settings card
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -51,7 +49,8 @@ fun Material3SettingsGroup(
                 items.forEachIndexed { index, item ->
                     Material3SettingsItemRow(
                         item = item,
-                        showDivider = index < items.size - 1
+                        isFirst = index == 0,
+                        isLast = index == items.size - 1
                     )
                 }
             }
@@ -59,106 +58,91 @@ fun Material3SettingsGroup(
     }
 }
 
-/**
- * Individual settings item row with Material 3 styling
- */
 @Composable
 private fun Material3SettingsItemRow(
     item: Material3SettingsItem,
-    showDivider: Boolean
+    isFirst: Boolean,
+    isLast: Boolean
 ) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(
-                    enabled = item.onClick != null,
-                    onClick = { item.onClick?.invoke() }
-                )
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Icon with background
-            item.icon?.let { icon ->
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(
-                                alpha = if (item.isHighlighted) 0.15f else 0.1f
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (item.showBadge) {
-                        BadgedBox(
-                            badge = { 
-                                Badge(
-                                    containerColor = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        ) {
-                            Icon(
-                                painter = icon,
-                                contentDescription = null,
-                                tint = if (item.isHighlighted) 
-                                    MaterialTheme.colorScheme.primary 
-                                else 
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
-                                modifier = Modifier.size(24.dp)
+    val shape = when {
+        isFirst && isLast -> RoundedCornerShape(12.dp)
+        isFirst -> RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+        isLast -> RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+        else -> RoundedCornerShape(0.dp)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .clickable(
+                enabled = item.onClick != null,
+                onClick = { item.onClick?.invoke() }
+            )
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        item.icon?.let { icon ->
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        MaterialTheme.colorScheme.primary.copy(
+                            alpha = if (item.isHighlighted) 0.15f else 0.1f
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (item.showBadge) {
+                    BadgedBox(
+                        badge = {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.error
                             )
                         }
-                    } else {
+                    ) {
                         Icon(
                             painter = icon,
                             contentDescription = null,
-                            tint = if (item.isHighlighted) 
-                                MaterialTheme.colorScheme.primary 
-                            else 
+                            tint = if (item.isHighlighted)
+                                MaterialTheme.colorScheme.primary
+                            else
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                }
-                
-                Spacer(modifier = Modifier.width(16.dp))
-            }
-            
-            // Title and description
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                // Title content
-                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
-                    item.title()
-                }
-                
-                // Description if provided
-                item.description?.let { desc ->
-                    Spacer(modifier = Modifier.height(2.dp))
-                    desc()
+                } else {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        tint = if (item.isHighlighted)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+                item.title()
+            }
             
-            // Trailing content
-            item.trailingContent?.let { trailing ->
-                Spacer(modifier = Modifier.width(8.dp))
-                trailing()
+            item.description?.let { desc ->
+                Spacer(modifier = Modifier.height(2.dp))
+                desc()
             }
         }
         
-        // Divider
-        if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(
-                    start = if (item.icon != null) 76.dp else 20.dp,
-                    end = 20.dp
-                ),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
+        item.trailingContent?.let { trailing ->
+            Spacer(modifier = Modifier.width(8.dp))
+            trailing()
         }
     }
 }

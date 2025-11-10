@@ -74,6 +74,8 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
+import com.metrolist.music.constants.MiniPlayerOutlineKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
@@ -146,6 +148,9 @@ private fun NewMiniPlayer(
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
+
+    val pureBlackMiniPlayer by rememberPreference(PureBlackMiniPlayerKey, false)
+    val miniPlayerOutline by rememberPreference(MiniPlayerOutlineKey, true)
 
     val configuration = LocalConfiguration.current
     val isTabletLandscape = configuration.screenWidthDp >= 600 &&
@@ -272,7 +277,12 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
+                    color = if (pureBlackMiniPlayer) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                )
+                .border(
+                    width = if (miniPlayerOutline) 0.5.dp else 0.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(32.dp)
                 )
         ) {
             Row(

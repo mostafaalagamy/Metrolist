@@ -54,11 +54,13 @@ import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
+import com.metrolist.music.constants.MiniPlayerOutlineKey
 import com.metrolist.music.constants.UseNewPlayerDesignKey
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.SliderStyle
@@ -108,6 +110,14 @@ fun AppearanceSettings(
     )
     val (useNewMiniPlayerDesign, onUseNewMiniPlayerDesignChange) = rememberPreference(
         UseNewMiniPlayerDesignKey,
+        defaultValue = true
+    )
+    val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) = rememberPreference(
+        PureBlackMiniPlayerKey,
+        defaultValue = false
+    )
+    val (miniPlayerOutline, onMiniPlayerOutlineChange) = rememberPreference(
+        MiniPlayerOutlineKey,
         defaultValue = true
     )
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(
@@ -399,6 +409,23 @@ fun AppearanceSettings(
             checked = useNewMiniPlayerDesign,
             onCheckedChange = onUseNewMiniPlayerDesignChange,
         )
+
+        AnimatedVisibility(useNewMiniPlayerDesign) {
+            Column {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.pure_black_mini_player)) },
+                    icon = { Icon(painterResource(R.drawable.contrast), null) },
+                    checked = pureBlackMiniPlayer,
+                    onCheckedChange = onPureBlackMiniPlayerChange,
+                )
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.mini_player_outline)) },
+                    icon = { Icon(painterResource(R.drawable.format_align_center), null) },
+                    checked = miniPlayerOutline,
+                    onCheckedChange = onMiniPlayerOutlineChange,
+                )
+            }
+        }
 
         EnumListPreference(
             title = { Text(stringResource(R.string.player_background_style)) },
