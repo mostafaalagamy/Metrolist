@@ -1,16 +1,18 @@
 package com.metrolist.music.ui.menu
 
-import android.content.ClipData
 import android.content.Intent
+import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -18,18 +20,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,6 +48,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,12 +60,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import android.widget.Toast
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -65,11 +75,12 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
+import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.BigSeekBar
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.ListDialog
-import com.metrolist.music.ui.component.CardMenuGroup
-import com.metrolist.music.ui.component.CardMenuItem
+import com.metrolist.music.ui.component.NewAction
+import com.metrolist.music.ui.component.NewActionGrid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.log2
@@ -92,6 +103,7 @@ fun PlayerMenu(
     val playerVolume = playerConnection.service.playerVolume.collectAsState()
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata.id)
@@ -119,7 +131,7 @@ fun PlayerMenu(
         },
         onDismiss = {
             showChoosePlaylistDialog = false
-        },
+        }
     )
 
     var showSelectArtistDialog by rememberSaveable {
@@ -134,16 +146,16 @@ fun PlayerMenu(
                 Box(
                     contentAlignment = Alignment.CenterStart,
                     modifier =
-                        Modifier
-                            .fillParentMaxWidth()
-                            .height(ListItemHeight)
-                            .clickable {
-                                navController.navigate("artist/${artist.id}")
-                                showSelectArtistDialog = false
-                                playerBottomSheetState.collapseSoft()
-                                onDismiss()
-                            }
-                            .padding(horizontal = 24.dp),
+                    Modifier
+                        .fillParentMaxWidth()
+                        .height(ListItemHeight)
+                        .clickable {
+                            navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
+                            playerBottomSheetState.collapseSoft()
+                            onDismiss()
+                        }
+                        .padding(horizontal = 24.dp),
                 ) {
                     Text(
                         text = artist.name,
@@ -167,103 +179,115 @@ fun PlayerMenu(
         )
     }
 
-    val scrollState = rememberScrollState()
-
-    Column(
-        modifier =
+    if (isQueueTrigger != true) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier =
             Modifier
-                .verticalScroll(scrollState)
-                .padding(WindowInsets.systemBars.asPaddingValues()),
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp, bottom = 6.dp),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.volume_up),
+                contentDescription = null,
+                modifier = Modifier.size(28.dp),
+            )
+
+            BigSeekBar(
+                progressProvider = playerVolume::value,
+                onProgressChange = { playerConnection.service.playerVolume.value = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(36.dp), // Reduced height from default (assumed ~48.dp) to 36.dp
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(20.dp))
+
+    HorizontalDivider()
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    LazyColumn(
+        userScrollEnabled = !isPortrait,
+        contentPadding = PaddingValues(
+            start = 0.dp,
+            top = 0.dp,
+            end = 0.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
-        if (isQueueTrigger != true) {
-            CardMenuGroup(
-                title = stringResource(R.string.volume),
-                items =
-                    listOf {
-                        CardMenuItem(
-                            icon = painterResource(R.drawable.volume_up),
-                            title = { },
-                            description = { },
-                            trailingContent = {
-                                BigSeekBar(
-                                    progressProvider = playerVolume::value,
-                                    onProgressChange = {
-                                        playerConnection.service.playerVolume.value = it
-                                    },
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .height(36.dp),
-                                )
-                            },
-                        )
-                    },
+        item {
+            NewActionGrid(
+                actions = listOf(
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.radio),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.start_radio),
+                        onClick = {
+                            Toast.makeText(context, context.getString(R.string.starting_radio), Toast.LENGTH_SHORT).show()
+                            playerConnection.startRadioSeamlessly()
+                            onDismiss()
+                        }
+                    ),
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.playlist_add),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.add_to_playlist),
+                        onClick = { showChoosePlaylistDialog = true }
+                    ),
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.link),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.copy_link),
+                        onClick = {
+                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            val clip = android.content.ClipData.newPlainText("Song Link", "https://music.youtube.com/watch?v=${mediaMetadata.id}")
+                            clipboard.setPrimaryClip(clip)
+                            android.widget.Toast.makeText(context, R.string.link_copied, android.widget.Toast.LENGTH_SHORT).show()
+                            onDismiss()
+                        }
+                    )
+                ),
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
             )
         }
 
-        CardMenuGroup(
-            title = stringResource(R.string.actions),
-            items =
-                listOf(
-                    {
-                        CardMenuItem(
-                            icon = painterResource(R.drawable.radio),
-                            title = { Text(stringResource(R.string.start_radio)) },
-                            onClick = {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        context.getString(R.string.starting_radio),
-                                        Toast.LENGTH_SHORT,
-                                    ).show()
-                                playerConnection.startRadioSeamlessly()
-                                onDismiss()
-                            },
-                        )
-                    },
-                    {
-                        CardMenuItem(
-                            icon = painterResource(R.drawable.playlist_add),
-                            title = { Text(stringResource(R.string.add_to_playlist)) },
-                            onClick = { showChoosePlaylistDialog = true },
-                        )
-                    },
-                    {
-                        CardMenuItem(
-                            icon = painterResource(R.drawable.link),
-                            title = { Text(stringResource(R.string.copy_link)) },
-                            onClick = {
-                                val clipboard =
-                                    context.getSystemService(
-                                        android.content.Context.CLIPBOARD_SERVICE,
-                                    ) as android.content.ClipboardManager
-                                val clip =
-                                    ClipData.newPlainText(
-                                        "Song Link",
-                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}",
-                                    )
-                                clipboard.setPrimaryClip(clip)
-                                android.widget.Toast
-                                    .makeText(
-                                        context,
-                                        R.string.link_copied,
-                                        android.widget.Toast.LENGTH_SHORT,
-                                    )
-                                    .show()
-                                onDismiss()
-                            },
-                        )
-                    },
-                ),
-        )
-
-        val detailItems = mutableListOf<@Composable () -> Unit>()
         if (artists.isNotEmpty()) {
-            detailItems.add {
-                CardMenuItem(
-                    title = { Text(stringResource(R.string.view_artist)) },
-                    icon = painterResource(R.drawable.artist),
-                    onClick = {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.view_artist)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.artist),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
                         if (mediaMetadata.artists.size == 1) {
                             navController.navigate("artist/${mediaMetadata.artists[0].id}")
                             playerBottomSheetState.collapseSoft()
@@ -271,58 +295,83 @@ fun PlayerMenu(
                         } else {
                             showSelectArtistDialog = true
                         }
-                    },
+                    }
                 )
             }
         }
         if (mediaMetadata.album != null) {
-            detailItems.add {
-                CardMenuItem(
-                    title = { Text(stringResource(R.string.view_album)) },
-                    icon = painterResource(R.drawable.album),
-                    onClick = {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.view_album)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.album),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
                         navController.navigate("album/${mediaMetadata.album.id}")
                         playerBottomSheetState.collapseSoft()
                         onDismiss()
-                    },
+                    }
                 )
             }
         }
-        detailItems.add {
+        item {
             when (download?.state) {
                 Download.STATE_COMPLETED -> {
-                    CardMenuItem(
-                        title = { Text(stringResource(R.string.remove_download)) },
-                        icon = painterResource(R.drawable.offline),
-                        onClick = {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.remove_download),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.offline),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
                             DownloadService.sendRemoveDownload(
                                 context,
                                 ExoDownloadService::class.java,
                                 mediaMetadata.id,
                                 false,
                             )
-                        },
+                        }
                     )
                 }
                 Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
-                    CardMenuItem(
-                        title = { Text(stringResource(R.string.downloading)) },
-                        icon = painterResource(R.drawable.download),
-                        onClick = {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.downloading)) },
+                        leadingContent = {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        },
+                        modifier = Modifier.clickable {
                             DownloadService.sendRemoveDownload(
                                 context,
                                 ExoDownloadService::class.java,
                                 mediaMetadata.id,
                                 false,
                             )
-                        },
+                        }
                     )
                 }
                 else -> {
-                    CardMenuItem(
-                        title = { Text(stringResource(R.string.action_download)) },
-                        icon = painterResource(R.drawable.download),
-                        onClick = {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.action_download)) },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.download),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
                             database.transaction {
                                 insert(mediaMetadata)
                             }
@@ -338,71 +387,67 @@ fun PlayerMenu(
                                 downloadRequest,
                                 false,
                             )
-                        },
+                        }
                     )
                 }
             }
         }
-        detailItems.add {
-            CardMenuItem(
-                title = { Text(stringResource(R.string.details)) },
-                icon = painterResource(R.drawable.info),
-                onClick = {
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.details)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.info),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
                     onShowDetailsDialog()
                     onDismiss()
-                },
+                }
             )
         }
-        CardMenuGroup(
-            title = stringResource(R.string.details),
-            items = detailItems,
-        )
-
         if (isQueueTrigger != true) {
-            CardMenuGroup(
-                title = "Audio",
-                items =
-                    listOf(
-                        {
-                            CardMenuItem(
-                                title = { Text(stringResource(R.string.equalizer)) },
-                                icon = painterResource(R.drawable.equalizer),
-                                onClick = {
-                                    val intent =
-                                        Intent(
-                                            AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL,
-                                        ).apply {
-                                            putExtra(
-                                                AudioEffect.EXTRA_AUDIO_SESSION,
-                                                playerConnection.player.audioSessionId,
-                                            )
-                                            putExtra(
-                                                AudioEffect.EXTRA_PACKAGE_NAME,
-                                                context.packageName,
-                                            )
-                                            putExtra(
-                                                AudioEffect.EXTRA_CONTENT_TYPE,
-                                                AudioEffect.CONTENT_TYPE_MUSIC,
-                                            )
-                                        }
-                                    if (intent.resolveActivity(context.packageManager) != null) {
-                                        activityResultLauncher.launch(intent)
-                                    }
-                                    onDismiss()
-                                },
-                            )
-                        },
-                        {
-                            CardMenuItem(
-                                title = { Text(stringResource(R.string.advanced)) },
-                                icon = painterResource(R.drawable.tune),
-                                onClick = {
-                                    showPitchTempoDialog = true
-                                },
-                            )
-                        },
-                    ),
-            )
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.equalizer)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.equalizer),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        val intent =
+                            Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                                putExtra(
+                                    AudioEffect.EXTRA_AUDIO_SESSION,
+                                    playerConnection.player.audioSessionId,
+                                )
+                                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                            }
+                        if (intent.resolveActivity(context.packageManager) != null) {
+                            activityResultLauncher.launch(intent)
+                        }
+                        onDismiss()
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.advanced)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.tune),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        showPitchTempoDialog = true
+                    }
+                )
+            }
         }
     }
 }
