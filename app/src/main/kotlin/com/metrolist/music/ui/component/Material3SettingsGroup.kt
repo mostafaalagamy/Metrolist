@@ -138,7 +138,13 @@ private fun Material3SettingsItemRow(
                 // Description if provided
                 item.description?.let { desc ->
                     Spacer(modifier = Modifier.height(2.dp))
-                    desc()
+                    ProvideTextStyle(
+                        value = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    ) {
+                        desc()
+                    }
                 }
             }
             

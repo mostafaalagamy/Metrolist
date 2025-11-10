@@ -77,6 +77,7 @@ import com.metrolist.music.constants.MiniPlayerOutlineKey
 import com.metrolist.music.constants.SwipeToRemoveSongKey
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.UseNewPlayerDesignKey
+import com.metrolist.music.constants.HidePlayerThumbnailKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumDialog
 import com.metrolist.music.ui.component.IconButton
@@ -110,6 +111,10 @@ fun AppearanceSettings(
     val (useNewMiniPlayerDesign, onUseNewMiniPlayerDesignChange) = rememberPreference(
         UseNewMiniPlayerDesignKey,
         defaultValue = true
+    )
+    val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(
+        HidePlayerThumbnailKey,
+        defaultValue = false
     )
     val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) = rememberPreference(
         PureBlackMiniPlayerKey,
@@ -572,6 +577,18 @@ fun AppearanceSettings(
                         )
                     },
                     onClick = { onUseNewPlayerDesignChange(!useNewPlayerDesign) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.hide_image),
+                    title = { Text(stringResource(R.string.hide_player_thumbnail)) },
+                    description = { Text(stringResource(R.string.hide_player_thumbnail_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = hidePlayerThumbnail,
+                            onCheckedChange = onHidePlayerThumbnailChange
+                        )
+                    },
+                    onClick = { onHidePlayerThumbnailChange(!hidePlayerThumbnail) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.nav_bar),

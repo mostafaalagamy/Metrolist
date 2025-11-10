@@ -2,6 +2,7 @@ package com.metrolist.music.ui.screens.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -174,13 +176,20 @@ fun PlayerSettings(
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.history),
                     title = { Text(stringResource(R.string.history_duration)) },
-                    trailingContent = {
-                        Slider(
-                            value = historyDuration,
-                            onValueChange = onHistoryDurationChange,
-                            valueRange = 1f..100f,
-                            steps = 98
-                        )
+                    description = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Slider(
+                                value = historyDuration,
+                                onValueChange = onHistoryDurationChange,
+                                valueRange = 1f..100f,
+                                steps = 98,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "${historyDuration.toInt()}%",
+                                modifier = Modifier.padding(start = 12.dp)
+                            )
+                        }
                     }
                 ),
                 Material3SettingsItem(
