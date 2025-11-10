@@ -63,13 +63,13 @@ fun SettingsScreen(
         // User Interface Section
         Material3SettingsGroup(
             title = stringResource(R.string.settings_section_ui),
-            items = listOf(
+            items = listOf {
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.palette),
                     title = { Text(stringResource(R.string.appearance)) },
                     onClick = { navController.navigate("settings/appearance") }
                 )
-            )
+            }
         )
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -78,16 +78,20 @@ fun SettingsScreen(
         Material3SettingsGroup(
             title = stringResource(R.string.settings_section_player_content),
             items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.play),
-                    title = { Text(stringResource(R.string.player_and_audio)) },
-                    onClick = { navController.navigate("settings/player") }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.language),
-                    title = { Text(stringResource(R.string.content)) },
-                    onClick = { navController.navigate("settings/content") }
-                )
+                {
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.play),
+                        title = { Text(stringResource(R.string.player_and_audio)) },
+                        onClick = { navController.navigate("settings/player") }
+                    )
+                },
+                {
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.language),
+                        title = { Text(stringResource(R.string.content)) },
+                        onClick = { navController.navigate("settings/content") }
+                    )
+                }
             )
         )
         
@@ -96,13 +100,13 @@ fun SettingsScreen(
         // Privacy & Security Section
         Material3SettingsGroup(
             title = stringResource(R.string.settings_section_privacy),
-            items = listOf(
+            items = listOf {
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.security),
                     title = { Text(stringResource(R.string.privacy)) },
                     onClick = { navController.navigate("settings/privacy") }
                 )
-            )
+            }
         )
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -111,16 +115,20 @@ fun SettingsScreen(
         Material3SettingsGroup(
             title = stringResource(R.string.settings_section_storage),
             items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.storage),
-                    title = { Text(stringResource(R.string.storage)) },
-                    onClick = { navController.navigate("settings/storage") }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.restore),
-                    title = { Text(stringResource(R.string.backup_restore)) },
-                    onClick = { navController.navigate("settings/backup_restore") }
-                )
+                {
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.storage),
+                        title = { Text(stringResource(R.string.storage)) },
+                        onClick = { navController.navigate("settings/storage") }
+                    )
+                },
+                {
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.restore),
+                        title = { Text(stringResource(R.string.backup_restore)) },
+                        onClick = { navController.navigate("settings/backup_restore") }
+                    )
+                }
             )
         )
         
@@ -131,7 +139,7 @@ fun SettingsScreen(
             title = stringResource(R.string.settings_section_system),
             items = buildList {
                 if (isAndroid12OrLater) {
-                    add(
+                    add {
                         Material3SettingsItem(
                             icon = painterResource(R.drawable.link),
                             title = { Text(stringResource(R.string.default_links)) },
@@ -172,24 +180,24 @@ fun SettingsScreen(
                                 }
                             }
                         )
-                    )
+                    }
                 }
-                add(
+                add {
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.update),
                         title = { Text(stringResource(R.string.updater)) },
                         onClick = { navController.navigate("settings/updater") }
                     )
-                )
-                add(
+                }
+                add {
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.info),
                         title = { Text(stringResource(R.string.about)) },
                         onClick = { navController.navigate("settings/about") }
                     )
-                )
+                }
                 if (latestVersionName != BuildConfig.VERSION_NAME) {
-                    add(
+                    add {
                         Material3SettingsItem(
                             icon = painterResource(R.drawable.update),
                             title = { 
@@ -207,7 +215,7 @@ fun SettingsScreen(
                             showBadge = true,
                             onClick = { uriHandler.openUri(Updater.getLatestDownloadUrl()) }
                         )
-                    )
+                    }
                 }
             }
         )

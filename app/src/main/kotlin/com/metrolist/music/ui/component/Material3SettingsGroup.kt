@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Material3SettingsGroup(
     title: String? = null,
-    items: List<Material3SettingsItem>
+    items: List<@Composable () -> Unit>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -34,7 +34,7 @@ fun Material3SettingsGroup(
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 8.dp)
             )
         }
-        
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,102 +47,27 @@ fun Material3SettingsGroup(
         ) {
             Column {
                 items.forEachIndexed { index, item ->
-                    Material3SettingsItemRow(
-                        item = item,
-                        isFirst = index == 0,
-                        isLast = index == items.size - 1
-                    )
-                }
-            }
-        }
-    }
-}
+                    val isFirst = index == 0
+                    val isLast = index == items.size - 1
+                    val shape = when {
+                        isFirst && isLast -> RoundedCornerShape(24.dp)
+                        isFirst -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        isLast -> RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                        else -> RoundedCornerShape(0.dp)
+                    }
 
-@Composable
-private fun Material3SettingsItemRow(
-    item: Material3SettingsItem,
-    isFirst: Boolean,
-    isLast: Boolean
-) {
-    val shape = when {
-        isFirst && isLast -> RoundedCornerShape(12.dp)
-        isFirst -> RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-        isLast -> RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
-        else -> RoundedCornerShape(0.dp)
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape)
-            .clickable(
-                enabled = item.onClick != null,
-                onClick = { item.onClick?.invoke() }
-            )
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        item.icon?.let { icon ->
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        MaterialTheme.colorScheme.primary.copy(
-                            alpha = if (item.isHighlighted) 0.15f else 0.1f
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if (item.showBadge) {
-                    BadgedBox(
-                        badge = {
-                            Badge(
-                                containerColor = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = null,
-                            tint = if (item.isHighlighted)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
-                            modifier = Modifier.size(24.dp)
+                    Box(modifier = Modifier.clip(shape)) {
+                        item()
+                    }
+                    if (!isLast) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
                         )
                     }
-                } else {
-                    Icon(
-                        painter = icon,
-                        contentDescription = null,
-                        tint = if (item.isHighlighted)
-                            MaterialTheme.colorScheme.primary
-                        else
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
-                        modifier = Modifier.size(24.dp)
-                    )
                 }
             }
-            Spacer(modifier = Modifier.width(16.dp))
-        }
-
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
-                item.title()
-            }
-            
-            item.description?.let { desc ->
-                Spacer(modifier = Modifier.height(2.dp))
-                desc()
-            }
-        }
-        
-        item.trailingContent?.let { trailing ->
-            Spacer(modifier = Modifier.width(8.dp))
-            trailing()
         }
     }
 }
