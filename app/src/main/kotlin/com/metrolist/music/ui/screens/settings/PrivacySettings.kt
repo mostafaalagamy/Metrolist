@@ -3,7 +3,6 @@ package com.metrolist.music.ui.screens.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -12,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -35,8 +33,9 @@ import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseSearchHistoryKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.Material3SettingsGroup
-import com.metrolist.music.ui.component.Material3SettingsItem
+import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 
@@ -132,91 +131,60 @@ fun PrivacySettings(
 
     Column(
         Modifier
-            .windowInsetsPadding(
-                LocalPlayerAwareWindowInsets.current.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                )
-            )
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
     ) {
         Spacer(
-            Modifier
-                .windowInsetsPadding(
-                    LocalPlayerAwareWindowInsets.current.only(
-                        WindowInsetsSides.Top
-                    )
-                )
-                .height(16.dp)
-        )
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.listen_history),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.history),
-                    title = { Text(stringResource(R.string.pause_listen_history)) },
-                    trailingContent = {
-                        Switch(
-                            checked = pauseListenHistory,
-                            onCheckedChange = onPauseListenHistoryChange
-                        )
-                    },
-                    onClick = { onPauseListenHistoryChange(!pauseListenHistory) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.delete_history),
-                    title = { Text(stringResource(R.string.clear_listen_history)) },
-                    onClick = { showClearListenHistoryDialog = true }
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
                 )
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.search_history),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.search_off),
-                    title = { Text(stringResource(R.string.pause_search_history)) },
-                    trailingContent = {
-                        Switch(
-                            checked = pauseSearchHistory,
-                            onCheckedChange = onPauseSearchHistoryChange
-                        )
-                    },
-                    onClick = { onPauseSearchHistoryChange(!pauseSearchHistory) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.clear_all),
-                    title = { Text(stringResource(R.string.clear_search_history)) },
-                    onClick = { showClearSearchHistoryDialog = true }
-                )
-            )
+        PreferenceGroupTitle(
+            title = stringResource(R.string.listen_history)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        SwitchPreference(
+            title = { Text(stringResource(R.string.pause_listen_history)) },
+            icon = { Icon(painterResource(R.drawable.history), null) },
+            checked = pauseListenHistory,
+            onCheckedChange = onPauseListenHistoryChange,
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.clear_listen_history)) },
+            icon = { Icon(painterResource(R.drawable.delete_history), null) },
+            onClick = { showClearListenHistoryDialog = true },
+        )
 
-        Material3SettingsGroup(
+        PreferenceGroupTitle(
+            title = stringResource(R.string.search_history)
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.pause_search_history)) },
+            icon = { Icon(painterResource(R.drawable.search_off), null) },
+            checked = pauseSearchHistory,
+            onCheckedChange = onPauseSearchHistoryChange,
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.clear_search_history)) },
+            icon = { Icon(painterResource(R.drawable.clear_all), null) },
+            onClick = { showClearSearchHistoryDialog = true },
+        )
+
+        PreferenceGroupTitle(
             title = stringResource(R.string.misc),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.screenshot),
-                    title = { Text(stringResource(R.string.disable_screenshot)) },
-                    description = { Text(stringResource(R.string.disable_screenshot_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = disableScreenshot,
-                            onCheckedChange = onDisableScreenshotChange
-                        )
-                    },
-                    onClick = { onDisableScreenshotChange(!disableScreenshot) }
-                )
-            )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        SwitchPreference(
+            title = { Text(stringResource(R.string.disable_screenshot)) },
+            description = stringResource(R.string.disable_screenshot_desc),
+            icon = { Icon(painterResource(R.drawable.screenshot), null) },
+            checked = disableScreenshot,
+            onCheckedChange = onDisableScreenshotChange,
+        )
     }
 
     TopAppBar(

@@ -116,8 +116,6 @@ import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
-import com.metrolist.music.constants.PureBlackMiniPlayerKey
-import com.metrolist.music.constants.MiniPlayerOutlineKey
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
@@ -503,14 +501,10 @@ fun BottomSheetPlayer(
             playerConnection.player.clearMediaItems()
         },
         collapsedContent = {
-            val (pureBlackMiniPlayer, ) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
-            val (miniPlayerOutline, ) = rememberPreference(MiniPlayerOutlineKey, defaultValue = true)
             MiniPlayer(
                 position = position,
                 duration = duration,
                 pureBlack = pureBlack,
-                pureBlackMiniPlayer = pureBlackMiniPlayer,
-                miniPlayerOutline = miniPlayerOutline,
             )
         },
     ) {

@@ -112,6 +112,7 @@
     <string name="remove_from_queue">Remove from queue</string>
     <string name="search_online">Search online</string>
     <string name="action_sync">Sync</string>
+    <string name="actions">Actions</string>
     <string name="advanced">Advanced</string>
     <string name="tempo_and_pitch">Tempo and Pitch</string>
 
@@ -240,8 +241,6 @@
     <string name="dark_theme_off">Off</string>
     <string name="dark_theme_follow_system">Follow system</string>
     <string name="pure_black">Pure black</string>
-    <string name="pure_black_mini_player">Pure black mini player</string>
-    <string name="mini_player_outline">Mini player outline</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
     <string name="player">Player</string>
     <string name="player_text_alignment">Player text alignment</string>

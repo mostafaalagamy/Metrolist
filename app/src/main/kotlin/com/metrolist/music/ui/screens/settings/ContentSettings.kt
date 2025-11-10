@@ -6,8 +6,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
-import androidx.core.net.toUri
+import android.os.LocaleList
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.core.net.toUri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,44 +37,27 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.constants.AppLanguageKey
-import com.metrolist.music.constants.ContentCountryKey
-import com.metrolist.music.constants.ContentLanguageKey
-import com.metrolist.music.constants.CountryCodeToName
-import com.metrolist.music.constants.EnableKugouKey
-import com.metrolist.music.constants.EnableLrcLibKey
-import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.LanguageCodeToName
-import com.metrolist.music.constants.PreferredLyricsProvider
-import com.metrolist.music.constants.PreferredLyricsProviderKey
-import com.metrolist.music.constants.ProxyEnabledKey
-import com.metrolist.music.constants.ProxyPasswordKey
-import com.metrolist.music.constants.ProxyTypeKey
-import com.metrolist.music.constants.ProxyUrlKey
-import com.metrolist.music.constants.ProxyUsernameKey
-import com.metrolist.music.constants.QuickPicks
-import com.metrolist.music.constants.QuickPicksKey
-import com.metrolist.music.constants.SYSTEM_DEFAULT
-import com.metrolist.music.constants.TopSize
-import com.metrolist.music.ui.component.EditTextPreference
-import com.metrolist.music.ui.component.EnumDialog
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.Material3SettingsGroup
-import com.metrolist.music.ui.component.Material3SettingsItem
+import com.metrolist.music.constants.*
+import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -232,13 +218,20 @@ fun ContentSettings(
         )
     }
 
-    var showContentLanguageDialog by rememberSaveable { mutableStateOf(false) }
-    if (showContentLanguageDialog) {
-        EnumDialog(
-            onDismiss = { showContentLanguageDialog = false },
-            title = stringResource(R.string.content_language),
-            values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
+    Column(
+        Modifier
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        PreferenceGroupTitle(title = stringResource(R.string.general))
+        ListPreference(
+            title = { Text(stringResource(R.string.content_language)) },
+            icon = { Icon(painterResource(R.drawable.language), null) },
             selectedValue = contentLanguage,
+            values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
+            valueText = {
+                LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
+            },
             onValueSelected = { newValue ->
                 val locale = Locale.getDefault()
                 val languageTag = locale.toLanguageTag().replace("-Hant", "")
@@ -251,21 +244,16 @@ fun ContentSettings(
                 )
 
                 onContentLanguageChange(newValue)
-                showContentLanguageDialog = false
-            },
-            valueText = {
-                LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
             }
         )
-    }
-
-    var showContentCountryDialog by rememberSaveable { mutableStateOf(false) }
-    if (showContentCountryDialog) {
-        EnumDialog(
-            onDismiss = { showContentCountryDialog = false },
-            title = stringResource(R.string.content_country),
-            values = listOf(SYSTEM_DEFAULT) + CountryCodeToName.keys.toList(),
+        ListPreference(
+            title = { Text(stringResource(R.string.content_country)) },
+            icon = { Icon(painterResource(R.drawable.location_on), null) },
             selectedValue = contentCountry,
+            values = listOf(SYSTEM_DEFAULT) + CountryCodeToName.keys.toList(),
+            valueText = {
+                CountryCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
+            },
             onValueSelected = { newValue ->
                 val locale = Locale.getDefault()
 
@@ -276,268 +264,123 @@ fun ContentSettings(
                 )
 
                 onContentCountryChange(newValue)
-                showContentCountryDialog = false
-            },
-            valueText = {
-                CountryCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
-            }
+           }
         )
-    }
 
-    var showAppLanguageDialog by rememberSaveable { mutableStateOf(false) }
-    if (showAppLanguageDialog) {
-        EnumDialog(
-            onDismiss = { showAppLanguageDialog = false },
-            title = stringResource(R.string.app_language),
-            values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
-            selectedValue = appLanguage,
-            onValueSelected = { langTag ->
-                val newLocale = langTag
-                    .takeUnless { it == SYSTEM_DEFAULT }
-                    ?.let { Locale.forLanguageTag(it) }
-                    ?: Locale.getDefault()
-
-                onAppLanguageChange(langTag)
-                setAppLocale(context, newLocale)
-                showAppLanguageDialog = false
-            },
-            valueText = {
-                LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
-            }
+        SwitchPreference(
+            title = { Text(stringResource(R.string.hide_explicit)) },
+            icon = { Icon(painterResource(R.drawable.explicit), null) },
+            checked = hideExplicit,
+            onCheckedChange = onHideExplicitChange,
         )
-    }
 
-    var showPreferredProviderDialog by rememberSaveable { mutableStateOf(false) }
-    if (showPreferredProviderDialog) {
-        EnumDialog(
-            onDismiss = { showPreferredProviderDialog = false },
-            title = stringResource(R.string.set_first_lyrics_provider),
-            values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
+        PreferenceGroupTitle(title = stringResource(R.string.app_language))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.app_language)) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
+                onClick = {
+                    context.startActivity(
+                        Intent(
+                            Settings.ACTION_APP_LOCALE_SETTINGS,
+                            "package:${context.packageName}".toUri()
+                        )
+                    )
+                }
+            )
+        }
+        // Support for Android versions before Android 13
+        else {
+            ListPreference(
+                title = { Text(stringResource(R.string.app_language)) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
+                selectedValue = appLanguage,
+                values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
+                valueText = {
+                    LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
+                },
+                onValueSelected = { langTag ->
+                    val newLocale = langTag
+                        .takeUnless { it == SYSTEM_DEFAULT }
+                        ?.let { Locale.forLanguageTag(it) }
+                        ?: Locale.getDefault()
+
+                    onAppLanguageChange(langTag)
+                    setAppLocale(context, newLocale)
+
+                }
+            )
+        }
+
+        PreferenceGroupTitle(title = stringResource(R.string.proxy))
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_proxy)) },
+            icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
+            checked = proxyEnabled,
+            onCheckedChange = onProxyEnabledChange,
+        )
+        if (proxyEnabled) {
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.config_proxy)) },
+                icon = { Icon(painterResource(R.drawable.settings), null) },
+                onClick = {showProxyConfigurationDialog = true}
+            )
+        }
+
+        PreferenceGroupTitle(title = stringResource(R.string.lyrics))
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_lrclib)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableLrclib,
+            onCheckedChange = onEnableLrclibChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_kugou)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableKugou,
+            onCheckedChange = onEnableKugouChange,
+        )
+        ListPreference(
+            title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
             selectedValue = preferredProvider,
-            onValueSelected = {
-                onPreferredProviderChange(it)
-                showPreferredProviderDialog = false
-            },
+            values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
             valueText = {
                 when (it) {
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
                 }
-            }
-        )
-    }
-
-    var showQuickPicksDialog by rememberSaveable { mutableStateOf(false) }
-    if (showQuickPicksDialog) {
-        EnumDialog(
-            onDismiss = { showQuickPicksDialog = false },
-            title = stringResource(R.string.set_quick_picks),
-            values = listOf(QuickPicks.QUICK_PICKS, QuickPicks.LAST_LISTEN),
-            selectedValue = quickPicks,
-            onValueSelected = {
-                onQuickPicksChange(it)
-                showQuickPicksDialog = false
             },
+            onValueSelected = onPreferredProviderChange,
+        )
+
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.lyrics_romanization)) },
+            icon = { Icon(painterResource(R.drawable.language_korean_latin), null) },
+            onClick = { navController.navigate("settings/content/romanization") }
+        )
+
+        PreferenceGroupTitle(title = stringResource(R.string.misc))
+        EditTextPreference(
+            title = { Text(stringResource(R.string.top_length)) },
+            icon = { Icon(painterResource(R.drawable.trending_up), null) },
+            value = lengthTop,
+            isInputValid = { it.toIntOrNull()?.let { num -> num > 0 } == true },
+            onValueChange = onLengthTopChange,
+        )
+        ListPreference(
+            title = { Text(stringResource(R.string.set_quick_picks)) },
+            icon = { Icon(painterResource(R.drawable.home_outlined), null) },
+            selectedValue = quickPicks,
+            values = listOf(QuickPicks.QUICK_PICKS, QuickPicks.LAST_LISTEN),
             valueText = {
                 when (it) {
                     QuickPicks.QUICK_PICKS -> stringResource(R.string.quick_picks)
                     QuickPicks.LAST_LISTEN -> stringResource(R.string.last_song_listened)
                 }
-            }
+            },
+            onValueSelected = onQuickPicksChange,
         )
-    }
-
-    Column(
-        Modifier
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.general),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.language),
-                    title = { Text(stringResource(R.string.content_language)) },
-                    description = {
-                        Text(
-                            LanguageCodeToName.getOrElse(contentLanguage) { stringResource(R.string.system_default) }
-                        )
-                    },
-                    onClick = { showContentLanguageDialog = true }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.location_on),
-                    title = { Text(stringResource(R.string.content_country)) },
-                    description = {
-                        Text(
-                            CountryCodeToName.getOrElse(contentCountry) { stringResource(R.string.system_default) }
-                        )
-                    },
-                    onClick = { showContentCountryDialog = true }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.explicit),
-                    title = { Text(stringResource(R.string.hide_explicit)) },
-                    trailingContent = {
-                        Switch(
-                            checked = hideExplicit,
-                            onCheckedChange = onHideExplicitChange
-                        )
-                    },
-                    onClick = { onHideExplicitChange(!hideExplicit) }
-                )
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.app_language),
-            items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                listOf(
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.language),
-                        title = { Text(stringResource(R.string.app_language)) },
-                        onClick = {
-                            context.startActivity(
-                                Intent(
-                                    Settings.ACTION_APP_LOCALE_SETTINGS,
-                                    "package:${context.packageName}".toUri()
-                                )
-                            )
-                        }
-                    )
-                )
-            } else {
-                listOf(
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.language),
-                        title = { Text(stringResource(R.string.app_language)) },
-                        description = {
-                            Text(
-                                LanguageCodeToName.getOrElse(appLanguage) { stringResource(R.string.system_default) }
-                            )
-                        },
-                        onClick = { showAppLanguageDialog = true }
-                    )
-                )
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.proxy),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.wifi_proxy),
-                    title = { Text(stringResource(R.string.enable_proxy)) },
-                    trailingContent = {
-                        Switch(
-                            checked = proxyEnabled,
-                            onCheckedChange = onProxyEnabledChange
-                        )
-                    },
-                    onClick = { onProxyEnabledChange(!proxyEnabled) }
-                )
-            ) + if (proxyEnabled) {
-                listOf(
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.settings),
-                        title = { Text(stringResource(R.string.config_proxy)) },
-                        onClick = { showProxyConfigurationDialog = true }
-                    )
-                )
-            } else {
-                emptyList()
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.lyrics),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
-                    title = { Text(stringResource(R.string.enable_lrclib)) },
-                    trailingContent = {
-                        Switch(
-                            checked = enableLrclib,
-                            onCheckedChange = onEnableLrclibChange
-                        )
-                    },
-                    onClick = { onEnableLrclibChange(!enableLrclib) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
-                    title = { Text(stringResource(R.string.enable_kugou)) },
-                    trailingContent = {
-                        Switch(
-                            checked = enableKugou,
-                            onCheckedChange = onEnableKugouChange
-                        )
-                    },
-                    onClick = { onEnableKugouChange(!enableKugou) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
-                    title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
-                    description = {
-                        Text(
-                            when (preferredProvider) {
-                                PreferredLyricsProvider.LRCLIB -> "LrcLib"
-                                PreferredLyricsProvider.KUGOU -> "KuGou"
-                            }
-                        )
-                    },
-                    onClick = { showPreferredProviderDialog = true }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.language_korean_latin),
-                    title = { Text(stringResource(R.string.lyrics_romanization)) },
-                    onClick = { navController.navigate("settings/content/romanization") }
-                )
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.misc),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.trending_up),
-                    title = { Text(stringResource(R.string.top_length)) },
-                    trailingContent = {
-                        EditTextPreference(
-                            title = { Text(stringResource(R.string.top_length)) },
-                            value = lengthTop,
-                            isInputValid = { it.toIntOrNull()?.let { num -> num > 0 } == true },
-                            onValueChange = onLengthTopChange,
-                        )
-                    }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.home_outlined),
-                    title = { Text(stringResource(R.string.set_quick_picks)) },
-                    description = {
-                        Text(
-                            when (quickPicks) {
-                                QuickPicks.QUICK_PICKS -> stringResource(R.string.quick_picks)
-                                QuickPicks.LAST_LISTEN -> stringResource(R.string.last_song_listened)
-                            }
-                        )
-                    },
-                    onClick = { showQuickPicksDialog = true }
-                )
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 
     TopAppBar(
