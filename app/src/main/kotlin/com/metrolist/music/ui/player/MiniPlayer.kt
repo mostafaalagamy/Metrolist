@@ -92,6 +92,8 @@ fun MiniPlayer(
     duration: Long,
     modifier: Modifier = Modifier,
     pureBlack: Boolean,
+    pureBlackMiniPlayer: Boolean,
+    miniPlayerOutline: Boolean,
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
 
@@ -100,7 +102,9 @@ fun MiniPlayer(
             position = position,
             duration = duration,
             modifier = modifier,
-            pureBlack = pureBlack
+            pureBlack = pureBlack,
+            pureBlackMiniPlayer = pureBlackMiniPlayer,
+            miniPlayerOutline = miniPlayerOutline
         )
     } else {
         // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
@@ -131,6 +135,8 @@ private fun NewMiniPlayer(
     duration: Long,
     modifier: Modifier = Modifier,
     pureBlack: Boolean,
+    pureBlackMiniPlayer: Boolean,
+    miniPlayerOutline: Boolean,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
@@ -272,7 +278,18 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
+                    color = if (pureBlackMiniPlayer) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                )
+                .then(
+                    if (miniPlayerOutline) {
+                        Modifier.border(
+                            width = 0.5.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(32.dp)
+                        )
+                    } else {
+                        Modifier
+                    }
                 )
         ) {
             Row(
