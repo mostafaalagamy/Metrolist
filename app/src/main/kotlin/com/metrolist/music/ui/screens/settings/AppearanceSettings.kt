@@ -216,6 +216,26 @@ fun AppearanceSettings(
         mutableStateOf(false)
     }
 
+    if (showDarkModeDialog) {
+        EnumDialog(
+            onDismiss = { showDarkModeDialog = false },
+            onSelect = {
+                onDarkModeChange(it)
+                showDarkModeDialog = false
+            },
+            title = stringResource(R.string.dark_theme),
+            current = darkMode,
+            values = DarkMode.values().toList(),
+            valueText = {
+                when (it) {
+                    DarkMode.ON -> stringResource(R.string.dark_theme_on)
+                    DarkMode.OFF -> stringResource(R.string.dark_theme_off)
+                    DarkMode.AUTO -> stringResource(R.string.dark_theme_follow_system)
+                }
+            }
+        )
+    }
+
     var showDefaultOpenTabDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -229,7 +249,7 @@ fun AppearanceSettings(
             },
             title = stringResource(R.string.default_open_tab),
             current = defaultOpenTab,
-            values = NavigationTab.entries,
+            values = NavigationTab.values().toList(),
             valueText = {
                 when (it) {
                     NavigationTab.HOME -> stringResource(R.string.home)
@@ -253,7 +273,7 @@ fun AppearanceSettings(
             },
             title = stringResource(R.string.default_lib_chips),
             current = defaultChip,
-            values = LibraryFilter.entries,
+            values = LibraryFilter.values().toList(),
             valueText = {
                 when (it) {
                     LibraryFilter.SONGS -> stringResource(R.string.songs)
@@ -279,33 +299,11 @@ fun AppearanceSettings(
             },
             title = stringResource(R.string.grid_cell_size),
             current = gridItemSize,
-            values = GridItemSize.entries,
+            values = GridItemSize.values().toList(),
             valueText = {
                 when (it) {
                     GridItemSize.BIG -> stringResource(R.string.big)
                     GridItemSize.SMALL -> stringResource(R.string.small)
-                }
-            }
-        )
-    }
-
-
-
-    if (showDarkModeDialog) {
-        EnumDialog(
-            onDismiss = { showDarkModeDialog = false },
-            onSelect = {
-                onDarkModeChange(it)
-                showDarkModeDialog = false
-            },
-            title = stringResource(R.string.dark_theme),
-            current = darkMode,
-            values = DarkMode.entries,
-            valueText = {
-                when (it) {
-                    DarkMode.ON -> stringResource(R.string.dark_theme_on)
-                    DarkMode.OFF -> stringResource(R.string.dark_theme_off)
-                    DarkMode.AUTO -> stringResource(R.string.dark_theme_follow_system)
                 }
             }
         )
@@ -503,36 +501,6 @@ fun AppearanceSettings(
             }
         )
 
-        Spacer(modifier = Modifier.height(27.dp))
-
-        Material3SettingsGroup(
-            title = stringResource(R.string.player),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.palette),
-                    title = { Text(stringResource(R.string.new_player_design)) },
-                    trailingContent = {
-                        Switch(
-                            checked = useNewPlayerDesign,
-                            onCheckedChange = onUseNewPlayerDesignChange
-                        )
-                    },
-                    onClick = { onUseNewPlayerDesignChange(!useNewPlayerDesign) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.nav_bar),
-                    title = { Text(stringResource(R.string.new_mini_player_design)) },
-                    trailingContent = {
-                        Switch(
-                            checked = useNewMiniPlayerDesign,
-                            onCheckedChange = onUseNewMiniPlayerDesignChange
-                        )
-                    },
-                    onClick = { onUseNewMiniPlayerDesignChange(!useNewMiniPlayerDesign) }
-                )
-            )
-        )
-
         AnimatedVisibility(useNewMiniPlayerDesign) {
             val (miniPlayerOutline, onMiniPlayerOutlineChange) = rememberPreference(
                 MiniPlayerOutlineKey,
@@ -565,7 +533,7 @@ fun AppearanceSettings(
                         if (pureBlack) {
                             add(
                                 Material3SettingsItem(
-                                    icon = painterResource(R.drawable.outline),
+                                    icon = painterResource(R.drawable.palette),
                                     title = { Text(stringResource(R.string.mini_player_outline)) },
                                     trailingContent = {
                                         Switch(
@@ -581,6 +549,36 @@ fun AppearanceSettings(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        Material3SettingsGroup(
+            title = stringResource(R.string.player),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.palette),
+                    title = { Text(stringResource(R.string.new_player_design)) },
+                    trailingContent = {
+                        Switch(
+                            checked = useNewPlayerDesign,
+                            onCheckedChange = onUseNewPlayerDesignChange
+                        )
+                    },
+                    onClick = { onUseNewPlayerDesignChange(!useNewPlayerDesign) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.nav_bar),
+                    title = { Text(stringResource(R.string.new_mini_player_design)) },
+                    trailingContent = {
+                        Switch(
+                            checked = useNewMiniPlayerDesign,
+                            onCheckedChange = onUseNewMiniPlayerDesignChange
+                        )
+                    },
+                    onClick = { onUseNewMiniPlayerDesignChange(!useNewMiniPlayerDesign) }
+                )
+            )
+        )
 
         Spacer(modifier = Modifier.height(27.dp))
 

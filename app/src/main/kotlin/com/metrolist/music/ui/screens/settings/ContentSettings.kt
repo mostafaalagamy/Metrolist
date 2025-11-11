@@ -57,7 +57,10 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.*
-import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.component.EnumDialog
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.Material3SettingsGroup
+import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -291,7 +294,7 @@ fun ContentSettings(
             },
             title = stringResource(R.string.set_first_lyrics_provider),
             current = preferredProvider,
-            values = PreferredLyricsProvider.entries,
+            values = PreferredLyricsProvider.values().toList(),
             valueText = {
                 when (it) {
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
@@ -314,7 +317,7 @@ fun ContentSettings(
             },
             title = stringResource(R.string.set_quick_picks),
             current = quickPicks,
-            values = QuickPicks.entries,
+            values = QuickPicks.values().toList(),
             valueText = {
                 when (it) {
                     QuickPicks.QUICK_PICKS -> stringResource(R.string.quick_picks)
