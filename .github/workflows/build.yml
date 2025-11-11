@@ -22,6 +22,13 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
 
+    env:
+      KEYSTORE: ${{ secrets.KEYSTORE }}
+      ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
     strategy:
       matrix:
         abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
@@ -53,14 +60,14 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Sign APK
-        if: ${{ secrets.KEYSTORE != '' || secrets.ANDROID_SIGNING_KEY != '' }}
+        if: ${{ env.KEYSTORE != '' || env.ANDROID_SIGNING_KEY != '' }}
         uses: ilharp/sign-android-release@v2.0.0
         with:
           releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
-          signingKey: ${{ secrets.KEYSTORE || secrets.ANDROID_SIGNING_KEY }}
-          keyAlias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          signingKey: ${{ env.KEYSTORE != '' && env.KEYSTORE || env.ANDROID_SIGNING_KEY }}
+          keyAlias: ${{ env.KEY_ALIAS }}
+          keyStorePassword: ${{ env.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ env.KEY_PASSWORD }}
           buildToolsVersion: 36.0.0
 
       - name: Move APK (signed if available)
