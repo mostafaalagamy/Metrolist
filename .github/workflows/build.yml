@@ -105,10 +105,20 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Restore Persistent Debug Keystore
+      - name: Generate persistent debug keystore (PKCS12)
         run: |
           mkdir -p ./app
-          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
+          # Overwrite or create a PKCS12 keystore compatible with JDK 21
+          keytool -genkeypair -v \
+            -keystore ./app/persistent-debug.keystore \
+            -storetype PKCS12 \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Build Debug APK and Run Lint
         run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary

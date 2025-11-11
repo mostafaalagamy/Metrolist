@@ -48,6 +48,7 @@ jobs:
           if [ ! -f ~/.android/debug.keystore ]; then
             keytool -genkeypair -v \
               -keystore ~/.android/debug.keystore \
+              -storetype PKCS12 \
               -storepass android \
               -alias androiddebugkey \
               -keypass android \
