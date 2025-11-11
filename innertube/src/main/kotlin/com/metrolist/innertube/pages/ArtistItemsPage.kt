@@ -40,6 +40,7 @@ data class ArtistItemsPage(
                     ?.musicResponsiveListItemFlexColumnRenderer?.text
                     ?.runs?.firstOrNull()
                     ?.text?.parseTime() ?: return null,
+                musicVideoType = renderer.musicVideoType,
                 thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                 explicit = renderer.badges?.find {
                     it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
@@ -81,6 +82,7 @@ data class ArtistItemsPage(
                     } ?: return null,
                     album = null,
                     duration = null,
+                    musicVideoType = renderer.musicVideoType,
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     endpoint = renderer.navigationEndpoint.watchEndpoint
                 )

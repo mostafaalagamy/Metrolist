@@ -14,6 +14,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.clean
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.models.splitBySeparator
 import com.metrolist.innertube.utils.parseTime
@@ -34,6 +35,23 @@ data class SearchSummaryPage(
                         title = s.title,
                         items =
                             s.items.filterExplicit().ifEmpty {
+                                return@mapNotNull null
+                            },
+                    )
+                },
+            )
+        } else {
+            this
+        }
+
+    fun filterVideoSongs(disableVideos: Boolean) =
+        if (disableVideos) {
+            SearchSummaryPage(
+                summaries.mapNotNull { s ->
+                    SearchSummary(
+                        title = s.title,
+                        items =
+                            s.items.filterVideoSongs(true).ifEmpty {
                                 return@mapNotNull null
                             },
                     )
@@ -74,6 +92,7 @@ data class SearchSummaryPage(
                                 ?.firstOrNull()
                                 ?.text
                                 ?.parseTime(),
+                        musicVideoType = renderer.onTap.musicVideoType,
                         thumbnail = renderer.thumbnail.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit =
                             renderer.subtitleBadges?.find {
@@ -221,6 +240,7 @@ data class SearchSummaryPage(
                                 ?.firstOrNull()
                                 ?.text
                                 ?.parseTime(),
+                        musicVideoType = renderer.musicVideoType,
                         thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit =
                             renderer.badges?.find {
