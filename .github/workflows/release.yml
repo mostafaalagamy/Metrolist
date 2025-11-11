@@ -111,34 +111,43 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Sign APK
+        if: ${{ secrets.KEYSTORE != '' || secrets.ANDROID_SIGNING_KEY != '' }}
         uses: ilharp/sign-android-release@v2.0.0
         with:
           releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
-          signingKey: ${{ secrets.KEYSTORE }}
+          signingKey: ${{ secrets.KEYSTORE || secrets.ANDROID_SIGNING_KEY }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 36.0.0
 
-      - name: Move and rename signed APKs
+      - name: Move and rename APK (signed if available)
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
           
           SIGNED_APK=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
           
           if [ -z "$SIGNED_APK" ]; then
-            echo "No signed APK found for ${{ matrix.abi }}"
-            ls -la app/build/outputs/apk/${{ matrix.abi }}/release/
-            exit 1
+            echo "No signed APK found, falling back to unsigned"
+            UNSIGNED_APK=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*.apk" | head -1)
+            if [ -z "$UNSIGNED_APK" ]; then
+              echo "No APK found for ${{ matrix.abi }}"
+              ls -la app/build/outputs/apk/${{ matrix.abi }}/release/
+              exit 1
+            fi
           fi
           
           if [ "${{ matrix.abi }}" = "universal" ]; then
-            TARGET_NAME="Metrolist.apk"
+            TARGET_NAME="Metrolist${SIGNED_APK:+}.apk"
           else
-            TARGET_NAME="app-${{ matrix.abi }}-release.apk"
+            TARGET_NAME="app-${{ matrix.abi }}-release${SIGNED_APK:+}.apk"
           fi
           
-          mv "$SIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/$TARGET_NAME"
+          if [ -n "$SIGNED_APK" ]; then
+            mv "$SIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/$TARGET_NAME"
+          else
+            mv "$UNSIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/${TARGET_NAME/-release/-release-unsigned}"
+          fi
           
           echo "APK renamed to: $TARGET_NAME"
           ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
@@ -147,7 +156,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.abi == 'universal' && 'Metrolist' || format('app-{0}-release', matrix.abi) }}
-          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
+          path: |
+            app/build/outputs/apk/${{ matrix.abi }}/release/out/*.apk
 
   create-release:
     needs: [check-version, build]
