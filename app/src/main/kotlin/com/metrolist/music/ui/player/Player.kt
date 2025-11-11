@@ -677,10 +677,10 @@ fun BottomSheetPlayer(
                                     context.startActivity(Intent.createChooser(intent, null))
                                 }
                         ) {
-                            Image(
+                            Icon(
                                 painter = painterResource(R.drawable.share),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(iconButtonColor),
+                                tint = iconButtonColor,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .size(24.dp)
@@ -730,10 +730,10 @@ fun BottomSheetPlayer(
                                 context.startActivity(Intent.createChooser(intent, null))
                             },
                     ) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.share),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(iconButtonColor),
+                            tint = iconButtonColor,
                             modifier =
                             Modifier
                                 .align(Alignment.Center)

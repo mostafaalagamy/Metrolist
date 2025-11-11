@@ -216,81 +216,6 @@ fun AppearanceSettings(
         mutableStateOf(false)
     }
 
-    var showDefaultOpenTabDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (showDefaultOpenTabDialog) {
-        EnumDialog(
-            onDismiss = { showDefaultOpenTabDialog = false },
-            onSelect = {
-                onDefaultOpenTabChange(it)
-                showDefaultOpenTabDialog = false
-            },
-            title = stringResource(R.string.default_open_tab),
-            current = defaultOpenTab,
-            values = NavigationTab.entries,
-            valueText = {
-                when (it) {
-                    NavigationTab.HOME -> stringResource(R.string.home)
-                    NavigationTab.SEARCH -> stringResource(R.string.search)
-                    NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
-                }
-            }
-        )
-    }
-
-    var showDefaultChipDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (showDefaultChipDialog) {
-        EnumDialog(
-            onDismiss = { showDefaultChipDialog = false },
-            onSelect = {
-                onDefaultChipChange(it)
-                showDefaultChipDialog = false
-            },
-            title = stringResource(R.string.default_lib_chips),
-            current = defaultChip,
-            values = LibraryFilter.entries,
-            valueText = {
-                when (it) {
-                    LibraryFilter.SONGS -> stringResource(R.string.songs)
-                    LibraryFilter.ARTISTS -> stringResource(R.string.artists)
-                    LibraryFilter.ALBUMS -> stringResource(R.string.albums)
-                    LibraryFilter.PLAYLISTS -> stringResource(R.string.playlists)
-                    LibraryFilter.LIBRARY -> stringResource(R.string.filter_library)
-                }
-            }
-        )
-    }
-
-    var showGridSizeDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (showGridSizeDialog) {
-        EnumDialog(
-            onDismiss = { showGridSizeDialog = false },
-            onSelect = {
-                onGridItemSizeChange(it)
-                showGridSizeDialog = false
-            },
-            title = stringResource(R.string.grid_cell_size),
-            current = gridItemSize,
-            values = GridItemSize.entries,
-            valueText = {
-                when (it) {
-                    GridItemSize.BIG -> stringResource(R.string.big)
-                    GridItemSize.SMALL -> stringResource(R.string.small)
-                }
-            }
-        )
-    }
-
-
-
     if (showDarkModeDialog) {
         EnumDialog(
             onDismiss = { showDarkModeDialog = false },
@@ -599,7 +524,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { showDefaultOpenTabDialog = true }
+                    onClick = { /*TODO*/ }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.tab),
@@ -615,7 +540,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { showDefaultChipDialog = true }
+                    onClick = { /*TODO*/ }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.swipe),
@@ -661,7 +586,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { showGridSizeDialog = true }
+                    onClick = { /*TODO*/ }
                 )
             )
         )

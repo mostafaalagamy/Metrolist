@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 
@@ -50,16 +49,9 @@ fun Material3SettingsGroup(
         ) {
             Column {
                 items.forEachIndexed { index, item ->
-                    val isFirst = index == 0
-                    val isLast = index == items.size - 1
                     Material3SettingsItemRow(
                         item = item,
-                        shape = when {
-                            isFirst && isLast -> RoundedCornerShape(24.dp)
-                            isFirst -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                            isLast -> RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                            else -> RoundedCornerShape(0.dp)
-                        }
+                        showDivider = index < items.size - 1
                     )
                 }
             }
@@ -73,13 +65,13 @@ fun Material3SettingsGroup(
 @Composable
 private fun Material3SettingsItemRow(
     item: Material3SettingsItem,
-    shape: Shape
+    showDivider: Boolean
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(shape)
+                .clip(RoundedCornerShape(12.dp))
                 .clickable(
                     enabled = item.onClick != null,
                     onClick = { item.onClick?.invoke() }
@@ -157,6 +149,17 @@ private fun Material3SettingsItemRow(
             }
         }
 
+        // Divider
+        if (showDivider) {
+            HorizontalDivider(
+                modifier = Modifier.padding(
+                    start = if (item.icon != null) 76.dp else 20.dp,
+                    end = 20.dp
+                ),
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            )
+        }
     }
 }
 

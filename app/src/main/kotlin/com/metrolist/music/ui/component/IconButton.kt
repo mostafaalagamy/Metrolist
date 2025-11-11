@@ -46,7 +46,7 @@ fun ResizableIconButton(
         colorFilter = ColorFilter.tint(color),
         modifier = modifier
             .clickable(
-                indication = null,
+                indication = indication ?: ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
                 onClick = onClick,
