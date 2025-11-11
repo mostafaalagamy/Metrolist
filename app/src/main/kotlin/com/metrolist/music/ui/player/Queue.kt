@@ -48,6 +48,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -130,6 +132,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import sh.calvin.reorderable.reorderable
+import sh.calvin.reorderable.detectReorder
 import kotlin.math.roundToInt
 
 @SuppressLint("UnrememberedMutableState")
@@ -669,7 +673,9 @@ fun Queue(
                             bottom = ListItemHeight + 8.dp,
                         ),
                     ).asPaddingValues(),
-                modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection)
+                modifier = Modifier
+                    .nestedScroll(state.preUpPostDownNestedScrollConnection)
+                    .reorderable(reorderableState)
             ) {
                 item(key = "queue_top_spacer") {
                     Spacer(
@@ -687,8 +693,12 @@ fun Queue(
                     ReorderableItem(
                         state = reorderableState,
                         key = window.uid.hashCode(),
-                    ) {
+                    ) { isDragging ->
                         val currentItem by rememberUpdatedState(window)
+                        val elevation = animateDpAsState(
+                            targetValue = if (isDragging) 8.dp else 0.dp,
+                            label = "queue-row-elevation"
+                        )
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance -> totalDistance }
@@ -767,7 +777,7 @@ fun Queue(
                                         if (!locked) {
                                             IconButton(
                                                 onClick = { },
-                                                modifier = Modifier.draggableHandle()
+                                                modifier = Modifier.detectReorder(reorderableState)
                                             ) {
                                                 Icon(
                                                     painter = painterResource(R.drawable.drag_handle),
@@ -814,14 +824,18 @@ fun Queue(
                             }
                         }
 
+                        val elevatedContent: @Composable () -> Unit = {
+                            Surface(shadowElevation = elevation.value) { content() }
+                        }
+
                         if (locked) {
-                            content()
+                            elevatedContent()
                         } else {
                             SwipeToDismissBox(
                                 state = dismissBoxState,
                                 backgroundContent = {},
                             ) {
-                                content()
+                                elevatedContent()
                             }
                         }
                     }

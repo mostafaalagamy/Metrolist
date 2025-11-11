@@ -157,6 +157,10 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.material3.Surface
+import sh.calvin.reorderable.reorderable
+import sh.calvin.reorderable.detectReorder
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -464,6 +468,7 @@ fun LocalPlaylistScreen(
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
+            modifier = Modifier.reorderable(reorderableState),
         ) {
             playlist?.let { playlist ->
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
@@ -536,8 +541,12 @@ fun LocalPlaylistScreen(
                     ReorderableItem(
                         state = reorderableState,
                         key = song.map.id
-                    ) {
+                    ) { isDragging ->
                         val currentItem by rememberUpdatedState(song)
+                        val elevation = animateDpAsState(
+                            targetValue = if (isDragging) 8.dp else 0.dp,
+                            label = "playlist-row-elevation"
+                        )
 
                         fun deleteFromPlaylist() {
                             database.transaction {
@@ -611,7 +620,7 @@ fun LocalPlaylistScreen(
                                     if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
-                                            modifier = Modifier.draggableHandle(),
+                                            modifier = Modifier.detectReorder(reorderableState),
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.drag_handle),
@@ -650,9 +659,13 @@ fun LocalPlaylistScreen(
                             )
                         }
 
+                        val elevatedContent: @Composable () -> Unit = {
+                            Surface(shadowElevation = elevation.value) { content() }
+                        }
+
                         if (locked || selection || !swipeRemoveEnabled) {
                             Box(modifier = Modifier.animateItem()) {
-                                content()
+                                elevatedContent()
                             }
                         } else {
                             SwipeToDismissBox(
@@ -660,7 +673,7 @@ fun LocalPlaylistScreen(
                                 backgroundContent = {},
                                 modifier = Modifier.animateItem()
                             ) {
-                                content()
+                                elevatedContent()
                             }
                         }
                     }
@@ -673,8 +686,12 @@ fun LocalPlaylistScreen(
                     ReorderableItem(
                         state = reorderableState,
                         key = songWrapper.item.map.id,
-                    ) {
+                    ) { isDragging ->
                         val currentItem by rememberUpdatedState(songWrapper.item)
+                        val elevation = animateDpAsState(
+                            targetValue = if (isDragging) 8.dp else 0.dp,
+                            label = "playlist-row-elevation"
+                        )
 
                         fun deleteFromPlaylist() {
                             database.transaction {
@@ -737,7 +754,7 @@ fun LocalPlaylistScreen(
                                     if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
-                                            modifier = Modifier.draggableHandle(),
+                                            modifier = Modifier.detectReorder(reorderableState),
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.drag_handle),
@@ -780,9 +797,13 @@ fun LocalPlaylistScreen(
                             )
                         }
 
+                        val elevatedContent: @Composable () -> Unit = {
+                            Surface(shadowElevation = elevation.value) { content() }
+                        }
+
                         if (locked || !editable || !swipeRemoveEnabled) {
                             Box(modifier = Modifier.animateItem()) {
-                                content()
+                                elevatedContent()
                             }
                         } else {
                             SwipeToDismissBox(
@@ -790,7 +811,7 @@ fun LocalPlaylistScreen(
                                 backgroundContent = {},
                                 modifier = Modifier.animateItem()
                             ) {
-                                content()
+                                elevatedContent()
                             }
                         }
                     }
