@@ -132,8 +132,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import sh.calvin.reorderable.reorderable
-import sh.calvin.reorderable.detectReorder
 import kotlin.math.roundToInt
 
 @SuppressLint("UnrememberedMutableState")
@@ -675,7 +673,6 @@ fun Queue(
                     ).asPaddingValues(),
                 modifier = Modifier
                     .nestedScroll(state.preUpPostDownNestedScrollConnection)
-                    .reorderable(reorderableState)
             ) {
                 item(key = "queue_top_spacer") {
                     Spacer(
@@ -777,7 +774,7 @@ fun Queue(
                                         if (!locked) {
                                             IconButton(
                                                 onClick = { },
-                                                modifier = Modifier.detectReorder(reorderableState)
+                                                modifier = Modifier.draggableHandle()
                                             ) {
                                                 Icon(
                                                     painter = painterResource(R.drawable.drag_handle),
