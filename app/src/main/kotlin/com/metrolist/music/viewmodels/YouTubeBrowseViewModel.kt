@@ -5,8 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
@@ -30,10 +32,14 @@ constructor(
 
     init {
         viewModelScope.launch {
+            val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+            val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
             YouTube
                 .browse(browseId, params)
                 .onSuccess {
-                    result.value = it.filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                    result.value = it
+                        .filterExplicit(hideExplicit)
+                        .filterVideoSongs(hideVideoSongs)
                 }.onFailure {
                     reportException(it)
                 }
