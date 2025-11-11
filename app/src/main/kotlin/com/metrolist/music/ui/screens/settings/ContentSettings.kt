@@ -29,6 +29,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -327,7 +328,43 @@ fun ContentSettings(
         )
     }
 
+    var showTopLengthDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
+    if (showTopLengthDialog) {
+        var tempLength by rememberSaveable { mutableStateOf(lengthTop.toFloat()) }
+
+        AlertDialog(
+            onDismissRequest = { showTopLengthDialog = false },
+            title = { Text(stringResource(R.string.top_length)) },
+            text = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(tempLength.toInt().toString())
+                    Slider(
+                        value = tempLength,
+                        onValueChange = { tempLength = it },
+                        valueRange = 1f..100f,
+                        steps = 98
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onLengthTopChange(tempLength.toInt().toString())
+                        showTopLengthDialog = false
+                    }
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            }
+        )
+    }
 
     Column(
         Modifier
@@ -492,7 +529,7 @@ fun ContentSettings(
                     icon = painterResource(R.drawable.trending_up),
                     title = { Text(stringResource(R.string.top_length)) },
                     description = { Text(lengthTop) },
-                    onClick = { /*TODO*/ }
+                    onClick = { showTopLengthDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.home_outlined),

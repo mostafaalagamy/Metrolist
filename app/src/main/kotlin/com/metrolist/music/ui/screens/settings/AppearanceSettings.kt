@@ -64,6 +64,7 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.ShowDownloadedPlaylistKey
 import com.metrolist.music.constants.ShowLikedPlaylistKey
@@ -502,13 +503,17 @@ fun AppearanceSettings(
         )
 
         AnimatedVisibility(useNewMiniPlayerDesign) {
+            val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) = rememberPreference(
+                PureBlackMiniPlayerKey,
+                defaultValue = false
+            )
             val (miniPlayerOutline, onMiniPlayerOutlineChange) = rememberPreference(
                 MiniPlayerOutlineKey,
                 defaultValue = true
             )
 
-            LaunchedEffect(pureBlack) {
-                if (pureBlack) {
+            LaunchedEffect(pureBlackMiniPlayer) {
+                if (pureBlackMiniPlayer) {
                     onMiniPlayerOutlineChange(true)
                 }
             }
@@ -523,14 +528,14 @@ fun AppearanceSettings(
                                 title = { Text(stringResource(R.string.pure_black_mini_player)) },
                                 trailingContent = {
                                     Switch(
-                                        checked = pureBlack,
-                                        onCheckedChange = onPureBlackChange
+                                        checked = pureBlackMiniPlayer,
+                                        onCheckedChange = onPureBlackMiniPlayerChange
                                     )
                                 },
-                                onClick = { onPureBlackChange(!pureBlack) }
+                                onClick = { onPureBlackMiniPlayerChange(!pureBlackMiniPlayer) }
                             )
                         )
-                        if (pureBlack) {
+                        if (pureBlackMiniPlayer) {
                             add(
                                 Material3SettingsItem(
                                     icon = painterResource(R.drawable.palette),
