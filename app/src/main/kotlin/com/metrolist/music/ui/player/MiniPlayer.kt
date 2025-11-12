@@ -75,6 +75,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.MiniPlayerOutlineKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
@@ -91,8 +92,7 @@ import androidx.compose.foundation.clickable
 fun MiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
 
@@ -100,8 +100,7 @@ fun MiniPlayer(
         NewMiniPlayer(
             position = position,
             duration = duration,
-            modifier = modifier,
-            pureBlack = pureBlack
+            modifier = modifier
         )
     } else {
         // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
@@ -119,8 +118,7 @@ fun MiniPlayer(
                     Modifier.align(Alignment.CenterEnd)
                 } else {
                     Modifier.align(Alignment.Center)
-                },
-                pureBlack = pureBlack
+                }
             )
         }
     }
@@ -130,9 +128,9 @@ fun MiniPlayer(
 private fun NewMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -541,9 +539,9 @@ private fun NewMiniPlayer(
 private fun LegacyMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()

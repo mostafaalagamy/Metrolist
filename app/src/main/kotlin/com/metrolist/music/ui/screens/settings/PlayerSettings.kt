@@ -148,40 +148,6 @@ fun PlayerSettings(
         )
     }
 
-    var showHistoryDurationDialog by remember {
-        mutableStateOf(false)
-    }
-
-    if (showHistoryDurationDialog) {
-        var sliderValue by remember {
-            mutableFloatStateOf(historyDuration)
-        }
-        AlertDialog(
-            onDismissRequest = { showHistoryDurationDialog = false },
-            title = { Text(stringResource(R.string.history_duration)) },
-            text = {
-                Column {
-                    Text(text = sliderValue.roundToInt().toString())
-                    Slider(
-                        value = sliderValue,
-                        onValueChange = { sliderValue = it },
-                        valueRange = 1f..100f
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onHistoryDurationChange(sliderValue)
-                        showHistoryDurationDialog = false
-                    }
-                ) {
-                    Text(stringResource(android.R.string.ok))
-                }
-            }
-        )
-    }
-
     Column(
         Modifier
             .windowInsetsPadding(
@@ -220,8 +186,16 @@ fun PlayerSettings(
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.history),
                     title = { Text(stringResource(R.string.history_duration)) },
-                    description = { Text(historyDuration.roundToInt().toString()) },
-                    onClick = { showHistoryDurationDialog = true }
+                    description = {
+                        Column {
+                            Text(historyDuration.roundToInt().toString())
+                            Slider(
+                                value = historyDuration,
+                                onValueChange = onHistoryDurationChange,
+                                valueRange = 1f..100f
+                            )
+                        }
+                    }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.fast_forward),

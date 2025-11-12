@@ -512,11 +512,6 @@ fun AppearanceSettings(
                 defaultValue = true
             )
 
-            LaunchedEffect(pureBlackMiniPlayer) {
-                if (pureBlackMiniPlayer) {
-                    onMiniPlayerOutlineChange(true)
-                }
-            }
             Column {
                 Spacer(modifier = Modifier.height(27.dp))
                 Material3SettingsGroup(

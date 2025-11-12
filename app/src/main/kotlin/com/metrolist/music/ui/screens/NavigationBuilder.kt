@@ -286,46 +286,102 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         YouTubeBrowseScreen(navController)
     }
-    composable("settings") {
+    composable(
+        "settings",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         SettingsScreen(navController, scrollBehavior, latestVersionName)
     }
-    composable("settings/appearance") {
+    composable(
+        "settings/appearance",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         AppearanceSettings(navController, scrollBehavior)
     }
-    composable("settings/content") {
+    composable(
+        "settings/content",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         ContentSettings(navController, scrollBehavior)
     }
-    composable("settings/content/romanization") {
+    composable(
+        "settings/content/romanization",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         RomanizationSettings(navController, scrollBehavior)
     }
-    composable("settings/player") {
+    composable(
+        "settings/player",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         PlayerSettings(navController, scrollBehavior)
     }
-    composable("settings/storage") {
+    composable(
+        "settings/storage",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         StorageSettings(navController, scrollBehavior)
     }
-    composable("settings/privacy") {
+    composable(
+        "settings/privacy",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         PrivacySettings(navController, scrollBehavior)
     }
-    composable("settings/backup_restore") {
+    composable(
+        "settings/backup_restore",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         BackupAndRestore(navController, scrollBehavior)
     }
-    composable("settings/integrations") {
+    composable(
+        "settings/integrations",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         IntegrationScreen(navController, scrollBehavior)
     }
-    composable("settings/integrations/discord") {
+    composable(
+        "settings/integrations/discord",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         DiscordSettings(navController, scrollBehavior)
     }
-    composable("settings/integrations/lastfm") {
+    composable(
+        "settings/integrations/lastfm",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         LastFMSettings(navController, scrollBehavior)
     }
-    composable("settings/discord/login") {
+    composable(
+        "settings/discord/login",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         DiscordLoginScreen(navController)
     }
-    composable("settings/updater") {
+    composable(
+        "settings/updater",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         UpdaterScreen(navController, scrollBehavior)
     }
-    composable("settings/about") {
+    composable(
+        "settings/about",
+        enterTransition = { fadeIn(tween(350)) + slideInHorizontally(tween(350), initialOffsetX = { it / 5 }) },
+        exitTransition = { fadeOut(tween(350)) + slideOutHorizontally(tween(350), targetOffsetX = { -it / 5 }) },
+    ) {
         AboutScreen(navController, scrollBehavior)
     }
     composable("login") {
