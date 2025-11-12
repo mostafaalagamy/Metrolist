@@ -10,45 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
       - uses: actions/checkout@v5
-
-      # Step 2: Set up Android SDK
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
-      # Step 3: Install required SDK components
       - name: Install SDK components
         run: |
           sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
           yes | sdkmanager --licenses
 
-      # Step 4: Set up JDK 21
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
           java-version: 21
           distribution: "temurin"
 
-      # Step 5: Set up Gradle
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           cache-disabled: true
           cache-cleanup: on-success
 
-      # Step 6: Make gradlew executable
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # Step 7: Generate default debug keystore if it doesn't exist
-      - name: Generate default debug keystore
+      - name: Generate debug.keystore if not exists
         run: |
           mkdir -p ~/.android
           if [ ! -f ~/.android/debug.keystore ]; then
-            keytool -genkeypair -v \
+            keytool -genkey -v \
               -keystore ~/.android/debug.keystore \
-              -storetype PKCS12 \
               -storepass android \
               -alias androiddebugkey \
               -keypass android \
@@ -58,7 +48,6 @@ jobs:
               -dname "CN=Android Debug,O=Android,C=US"
           fi
 
-      # Step 8: Build and lint Universal Debug APK
       - name: Build and Lint Universal Debug APK
         run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
         env:
@@ -67,7 +56,6 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
-      # Step 9: Upload APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

@@ -17,17 +17,9 @@ permissions:
   discussions: write
 
 jobs:
-  build_release:
-    name: Build Release APKs
+  build:
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
-
-    env:
-      KEYSTORE: ${{ secrets.KEYSTORE }}
-      ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     strategy:
       matrix:
@@ -35,19 +27,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-
+      
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: 21
-          distribution: temurin
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           cache-disabled: true
           cache-cleanup: on-success
-
+          
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -60,31 +52,20 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Sign APK
-        if: ${{ env.KEYSTORE != '' || env.ANDROID_SIGNING_KEY != '' }}
         uses: ilharp/sign-android-release@v2.0.0
         with:
           releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
-          signingKey: ${{ env.KEYSTORE != '' && env.KEYSTORE || env.ANDROID_SIGNING_KEY }}
-          keyAlias: ${{ env.KEY_ALIAS }}
-          keyStorePassword: ${{ env.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ env.KEY_PASSWORD }}
-          buildToolsVersion: 36.0.0
+          signingKey: ${{ secrets.KEYSTORE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 35.0.0
 
-      - name: Move APK (signed if available)
+      - name: Move signed APK
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
-          SIGNED=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
-          if [ -n "$SIGNED" ]; then
-            mv "$SIGNED" app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
-          else
-            # Fallback to unsigned APK (still useful for local install or later signing)
-            UNSIGNED=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*.apk" | head -1)
-            if [ -z "$UNSIGNED" ]; then
-              echo "No APK found to move" && exit 1
-            fi
-            mv "$UNSIGNED" app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release-unsigned.apk
-          fi
-
+          find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
+  
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
@@ -92,7 +73,7 @@ jobs:
           path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
 
   build_debug:
-    name: Build Debug APK
+    name: build (debug)
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
 
@@ -101,7 +82,6 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
       - name: Install SDK components
         run: |
           sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
@@ -110,32 +90,21 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: 21
-          distribution: temurin
-
+          java-version: '21'
+          distribution: 'temurin'
+          
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           cache-disabled: true
           cache-cleanup: on-success
-
+          
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Generate persistent debug keystore (PKCS12)
+      - name: Restore Persistent Keystore
         run: |
-          mkdir -p ./app
-          # Overwrite or create a PKCS12 keystore compatible with JDK 21
-          keytool -genkeypair -v \
-            -keystore ./app/persistent-debug.keystore \
-            -storetype PKCS12 \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
+          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
       - name: Build Debug APK and Run Lint
         run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
