@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -39,7 +39,7 @@ jobs:
         with:
           cache-disabled: true
           cache-cleanup: on-success
-          
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -65,7 +65,7 @@ jobs:
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
           find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
-  
+
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:

@@ -35,7 +35,7 @@ fun Material3SettingsGroup(
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 8.dp)
             )
         }
-        
+
         // Settings card
         Card(
             modifier = Modifier
@@ -94,7 +94,7 @@ private fun Material3SettingsItemRow(
                 ) {
                     if (item.showBadge) {
                         BadgedBox(
-                            badge = { 
+                            badge = {
                                 Badge(
                                     containerColor = MaterialTheme.colorScheme.error
                                 )
@@ -103,9 +103,9 @@ private fun Material3SettingsItemRow(
                             Icon(
                                 painter = icon,
                                 contentDescription = null,
-                                tint = if (item.isHighlighted) 
-                                    MaterialTheme.colorScheme.primary 
-                                else 
+                                tint = if (item.isHighlighted)
+                                    MaterialTheme.colorScheme.primary
+                                else
                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
                                 modifier = Modifier.size(24.dp)
                             )
@@ -114,18 +114,18 @@ private fun Material3SettingsItemRow(
                         Icon(
                             painter = icon,
                             contentDescription = null,
-                            tint = if (item.isHighlighted) 
-                                MaterialTheme.colorScheme.primary 
-                            else 
+                            tint = if (item.isHighlighted)
+                                MaterialTheme.colorScheme.primary
+                            else
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
                             modifier = Modifier.size(24.dp)
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            
+
             // Title and description
             Column(
                 modifier = Modifier.weight(1f)
@@ -134,21 +134,27 @@ private fun Material3SettingsItemRow(
                 ProvideTextStyle(MaterialTheme.typography.titleMedium) {
                     item.title()
                 }
-                
+
                 // Description if provided
                 item.description?.let { desc ->
                     Spacer(modifier = Modifier.height(2.dp))
-                    desc()
+                    ProvideTextStyle(
+                        MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    ) {
+                        desc()
+                    }
                 }
             }
-            
+
             // Trailing content
             item.trailingContent?.let { trailing ->
                 Spacer(modifier = Modifier.width(8.dp))
                 trailing()
             }
         }
-        
+
         // Divider
         if (showDivider) {
             HorizontalDivider(

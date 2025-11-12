@@ -74,6 +74,8 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
+import com.metrolist.music.constants.MiniPlayerOutlineKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
@@ -90,8 +92,7 @@ import androidx.compose.foundation.clickable
 fun MiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
 
@@ -99,8 +100,7 @@ fun MiniPlayer(
         NewMiniPlayer(
             position = position,
             duration = duration,
-            modifier = modifier,
-            pureBlack = pureBlack
+            modifier = modifier
         )
     } else {
         // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
@@ -118,8 +118,7 @@ fun MiniPlayer(
                     Modifier.align(Alignment.CenterEnd)
                 } else {
                     Modifier.align(Alignment.Center)
-                },
-                pureBlack = pureBlack
+                }
             )
         }
     }
@@ -129,9 +128,9 @@ fun MiniPlayer(
 private fun NewMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -140,6 +139,7 @@ private fun NewMiniPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+    val miniPlayerOutline by rememberPreference(MiniPlayerOutlineKey, defaultValue = true)
 
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
@@ -272,7 +272,12 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
+                    color = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                )
+                .border(
+                    width = if (miniPlayerOutline) 1.dp else 0.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(32.dp)
                 )
         ) {
             Row(
@@ -534,9 +539,9 @@ private fun NewMiniPlayer(
 private fun LegacyMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
