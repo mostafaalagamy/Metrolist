@@ -92,7 +92,7 @@
     <string name="song_title">Kappaleen nimi</string>
     <string name="song_artists">Artisti</string>
     <string name="error_song_title_empty">Kappaleen nimi ei voi olla tyhjä.</string>
-    <string name="error_song_artist_empty">Artistin nimi ei voi olla tyhjä.</string>
+    <string name="error_song_artist_empty">Kappaleen esittäjä ei voi olla tyhjä.</string>
     <string name="save">Tallenna</string>
     <string name="choose_playlist">Valitse soittolista</string>
     <string name="edit_playlist">Muokkaa soittolistaa</string>
