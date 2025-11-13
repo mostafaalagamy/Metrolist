@@ -176,6 +176,9 @@
     <string name="dark_theme_off">متوقف</string>
     <string name="dark_theme_follow_system">اتبع النظام</string>
     <string name="pure_black">أسود نقي</string>
+    <string name="mini_player">مشغل صغير</string>
+    <string name="pure_black_mini_player">مشغل صغير أسود خالص</string>
+    <string name="mini_player_outline">مخطط المشغل الصغير</string>
     <string name="customize_navigation_tabs">تخصيص نوافذ التنقل</string>
     <string name="player">مشغل</string>
     <string name="player_text_alignment">محاذاة نص المشغل</string>

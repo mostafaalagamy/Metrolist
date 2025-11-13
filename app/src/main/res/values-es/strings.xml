@@ -193,6 +193,9 @@
     <string name="dark_theme_off">Desactivado</string>
     <string name="dark_theme_follow_system">Tema del sistema</string>
     <string name="pure_black">Negro puro</string>
+    <string name="mini_player">Mini-reproductor</string>
+    <string name="pure_black_mini_player">Mini-reproductor en negro puro</string>
+    <string name="mini_player_outline">Contorno del mini-reproductor</string>
     <string name="customize_navigation_tabs">Personalizar pestañas de navegación</string>
     <string name="player">Reproductor</string>
     <string name="player_text_alignment">Alineación de texto del reproductor</string>
