@@ -179,6 +179,9 @@
     <string name="dark_theme_off">オフ</string>
     <string name="dark_theme_follow_system">システムに従う</string>
     <string name="pure_black">ピュアブラック</string>
+    <string name="mini_player">ミニプレーヤー</string>
+    <string name="pure_black_mini_player">純粋な黒のミニプレーヤー</string>
+    <string name="mini_player_outline">ミニプレーヤーのアウトライン</string>
     <string name="customize_navigation_tabs">ナビゲーションタブのカスタマイズ</string>
     <string name="player">プレーヤー</string>
     <string name="player_text_alignment">プレーヤーの文字揃え</string>

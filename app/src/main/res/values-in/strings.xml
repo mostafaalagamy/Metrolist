@@ -156,6 +156,9 @@
     <string name="dark_theme_follow_system">Ikuti sistem</string>
     <string name="pure_black">Hitam murni</string>
     <string name="default_open_tab">Tab terbuka bawaan</string>
+    <string name="mini_player">Pemutar mini</string>
+    <string name="pure_black_mini_player">Pemutar mini hitam murni</string>
+    <string name="mini_player_outline">Garis tepi pemutar mini</string>
     <string name="customize_navigation_tabs">Sesuaikan tab navigasi</string>
     <string name="lyrics_text_position">Posisi teks lirik</string>
     <string name="left">Kiri</string>

@@ -41,4 +41,8 @@
     <string name="filter_albums">Albumi</string>
     <string name="filter_artists">Izvajalci</string>
     <string name="filter_playlists">Seznami predvajanja</string>
+    <string name="pure_black">Čista črna</string>
+    <string name="mini_player">Mini predvajalnik</string>
+    <string name="pure_black_mini_player">Mini predvajalnik v čisti črni barvi</string>
+    <string name="mini_player_outline">Oris mini predvajalnika</string>
 </resources>

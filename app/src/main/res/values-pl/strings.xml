@@ -182,6 +182,9 @@
     <string name="dark_theme_off">Wyłącz</string>
     <string name="dark_theme_follow_system">Zgodnie z systemem</string>
     <string name="pure_black">Czysta czerń</string>
+    <string name="mini_player">Mini-odtwarzacz</string>
+    <string name="pure_black_mini_player">Mini-odtwarzacz w czystej czerni</string>
+    <string name="mini_player_outline">Zarys mini-odtwarzacza</string>
     <string name="default_open_tab">Domyślnie otwarta zakładka</string>
     <string name="customize_navigation_tabs">Modyfikuj zakładki nawigacji</string>
     <string name="lyrics_text_position">Położenie tekstu utworu</string>

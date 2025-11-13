@@ -145,6 +145,9 @@
     <string name="enable_dynamic_theme">Kasuta dünaamilist kujundust</string>
     <string name="dark_theme">Tume kujundus</string>
     <string name="pure_black">Õige must kujundus</string>
+    <string name="mini_player">Minipleier</string>
+    <string name="pure_black_mini_player">Puhas must minipleier</string>
+    <string name="mini_player_outline">Minipleieri kontuur</string>
     <string name="customize_navigation_tabs">Kohenda vahekaarte</string>
     <string name="player">Muusikamängija</string>
     <string name="player_text_alignment">Muusikamängija teksti joondumine</string>

@@ -206,6 +206,9 @@
     <string name="dark_theme_off">Vypnuté</string>
     <string name="dark_theme_follow_system">Podľa systému</string>
     <string name="pure_black">Úplná čierna</string>
+    <string name="mini_player">Mini prehrávač</string>
+    <string name="pure_black_mini_player">Mini prehrávač v čisto čiernej farbe</string>
+    <string name="mini_player_outline">Obrys mini prehrávača</string>
     <string name="customize_navigation_tabs">Prispôsobiť navigačné karty</string>
     <string name="player">Prehrávač</string>
     <string name="player_text_alignment">Zarovnanie textu prehrávača</string>

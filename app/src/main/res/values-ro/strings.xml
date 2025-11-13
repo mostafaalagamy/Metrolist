@@ -195,6 +195,9 @@
     <string name="dark_theme_off">Oprită</string>
     <string name="dark_theme_follow_system">Urmează sistemul</string>
     <string name="pure_black">Negru pur</string>
+    <string name="mini_player">Mini-player</string>
+    <string name="pure_black_mini_player">Mini-player în negru pur</string>
+    <string name="mini_player_outline">Conturul mini-player-ului</string>
     <string name="customize_navigation_tabs">Personalizează filele de navigare</string>
     <string name="player">Player</string>
     <string name="player_text_alignment">Alinierea textului din player</string>

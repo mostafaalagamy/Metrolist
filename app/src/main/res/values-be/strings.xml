@@ -175,6 +175,9 @@
     <string name="dark_theme_off">Выкл.</string>
     <string name="dark_theme_follow_system">Прытрымлівацца сістэмнай каляровай тэмы</string>
     <string name="pure_black">Рэжым чыстага чорнага колеру</string>
+    <string name="mini_player">Міні-плэер</string>
+    <string name="pure_black_mini_player">Міні-плэер з чыста чорным колерам</string>
+    <string name="mini_player_outline">Контур міні-плэера</string>
     <string name="default_open_tab">Прадвызначаная укладка</string>
     <string name="customize_navigation_tabs">Дапасаваць укладак</string>
     <string name="lyrics_text_position">Пазіцыя тэкста песні</string>

@@ -206,6 +206,9 @@
     <string name="dark_theme_off">Выкл.</string>
     <string name="dark_theme_follow_system">Использовать настройки системы</string>
     <string name="pure_black">Режим чистого черного цвета</string>
+    <string name="mini_player">Мини-плеер</string>
+    <string name="pure_black_mini_player">Мини-плеер в чисто черном цвете</string>
+    <string name="mini_player_outline">Контур мини-плеера</string>
     <string name="customize_navigation_tabs">Настройка вкладок навигации</string>
     <string name="player">Плеер</string>
     <string name="player_text_alignment">Выравнивание текста плеера</string>

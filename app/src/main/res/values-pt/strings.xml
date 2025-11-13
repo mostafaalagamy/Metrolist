@@ -261,6 +261,9 @@
     <string name="edit_lyrics">Editar letras</string>
     <string name="song_artists">Artistas da música</string>
     <string name="dark_theme_on">Ativo</string>
+    <string name="mini_player">Mini-reprodutor</string>
+    <string name="pure_black_mini_player">Mini-reprodutor em preto puro</string>
+    <string name="mini_player_outline">Contorno do mini-reprodutor</string>
     <string name="customize_navigation_tabs">Personalizar separadores</string>
     <string name="lyrics_text_position">Posição do texto da letra</string>
     <string name="default_">Predefinição</string>

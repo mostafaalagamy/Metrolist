@@ -173,6 +173,9 @@
     <string name="dark_theme_off">Vyp</string>
     <string name="dark_theme_follow_system">Podle systému</string>
     <string name="pure_black">Čistě černá</string>
+    <string name="mini_player">Mini přehrávač</string>
+    <string name="pure_black_mini_player">Mini přehrávač v čistě černé barvě</string>
+    <string name="mini_player_outline">Obrys mini přehrávače</string>
     <string name="default_open_tab">Výchozí karta</string>
     <string name="customize_navigation_tabs">Přizpůsobit karty navigace</string>
     <string name="lyrics_text_position">Pozice textů</string>
