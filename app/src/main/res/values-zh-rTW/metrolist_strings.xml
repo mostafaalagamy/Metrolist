@@ -196,4 +196,8 @@
     <string name="settings_section_player_content">播放器和內容</string>
     <string name="settings_section_storage">儲存和數據</string>
     <string name="settings_section_system">系統及關於</string>
+    <string name="uploaded_playlist">已上傳</string>
+    <string name="update_available_title">可用更新</string>
+    <string name="swipe_song_to_remove">滑動歌曲即可將其從播放清單刪除</string>
+    <string name="show_uploaded_playlist">顯示「已上傳」播放清單</string>
 </resources>
