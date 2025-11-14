@@ -222,6 +222,9 @@
     <string name="lyrics_text_position">Pozicija liričnog teksta</string>
     <string name="dark_theme_off">Isključeno</string>
     <string name="pure_black">Čisto crna</string>
+    <string name="mini_player">Mini-plejer</string>
+    <string name="pure_black_mini_player">Mini-plejer u čisto crnoj boji</string>
+    <string name="mini_player_outline">Obrisi mini-plejera</string>
     <string name="player">Plejer</string>
     <string name="player_text_alignment">Poravnanje teksta plejera</string>
     <string name="right">Desno</string>

@@ -197,6 +197,9 @@
     <string name="dark_theme_on">פועל</string>
     <string name="dark_theme_off">כבוי</string>
     <string name="dark_theme_follow_system">כמו המערכת</string>
+    <string name="mini_player">מיני-נגן</string>
+    <string name="pure_black_mini_player">מיני-נגן בצבע שחור טהור</string>
+    <string name="mini_player_outline">קווי מתאר של מיני-נגן</string>
     <string name="customize_navigation_tabs">התאמה אישית של כרטיסיות ניווט</string>
     <string name="player">נגן</string>
     <string name="sided">צדדי</string>

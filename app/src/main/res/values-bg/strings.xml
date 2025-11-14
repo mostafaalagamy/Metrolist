@@ -223,6 +223,9 @@
     <string name="enable_kugou">Активирай доставчик на текстове KuGou</string>
     <string name="squiggly">Криволичещо</string>
     <string name="system_default">Система по подразбиране</string>
+    <string name="mini_player">Мини плейър</string>
+    <string name="pure_black_mini_player">Мини плейър в чисто черно</string>
+    <string name="mini_player_outline">Очертание на мини плейъра</string>
     <string name="customize_navigation_tabs">Персонализирай разделите за навигация</string>
     <string name="music_player">Музикален плейър</string>
     <string name="appearance">Външен вид</string>

@@ -184,6 +184,9 @@
     <string name="dark_theme_off">Ανενεργό</string>
     <string name="dark_theme_follow_system">Ακολουθεί το σύστημα</string>
     <string name="pure_black">Καθαρό μαύρο</string>
+    <string name="mini_player">Μίνι-αναπαραγωγή</string>
+    <string name="pure_black_mini_player">Μίνι-αναπαραγωγή σε καθαρό μαύρο</string>
+    <string name="mini_player_outline">Περίγραμμα μίνι-αναπαραγωγής</string>
     <string name="customize_navigation_tabs">Προσαρμογή καρτελών πλοήγησης</string>
     <string name="player">Aναπαραγωγέας</string>
     <string name="player_text_alignment">Ευθυγράμμιση κειμένου αναπαραγωγέα</string>

@@ -163,6 +163,9 @@
     <string name="dark_theme_off">Aus</string>
     <string name="dark_theme_follow_system">System-Standard</string>
     <string name="pure_black">Reines Schwarz</string>
+    <string name="mini_player">Mini-Player</string>
+    <string name="pure_black_mini_player">Mini-Player in reinem Schwarz</string>
+    <string name="mini_player_outline">Umriss des Mini-Players</string>
     <string name="default_open_tab">Standardmäßig geöffnete Registerkarte</string>
     <string name="customize_navigation_tabs">Anpassen der Navigationsleiste</string>
     <string name="lyrics_text_position">Position des Songtextes</string>

@@ -171,6 +171,9 @@
     <string name="player_text_alignment">Alineació del text del reproductor</string>
     <string name="lyrics_text_position">Posició del text de la lletra</string>
     <string name="pure_black">Negre pur</string>
+    <string name="mini_player">Mini-reproductor</string>
+    <string name="pure_black_mini_player">Mini-reproductor negre pur</string>
+    <string name="mini_player_outline">Contorn del mini-reproductor</string>
     <string name="customize_navigation_tabs">Personalitza les pestanyes de navegació</string>
     <string name="player">Reproductor</string>
     <string name="default_">Per defecte</string>

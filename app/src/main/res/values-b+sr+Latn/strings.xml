@@ -160,6 +160,9 @@
     <string name="dark_theme_off">Isključeno</string>
     <string name="dark_theme_follow_system">Prati sistem</string>
     <string name="pure_black">Čisto crna</string>
+    <string name="mini_player">Mini-plejer</string>
+    <string name="pure_black_mini_player">Mini-plejer u čisto crnoj boji</string>
+    <string name="mini_player_outline">Obrisi mini-plejera</string>
     <string name="customize_navigation_tabs">Izmeni kartice za navigaciju</string>
     <string name="player">Plejer</string>
     <string name="player_text_alignment">Poravnanje teksta plejera</string>

@@ -165,6 +165,9 @@
     <string name="dark_theme_follow_system">সিস্টেম থিম</string>
     <string name="pure_black">ব্ল্যাক</string>
     <string name="default_open_tab">ডিফল্ট ট্যাব</string>
+    <string name="mini_player">মিনি-প্লেয়ার</string>
+    <string name="pure_black_mini_player">সম্পূর্ণ কালো মিনি-প্লেয়ার</string>
+    <string name="mini_player_outline">মিনি-প্লেয়ারের রূপরেখা</string>
     <string name="customize_navigation_tabs">নেভিগেশন ট্যাব কাস্টমাইজ করুন</string>
     <string name="lyrics_text_position">লিরিকের পজিশন</string>
     <string name="left">বামে</string>

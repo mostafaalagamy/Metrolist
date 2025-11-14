@@ -187,6 +187,9 @@
     <string name="dark_theme">डार्क थीम</string>
     <string name="dark_theme_follow_system">सिस्टम के अनुसार</string>
     <string name="pure_black">शुद्ध काला</string>
+    <string name="mini_player">मिनी-प्लेयर</string>
+    <string name="pure_black_mini_player">पूरी तरह से काला मिनी-प्लेयर</string>
+    <string name="mini_player_outline">मिनी-प्लेयर की रूपरेखा</string>
     <string name="customize_navigation_tabs">नेविगेशन टैब्स सेट करें</string>
     <string name="repeat_mode_one">वर्तमान गीत दोहराएं</string>
     <string name="enable_dynamic_theme">डायनामिक थीम सक्षम करें</string>
