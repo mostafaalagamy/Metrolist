@@ -877,93 +877,73 @@ fun BottomSheetPlayer(
 
             Spacer(Modifier.height(12.dp))
 
-            if (useNewPlayerDesign) {
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val maxW = maxWidth
-                    val playButtonHeight = maxW / 6f
-                    val playButtonWidth = playButtonHeight * 1.6f
-                    val sideButtonHeight = playButtonHeight * 0.8f
-                    val sideButtonWidth = sideButtonHeight * 1.3f
+if (useNewPlayerDesign) {
+Row(
+horizontalArrangement = Arrangement.SpaceEvenly,
+verticalAlignment = Alignment.CenterVertically,
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = PlayerHorizontalPadding)
+) {
+FilledTonalIconButton(
+onClick = playerConnection::seekToPrevious,
+enabled = canSkipPrevious,
+shape = RoundedCornerShape(50),
+modifier = Modifier.size(64.dp)
+) {
+Icon(
+painter = painterResource(R.drawable.skip_previous),
+contentDescription = null,
+modifier = Modifier.size(32.dp)
+)
+}
 
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+FilledIconButton(
+onClick = {
+if (playbackState == STATE_ENDED) {
+playerConnection.player.seekTo(0, 0)
+playerConnection.player.playWhenReady = true
+} else {
+playerConnection.player.togglePlayPause()
+}
+},
+shape = RoundedCornerShape(50),
+modifier = Modifier
+.height(64.dp)
+.weight(1f)
+) {
+Row(
+verticalAlignment = Alignment.CenterVertically,
+horizontalArrangement = Arrangement.Center
+) {
+Icon(
+painter = painterResource(
+if (isPlaying) R.drawable.pause else R.drawable.play
+),
+contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
+modifier = Modifier.size(32.dp)
+)
+Spacer(modifier = Modifier.width(8.dp))
+Text(
+text = if (isPlaying) "Pause" else stringResource(R.string.play),
+style = MaterialTheme.typography.titleMedium
+)
+}
+}
 
-                        FilledTonalIconButton(
-                            onClick = playerConnection::seekToPrevious,
-                            enabled = canSkipPrevious,
-                            colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                containerColor = textButtonColor,
-                                contentColor = iconButtonColor
-                            ),
-                            modifier = Modifier
-                                .size(width = sideButtonWidth, height = sideButtonHeight)
-                                .clip(RoundedCornerShape(32.dp))
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.skip_previous),
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        FilledIconButton(
-                            onClick = {
-                                if (playbackState == STATE_ENDED) {
-                                    playerConnection.player.seekTo(0, 0)
-                                    playerConnection.player.playWhenReady = true
-                                } else {
-                                    playerConnection.player.togglePlayPause()
-                                }
-                            },
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = textButtonColor,
-                                contentColor = iconButtonColor
-                            ),
-                            modifier = Modifier
-                                .size(width = playButtonWidth, height = playButtonHeight)
-                                .clip(RoundedCornerShape(32.dp))
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    when {
-                                        playbackState == STATE_ENDED -> R.drawable.replay
-                                        isPlaying -> R.drawable.pause
-                                        else -> R.drawable.play
-                                    }
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier.size(42.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        FilledTonalIconButton(
-                            onClick = playerConnection::seekToNext,
-                            enabled = canSkipNext,
-                            colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                containerColor = textButtonColor,
-                                contentColor = iconButtonColor
-                            ),
-                            modifier = Modifier
-                                .size(width = sideButtonWidth, height = sideButtonHeight)
-                                .clip(RoundedCornerShape(32.dp))
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.skip_next),
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                    }
-                }
+FilledTonalIconButton(
+onClick = playerConnection::seekToNext,
+enabled = canSkipNext,
+shape = RoundedCornerShape(50),
+modifier = Modifier.size(64.dp)
+) {
+Icon(
+painter = painterResource(R.drawable.skip_next),
+contentDescription = null,
+modifier = Modifier.size(32.dp)
+)
+}
+}
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
