@@ -698,7 +698,7 @@ fun BottomSheetPlayer(
                             shape = favShape,
                             modifier = Modifier.size(42.dp),
                         ) {
-                            Image(
+                            Icon(
                                 painter = painterResource(
                                     if (currentSong?.song?.liked == true)
                                         R.drawable.favorite
@@ -793,7 +793,7 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = PlayerSliderColors.defaultSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                        colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                     )
                 }
@@ -812,7 +812,7 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = PlayerSliderColors.squigglySliderColors(textButtonColor, playerBackground, useDarkTheme),
+                        colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                         squigglesSpec =
                         SquigglySlider.SquigglesSpec(
@@ -840,7 +840,7 @@ fun BottomSheetPlayer(
                         track = { sliderState ->
                             PlayerSliderTrack(
                                 sliderState = sliderState,
-                                colors = PlayerSliderColors.slimSliderColors(textButtonColor, playerBackground, useDarkTheme)
+                                colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme)
                             )
                         },
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding)
@@ -879,7 +879,7 @@ fun BottomSheetPlayer(
 
             if (useNewPlayerDesign) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -920,6 +920,8 @@ fun BottomSheetPlayer(
                         )
                     }
 
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     FilledIconButton(
                         onClick = {
                             if (playbackState == STATE_ENDED) {
@@ -934,8 +936,6 @@ fun BottomSheetPlayer(
                         modifier = Modifier
                             .height(64.dp)
                             .weight(playPauseWeight)
-                            .padding(horizontal = 8.dp)
-                            .bouncy(playPauseInteractionSource)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -955,6 +955,8 @@ fun BottomSheetPlayer(
                             )
                         }
                     }
+
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     FilledTonalIconButton(
                         onClick = playerConnection::seekToNext,
