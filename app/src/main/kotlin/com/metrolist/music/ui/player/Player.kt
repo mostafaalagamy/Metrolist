@@ -10,7 +10,10 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +24,7 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -668,7 +672,7 @@ fun BottomSheetPlayer(
                             modifier = Modifier
                                 .size(42.dp)
                                 .clip(shareShape)
-                                .background(textButtonColor)
+                                .background(MaterialTheme.colorScheme.primary)
                                 .clickable {
                                     val intent = Intent().apply {
                                         action = Intent.ACTION_SEND
@@ -684,7 +688,7 @@ fun BottomSheetPlayer(
                             Icon(
                                 painter = painterResource(R.drawable.share),
                                 contentDescription = null,
-                                tint = iconButtonColor,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .size(24.dp)
@@ -695,7 +699,7 @@ fun BottomSheetPlayer(
                             modifier = Modifier
                                 .size(42.dp)
                                 .clip(favShape)
-                                .background(textButtonColor)
+                                .background(MaterialTheme.colorScheme.primary)
                                 .clickable {
                                     playerConnection.toggleLike()
                                 }
@@ -707,7 +711,7 @@ fun BottomSheetPlayer(
                                     else R.drawable.favorite_border
                                 ),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(iconButtonColor),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .size(24.dp)
@@ -884,71 +888,96 @@ fun BottomSheetPlayer(
 
 if (useNewPlayerDesign) {
 Row(
-horizontalArrangement = Arrangement.SpaceEvenly,
-verticalAlignment = Alignment.CenterVertically,
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = PlayerHorizontalPadding)
+    horizontalArrangement = Arrangement.SpaceEvenly,
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = PlayerHorizontalPadding)
 ) {
-FilledTonalIconButton(
-onClick = playerConnection::seekToPrevious,
-enabled = canSkipPrevious,
-shape = RoundedCornerShape(50),
-modifier = Modifier.size(width = 56.dp, height = 64.dp)
-) {
-Icon(
-painter = painterResource(R.drawable.skip_previous),
-contentDescription = null,
-modifier = Modifier.size(32.dp)
-)
-}
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
 
-FilledIconButton(
-onClick = {
-if (playbackState == STATE_ENDED) {
-playerConnection.player.seekTo(0, 0)
-playerConnection.player.playWhenReady = true
-} else {
-playerConnection.player.togglePlayPause()
-}
-},
-shape = RoundedCornerShape(50),
-modifier = Modifier
-.height(64.dp)
-.weight(1f)
-.padding(horizontal = 8.dp)
-) {
-Row(
-verticalAlignment = Alignment.CenterVertically,
-horizontalArrangement = Arrangement.Center
-) {
-Icon(
-painter = painterResource(
-if (isPlaying) R.drawable.pause else R.drawable.play
-),
-contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
-modifier = Modifier.size(32.dp)
-)
-Spacer(modifier = Modifier.width(8.dp))
-Text(
-text = if (isPlaying) "Pause" else stringResource(R.string.play),
-style = MaterialTheme.typography.titleMedium
-)
-}
-}
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.9f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
-FilledTonalIconButton(
-onClick = playerConnection::seekToNext,
-enabled = canSkipNext,
-shape = RoundedCornerShape(50),
-modifier = Modifier.size(width = 56.dp, height = 64.dp)
-) {
-Icon(
-painter = painterResource(R.drawable.skip_next),
-contentDescription = null,
-modifier = Modifier.size(32.dp)
-)
-}
+    val squish by animateFloatAsState(
+        targetValue = if (isPressed) 1.1f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    FilledTonalIconButton(
+        onClick = playerConnection::seekToPrevious,
+        enabled = canSkipPrevious,
+        shape = RoundedCornerShape(50),
+        modifier = Modifier
+            .size(width = 64.dp, height = 56.dp)
+            .graphicsLayer(scaleX = squish, scaleY = squish)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.skip_previous),
+            contentDescription = null,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+
+    FilledIconButton(
+        onClick = {
+            if (playbackState == STATE_ENDED) {
+                playerConnection.player.seekTo(0, 0)
+                playerConnection.player.playWhenReady = true
+            } else {
+                playerConnection.player.togglePlayPause()
+            }
+        },
+        interactionSource = interactionSource,
+        shape = RoundedCornerShape(50),
+        modifier = Modifier
+            .height(64.dp)
+            .weight(1f)
+            .padding(horizontal = 8.dp)
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterResource(
+                    if (isPlaying) R.drawable.pause else R.drawable.play
+                ),
+                contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (isPlaying) "Pause" else stringResource(R.string.play),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+
+    FilledTonalIconButton(
+        onClick = playerConnection::seekToNext,
+        enabled = canSkipNext,
+        shape = RoundedCornerShape(50),
+        modifier = Modifier
+            .size(width = 64.dp, height = 56.dp)
+            .graphicsLayer(scaleX = squish, scaleY = squish)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.skip_next),
+            contentDescription = null,
+            modifier = Modifier.size(32.dp)
+        )
+    }
 }
             } else {
                 Row(

@@ -234,6 +234,12 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
+                            .border(1.5.dp, borderColor, RoundedCornerShape(
+                                topStart = 50.dp,
+                                bottomStart = 50.dp,
+                                topEnd = 5.dp,
+                                bottomEnd = 5.dp
+                            ))
                             .clip(
                                 RoundedCornerShape(
                                     topStart = 50.dp,
@@ -256,6 +262,7 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
+                            .border(1.5.dp, borderColor, RoundedCornerShape(5.dp))
                             .clip(RoundedCornerShape(5.dp))
                             .clickable {
                                 if (sleepTimerEnabled) {
@@ -296,6 +303,7 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
+                            .border(1.5.dp, borderColor, RoundedCornerShape(5.dp))
                             .clip(RoundedCornerShape(5.dp))
                             .clickable {
                                 playerConnection.player.shuffleModeEnabled = !playerConnection.player.shuffleModeEnabled
@@ -316,6 +324,7 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
+                            .border(1.5.dp, borderColor, RoundedCornerShape(5.dp))
                             .clip(RoundedCornerShape(5.dp))
                             .clickable {
                                 onShowLyrics()
@@ -333,6 +342,12 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
+                            .border(1.5.dp, borderColor, RoundedCornerShape(
+                                topStart = 5.dp,
+                                bottomStart = 5.dp,
+                                topEnd = 50.dp,
+                                bottomEnd = 50.dp
+                            ))
                             .clip(
                                 RoundedCornerShape(
                                     topStart = 5.dp,
