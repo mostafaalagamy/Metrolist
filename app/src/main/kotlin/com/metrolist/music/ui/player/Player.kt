@@ -893,12 +893,12 @@ fun BottomSheetPlayer(
                     val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
                     val playPauseWeight by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 1.5f else 1f,
+                        targetValue = if (isPlayPausePressed) 2.55f else 1.7f,
                         animationSpec = spring(),
                         label = "playPauseWeight"
                     )
                     val sideButtonWeight by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 0.75f else 1f,
+                        targetValue = if (isPlayPausePressed) 0.3f else 0.4f,
                         animationSpec = spring(),
                         label = "sideButtonWeight"
                     )
