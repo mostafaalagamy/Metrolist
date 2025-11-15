@@ -886,13 +886,22 @@ fun BottomSheetPlayer(
                         .padding(horizontal = PlayerHorizontalPadding)
                 ) {
                     val backInteractionSource = remember { MutableInteractionSource() }
-                    val isBackPressed by backInteractionSource.collectIsPressedAsState()
 
                     val nextInteractionSource = remember { MutableInteractionSource() }
-                    val isNextPressed by nextInteractionSource.collectIsPressedAsState()
 
                     val playPauseInteractionSource = remember { MutableInteractionSource() }
                     val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
+
+                    val playPauseWeight by animateFloatAsState(
+                        targetValue = if (isPlayPausePressed) 1.5f else 1f,
+                        animationSpec = spring(),
+                        label = "playPauseWeight"
+                    )
+                    val sideButtonWeight by animateFloatAsState(
+                        targetValue = if (isPlayPausePressed) 0.75f else 1f,
+                        animationSpec = spring(),
+                        label = "sideButtonWeight"
+                    )
 
                     FilledTonalIconButton(
                         onClick = playerConnection::seekToPrevious,
@@ -900,7 +909,8 @@ fun BottomSheetPlayer(
                         shape = RoundedCornerShape(50),
                         interactionSource = backInteractionSource,
                         modifier = Modifier
-                            .size(width = 56.dp, height = 64.dp)
+                            .height(64.dp)
+                            .weight(sideButtonWeight)
                             .bouncy(backInteractionSource)
                     ) {
                         Icon(
@@ -923,7 +933,7 @@ fun BottomSheetPlayer(
                         interactionSource = playPauseInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
-                            .weight(1f)
+                            .weight(playPauseWeight)
                             .padding(horizontal = 8.dp)
                             .bouncy(playPauseInteractionSource)
                     ) {
@@ -952,7 +962,8 @@ fun BottomSheetPlayer(
                         shape = RoundedCornerShape(50),
                         interactionSource = nextInteractionSource,
                         modifier = Modifier
-                            .size(width = 56.dp, height = 64.dp)
+                            .height(64.dp)
+                            .weight(sideButtonWeight)
                             .bouncy(nextInteractionSource)
                     ) {
                         Icon(
