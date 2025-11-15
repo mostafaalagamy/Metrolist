@@ -217,6 +217,77 @@ fun AppearanceSettings(
         mutableStateOf(false)
     }
 
+    var showPlayerBackgroundDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showPlayerButtonsStyleDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showLyricsPositionDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showLyricsPositionDialog) {
+        EnumDialog(
+            onDismiss = { showLyricsPositionDialog = false },
+            onSelect = {
+                onLyricsPositionChange(it)
+                showLyricsPositionDialog = false
+            },
+            title = stringResource(R.string.lyrics_text_position),
+            current = lyricsPosition,
+            values = LyricsPosition.values().toList(),
+            valueText = {
+                when (it) {
+                    LyricsPosition.LEFT -> stringResource(R.string.left)
+                    LyricsPosition.CENTER -> stringResource(R.string.center)
+                    LyricsPosition.RIGHT -> stringResource(R.string.right)
+                }
+            }
+        )
+    }
+
+    if (showPlayerButtonsStyleDialog) {
+        EnumDialog(
+            onDismiss = { showPlayerButtonsStyleDialog = false },
+            onSelect = {
+                onPlayerButtonsStyleChange(it)
+                showPlayerButtonsStyleDialog = false
+            },
+            title = stringResource(R.string.player_buttons_style),
+            current = playerButtonsStyle,
+            values = PlayerButtonsStyle.values().toList(),
+            valueText = {
+                when (it) {
+                    PlayerButtonsStyle.DEFAULT -> stringResource(R.string.default_style)
+                    PlayerButtonsStyle.SECONDARY -> stringResource(R.string.secondary_color_style)
+                }
+            }
+        )
+    }
+
+    if (showPlayerBackgroundDialog) {
+        EnumDialog(
+            onDismiss = { showPlayerBackgroundDialog = false },
+            onSelect = {
+                onPlayerBackgroundChange(it)
+                showPlayerBackgroundDialog = false
+            },
+            title = stringResource(R.string.player_background_style),
+            current = playerBackground,
+            values = availableBackgroundStyles,
+            valueText = {
+                when (it) {
+                    PlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
+                    PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
+                    PlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
+                }
+            }
+        )
+    }
+
     if (showDarkModeDialog) {
         EnumDialog(
             onDismiss = { showDarkModeDialog = false },
@@ -576,6 +647,205 @@ fun AppearanceSettings(
                         )
                     },
                     onClick = { onUseNewMiniPlayerDesignChange(!useNewMiniPlayerDesign) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.gradient),
+                    title = { Text(stringResource(R.string.player_background_style)) },
+                    description = {
+                        Text(
+                            when (playerBackground) {
+                                PlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
+                                PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
+                                PlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
+                            }
+                        )
+                    },
+                    onClick = { showPlayerBackgroundDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.hide_image),
+                    title = { Text(stringResource(R.string.hide_player_thumbnail)) },
+                    description = { Text(stringResource(R.string.hide_player_thumbnail_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = hidePlayerThumbnail,
+                            onCheckedChange = onHidePlayerThumbnailChange
+                        )
+                    },
+                    onClick = { onHidePlayerThumbnailChange(!hidePlayerThumbnail) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.palette),
+                    title = { Text(stringResource(R.string.player_buttons_style)) },
+                    description = {
+                        Text(
+                            when (playerButtonsStyle) {
+                                PlayerButtonsStyle.DEFAULT -> stringResource(R.string.default_style)
+                                PlayerButtonsStyle.SECONDARY -> stringResource(R.string.secondary_color_style)
+                            }
+                        )
+                    },
+                    onClick = { showPlayerButtonsStyleDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.sliders),
+                    title = { Text(stringResource(R.string.player_slider_style)) },
+                    description = {
+                        Text(
+                            when (sliderStyle) {
+                                SliderStyle.DEFAULT -> stringResource(R.string.default_)
+                                SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                                SliderStyle.SLIM -> stringResource(R.string.slim)
+                            }
+                        )
+                    },
+                    onClick = { showSliderOptionDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.swipe),
+                    title = { Text(stringResource(R.string.enable_swipe_thumbnail)) },
+                    trailingContent = {
+                        Switch(
+                            checked = swipeThumbnail,
+                            onCheckedChange = onSwipeThumbnailChange
+                        )
+                    },
+                    onClick = { onSwipeThumbnailChange(!swipeThumbnail) }
+                )
+            )
+        )
+
+        AnimatedVisibility(swipeThumbnail) {
+            var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
+
+            if (showSensitivityDialog) {
+                var tempSensitivity by remember { mutableFloatStateOf(swipeSensitivity) }
+
+                DefaultDialog(
+                    onDismiss = {
+                        tempSensitivity = swipeSensitivity
+                        showSensitivityDialog = false
+                    },
+                    buttons = {
+                        TextButton(
+                            onClick = {
+                                tempSensitivity = 0.73f
+                            }
+                        ) {
+                            Text(stringResource(R.string.reset))
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        TextButton(
+                            onClick = {
+                                tempSensitivity = swipeSensitivity
+                                showSensitivityDialog = false
+                            }
+                        ) {
+                            Text(stringResource(android.R.string.cancel))
+                        }
+                        TextButton(
+                            onClick = {
+                                onSwipeSensitivityChange(tempSensitivity)
+                                showSensitivityDialog = false
+                            }
+                        ) {
+                            Text(stringResource(android.R.string.ok))
+                        }
+                    }
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.swipe_sensitivity),
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        Text(
+                            text = stringResource(
+                                R.string.sensitivity_percentage,
+                                (tempSensitivity * 100).roundToInt()
+                            ),
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        Slider(
+                            value = tempSensitivity,
+                            onValueChange = { tempSensitivity = it },
+                            valueRange = 0f..1f,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+            Column {
+                Spacer(modifier = Modifier.height(27.dp))
+                Material3SettingsGroup(
+                    title = "",
+                    items = listOf(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.tune),
+                            title = { Text(stringResource(R.string.swipe_sensitivity)) },
+                            description = {
+                                Text(
+                                    stringResource(
+                                        R.string.sensitivity_percentage,
+                                        (swipeSensitivity * 100).roundToInt()
+                                    )
+                                )
+                            },
+                            onClick = { showSensitivityDialog = true }
+                        )
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        Material3SettingsGroup(
+            title = stringResource(R.string.lyrics),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.lyrics_text_position)) },
+                    description = {
+                        Text(
+                            when (lyricsPosition) {
+                                LyricsPosition.LEFT -> stringResource(R.string.left)
+                                LyricsPosition.CENTER -> stringResource(R.string.center)
+                                LyricsPosition.RIGHT -> stringResource(R.string.right)
+                            }
+                        )
+                    },
+                    onClick = { showLyricsPositionDialog = true }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.lyrics_click_change)) },
+                    trailingContent = {
+                        Switch(
+                            checked = lyricsClick,
+                            onCheckedChange = onLyricsClickChange
+                        )
+                    },
+                    onClick = { onLyricsClickChange(!lyricsClick) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.lyrics_auto_scroll)) },
+                    trailingContent = {
+                        Switch(
+                            checked = lyricsScroll,
+                            onCheckedChange = onLyricsScrollChange
+                        )
+                    },
+                    onClick = { onLyricsScrollChange(!lyricsScroll) }
                 )
             )
         )
