@@ -53,6 +53,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -69,15 +70,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -885,24 +885,54 @@ fun BottomSheetPlayer(
                         .padding(horizontal = PlayerHorizontalPadding)
                 ) {
                     val backInteractionSource = remember { MutableInteractionSource() }
-                    FilledTonalIconButton(
+                    val isBackPressed by backInteractionSource.collectIsPressedAsState()
+
+                    val nextInteractionSource = remember { MutableInteractionSource() }
+                    val isNextPressed by nextInteractionSource.collectIsPressedAsState()
+
+                    val playPauseInteractionSource = remember { MutableInteractionSource() }
+                    val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
+
+                    val backScale by animateFloatAsState(
+                        targetValue = if (isPlayPausePressed) 0.75f else if (isBackPressed) 0.9f else 1f,
+                        animationSpec = spring(),
+                        label = "backScale"
+                    )
+
+                    val nextScale by animateFloatAsState(
+                        targetValue = if (isPlayPausePressed) 0.75f else if (isNextPressed) 0.9f else 1f,
+                        animationSpec = spring(),
+                        label = "nextScale"
+                    )
+
+                    val playPauseScale by animateFloatAsState(
+                        targetValue = if (isPlayPausePressed) 1.25f else 1f,
+                        animationSpec = spring(),
+                        label = "playPauseScale"
+                    )
+
+                    Surface(
                         onClick = playerConnection::seekToPrevious,
                         enabled = canSkipPrevious,
                         shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         interactionSource = backInteractionSource,
                         modifier = Modifier
                             .size(width = 56.dp, height = 64.dp)
-                            .bouncy(backInteractionSource)
+                            .graphicsLayer {
+                                scaleX = backScale
+                            }
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.skip_previous),
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                painter = painterResource(R.drawable.skip_previous),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
 
-                    val playPauseInteractionSource = remember { MutableInteractionSource() }
-                    FilledIconButton(
+                    Surface(
                         onClick = {
                             if (playbackState == STATE_ENDED) {
                                 playerConnection.player.seekTo(0, 0)
@@ -912,12 +942,15 @@ fun BottomSheetPlayer(
                             }
                         },
                         shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.primary,
                         interactionSource = playPauseInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
                             .weight(1f)
                             .padding(horizontal = 8.dp)
-                            .bouncy(playPauseInteractionSource)
+                            .graphicsLayer {
+                                scaleX = playPauseScale
+                            }
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -938,21 +971,25 @@ fun BottomSheetPlayer(
                         }
                     }
 
-                    val nextInteractionSource = remember { MutableInteractionSource() }
-                    FilledTonalIconButton(
+                    Surface(
                         onClick = playerConnection::seekToNext,
                         enabled = canSkipNext,
                         shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         interactionSource = nextInteractionSource,
                         modifier = Modifier
                             .size(width = 56.dp, height = 64.dp)
-                            .bouncy(nextInteractionSource)
+                            .graphicsLayer {
+                                scaleX = nextScale
+                            }
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.skip_next),
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                painter = painterResource(R.drawable.skip_next),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                 }
             } else {
@@ -1175,19 +1212,5 @@ fun BottomSheetPlayer(
                 }
             }
         }
-    }
-}
-
-fun Modifier.bouncy(interactionSource: InteractionSource) = composed {
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.9f else 1f,
-        animationSpec = spring(),
-        label = "scale"
-    )
-
-    graphicsLayer {
-        scaleX = scale
-        scaleY = scale
     }
 }
