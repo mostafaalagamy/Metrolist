@@ -18,9 +18,13 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,12 +69,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
@@ -664,41 +670,32 @@ fun BottomSheetPlayer(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(shareShape)
-                                .background(textButtonColor)
-                                .clickable {
-                                    val intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        type = "text/plain"
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            "https://music.youtube.com/watch?v=${mediaMetadata.id}"
-                                        )
-                                    }
-                                    context.startActivity(Intent.createChooser(intent, null))
+                        FilledIconButton(
+                            onClick = {
+                                val intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    type = "text/plain"
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}"
+                                    )
                                 }
+                                context.startActivity(Intent.createChooser(intent, null))
+                            },
+                            shape = shareShape,
+                            modifier = Modifier.size(42.dp),
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.share),
                                 contentDescription = null,
-                                tint = iconButtonColor,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp)
+                                modifier = Modifier.size(24.dp)
                             )
                         }
 
-                        Box(
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(favShape)
-                                .background(textButtonColor)
-                                .clickable {
-                                    playerConnection.toggleLike()
-                                }
+                        FilledIconButton(
+                            onClick = playerConnection::toggleLike,
+                            shape = favShape,
+                            modifier = Modifier.size(42.dp),
                         ) {
                             Image(
                                 painter = painterResource(
@@ -707,10 +704,7 @@ fun BottomSheetPlayer(
                                     else R.drawable.favorite_border
                                 ),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(iconButtonColor),
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp)
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
@@ -882,74 +876,85 @@ fun BottomSheetPlayer(
 
             Spacer(Modifier.height(12.dp))
 
-if (useNewPlayerDesign) {
-Row(
-horizontalArrangement = Arrangement.SpaceEvenly,
-verticalAlignment = Alignment.CenterVertically,
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = PlayerHorizontalPadding)
-) {
-FilledTonalIconButton(
-onClick = playerConnection::seekToPrevious,
-enabled = canSkipPrevious,
-shape = RoundedCornerShape(50),
-modifier = Modifier.size(width = 56.dp, height = 64.dp)
-) {
-Icon(
-painter = painterResource(R.drawable.skip_previous),
-contentDescription = null,
-modifier = Modifier.size(32.dp)
-)
-}
+            if (useNewPlayerDesign) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = PlayerHorizontalPadding)
+                ) {
+                    val backInteractionSource = remember { MutableInteractionSource() }
+                    FilledTonalIconButton(
+                        onClick = playerConnection::seekToPrevious,
+                        enabled = canSkipPrevious,
+                        shape = RoundedCornerShape(50),
+                        interactionSource = backInteractionSource,
+                        modifier = Modifier
+                            .size(width = 56.dp, height = 64.dp)
+                            .bouncy(backInteractionSource)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_previous),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
 
-FilledIconButton(
-onClick = {
-if (playbackState == STATE_ENDED) {
-playerConnection.player.seekTo(0, 0)
-playerConnection.player.playWhenReady = true
-} else {
-playerConnection.player.togglePlayPause()
-}
-},
-shape = RoundedCornerShape(50),
-modifier = Modifier
-.height(64.dp)
-.weight(1f)
-.padding(horizontal = 8.dp)
-) {
-Row(
-verticalAlignment = Alignment.CenterVertically,
-horizontalArrangement = Arrangement.Center
-) {
-Icon(
-painter = painterResource(
-if (isPlaying) R.drawable.pause else R.drawable.play
-),
-contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
-modifier = Modifier.size(32.dp)
-)
-Spacer(modifier = Modifier.width(8.dp))
-Text(
-text = if (isPlaying) "Pause" else stringResource(R.string.play),
-style = MaterialTheme.typography.titleMedium
-)
-}
-}
+                    val playPauseInteractionSource = remember { MutableInteractionSource() }
+                    FilledIconButton(
+                        onClick = {
+                            if (playbackState == STATE_ENDED) {
+                                playerConnection.player.seekTo(0, 0)
+                                playerConnection.player.playWhenReady = true
+                            } else {
+                                playerConnection.player.togglePlayPause()
+                            }
+                        },
+                        shape = RoundedCornerShape(50),
+                        interactionSource = playPauseInteractionSource,
+                        modifier = Modifier
+                            .height(64.dp)
+                            .weight(1f)
+                            .padding(horizontal = 8.dp)
+                            .bouncy(playPauseInteractionSource)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    if (isPlaying) R.drawable.pause else R.drawable.play
+                                ),
+                                contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isPlaying) "Pause" else stringResource(R.string.play),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
 
-FilledTonalIconButton(
-onClick = playerConnection::seekToNext,
-enabled = canSkipNext,
-shape = RoundedCornerShape(50),
-modifier = Modifier.size(width = 56.dp, height = 64.dp)
-) {
-Icon(
-painter = painterResource(R.drawable.skip_next),
-contentDescription = null,
-modifier = Modifier.size(32.dp)
-)
-}
-}
+                    val nextInteractionSource = remember { MutableInteractionSource() }
+                    FilledTonalIconButton(
+                        onClick = playerConnection::seekToNext,
+                        enabled = canSkipNext,
+                        shape = RoundedCornerShape(50),
+                        interactionSource = nextInteractionSource,
+                        modifier = Modifier
+                            .size(width = 56.dp, height = 64.dp)
+                            .bouncy(nextInteractionSource)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_next),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                }
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -1170,5 +1175,19 @@ modifier = Modifier.size(32.dp)
                 }
             }
         }
+    }
+}
+
+fun Modifier.bouncy(interactionSource: InteractionSource) = composed {
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.9f else 1f,
+        animationSpec = spring(),
+        label = "scale"
+    )
+
+    graphicsLayer {
+        scaleX = scale
+        scaleY = scale
     }
 }

@@ -230,18 +230,21 @@ fun Queue(
                     val buttonSize = 42.dp
                     val iconSize = 24.dp
                     val borderColor = TextBackgroundColor.copy(alpha = 0.35f)
+                    val queueShape = RoundedCornerShape(
+                        topStart = 50.dp, bottomStart = 50.dp,
+                        topEnd = 5.dp, bottomEnd = 5.dp
+                    )
+                    val middleShape = RoundedCornerShape(5.dp)
+                    val repeatShape = RoundedCornerShape(
+                        topStart = 5.dp, bottomStart = 5.dp,
+                        topEnd = 50.dp, bottomEnd = 50.dp
+                    )
 
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp,
-                                    topEnd = 5.dp,
-                                    bottomEnd = 5.dp
-                                )
-                            )
+                            .border(1.5.dp, borderColor, queueShape)
+                            .clip(queueShape)
                             .clickable { state.expandSoft() },
                         contentAlignment = Alignment.Center
                     ) {
@@ -256,7 +259,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.5.dp, borderColor, middleShape)
+                            .clip(middleShape)
                             .clickable {
                                 if (sleepTimerEnabled) {
                                     playerConnection.service.sleepTimer.clear()
@@ -296,7 +300,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.5.dp, borderColor, middleShape)
+                            .clip(middleShape)
                             .clickable {
                                 playerConnection.player.shuffleModeEnabled = !playerConnection.player.shuffleModeEnabled
                             },
@@ -316,7 +321,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.5.dp, borderColor, middleShape)
+                            .clip(middleShape)
                             .clickable {
                                 onShowLyrics()
                             },
@@ -333,14 +339,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = 5.dp,
-                                    bottomStart = 5.dp,
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            )
+                            .border(1.5.dp, borderColor, repeatShape)
+                            .clip(repeatShape)
                             .clickable {
                                 playerConnection.player.toggleRepeatMode()
                             },
