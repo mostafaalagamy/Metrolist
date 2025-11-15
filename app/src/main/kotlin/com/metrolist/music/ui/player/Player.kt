@@ -70,6 +70,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
@@ -893,46 +894,23 @@ fun BottomSheetPlayer(
                     val playPauseInteractionSource = remember { MutableInteractionSource() }
                     val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
-                    val backScale by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 0.75f else if (isBackPressed) 0.9f else 1f,
-                        animationSpec = spring(),
-                        label = "backScale"
-                    )
-
-                    val nextScale by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 0.75f else if (isNextPressed) 0.9f else 1f,
-                        animationSpec = spring(),
-                        label = "nextScale"
-                    )
-
-                    val playPauseScale by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 1.25f else 1f,
-                        animationSpec = spring(),
-                        label = "playPauseScale"
-                    )
-
-                    Surface(
+                    FilledTonalIconButton(
                         onClick = playerConnection::seekToPrevious,
                         enabled = canSkipPrevious,
                         shape = RoundedCornerShape(50),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
                         interactionSource = backInteractionSource,
                         modifier = Modifier
                             .size(width = 56.dp, height = 64.dp)
-                            .graphicsLayer {
-                                scaleX = backScale
-                            }
+                            .bouncy(backInteractionSource)
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                painter = painterResource(R.drawable.skip_previous),
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.skip_previous),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
 
-                    Surface(
+                    FilledIconButton(
                         onClick = {
                             if (playbackState == STATE_ENDED) {
                                 playerConnection.player.seekTo(0, 0)
@@ -942,15 +920,12 @@ fun BottomSheetPlayer(
                             }
                         },
                         shape = RoundedCornerShape(50),
-                        color = MaterialTheme.colorScheme.primary,
                         interactionSource = playPauseInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
                             .weight(1f)
                             .padding(horizontal = 8.dp)
-                            .graphicsLayer {
-                                scaleX = playPauseScale
-                            }
+                            .bouncy(playPauseInteractionSource)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -971,25 +946,20 @@ fun BottomSheetPlayer(
                         }
                     }
 
-                    Surface(
+                    FilledTonalIconButton(
                         onClick = playerConnection::seekToNext,
                         enabled = canSkipNext,
                         shape = RoundedCornerShape(50),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
                         interactionSource = nextInteractionSource,
                         modifier = Modifier
                             .size(width = 56.dp, height = 64.dp)
-                            .graphicsLayer {
-                                scaleX = nextScale
-                            }
+                            .bouncy(nextInteractionSource)
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                painter = painterResource(R.drawable.skip_next),
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.skip_next),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
                 }
             } else {
@@ -1212,5 +1182,19 @@ fun BottomSheetPlayer(
                 }
             }
         }
+    }
+}
+
+private fun Modifier.bouncy(interactionSource: InteractionSource) = composed {
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.9f else 1f,
+        animationSpec = spring(),
+        label = "scale"
+    )
+
+    graphicsLayer {
+        scaleX = scale
+        scaleY = scale
     }
 }
