@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -259,19 +260,23 @@ fun BottomSheetPlayer(
         }
     }
 
-    val TextBackgroundColor =
-        when (playerBackground) {
+    val TextBackgroundColor by animateColorAsState(
+        targetValue = when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
             PlayerBackgroundStyle.BLUR -> Color.White
             PlayerBackgroundStyle.GRADIENT -> Color.White
-        }
+        },
+        label = "TextBackgroundColor"
+    )
 
-    val icBackgroundColor =
-        when (playerBackground) {
+    val icBackgroundColor by animateColorAsState(
+        targetValue = when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
             PlayerBackgroundStyle.BLUR -> Color.Black
             PlayerBackgroundStyle.GRADIENT -> Color.Black
-        }
+        },
+        label = "icBackgroundColor"
+    )
 
     val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
         PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
@@ -911,6 +916,7 @@ shape = RoundedCornerShape(50),
 modifier = Modifier
 .height(64.dp)
 .weight(1f)
+.padding(horizontal = 8.dp)
 ) {
 Row(
 verticalAlignment = Alignment.CenterVertically,
