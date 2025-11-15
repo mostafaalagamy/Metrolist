@@ -889,7 +889,7 @@ FilledTonalIconButton(
 onClick = playerConnection::seekToPrevious,
 enabled = canSkipPrevious,
 shape = RoundedCornerShape(50),
-modifier = Modifier.size(64.dp)
+modifier = Modifier.size(width = 56.dp, height = 64.dp)
 ) {
 Icon(
 painter = painterResource(R.drawable.skip_previous),
@@ -935,7 +935,7 @@ FilledTonalIconButton(
 onClick = playerConnection::seekToNext,
 enabled = canSkipNext,
 shape = RoundedCornerShape(50),
-modifier = Modifier.size(64.dp)
+modifier = Modifier.size(width = 56.dp, height = 64.dp)
 ) {
 Icon(
 painter = painterResource(R.drawable.skip_next),

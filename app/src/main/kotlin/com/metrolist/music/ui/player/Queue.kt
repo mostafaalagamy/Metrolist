@@ -242,16 +242,6 @@ fun Queue(
                                     bottomEnd = 5.dp
                                 )
                             )
-                            .border(
-                                1.dp,
-                                borderColor,
-                                RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp,
-                                    topEnd = 5.dp,
-                                    bottomEnd = 5.dp
-                                )
-                            )
                             .clickable { state.expandSoft() },
                         contentAlignment = Alignment.Center
                     ) {
@@ -267,7 +257,6 @@ fun Queue(
                         modifier = Modifier
                             .size(buttonSize)
                             .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
                             .clickable {
                                 if (sleepTimerEnabled) {
                                     playerConnection.service.sleepTimer.clear()
@@ -308,7 +297,26 @@ fun Queue(
                         modifier = Modifier
                             .size(buttonSize)
                             .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
+                            .clickable {
+                                playerConnection.player.shuffleModeEnabled = !playerConnection.player.shuffleModeEnabled
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val shuffleModeEnabled by playerConnection.shuffleModeEnabled.collectAsState()
+                        Icon(
+                            painter = painterResource(id = R.drawable.shuffle),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(iconSize)
+                                .alpha(if (shuffleModeEnabled) 1f else 0.5f),
+                            tint = TextBackgroundColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(RoundedCornerShape(5.dp))
                             .clickable {
                                 onShowLyrics()
                             },
@@ -326,16 +334,6 @@ fun Queue(
                         modifier = Modifier
                             .size(buttonSize)
                             .clip(
-                                RoundedCornerShape(
-                                    topStart = 5.dp,
-                                    bottomStart = 5.dp,
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            )
-                            .border(
-                                1.dp,
-                                borderColor,
                                 RoundedCornerShape(
                                     topStart = 5.dp,
                                     bottomStart = 5.dp,
