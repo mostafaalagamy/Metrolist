@@ -18,12 +18,14 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -141,8 +143,10 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.saket.squiggles.SquigglySlider
 import kotlin.math.roundToInt
@@ -698,7 +702,7 @@ fun BottomSheetPlayer(
                             shape = favShape,
                             modifier = Modifier.size(42.dp),
                         ) {
-                            Image(
+                            Icon(
                                 painter = painterResource(
                                     if (currentSong?.song?.liked == true)
                                         R.drawable.favorite
@@ -890,18 +894,30 @@ fun BottomSheetPlayer(
                     val nextInteractionSource = remember { MutableInteractionSource() }
 
                     val playPauseInteractionSource = remember { MutableInteractionSource() }
-                    val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
-                    val playPauseWeight by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 2.55f else 1.7f,
-                        animationSpec = spring(),
-                        label = "playPauseWeight"
-                    )
-                    val sideButtonWeight by animateFloatAsState(
-                        targetValue = if (isPlayPausePressed) 0.3f else 0.4f,
-                        animationSpec = spring(),
-                        label = "sideButtonWeight"
-                    )
+                    val playPauseWeight = remember { Animatable(1.7f) }
+                    val sideButtonWeight = remember { Animatable(0.4f) }
+
+                    LaunchedEffect(playPauseInteractionSource) {
+                        var pressJob: Job? = null
+                        playPauseInteractionSource.interactions.collect { interaction ->
+                            when (interaction) {
+                                is PressInteraction.Press -> {
+                                    pressJob = launch {
+                                        playPauseWeight.animateTo(2.55f, spring(dampingRatio = 0.8f, stiffness = 600f))
+                                        sideButtonWeight.animateTo(0.3f, spring(dampingRatio = 0.8f, stiffness = 600f))
+                                    }
+                                }
+                                is PressInteraction.Release, is PressInteraction.Cancel -> {
+                                    launch {
+                                        pressJob?.join()
+                                        playPauseWeight.animateTo(1.7f, spring(dampingRatio = 0.8f, stiffness = 600f))
+                                        sideButtonWeight.animateTo(0.4f, spring(dampingRatio = 0.8f, stiffness = 600f))
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     FilledTonalIconButton(
                         onClick = playerConnection::seekToPrevious,
@@ -910,7 +926,7 @@ fun BottomSheetPlayer(
                         interactionSource = backInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
-                            .weight(sideButtonWeight)
+                            .weight(sideButtonWeight.value)
                             .bouncy(backInteractionSource)
                     ) {
                         Icon(
@@ -933,9 +949,7 @@ fun BottomSheetPlayer(
                         interactionSource = playPauseInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
-                            .weight(playPauseWeight)
-                            .padding(horizontal = 8.dp)
-                            .bouncy(playPauseInteractionSource)
+                            .weight(playPauseWeight.value)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -963,7 +977,7 @@ fun BottomSheetPlayer(
                         interactionSource = nextInteractionSource,
                         modifier = Modifier
                             .height(64.dp)
-                            .weight(sideButtonWeight)
+                            .weight(sideButtonWeight.value)
                             .bouncy(nextInteractionSource)
                     ) {
                         Icon(
