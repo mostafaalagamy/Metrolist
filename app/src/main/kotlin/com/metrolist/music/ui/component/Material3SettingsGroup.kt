@@ -3,9 +3,25 @@ package com.metrolist.music.ui.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,17 +54,32 @@ fun Material3SettingsGroup(
 
         // Settings items
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-                .clip(RoundedCornerShape(24.dp))
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items.forEachIndexed { index, item ->
-                Material3SettingsItemRow(
-                    item = item,
-                    isFirst = index == 0,
-                    isLast = index == items.size - 1
-                )
+                val shape = when {
+                    items.size == 1 -> RoundedCornerShape(24.dp)
+                    index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                    index == items.size - 1 -> RoundedCornerShape(
+                        bottomStart = 24.dp,
+                        bottomEnd = 24.dp
+                    )
+                    else -> RoundedCornerShape(0.dp)
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    shape = shape,
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Material3SettingsItemRow(item = item)
+                }
             }
         }
     }
@@ -59,70 +90,39 @@ fun Material3SettingsGroup(
  */
 @Composable
 private fun Material3SettingsItemRow(
-    item: Material3SettingsItem,
-    isFirst: Boolean,
-    isLast: Boolean
+    item: Material3SettingsItem
 ) {
-    val topCorner = if (isFirst) 24.dp else 0.dp
-    val bottomCorner = if (isLast) 24.dp else 0.dp
-
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-            )
             .clickable(
                 enabled = item.onClick != null,
                 onClick = { item.onClick?.invoke() }
             )
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(
-                        topStart = topCorner,
-                        topEnd = topCorner,
-                        bottomStart = bottomCorner,
-                        bottomEnd = bottomCorner
-                    )
-                )
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Icon with background
-            item.icon?.let { icon ->
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(
-                                alpha = if (item.isHighlighted) 0.15f else 0.1f
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (item.showBadge) {
-                        BadgedBox(
-                            badge = {
-                                Badge(
-                                    containerColor = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        ) {
-                            Icon(
-                                painter = icon,
-                                contentDescription = null,
-                                tint = if (item.isHighlighted)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
-                                modifier = Modifier.size(24.dp)
+        // Icon with background
+        item.icon?.let { icon ->
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        MaterialTheme.colorScheme.primary.copy(
+                            alpha = if (item.isHighlighted) 0.15f else 0.1f
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (item.showBadge) {
+                    BadgedBox(
+                        badge = {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.error
                             )
                         }
-                    } else {
+                    ) {
                         Icon(
                             painter = icon,
                             contentDescription = null,
@@ -133,50 +133,48 @@ private fun Material3SettingsItemRow(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-            }
-
-            // Title and description
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                // Title content
-                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
-                    item.title()
-                }
-
-                // Description if provided
-                item.description?.let { desc ->
-                    Spacer(modifier = Modifier.height(2.dp))
-                    ProvideTextStyle(
-                        MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    ) {
-                        desc()
-                    }
+                } else {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        tint = if (item.isHighlighted)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
-            // Trailing content
-            item.trailingContent?.let { trailing ->
-                Spacer(modifier = Modifier.width(8.dp))
-                trailing()
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+
+        // Title and description
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            // Title content
+            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+                item.title()
+            }
+
+            // Description if provided
+            item.description?.let { desc ->
+                Spacer(modifier = Modifier.height(2.dp))
+                ProvideTextStyle(
+                    MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    desc()
+                }
             }
         }
 
-        // Divider
-        if (!isLast) {
-            HorizontalDivider(
-                modifier = Modifier.padding(
-                    start = if (item.icon != null) 76.dp else 20.dp,
-                    end = 20.dp
-                ),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
+        // Trailing content
+        item.trailingContent?.let { trailing ->
+            Spacer(modifier = Modifier.width(8.dp))
+            trailing()
         }
     }
 }
