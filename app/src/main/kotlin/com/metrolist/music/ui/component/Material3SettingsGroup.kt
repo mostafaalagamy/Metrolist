@@ -36,24 +36,19 @@ fun Material3SettingsGroup(
             )
         }
 
-        // Settings card
-        Card(
+        // Settings items
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                .animateContentSize()
+                .clip(RoundedCornerShape(24.dp))
         ) {
-            Column {
-                items.forEachIndexed { index, item ->
-                    Material3SettingsItemRow(
-                        item = item,
-                        showDivider = index < items.size - 1
-                    )
-                }
+            items.forEachIndexed { index, item ->
+                Material3SettingsItemRow(
+                    item = item,
+                    isFirst = index == 0,
+                    isLast = index == items.size - 1
+                )
             }
         }
     }
@@ -65,16 +60,33 @@ fun Material3SettingsGroup(
 @Composable
 private fun Material3SettingsItemRow(
     item: Material3SettingsItem,
-    showDivider: Boolean
+    isFirst: Boolean,
+    isLast: Boolean
 ) {
-    Column {
+    val topCorner = if (isFirst) 24.dp else 0.dp
+    val bottomCorner = if (isLast) 24.dp else 0.dp
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            )
+            .clickable(
+                enabled = item.onClick != null,
+                onClick = { item.onClick?.invoke() }
+            )
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(
-                    enabled = item.onClick != null,
-                    onClick = { item.onClick?.invoke() }
+                .clip(
+                    RoundedCornerShape(
+                        topStart = topCorner,
+                        topEnd = topCorner,
+                        bottomStart = bottomCorner,
+                        bottomEnd = bottomCorner
+                    )
                 )
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -156,7 +168,7 @@ private fun Material3SettingsItemRow(
         }
 
         // Divider
-        if (showDivider) {
+        if (!isLast) {
             HorizontalDivider(
                 modifier = Modifier.padding(
                     start = if (item.icon != null) 76.dp else 20.dp,
