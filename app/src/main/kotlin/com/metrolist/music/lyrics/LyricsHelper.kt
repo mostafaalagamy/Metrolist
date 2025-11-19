@@ -107,33 +107,32 @@ constructor(
         }
 
         val scope = CoroutineScope(SupervisorJob())
-        val deferred = scope.async {
-            for (provider in lyricsProviders) {
-                if (provider.isEnabled(context)) {
-                    try {
-                        val result = provider.getLyrics(
-                            mediaMetadata.id,
-                            mediaMetadata.title,
-                            mediaMetadata.artists.joinToString { it.name },
-                            mediaMetadata.duration,
-                        )
-                        result.onSuccess { lyrics ->
-                            return@async lyrics
-                        }.onFailure {
-                            reportException(it)
-                        }
-                    } catch (e: Exception) {
-                        // Catch network-related exceptions like UnresolvedAddressException
-                        reportException(e)
-                    }
+        val deferredResults = lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
+            scope.async {
+                try {
+                    provider.getLyrics(
+                        mediaMetadata.id,
+                        mediaMetadata.title,
+                        mediaMetadata.artists.joinToString { it.name },
+                        mediaMetadata.duration,
+                    ).getOrNull()
+                } catch (e: Exception) {
+                    reportException(e)
+                    null
                 }
             }
-            return@async LYRICS_NOT_FOUND
         }
 
-        val lyrics = deferred.await()
+        val results = deferredResults.awaitAll()
         scope.cancel()
-        return lyrics
+
+        for (result in results) {
+            if (result != null) {
+                return result
+            }
+        }
+
+        return LYRICS_NOT_FOUND
     }
 
     suspend fun getAllLyrics(
