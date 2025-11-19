@@ -79,6 +79,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -211,67 +215,62 @@ fun Lyrics(
             val isKyrgyzLyrics = romanizeKyrgyzLyrics && !romanizeCyrillicByLine && isKyrgyz(lyrics)
             val isMacedonianLyrics = romanizeMacedonianLyrics && !romanizeCyrillicByLine && isMacedonian(lyrics)
 
-            parsedLines.map { entry ->
-                val newEntry = LyricsEntry(entry.time, entry.text)
-                
+            parsedLines.forEach { entry ->
                 if (romanizeJapaneseLyrics && isJapanese(entry.text) && !isChinese(entry.text)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
+                        entry.romanizedTextFlow.value = romanizeJapanese(entry.text)
                     }
                 }
 
                 if (romanizeKoreanLyrics && isKorean(entry.text)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
+                        entry.romanizedTextFlow.value = romanizeKorean(entry.text)
                     }
                 }
 
                 if (romanizeRussianLyrics && (if (romanizeCyrillicByLine) isRussian(entry.text) else isRussianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(entry.text) else isUkrainianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(entry.text) else isSerbianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(entry.text) else isBulgarianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(entry.text) else isBelarusianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(entry.text) else isKyrgyzLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(entry.text) else isMacedonianLyrics)) {
                     scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-
-                newEntry
-            }.let {
-                listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
             }
+            listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + parsedLines
         } else {
             val isRussianLyrics = romanizeRussianLyrics && !romanizeCyrillicByLine && isRussian(lyrics)
             val isUkrainianLyrics = romanizeUkrainianLyrics && !romanizeCyrillicByLine && isUkrainian(lyrics)
@@ -764,16 +763,8 @@ fun Lyrics(
                     ) {
                         if (isWordByWord && item.words != null) {
                             val annotatedString = buildAnnotatedString {
-                                for (word in item.words) {
-                                    val duration = (word.endTime - word.startTime).toFloat()
-                                    val progress = ((currentPosition - word.startTime).toFloat() / duration).coerceIn(0f, 1f)
-                                    val alpha = if (progress > 0.5f) 1f else (progress / 0.5f) * 0.5f + 0.5f
-
-                                    val animatedAlpha by animateFloatAsState(targetValue = alpha, label = "")
-
-                                    withStyle(style = SpanStyle(color = textColor.copy(alpha = animatedAlpha))) {
-                                        append(word.text)
-                                    }
+                                for (i in item.words.indices) {
+                                    appendInlineContent("word", i.toString())
                                 }
                             }
                             Text(
@@ -781,7 +772,24 @@ fun Lyrics(
                                 fontSize = 28.sp,
                                 color = textColor,
                                 textAlign = if (item.voice == "v1") TextAlign.Left else TextAlign.Right,
-                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold,
+                                inlineContent = mapOf(
+                                    "word" to InlineTextContent(
+                                        Placeholder(28.sp, 28.sp, PlaceholderVerticalAlign.TextCenter)
+                                    ) {
+                                        val word = item.words!![it.toInt()]
+                                        val duration = (word.endTime - word.startTime).toFloat()
+                                        val progress = ((currentPosition - word.startTime).toFloat() / duration).coerceIn(0f, 1f)
+                                        val alpha = if (progress > 0.5f) 1f else (progress / 0.5f) * 0.5f + 0.5f
+                                        val animatedAlpha by animateFloatAsState(targetValue = alpha, label = "")
+                                        Text(
+                                            text = word.text,
+                                            fontSize = 28.sp,
+                                            color = textColor.copy(alpha = animatedAlpha),
+                                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                                        )
+                                    }
+                                )
                             )
                         } else {
                             Text(

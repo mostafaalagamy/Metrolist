@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 object LyricsUtils {
     val LINE_REGEX = "((\\[\\d\\d:\\d\\d\\.\\d{2,3}\\] ?)+)(.+)".toRegex()
     val TIME_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\]".toRegex()
-    val APPLE_MUSIC_LINE_REGEX = "\\[(\\d{2}:\\d{2}\\.\\d{2,3})\\](v\\d+):(.*)".toRegex()
+    val APPLE_MUSIC_LINE_REGEX = "\\[(\\d{2}:\\d{2}\\.\\d{2,3})\\] ?(v\\d+):(.*)".toRegex()
     val APPLE_MUSIC_WORD_TIMESTAMP_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
 
     private val KANA_ROMAJI_MAP: Map<String, String> = mapOf(
@@ -285,8 +285,9 @@ object LyricsUtils {
         if (appleMusicMatch != null) {
             val (lineTimeString, voice, content) = appleMusicMatch.destructured
             val lineTime = parseAppleMusicTimestamp(lineTimeString)
-            val parts = content.split(APPLE_MUSIC_WORD_TIMESTAMP_REGEX)
-            val timestamps = APPLE_MUSIC_WORD_TIMESTAMP_REGEX.findAll(content).map { it.groupValues[1] }.toList()
+            val trimmedContent = content.trim()
+            val parts = trimmedContent.split(APPLE_MUSIC_WORD_TIMESTAMP_REGEX)
+            val timestamps = APPLE_MUSIC_WORD_TIMESTAMP_REGEX.findAll(trimmedContent).map { it.groupValues[1] }.toList()
 
             val words = mutableListOf<Word>()
             var fullText = ""
@@ -295,7 +296,7 @@ object LyricsUtils {
                 val wordText = parts[i]
                 if (wordText.isNotEmpty()) {
                     val startTime = parseAppleMusicTimestamp(timestamps.getOrElse(i - 1) { "00:00.00" })
-                    val endTime = parseAppleMusicTimestamp(timestamps.getOrElse(i) { timestamps.getOrElse(i - 1) { "00:00.00" } })
+                    val endTime = parseAppleMusicTimestamp(timestamps.getOrElse(i) { lineTimeString })
                     words.add(Word(wordText, startTime, endTime))
                     fullText += wordText
                 }
