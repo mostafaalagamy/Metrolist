@@ -9,6 +9,8 @@ import kotlinx.coroutines.withContext
 object LyricsUtils {
     val LINE_REGEX = "((\\[\\d\\d:\\d\\d\\.\\d{2,3}\\] ?)+)(.+)".toRegex()
     val TIME_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\]".toRegex()
+    val APPLE_MUSIC_LINE_REGEX = "\\[(\\d{2}:\\d{2}\\.\\d{2,3})\\](v\\d+):(.*)".toRegex()
+    val APPLE_MUSIC_WORD_TIMESTAMP_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
 
     private val KANA_ROMAJI_MAP: Map<String, String> = mapOf(
         // Digraphs (Yōon - combinations like kya, sho)
@@ -277,6 +279,30 @@ object LyricsUtils {
         if (line.isEmpty()) {
             return null
         }
+
+        // Apple Music word-by-word format
+        val appleMusicMatch = APPLE_MUSIC_LINE_REGEX.matchEntire(line.trim())
+        if (appleMusicMatch != null) {
+            val (lineTimeString, voice, content) = appleMusicMatch.destructured
+            val lineTime = parseAppleMusicTimestamp(lineTimeString)
+            val parts = content.split(APPLE_MUSIC_WORD_TIMESTAMP_REGEX)
+            val timestamps = APPLE_MUSIC_WORD_TIMESTAMP_REGEX.findAll(content).map { it.groupValues[1] }.toList()
+
+            val words = mutableListOf<Word>()
+            var fullText = ""
+
+            for (i in 1 until parts.size) {
+                val wordText = parts[i]
+                if (wordText.isNotEmpty()) {
+                    val startTime = parseAppleMusicTimestamp(timestamps.getOrElse(i - 1) { "00:00.00" })
+                    val endTime = parseAppleMusicTimestamp(timestamps.getOrElse(i) { timestamps.getOrElse(i - 1) { "00:00.00" } })
+                    words.add(Word(wordText, startTime, endTime))
+                    fullText += wordText
+                }
+            }
+            return listOf(LyricsEntry(lineTime, fullText, words = words, voice = voice))
+        }
+
         val matchResult = LINE_REGEX.matchEntire(line.trim()) ?: return null
         val times = matchResult.groupValues[1]
         val text = matchResult.groupValues[3]
@@ -294,6 +320,17 @@ object LyricsUtils {
                 val time = min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
                 LyricsEntry(time, text)
             }.toList()
+    }
+
+    private fun parseAppleMusicTimestamp(timestamp: String): Long {
+        val parts = timestamp.split(":", ".")
+        val minutes = parts[0].toLong()
+        val seconds = parts[1].toLong()
+        var millis = parts[2].toLong()
+        if (parts[2].length == 2) {
+            millis *= 10
+        }
+        return minutes * 60 * 1000 + seconds * 1000 + millis
     }
 
     fun findCurrentLineIndex(

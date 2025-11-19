@@ -74,6 +74,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
@@ -343,6 +346,7 @@ fun Lyrics(
         remember(lyrics) {
             !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
         }
+    val isWordByWord = remember(lines) { lines.any { it.words != null } }
 
     val textColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
@@ -355,6 +359,9 @@ fun Lyrics(
 
     var currentLineIndex by remember {
         mutableIntStateOf(-1)
+    }
+    var currentPosition by remember {
+        mutableLongStateOf(0L)
     }
     // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
     // we use deferredCurrentLineIndex when user is scrolling
@@ -461,9 +468,11 @@ fun Lyrics(
             delay(50)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
+            val position = sliderPosition ?: playerConnection.player.currentPosition
+            currentPosition = position
             currentLineIndex = findCurrentLineIndex(
                 lines,
-                sliderPosition ?: playerConnection.player.currentPosition
+                position
             )
         }
     }
@@ -653,10 +662,14 @@ fun Lyrics(
                             kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.3f
                             else -> 0.1f
                         },
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessVeryLow
-                        ),
+                        animationSpec = if (isWordByWord) {
+                            tween(durationMillis = 0)
+                        } else {
+                            spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessVeryLow
+                            )
+                        },
                         label = "alpha"
                     )
 
@@ -739,27 +752,54 @@ fun Lyrics(
 
                     Column(
                         modifier = itemModifier,
-                        horizontalAlignment = when (lyricsTextPosition) {
-                            LyricsPosition.LEFT -> Alignment.Start
-                            LyricsPosition.CENTER -> Alignment.CenterHorizontally
-                            LyricsPosition.RIGHT -> Alignment.End
+                        horizontalAlignment = if (isWordByWord) {
+                            if (item.voice == "v1") Alignment.Start else Alignment.End
+                        } else {
+                            when (lyricsTextPosition) {
+                                LyricsPosition.LEFT -> Alignment.Start
+                                LyricsPosition.CENTER -> Alignment.CenterHorizontally
+                                LyricsPosition.RIGHT -> Alignment.End
+                            }
                         }
                     ) {
-                        Text(
-                            text = item.text,
-                            fontSize = 28.sp,
-                            color = if (index == displayedCurrentLineIndex && isSynced) {
-                                textColor // Full color for active line
-                            } else {
-                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
-                            },
-                            textAlign = when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> TextAlign.Left
-                                LyricsPosition.CENTER -> TextAlign.Center
-                                LyricsPosition.RIGHT -> TextAlign.Right
-                            },
-                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                        )
+                        if (isWordByWord && item.words != null) {
+                            val annotatedString = buildAnnotatedString {
+                                for (word in item.words) {
+                                    val duration = (word.endTime - word.startTime).toFloat()
+                                    val progress = ((currentPosition - word.startTime).toFloat() / duration).coerceIn(0f, 1f)
+                                    val alpha = if (progress > 0.5f) 1f else (progress / 0.5f) * 0.5f + 0.5f
+
+                                    val animatedAlpha by animateFloatAsState(targetValue = alpha, label = "")
+
+                                    withStyle(style = SpanStyle(color = textColor.copy(alpha = animatedAlpha))) {
+                                        append(word.text)
+                                    }
+                                }
+                            }
+                            Text(
+                                text = annotatedString,
+                                fontSize = 28.sp,
+                                color = textColor,
+                                textAlign = if (item.voice == "v1") TextAlign.Left else TextAlign.Right,
+                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                            )
+                        } else {
+                            Text(
+                                text = item.text,
+                                fontSize = 28.sp,
+                                color = if (index == displayedCurrentLineIndex && isSynced) {
+                                    textColor // Full color for active line
+                                } else {
+                                    textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
+                                },
+                                textAlign = when (lyricsTextPosition) {
+                                    LyricsPosition.LEFT -> TextAlign.Left
+                                    LyricsPosition.CENTER -> TextAlign.Center
+                                    LyricsPosition.RIGHT -> TextAlign.Right
+                                },
+                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                            )
+                        }
                         if (currentSong?.romanizeLyrics == true
                             && (romanizeJapaneseLyrics ||
                                     romanizeKoreanLyrics ||
@@ -777,10 +817,14 @@ fun Lyrics(
                                     text = romanized,
                                     fontSize = 18.sp,
                                     color = textColor.copy(alpha = 0.8f),
-                                    textAlign = when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> TextAlign.Left
-                                        LyricsPosition.CENTER -> TextAlign.Center
-                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                     textAlign = if (isWordByWord) {
+                                         if (item.voice == "v1") TextAlign.Left else TextAlign.Right
+                                     } else {
+                                         when (lyricsTextPosition) {
+                                             LyricsPosition.LEFT -> TextAlign.Left
+                                             LyricsPosition.CENTER -> TextAlign.Center
+                                             LyricsPosition.RIGHT -> TextAlign.Right
+                                         }
                                     },
                                     fontWeight = FontWeight.Normal,
                                     modifier = Modifier.padding(top = 2.dp)
