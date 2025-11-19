@@ -1,18 +1,19 @@
 package com.mostafaalagamy.metrolist.applelyrics
 
+import com.mostafaalagamy.metrolist.applelyrics.models.LyricsResponse
+import com.mostafaalagamy.metrolist.applelyrics.models.SearchResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.URLBuilder
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import com.mostafaalagamy.metrolist.applelyrics.models.SearchResponse
-import com.mostafaalagamy.metrolist.applelyrics.models.LyricsResponse
 
 object AppleMusic {
     private val baseUrls = listOf(
@@ -35,6 +36,7 @@ object AppleMusic {
             }
             defaultRequest {
                 url(baseUrls.first())
+                header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
             }
             expectSuccess = true
         }
@@ -42,13 +44,17 @@ object AppleMusic {
 
     private suspend inline fun <T> makeRequest(endpoint: String, crossinline block: suspend (HttpClient, URLBuilder) -> T): T? {
         for (baseUrl in baseUrls) {
+            val urlBuilder = URLBuilder(baseUrl + endpoint)
             try {
-                val urlBuilder = URLBuilder(baseUrl + endpoint)
-                return block(httpClient, urlBuilder)
+                println("AppleMusic: Attempting request to ${urlBuilder.buildString()}")
+                val response = block(httpClient, urlBuilder)
+                println("AppleMusic: Request to ${urlBuilder.buildString()} successful")
+                return response
             } catch (e: Exception) {
-                // Try the next base URL
+                println("AppleMusic: Failed request to ${urlBuilder.buildString()}: $e")
             }
         }
+        println("AppleMusic: All requests failed for endpoint $endpoint")
         return null
     }
 
@@ -61,10 +67,10 @@ object AppleMusic {
         return searchResponse?.firstOrNull { it.songName.equals(songName, ignoreCase = true) }
     }
 
-    suspend fun getLyrics(id: String): LyricsResponse? {
+    suspend fun getLyrics(id: String): String? {
         return makeRequest("getAppleMusicLyrics.php") { client, urlBuilder ->
             urlBuilder.parameters.append("id", id)
-            client.get(urlBuilder.build()).body<LyricsResponse>()
+            client.get(urlBuilder.build()).body<String>()
         }
     }
 }

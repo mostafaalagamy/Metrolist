@@ -19,7 +19,7 @@ data class Track(
 @Serializable
 data class LyricsResponse(
     val content: List<Line>,
-    val type: String
+    val type: String? = null
 )
 
 @Serializable
