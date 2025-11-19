@@ -22,6 +22,7 @@ include(":kugou")
 include(":lrclib")
 include(":kizzy")
 include(":lastfm")
+include(":betterlyrics")
 
 // Use a local copy of NewPipe Extractor by uncommenting the lines below.
 // We assume, that Metrolist and NewPipe Extractor have the same parent directory.
