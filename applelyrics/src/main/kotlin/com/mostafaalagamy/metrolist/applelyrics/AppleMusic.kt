@@ -11,6 +11,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -24,10 +25,13 @@ object AppleMusic {
     private val httpClient: HttpClient by lazy {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                })
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                        isLenient = true
+                    },
+                    contentType = ContentType.Text.Html
+                )
             }
             install(HttpTimeout) {
                 requestTimeoutMillis = 15_000
