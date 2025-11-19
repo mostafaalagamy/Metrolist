@@ -537,6 +537,7 @@ fun Lyrics(
                 val allPreviousLinesFinished = previousLineIndices.all { it !in currentLineIndicesSet }
                 if (allPreviousLinesFinished || currentLineIndices.size > previousLineIndices.size) {
                      if (lazyListState.isScrollInProgress.not()) {
+                        delay(200)
                         performSmoothPageScroll(scrollTargetIndex, 1500)
                         lastScrolledToIndices = currentLineIndicesSet
                     }
@@ -635,27 +636,37 @@ fun Lyrics(
                     val isSelected = selectedIndices.contains(index)
                     val isCurrent = index in displayedCurrentLineIndices
 
+                    val isBgVocal = item.voice == "bg"
+
                     val scale by animateFloatAsState(
-                        targetValue = if (isCurrent && isSynced) 1f else 0.9f,
+                        targetValue = if (isCurrent && isSynced) 1f else if (isBgVocal) 0.8f else 0.9f,
                         animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessVeryLow
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMedium
                         ),
                         label = "scale"
                     )
 
                     val alpha by animateFloatAsState(
-                        targetValue = when {
-                            !isSynced || (isSelectionModeActive && isSelected) -> 1f
-                            isCurrent -> 1f
-                            displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 1 -> 0.6f
-                            displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 2 -> 0.3f
-                            else -> 0.1f
+                        targetValue = if (isBgVocal) {
+                            if (isCurrent) 1f else 0f
+                        } else {
+                            when {
+                                !isSynced || (isSelectionModeActive && isSelected) -> 1f
+                                isCurrent -> 1f
+                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 1 -> 0.6f
+                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 2 -> 0.3f
+                                else -> 0.1f
+                            }
                         },
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessVeryLow
-                        ),
+                        animationSpec = if (isBgVocal) {
+                            tween(durationMillis = 400)
+                        } else {
+                            spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessVeryLow
+                            )
+                        },
                         label = "alpha"
                     )
 
@@ -795,7 +806,12 @@ fun Lyrics(
                                             val isWordActive = currentPosition in word.startTime..word.endTime
                                             val progress = if (isWordActive) {
                                                 val duration = (word.endTime - word.startTime).toFloat()
-                                                if (duration > 0) ((currentPosition - word.startTime) / duration).coerceIn(0f, 1f) else 1f
+                                                if (duration > 0) {
+                                                    val rawProgress = (currentPosition - word.startTime) / duration
+                                                    (rawProgress / 0.25f).coerceIn(0f, 1f)
+                                                } else {
+                                                    1f
+                                                }
                                             } else {
                                                 if (currentPosition > word.endTime) 1f else 0f
                                             }
@@ -810,17 +826,20 @@ fun Lyrics(
                                         }
                                     }
                                 }
+                                val fontSize = if (item.voice == "bg") 22.sp else 28.sp
+                                val lineHeight = if (item.voice == "bg") 26.sp else 32.sp
                                 Text(
                                     text = annotatedText,
-                                    fontSize = 28.sp,
+                                    fontSize = fontSize,
+                                    lineHeight = lineHeight,
                                     textAlign = lyricTextAlignment,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    modifier = Modifier.padding(bottom = 2.dp) // Padding to prevent clipping
+                                    fontWeight = FontWeight.ExtraBold
                                 )
                             } else {
                                 Text(
                                     text = item.text,
                                     fontSize = 28.sp,
+                                    lineHeight = 32.sp,
                                     color = if (isCurrent && isSynced) {
                                         textColor // Full color for active line
                                     } else {
