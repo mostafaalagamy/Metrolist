@@ -35,6 +35,7 @@ constructor(
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
             BetterLyricsProvider,
+            AppleMusicLyricsProvider,
             YouTubeSubtitleLyricsProvider,
             YouTubeLyricsProvider
         )
@@ -62,6 +63,15 @@ constructor(
                             YouTubeLyricsProvider
                         )
                         PreferredLyricsProvider.BETTERLYRICS -> listOf(
+                            BetterLyricsProvider,
+                            LrcLibLyricsProvider,
+                            KuGouLyricsProvider,
+                            AppleMusicLyricsProvider,
+                            YouTubeSubtitleLyricsProvider,
+                            YouTubeLyricsProvider
+                        )
+                        PreferredLyricsProvider.APPLEMUSIC -> listOf(
+                            AppleMusicLyricsProvider,
                             BetterLyricsProvider,
                             LrcLibLyricsProvider,
                             KuGouLyricsProvider,

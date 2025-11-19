@@ -92,6 +92,7 @@ fun ContentSettings(
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
     val (enableBetterLyrics, onEnableBetterLyricsChange) = rememberPreference(key = EnableBetterLyricsKey, defaultValue = false)
+    val (enableAppleMusic, onEnableAppleMusicChange) = rememberPreference(key = EnableAppleMusicKey, defaultValue = false)
     val (preferredProvider, onPreferredProviderChange) =
         rememberEnumPreference(
             key = PreferredLyricsProviderKey,
@@ -302,6 +303,7 @@ fun ContentSettings(
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
                     PreferredLyricsProvider.BETTERLYRICS -> "BetterLyrics"
+                    PreferredLyricsProvider.APPLEMUSIC -> "Apple Music"
                 }
             }
         )
@@ -514,6 +516,17 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
+                    title = { Text("Enable Apple Music") },
+                    trailingContent = {
+                        Switch(
+                            checked = enableAppleMusic,
+                            onCheckedChange = onEnableAppleMusicChange
+                        )
+                    },
+                    onClick = { onEnableAppleMusicChange(!enableAppleMusic) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
                     description = {
                         Text(
@@ -521,6 +534,7 @@ fun ContentSettings(
                                 PreferredLyricsProvider.LRCLIB -> "LrcLib"
                                 PreferredLyricsProvider.KUGOU -> "KuGou"
                                 PreferredLyricsProvider.BETTERLYRICS -> "BetterLyrics"
+                                PreferredLyricsProvider.APPLEMUSIC -> "Apple Music"
                             }
                         )
                     },
