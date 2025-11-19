@@ -10,7 +10,8 @@ object LyricsUtils {
     val LINE_REGEX = "((\\[\\d\\d:\\d\\d\\.\\d{2,3}\\] ?)+)(.+)".toRegex()
     val TIME_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\]".toRegex()
     val APPLE_MUSIC_LINE_REGEX = "\\[(\\d{2}:\\d{2}\\.\\d{2,3})\\] ?(v\\d+):(.*)".toRegex()
-    val APPLE_MUSIC_WORD_TIMESTAMP_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
+    val APPLE_MUSIC_WORD_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>(.*?)<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
+
 
     private val KANA_ROMAJI_MAP: Map<String, String> = mapOf(
         // Digraphs (Yōon - combinations like kya, sho)
@@ -285,22 +286,30 @@ object LyricsUtils {
         if (appleMusicMatch != null) {
             val (lineTimeString, voice, content) = appleMusicMatch.destructured
             val lineTime = parseAppleMusicTimestamp(lineTimeString)
-            val trimmedContent = content.trim()
-            val parts = trimmedContent.split(APPLE_MUSIC_WORD_TIMESTAMP_REGEX)
-            val timestamps = APPLE_MUSIC_WORD_TIMESTAMP_REGEX.findAll(trimmedContent).map { it.groupValues[1] }.toList()
 
             val words = mutableListOf<Word>()
-            var fullText = ""
+            val timestampRegex = "<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
+            val timestamps = timestampRegex.findAll(content).toList()
 
-            for (i in 1 until parts.size) {
-                val wordText = parts[i]
-                if (wordText.isNotEmpty()) {
-                    val startTime = parseAppleMusicTimestamp(timestamps.getOrElse(i - 1) { "00:00.00" })
-                    val endTime = parseAppleMusicTimestamp(timestamps.getOrElse(i) { lineTimeString })
-                    words.add(Word(wordText, startTime, endTime))
-                    fullText += wordText
+            if (timestamps.size >= 2) {
+                for (i in 0 until timestamps.size - 1) {
+                    val startTimeMatch = timestamps[i]
+                    val endTimeMatch = timestamps[i + 1]
+
+                    val startTime = parseAppleMusicTimestamp(startTimeMatch.groupValues[1])
+                    val endTime = parseAppleMusicTimestamp(endTimeMatch.groupValues[1])
+
+                    val textStartIndex = startTimeMatch.range.last + 1
+                    val textEndIndex = endTimeMatch.range.first
+
+                    if (textStartIndex > textEndIndex) continue
+
+                    val text = content.substring(textStartIndex, textEndIndex)
+                    words.add(Word(text, startTime, endTime))
                 }
             }
+
+            val fullText = words.joinToString("") { it.text }
             return listOf(LyricsEntry(lineTime, fullText, words = words, voice = voice))
         }
 
@@ -334,16 +343,33 @@ object LyricsUtils {
         return minutes * 60 * 1000 + seconds * 1000 + millis
     }
 
-    fun findCurrentLineIndex(
+    fun findCurrentLineIndices(
         lines: List<LyricsEntry>,
         position: Long,
-    ): Int {
-        for (index in lines.indices) {
-            if (lines[index].time >= position + 300L) {
-                return index - 1
-            }
+    ): List<Int> {
+        if (lines.isEmpty()) return emptyList()
+
+        val activeIndices = lines.indices.filter { index ->
+            val line = lines[index]
+            val nextLineTime = if (index + 1 < lines.size) lines[index + 1].time else Long.MAX_VALUE
+            val endTime = line.words?.lastOrNull()?.endTime ?: nextLineTime
+
+            position >= line.time && position < endTime
         }
-        return lines.lastIndex
+
+        if (activeIndices.isNotEmpty()) {
+            return activeIndices
+        }
+
+        // If no line is currently active (e.g., in a musical break), find the last line that has passed.
+        // This is to keep the last sung lyric on screen.
+        val lastPassedIndex = lines.indexOfLast { it.time <= position }
+        return if (lastPassedIndex != -1) {
+            listOf(lastPassedIndex)
+        } else {
+            // Before the first lyric
+            emptyList()
+        }
     }
 
     // TODO: Will be useful if we let the user pick the language, useless for now

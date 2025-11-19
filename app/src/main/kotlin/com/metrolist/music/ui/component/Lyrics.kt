@@ -72,26 +72,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -123,7 +120,7 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
-import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
+import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndices
 import com.metrolist.music.lyrics.LyricsUtils.isBelarusian
 import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
@@ -162,7 +159,6 @@ fun Lyrics(
     modifier: Modifier = Modifier,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
-    val menuState = LocalMenuState.current
     val density = LocalDensity.current
     val context = LocalContext.current
     val configuration = LocalConfiguration.current // Get configuration
@@ -215,62 +211,67 @@ fun Lyrics(
             val isKyrgyzLyrics = romanizeKyrgyzLyrics && !romanizeCyrillicByLine && isKyrgyz(lyrics)
             val isMacedonianLyrics = romanizeMacedonianLyrics && !romanizeCyrillicByLine && isMacedonian(lyrics)
 
-            parsedLines.forEach { entry ->
+            parsedLines.map { entry ->
+                val newEntry = LyricsEntry(entry.time, entry.text, entry.words, entry.voice)
+
                 if (romanizeJapaneseLyrics && isJapanese(entry.text) && !isChinese(entry.text)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeJapanese(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
                     }
                 }
 
                 if (romanizeKoreanLyrics && isKorean(entry.text)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeKorean(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
                     }
                 }
 
                 if (romanizeRussianLyrics && (if (romanizeCyrillicByLine) isRussian(entry.text) else isRussianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(entry.text) else isUkrainianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(entry.text) else isSerbianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(entry.text) else isBulgarianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(entry.text) else isBelarusianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(entry.text) else isKyrgyzLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
 
                 else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(entry.text) else isMacedonianLyrics)) {
                     scope.launch {
-                        entry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
+
+                newEntry
+            }.let {
+                listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
             }
-            listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + parsedLines
         } else {
             val isRussianLyrics = romanizeRussianLyrics && !romanizeCyrillicByLine && isRussian(lyrics)
             val isUkrainianLyrics = romanizeUkrainianLyrics && !romanizeCyrillicByLine && isUkrainian(lyrics)
@@ -345,7 +346,6 @@ fun Lyrics(
         remember(lyrics) {
             !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
         }
-    val isWordByWord = remember(lines) { lines.any { it.words != null } }
 
     val textColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
@@ -356,21 +356,10 @@ fun Lyrics(
                 MaterialTheme.colorScheme.onPrimary
     }
 
-    var currentLineIndex by remember {
-        mutableIntStateOf(-1)
-    }
-    var currentPosition by remember {
-        mutableLongStateOf(0L)
-    }
-    // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
-    // we use deferredCurrentLineIndex when user is scrolling
-    var deferredCurrentLineIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
-
-    var previousLineIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+    var currentLineIndices by remember { mutableStateOf<List<Int>>(emptyList()) }
+    var deferredCurrentLineIndices by remember { mutableStateOf<List<Int>>(emptyList()) }
+    var previousLineIndices by remember { mutableStateOf<List<Int>>(emptyList()) }
+    var lastScrolledToIndices by remember { mutableStateOf(emptySet<Int>()) }
 
     var lastPreviewTime by rememberSaveable {
         mutableLongStateOf(0L)
@@ -437,7 +426,7 @@ fun Lyrics(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
-                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
+                val isCurrentLineVisible = visibleItemsInfo.any { it.index in currentLineIndices }
                 if (isCurrentLineVisible) {
                     initialScrollDone = false
                 }
@@ -460,18 +449,16 @@ fun Lyrics(
 
     LaunchedEffect(lyrics) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
-            currentLineIndex = -1
+            currentLineIndices = emptyList()
             return@LaunchedEffect
         }
         while (isActive) {
             delay(50)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
-            val position = sliderPosition ?: playerConnection.player.currentPosition
-            currentPosition = position
-            currentLineIndex = findCurrentLineIndex(
+            currentLineIndices = findCurrentLineIndices(
                 lines,
-                position
+                sliderPosition ?: playerConnection.player.currentPosition
             )
         }
     }
@@ -485,14 +472,14 @@ fun Lyrics(
         }
     }
 
-    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
+    LaunchedEffect(currentLineIndices, lastPreviewTime, initialScrollDone) {
 
         /**
          * Calculate the lyric offset Based on how many lines (\n chars)
          */
         fun calculateOffset() = with(density) {
-            if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
-            val currentItem = lines[currentLineIndex]
+            if (currentLineIndices.isEmpty() || currentLineIndices.first() >= lines.size) return@with 0
+            val currentItem = lines[currentLineIndices.first()]
             val totalNewLines = currentItem.text.count { it == '\n' }
 
             val dpValue = if (landscapeOffset) 16.dp else 20.dp
@@ -531,33 +518,36 @@ fun Lyrics(
             }
         }
         
-        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
+        val scrollTargetIndex = currentLineIndices.lastOrNull() ?: -1
+        val currentLineIndicesSet = currentLineIndices.toSet()
+
+        if ((scrollTargetIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
-            // Initial scroll to center the first line with medium animation (600ms)
-            val initialCenterIndex = kotlin.math.max(0, currentLineIndex)
-            performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
-            if(!isAppMinimized) {
+            val initialCenterIndex = kotlin.math.max(0, scrollTargetIndex)
+            performSmoothPageScroll(initialCenterIndex, 800)
+            if (!isAppMinimized) {
                 initialScrollDone = true
             }
-        } else if (currentLineIndex != -1) {
-            deferredCurrentLineIndex = currentLineIndex
+        } else if (scrollTargetIndex != -1) {
+            deferredCurrentLineIndices = currentLineIndices
             if (isSeeking) {
-                // Fast scroll for seeking to center the target line (300ms)
-                val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-                performSmoothPageScroll(seekCenterIndex, 500) // Fast seek duration
-            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                // Auto-scroll when lyrics settings allow it
-                if (currentLineIndex != previousLineIndex) {
-                    // Calculate which line should be at the top to center the active group
-                    val centerTargetIndex = currentLineIndex
-                    performSmoothPageScroll(centerTargetIndex, 1500) // Auto scroll duration
+                val seekCenterIndex = kotlin.math.max(0, scrollTargetIndex - 1)
+                performSmoothPageScroll(seekCenterIndex, 500)
+            } else if (lastPreviewTime == 0L && scrollLyrics && currentLineIndicesSet != lastScrolledToIndices) {
+                val allPreviousLinesFinished = previousLineIndices.all { it !in currentLineIndicesSet }
+                if (allPreviousLinesFinished || currentLineIndices.size > previousLineIndices.size) {
+                     if (lazyListState.isScrollInProgress.not()) {
+                        performSmoothPageScroll(scrollTargetIndex, 1500)
+                        lastScrolledToIndices = currentLineIndicesSet
+                    }
                 }
             }
         }
-        if(currentLineIndex > 0) {
+
+        if (scrollTargetIndex > 0) {
             shouldScrollToFirstLine = true
         }
-        previousLineIndex = currentLineIndex
+        previousLineIndices = currentLineIndices
     }
 
     BoxWithConstraints(
@@ -615,8 +605,8 @@ fun Lyrics(
                     }
                 })
         ) {
-            val displayedCurrentLineIndex =
-                if (isSeeking || isSelectionModeActive) deferredCurrentLineIndex else currentLineIndex
+            val displayedCurrentLineIndices =
+                if (isSeeking || isSelectionModeActive) deferredCurrentLineIndices else currentLineIndices
 
             if (lyrics == null) {
                 item {
@@ -643,9 +633,10 @@ fun Lyrics(
                     key = { index, item -> "$index-${item.time}" } // Add stable key
                 ) { index, item ->
                     val isSelected = selectedIndices.contains(index)
+                    val isCurrent = index in displayedCurrentLineIndices
 
                     val scale by animateFloatAsState(
-                        targetValue = if (index == displayedCurrentLineIndex && isSynced) 1f else 0.9f,
+                        targetValue = if (isCurrent && isSynced) 1f else 0.9f,
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
                             stiffness = Spring.StiffnessVeryLow
@@ -656,19 +647,15 @@ fun Lyrics(
                     val alpha by animateFloatAsState(
                         targetValue = when {
                             !isSynced || (isSelectionModeActive && isSelected) -> 1f
-                            index == displayedCurrentLineIndex -> 1f
-                            kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.6f
-                            kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.3f
+                            isCurrent -> 1f
+                            displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 1 -> 0.6f
+                            displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 2 -> 0.3f
                             else -> 0.1f
                         },
-                        animationSpec = if (isWordByWord) {
-                            tween(durationMillis = 0)
-                        } else {
-                            spring(
-                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                stiffness = Spring.StiffnessVeryLow
-                            )
-                        },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessVeryLow
+                        ),
                         label = "alpha"
                     )
 
@@ -749,94 +736,122 @@ fun Lyrics(
                             this.alpha = alpha
                         }
 
-                    Column(
+                    val hasWordSync = item.words != null
+                    var currentPosition by remember { mutableLongStateOf(0L) }
+
+                    if (isCurrent && hasWordSync) {
+                        LaunchedEffect(Unit) {
+                            while (isActive) {
+                                currentPosition = playerConnection.player.currentPosition
+                                delay(50)
+                            }
+                        }
+                    }
+
+                    val lyricTextAlignment = if (hasWordSync && item.voice != null) {
+                        when (item.voice) {
+                            "v1" -> TextAlign.Left
+                            "v2" -> TextAlign.Right
+                            else -> TextAlign.Center
+                        }
+                    } else {
+                        when (lyricsTextPosition) {
+                            LyricsPosition.LEFT -> TextAlign.Left
+                            LyricsPosition.CENTER -> TextAlign.Center
+                            LyricsPosition.RIGHT -> TextAlign.Right
+                        }
+                    }
+
+                    val lyricHorizontalArrangement = if (hasWordSync && item.voice != null) {
+                        when (item.voice) {
+                            "v1" -> Arrangement.Start
+                            "v2" -> Arrangement.End
+                            else -> Arrangement.Center
+                        }
+                    } else {
+                        when (lyricsTextPosition) {
+                            LyricsPosition.LEFT -> Arrangement.Start
+                            LyricsPosition.CENTER -> Arrangement.Center
+                            LyricsPosition.RIGHT -> Arrangement.End
+                        }
+                    }
+
+                    Row(
                         modifier = itemModifier,
-                        horizontalAlignment = if (isWordByWord) {
-                            if (item.voice == "v1") Alignment.Start else Alignment.End
-                        } else {
-                            when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> Alignment.Start
-                                LyricsPosition.CENTER -> Alignment.CenterHorizontally
-                                LyricsPosition.RIGHT -> Alignment.End
-                            }
-                        }
+                        horizontalArrangement = lyricHorizontalArrangement,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (isWordByWord && item.words != null) {
-                            val annotatedString = buildAnnotatedString {
-                                for (i in item.words.indices) {
-                                    appendInlineContent("word", i.toString())
-                                }
+                        Column(
+                            horizontalAlignment = when(lyricHorizontalArrangement) {
+                                Arrangement.Start -> Alignment.Start
+                                Arrangement.End -> Alignment.End
+                                else -> Alignment.CenterHorizontally
                             }
-                            Text(
-                                text = annotatedString,
-                                fontSize = 28.sp,
-                                color = textColor,
-                                textAlign = if (item.voice == "v1") TextAlign.Left else TextAlign.Right,
-                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold,
-                                inlineContent = mapOf(
-                                    "word" to InlineTextContent(
-                                        Placeholder(28.sp, 28.sp, PlaceholderVerticalAlign.TextCenter)
-                                    ) {
-                                        val word = item.words!![it.toInt()]
-                                        val duration = (word.endTime - word.startTime).toFloat()
-                                        val progress = ((currentPosition - word.startTime).toFloat() / duration).coerceIn(0f, 1f)
-                                        val alpha = if (progress > 0.5f) 1f else (progress / 0.5f) * 0.5f + 0.5f
-                                        val animatedAlpha by animateFloatAsState(targetValue = alpha, label = "")
-                                        Text(
-                                            text = word.text,
-                                            fontSize = 28.sp,
-                                            color = textColor.copy(alpha = animatedAlpha),
-                                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                                        )
+                        ) {
+                            if (hasWordSync) {
+                                val annotatedText = remember(item.words, currentPosition) {
+                                    buildAnnotatedString {
+                                        item.words?.forEach { word ->
+                                            val isWordActive = currentPosition in word.startTime..word.endTime
+                                            val progress = if (isWordActive) {
+                                                val duration = (word.endTime - word.startTime).toFloat()
+                                                if (duration > 0) ((currentPosition - word.startTime) / duration).coerceIn(0f, 1f) else 1f
+                                            } else {
+                                                if (currentPosition > word.endTime) 1f else 0f
+                                            }
+
+                                            val targetColor = if (isCurrent && isSynced) textColor else textColor.copy(alpha = 0.8f)
+                                            val fadedColor = targetColor.copy(alpha = 0.5f)
+                                            val color = lerp(fadedColor, targetColor, progress)
+
+                                            withStyle(style = SpanStyle(color = color)) {
+                                                append(word.text)
+                                            }
+                                        }
                                     }
-                                )
-                            )
-                        } else {
-                            Text(
-                                text = item.text,
-                                fontSize = 28.sp,
-                                color = if (index == displayedCurrentLineIndex && isSynced) {
-                                    textColor // Full color for active line
-                                } else {
-                                    textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
-                                },
-                                textAlign = when (lyricsTextPosition) {
-                                    LyricsPosition.LEFT -> TextAlign.Left
-                                    LyricsPosition.CENTER -> TextAlign.Center
-                                    LyricsPosition.RIGHT -> TextAlign.Right
-                                },
-                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                            )
-                        }
-                        if (currentSong?.romanizeLyrics == true
-                            && (romanizeJapaneseLyrics ||
-                                    romanizeKoreanLyrics ||
-                                    romanizeRussianLyrics ||
-                                    romanizeUkrainianLyrics ||
-                                    romanizeSerbianLyrics ||
-                                    romanizeBulgarianLyrics ||
-                                    romanizeBelarusianLyrics ||
-                                    romanizeKyrgyzLyrics ||
-                                    romanizeMacedonianLyrics)) {
-                            // Show romanized text if available
-                            val romanizedText by item.romanizedTextFlow.collectAsState()
-                            romanizedText?.let { romanized ->
+                                }
                                 Text(
-                                    text = romanized,
-                                    fontSize = 18.sp,
-                                    color = textColor.copy(alpha = 0.8f),
-                                     textAlign = if (isWordByWord) {
-                                         if (item.voice == "v1") TextAlign.Left else TextAlign.Right
-                                     } else {
-                                         when (lyricsTextPosition) {
-                                             LyricsPosition.LEFT -> TextAlign.Left
-                                             LyricsPosition.CENTER -> TextAlign.Center
-                                             LyricsPosition.RIGHT -> TextAlign.Right
-                                         }
-                                    },
-                                    fontWeight = FontWeight.Normal,
-                                    modifier = Modifier.padding(top = 2.dp)
+                                    text = annotatedText,
+                                    fontSize = 28.sp,
+                                    textAlign = lyricTextAlignment,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    modifier = Modifier.padding(bottom = 2.dp) // Padding to prevent clipping
                                 )
+                            } else {
+                                Text(
+                                    text = item.text,
+                                    fontSize = 28.sp,
+                                    color = if (isCurrent && isSynced) {
+                                        textColor // Full color for active line
+                                    } else {
+                                        textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
+                                    },
+                                    textAlign = lyricTextAlignment,
+                                    fontWeight = if (isCurrent && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                                )
+                            }
+
+                            if (currentSong?.romanizeLyrics == true
+                                && (romanizeJapaneseLyrics ||
+                                        romanizeKoreanLyrics ||
+                                        romanizeRussianLyrics ||
+                                        romanizeUkrainianLyrics ||
+                                        romanizeSerbianLyrics ||
+                                        romanizeBulgarianLyrics ||
+                                        romanizeBelarusianLyrics ||
+                                        romanizeKyrgyzLyrics ||
+                                        romanizeMacedonianLyrics)) {
+                                val romanizedText by item.romanizedTextFlow.collectAsState()
+                                romanizedText?.let { romanized ->
+                                    Text(
+                                        text = romanized,
+                                        fontSize = 18.sp,
+                                        color = textColor.copy(alpha = 0.8f),
+                                        textAlign = lyricTextAlignment,
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -1079,7 +1094,7 @@ fun Lyrics(
         )
         val textMeasurer = rememberTextMeasurer()
 
-        rememberAdjustedFontSize(
+       /* rememberAdjustedFontSize(
             text = lyricsText,
             maxWidth = previewAvailableWidth,
             maxHeight = previewAvailableHeight,
@@ -1088,7 +1103,7 @@ fun Lyrics(
             minFontSize = 22.sp,
             style = textStyleForMeasurement,
             textMeasurer = textMeasurer
-        )
+        )*/
 
         LaunchedEffect(coverUrl) {
             if (coverUrl != null) {
