@@ -34,9 +34,9 @@ object AppleMusic {
                 )
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 15_000
-                connectTimeoutMillis = 10_000
-                socketTimeoutMillis = 15_000
+                requestTimeoutMillis = 5_000
+                connectTimeoutMillis = 5_000
+                socketTimeoutMillis = 5_000
             }
             defaultRequest {
                 url(baseUrls.first())
