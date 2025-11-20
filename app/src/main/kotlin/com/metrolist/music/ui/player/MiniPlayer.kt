@@ -87,6 +87,10 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.ui.screens.settings.DarkMode
+import com.metrolist.music.utils.rememberEnumPreference
 
 @Composable
 fun MiniPlayer(
@@ -133,6 +137,11 @@ private fun NewMiniPlayer(
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+    }
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
@@ -272,7 +281,7 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                    color = if (pureBlack && useDarkTheme) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                 )
                 .border(
                     width = if (miniPlayerOutline) 1.dp else 0.dp,

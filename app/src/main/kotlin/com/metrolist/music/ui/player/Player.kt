@@ -742,37 +742,13 @@ fun BottomSheetPlayer(
 
                     Spacer(modifier = Modifier.size(12.dp))
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(textButtonColor)
-                            .clickable {
-                                menuState.show {
-                                    PlayerMenu(
-                                        mediaMetadata = mediaMetadata,
-                                        navController = navController,
-                                        playerBottomSheetState = state,
-                                        onShowDetailsDialog = {
-                                            mediaMetadata.id.let {
-                                                bottomSheetPageState.show {
-                                                    ShowMediaInfo(it)
-                                                }
-                                            }
-                                        },
-                                        onDismiss = menuState::dismiss,
-                                    )
-                                }
-                            },
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.more_horiz),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(iconButtonColor),
-                        )
-                    }
+                    PlayerMoreMenuButton(
+                        mediaMetadata = mediaMetadata,
+                        navController = navController,
+                        state = state,
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                    )
                 }
             }
 
@@ -1209,5 +1185,49 @@ private fun Modifier.bouncy(interactionSource: InteractionSource) = composed {
     graphicsLayer {
         scaleX = scale
         scaleY = scale
+    }
+}
+
+@Composable
+private fun PlayerMoreMenuButton(
+    mediaMetadata: MediaMetadata,
+    navController: NavController,
+    state: BottomSheetState,
+    textButtonColor: Color,
+    iconButtonColor: Color,
+) {
+    val menuState = LocalMenuState.current
+    val bottomSheetPageState = LocalBottomSheetPageState.current
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier =
+        Modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(textButtonColor)
+            .clickable {
+                menuState.show {
+                    PlayerMenu(
+                        mediaMetadata = mediaMetadata,
+                        navController = navController,
+                        playerBottomSheetState = state,
+                        onShowDetailsDialog = {
+                            mediaMetadata.id.let {
+                                bottomSheetPageState.show {
+                                    ShowMediaInfo(it)
+                                }
+                            }
+                        },
+                        onDismiss = menuState::dismiss,
+                    )
+                }
+            },
+    ) {
+        Image(
+            painter = painterResource(R.drawable.more_horiz),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(iconButtonColor),
+        )
     }
 }
