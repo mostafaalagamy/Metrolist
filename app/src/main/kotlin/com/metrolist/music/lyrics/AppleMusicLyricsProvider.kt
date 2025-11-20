@@ -24,18 +24,18 @@ object AppleMusicLyricsProvider : LyricsProvider {
             val track = AppleMusic.searchSong(title, artist)
             if (track == null) {
                 Timber.w("AppleMusic: No track found for '$title' by '$artist'")
-                return@runCatching "No lyrics found"
+                return@runCatching ""
             }
             Timber.d("AppleMusic: Found track with ID ${track.id}")
 
             val rawLyrics = AppleMusic.getLyrics(track.id)
             if (rawLyrics == null) {
                 Timber.w("AppleMusic: No lyrics found for track ID ${track.id}")
-                return@runCatching "No lyrics found"
+                return@runCatching ""
             }
             Timber.d("AppleMusic: Successfully fetched raw lyrics for track ID ${track.id}:\n$rawLyrics")
 
-            LrcFormatter.formatLyrics(rawLyrics) ?: "No lyrics found"
+            LrcFormatter.formatLyrics(rawLyrics) ?: ""
         }.onFailure {
             Timber.e(it, "AppleMusic: Error fetching lyrics for '$title' by '$artist'")
         }

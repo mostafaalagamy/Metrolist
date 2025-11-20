@@ -16,7 +16,16 @@ object BetterLyricsProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-    ): Result<String> = BetterLyrics.getLyrics(title, artist, duration)
+    ): Result<String> {
+        val result = BetterLyrics.getLyrics(title, artist, duration)
+        return result.map {
+            if (it == "No lyrics found") {
+                ""
+            } else {
+                it
+            }
+        }
+    }
 
     override suspend fun getAllLyrics(
         id: String,
@@ -25,6 +34,10 @@ object BetterLyricsProvider : LyricsProvider {
         duration: Int,
         callback: (String) -> Unit,
     ) {
-        BetterLyrics.fetchLyrics(title, artist, duration, callback)
+        BetterLyrics.fetchLyrics(title, artist, duration) {
+            if (it != "No lyrics found") {
+                callback(it)
+            }
+        }
     }
 }
