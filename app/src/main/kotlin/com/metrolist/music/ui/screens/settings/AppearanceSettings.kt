@@ -573,7 +573,7 @@ fun AppearanceSettings(
             }
         )
 
-        AnimatedVisibility(useNewMiniPlayerDesign) {
+        AnimatedVisibility(useNewMiniPlayerDesign && useDarkTheme) {
             val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) = rememberPreference(
                 PureBlackMiniPlayerKey,
                 defaultValue = false
