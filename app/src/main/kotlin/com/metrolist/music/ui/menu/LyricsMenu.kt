@@ -217,9 +217,9 @@ fun LyricsMenu(
         }
     }
 
+    val isLoading by viewModel.isLoading.collectAsState()
     if (showSearchResultDialog) {
         val results by viewModel.results.collectAsState()
-        val isLoading by viewModel.isLoading.collectAsState()
 
         var expandedItemIndex by rememberSaveable {
             mutableStateOf(-1)
@@ -335,9 +335,10 @@ fun LyricsMenu(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    LazyColumn(
-        userScrollEnabled = !isPortrait,
-        contentPadding = PaddingValues(
+    if (!isLoading) {
+        LazyColumn(
+            userScrollEnabled = !isPortrait,
+            contentPadding = PaddingValues(
             start = 0.dp,
             top = 0.dp,
             end = 0.dp,
@@ -428,6 +429,7 @@ fun LyricsMenu(
             )
         }
     }
+}
     /* if (showRomanizationDialog) {
         var isChecked by remember { mutableStateOf(songProvider()?.romanizeLyrics ?: true) }
 
