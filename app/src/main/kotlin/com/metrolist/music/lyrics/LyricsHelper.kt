@@ -33,6 +33,8 @@ constructor(
     @ApplicationContext private val context: Context,
     private val networkConnectivity: NetworkConnectivityObserver,
 ) {
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
     private var lyricsProviders =
         listOf(
             LrcLibLyricsProvider,
@@ -83,6 +85,12 @@ constructor(
                         )
                     }
             }
+
+    init {
+        scope.launch {
+            preferred.first()
+        }
+    }
 
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
     private var currentLyricsJob: Job? = null
@@ -172,52 +180,45 @@ constructor(
         songTitle: String,
         songArtists: String,
         duration: Int,
-        callback: (LyricsResult) -> Unit,
-    ) {
+    ): List<LyricsResult> {
         currentLyricsJob?.cancel()
 
         val cacheKey = "$songArtists-$songTitle".replace(" ", "")
-        cache.get(cacheKey)?.let { results ->
-            results.forEach {
-                callback(it)
-            }
-            return
+        val cachedResults = cache.get(cacheKey)
+        if (cachedResults != null) {
+            return cachedResults
         }
 
-        // Check network connectivity before making network requests
-        // Use synchronous check as fallback if flow doesn't emit
         val isNetworkAvailable = try {
             networkConnectivity.isCurrentlyConnected()
         } catch (e: Exception) {
-            // If network check fails, try to proceed anyway
             true
         }
 
         if (!isNetworkAvailable) {
-            // Still try to proceed in case of false negative
-            return
+            return emptyList()
         }
 
-        val allResult = mutableListOf<LyricsResult>()
-        currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
-            val jobs = lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
-                launch {
+        val allResults = mutableListOf<LyricsResult>()
+        val job = CoroutineScope(SupervisorJob()).async {
+            lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
+                async {
                     try {
                         provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
                             val result = LyricsResult(provider.name, lyrics)
-                            synchronized(allResult) {
-                                allResult += result
+                            synchronized(allResults) {
+                                allResults.add(result)
                             }
-                            callback(result)
                         }
                     } catch (e: Exception) {
                         reportException(e)
                     }
                 }
-            }
-            jobs.joinAll()
-            cache.put(cacheKey, allResult)
+            }.awaitAll()
         }
+        job.await()
+        cache.put(cacheKey, allResults)
+        return allResults
     }
 
     fun cancelCurrentLyricsJob() {
