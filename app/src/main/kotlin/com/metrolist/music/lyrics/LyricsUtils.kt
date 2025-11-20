@@ -421,43 +421,35 @@ object LyricsUtils {
     }
 
     private fun parseWords(content: String): List<Word> {
+        val fragments = APPLE_MUSIC_WORD_REGEX.findAll(content).toList()
+        if (fragments.isEmpty()) return emptyList()
+
         val words = mutableListOf<Word>()
-        val timestampRegex = "<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
-        val timestamps = timestampRegex.findAll(content).toList()
+        var currentWordText = ""
+        var currentWordStartTime = -1L
+        var currentWordEndTime = -1L
 
-        if (timestamps.size >= 2) {
-            var currentWordText = ""
-            var currentWordStartTime = -1L
+        fragments.forEachIndexed { index, fragment ->
+            val (startTimeString, text, endTimeString) = fragment.destructured
+            val startTime = parseAppleMusicTimestamp(startTimeString)
+            val endTime = parseAppleMusicTimestamp(endTimeString)
 
-            for (i in 0 until timestamps.size - 1) {
-                val startTimeMatch = timestamps[i]
-                val endTimeMatch = timestamps[i + 1]
+            if (currentWordStartTime == -1L) {
+                currentWordStartTime = startTime
+            }
+            currentWordText += text
+            currentWordEndTime = endTime
 
-                val startTime = parseAppleMusicTimestamp(startTimeMatch.groupValues[1])
-                val endTime = parseAppleMusicTimestamp(endTimeMatch.groupValues[1])
+            val isLastFragment = index == fragments.size - 1
+            val nextCharIsSpace = fragment.range.last + 1 < content.length && content[fragment.range.last + 1].isWhitespace()
 
-                val textStartIndex = startTimeMatch.range.last + 1
-                val textEndIndex = endTimeMatch.range.first
-
-                if (textStartIndex > textEndIndex) continue
-
-                val text = content.substring(textStartIndex, textEndIndex)
-
-                if (currentWordStartTime == -1L) {
-                    currentWordStartTime = startTime
-                }
-                currentWordText += text
-
-                val isLastTimestamp = i == timestamps.size - 2
-                val nextSegmentIsWhitespace = textEndIndex < content.length && content[textEndIndex].isWhitespace()
-
-                if (nextSegmentIsWhitespace || isLastTimestamp) {
-                    words.add(Word(currentWordText.trim(), currentWordStartTime, endTime))
-                    currentWordText = ""
-                    currentWordStartTime = -1L
-                }
+            if (nextCharIsSpace || isLastFragment) {
+                words.add(Word(currentWordText, currentWordStartTime, currentWordEndTime))
+                currentWordText = ""
+                currentWordStartTime = -1L
             }
         }
+
         return words
     }
 
