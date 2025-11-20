@@ -68,7 +68,9 @@ object AppleMusic {
             client.get(urlBuilder.build()).body<SearchResponse>()
         }
 
-        return searchResponse?.firstOrNull {
+        return searchResponse
+            ?.sortedByDescending { it.songName.length }
+            ?.firstOrNull {
             (songName.contains(it.songName, ignoreCase = true) ||
                     it.songName.contains(songName, ignoreCase = true)) &&
                     (artistName.contains(it.artistName, ignoreCase = true) ||
