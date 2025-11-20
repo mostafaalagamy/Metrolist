@@ -1,30 +1,39 @@
 package com.metrolist.music.utils
 
+import android.content.Context
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
+import com.metrolist.lastfm.LastFM
+import com.metrolist.music.constants.LastFMUseSendLikes
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
+import com.metrolist.music.extensions.collectLatest
 import com.metrolist.music.models.toMediaMetadata
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 @Singleton
 class SyncUtils @Inject constructor(
+    @ApplicationContext context: Context,
     private val database: MusicDatabase,
 ) {
     private val syncScope = CoroutineScope(Dispatchers.IO)
@@ -36,6 +45,16 @@ class SyncUtils @Inject constructor(
     private val isSyncingUploadedAlbums = MutableStateFlow(false)
     private val isSyncingArtists = MutableStateFlow(false)
     private val isSyncingPlaylists = MutableStateFlow(false)
+    private var lastfmSendLikes = false
+
+    init {
+        context.dataStore.data
+            .map { it[LastFMUseSendLikes] ?: false }
+            .distinctUntilChanged()
+            .collectLatest(syncScope){
+                lastfmSendLikes = it
+            }
+    }
 
     fun runAllSyncs() {
         syncScope.launch {
@@ -50,8 +69,18 @@ class SyncUtils @Inject constructor(
     }
 
     fun likeSong(s: SongEntity) {
+
         syncScope.launch {
             YouTube.likeVideo(s.id, s.liked)
+
+            if (lastfmSendLikes) {
+                val dbSong = database.song(s.id).firstOrNull()
+                LastFM.setLoveStatus(
+                    artist = dbSong?.artists?.joinToString { a -> a.name } ?: "",
+                    track = s.title,
+                    love = s.liked
+                )
+            }
         }
     }
 
