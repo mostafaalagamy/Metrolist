@@ -34,9 +34,9 @@ object AppleMusic {
                 )
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 5_000
-                connectTimeoutMillis = 5_000
-                socketTimeoutMillis = 5_000
+                requestTimeoutMillis = 15_000
+                connectTimeoutMillis = 15_000
+                socketTimeoutMillis = 15_000
             }
             defaultRequest {
                 url(baseUrls.first())
@@ -68,14 +68,45 @@ object AppleMusic {
             client.get(urlBuilder.build()).body<SearchResponse>()
         }
 
-        return searchResponse
-            ?.sortedByDescending { it.songName.length }
-            ?.firstOrNull {
-            (songName.contains(it.songName, ignoreCase = true) ||
-                    it.songName.contains(songName, ignoreCase = true)) &&
-                    (artistName.contains(it.artistName, ignoreCase = true) ||
-                            it.artistName.contains(artistName, ignoreCase = true))
+        if (searchResponse.isNullOrEmpty()) {
+            return null
         }
+
+        var bestMatch: com.mostafaalagamy.metrolist.applelyrics.models.Track? = null
+        var maxScore = -1
+
+        for (track in searchResponse) {
+            var currentScore = 0
+
+            // Score based on title match
+            val titleMatchScore = when {
+                track.songName.equals(songName, ignoreCase = true) -> 100
+                songName.contains(track.songName, ignoreCase = true) -> 50 + track.songName.length
+                track.songName.contains(songName, ignoreCase = true) -> 50 + songName.length
+                else -> -1 // Not a match
+            }
+
+            if (titleMatchScore == -1) {
+                continue
+            }
+            currentScore += titleMatchScore
+
+            // Score based on artist match
+            val artistMatchScore = when {
+                track.artistName.equals(artistName, ignoreCase = true) -> 50
+                artistName.contains(track.artistName, ignoreCase = true) -> 25
+                track.artistName.contains(artistName, ignoreCase = true) -> 25
+                else -> 0
+            }
+            currentScore += artistMatchScore
+
+            if (currentScore > maxScore) {
+                maxScore = currentScore
+                bestMatch = track
+            }
+        }
+
+        return bestMatch
     }
 
     suspend fun getLyrics(id: String): String? {
