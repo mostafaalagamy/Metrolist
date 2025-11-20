@@ -270,10 +270,49 @@ object LyricsUtils {
         Tokenizer()
     }
 
+    private fun parseLrcTimestamp(timeMatchResult: MatchResult): Long {
+        val min = timeMatchResult.groupValues[1].toLong()
+        val sec = timeMatchResult.groupValues[2].toLong()
+        val milString = timeMatchResult.groupValues[3]
+        var mil = milString.toLong()
+        if (milString.length == 2) {
+            mil *= 10
+        }
+        return min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
+    }
+
+    private fun parseBetterLyricsWords(line: String): List<Word> {
+        val words = mutableListOf<Word>()
+        val content = line.trim().drop(1).dropLast(1) // Remove < and >
+        val wordData = content.split('|')
+
+        for (data in wordData) {
+            val parts = data.split(':')
+            if (parts.size == 3) {
+                val text = parts[0]
+                try {
+                    val startTime = (parts[1].toDouble() * 1000).toLong()
+                    val endTime = (parts[2].toDouble() * 1000).toLong()
+                    words.add(Word(text, startTime, endTime))
+                } catch (e: NumberFormatException) {
+                    // Ignore malformed timestamps
+                }
+            }
+        }
+        return words
+    }
+
     fun parseLyrics(lyrics: String): List<LyricsEntry> {
         val entries = mutableListOf<LyricsEntry>()
-        for (line in lyrics.lines()) {
-            if (line.isBlank()) continue
+        val lines = lyrics.lines()
+        var i = 0
+        while (i < lines.size) {
+            val line = lines[i]
+
+            if (line.isBlank()) {
+                i++
+                continue
+            }
 
             // Apple Music word-by-word format
             val appleMusicMatch = APPLE_MUSIC_LINE_REGEX.matchEntire(line.trim())
@@ -299,6 +338,7 @@ object LyricsUtils {
                         )
                     )
                 }
+                i++
                 continue
             }
 
@@ -317,6 +357,7 @@ object LyricsUtils {
                         )
                     )
                 }
+                i++
                 continue
             }
 
@@ -326,18 +367,28 @@ object LyricsUtils {
                 val text = matchResult.groupValues[3]
                 val timeMatchResults = TIME_REGEX.findAll(times)
 
-                timeMatchResults.forEach { timeMatchResult ->
-                    val min = timeMatchResult.groupValues[1].toLong()
-                    val sec = timeMatchResult.groupValues[2].toLong()
-                    val milString = timeMatchResult.groupValues[3]
-                    var mil = milString.toLong()
-                    if (milString.length == 2) {
-                        mil *= 10
+                // Check for BetterLyrics format on the next line
+                if (i + 1 < lines.size && lines[i + 1].trim().startsWith("<")) {
+                    val betterLyricsLine = lines[i + 1].trim()
+                    val words = parseBetterLyricsWords(betterLyricsLine)
+                    if (words.isNotEmpty()) {
+                        timeMatchResults.forEach { timeMatchResult ->
+                            val time = parseLrcTimestamp(timeMatchResult)
+                            entries.add(LyricsEntry(time, text, words))
+                        }
+                        i += 2 // Consume both lines
+                        continue
                     }
-                    val time = min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
+                }
+
+                timeMatchResults.forEach { timeMatchResult ->
+                    val time = parseLrcTimestamp(timeMatchResult)
                     entries.add(LyricsEntry(time, text))
                 }
+                i++
+                continue
             }
+            i++
         }
         return entries.sorted()
     }
