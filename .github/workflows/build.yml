@@ -18,9 +18,29 @@ permissions:
 
 jobs:
   build_debug:
-    name: build (debug)
+    name: Build Debug (${{ matrix.arch }})
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: Universal
+            task_part: Universal
+            dir_name: universal
+          - arch: Armeabi
+            task_part: Armeabi
+            dir_name: armeabi
+          - arch: Arm64-v8a
+            task_part: Arm64V8a
+            dir_name: arm64-v8a
+          - arch: x86
+            task_part: X86
+            dir_name: x86
+          - arch: x86_64
+            task_part: X86_64
+            dir_name: x86_64
 
     steps:
       - uses: actions/checkout@v4
@@ -52,16 +72,17 @@ jobs:
         run: |
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
-      - name: Build Debug APK and Run Lint
-        run: ./gradlew --no-configuration-cache --console=plain assembleDebug :app:lintDebug --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
+      - name: Build ${{ matrix.arch }} Debug APK and Run Lint
+        run: ./gradlew --no-configuration-cache --console=plain assemble${{ matrix.task_part }}Debug :app:lint${{ matrix.task_part }}Debug --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
-      - name: Upload Debug APK
+      - name: Upload ${{ matrix.arch }} Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apks
-          path: app/build/outputs/apk/**/debug/*.apk
+          # Creates unique artifacts like "app-debug-x86", "app-debug-universal"
+          name: app-debug-${{ matrix.dir_name }}
+          path: app/build/outputs/apk/${{ matrix.dir_name }}/debug/*.apk
