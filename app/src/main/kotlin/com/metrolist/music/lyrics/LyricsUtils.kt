@@ -438,7 +438,7 @@ object LyricsUtils {
 
                 if (textStartIndex > textEndIndex) continue
 
-                val text = content.substring(textStartIndex, textEndIndex)
+                val text = content.substring(textStartIndex, textEndIndex).trim()
                 words.add(Word(text, startTime, endTime))
             }
         }

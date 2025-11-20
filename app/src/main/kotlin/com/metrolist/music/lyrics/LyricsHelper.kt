@@ -106,29 +106,22 @@ constructor(
             return LYRICS_NOT_FOUND
         }
 
-        val scope = CoroutineScope(SupervisorJob())
-        val deferredResults = lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
-            scope.async {
-                try {
-                    provider.getLyrics(
-                        mediaMetadata.id,
-                        mediaMetadata.title,
-                        mediaMetadata.artists.joinToString { it.name },
-                        mediaMetadata.duration,
-                    ).getOrNull()
-                } catch (e: Exception) {
-                    reportException(e)
-                    null
+        for (provider in lyricsProviders.filter { it.isEnabled(context) }) {
+            try {
+                val result = provider.getLyrics(
+                    mediaMetadata.id,
+                    mediaMetadata.title,
+                    mediaMetadata.artists.joinToString { it.name },
+                    mediaMetadata.duration,
+                )
+                if (result.isSuccess) {
+                    val lyrics = result.getOrThrow()
+                    if (lyrics.isNotEmpty()) {
+                        return lyrics
+                    }
                 }
-            }
-        }
-
-        val results = deferredResults.awaitAll()
-        scope.cancel()
-
-        for (result in results) {
-            if (result != null) {
-                return result
+            } catch (e: Exception) {
+                reportException(e)
             }
         }
 

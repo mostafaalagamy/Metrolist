@@ -18,9 +18,9 @@ object BetterLyricsProvider : LyricsProvider {
         duration: Int,
     ): Result<String> {
         val result = BetterLyrics.getLyrics(title, artist, duration)
-        return result.map {
+        return result.mapCatching {
             if (it == "No lyrics found") {
-                ""
+                throw Exception("No lyrics found")
             } else {
                 it
             }
