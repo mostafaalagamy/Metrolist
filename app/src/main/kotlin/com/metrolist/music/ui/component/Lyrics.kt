@@ -802,7 +802,7 @@ fun Lyrics(
                             if (hasWordSync) {
                                 val annotatedText = remember(item.words, currentPosition) {
                                     buildAnnotatedString {
-                                        item.words?.forEach { word ->
+                                        item.words?.forEachIndexed { index, word ->
                                             val isWordActive = currentPosition in word.startTime..word.endTime
                                             val progress = if (isWordActive) {
                                                 val duration = (word.endTime - word.startTime).toFloat()
@@ -821,7 +821,7 @@ fun Lyrics(
                                             val color = lerp(fadedColor, targetColor, progress)
 
                                             withStyle(style = SpanStyle(color = color)) {
-                                                append(word.text)
+                                                append(word.text.plus(if (index < item.words.size - 1) " " else ""))
                                             }
                                         }
                                     }
