@@ -53,7 +53,7 @@ jobs:
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
       - name: Build Debug APK and Run Lint
-        run: ./gradlew --no-configuration-cache --console=plain assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
+        run: ./gradlew --no-configuration-cache --console=plain assembleDebug :app:lintDebug --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -63,5 +63,5 @@ jobs:
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-universal-debug
-          path: app/build/outputs/apk/universal/debug/*.apk
+          name: app-debug-apks
+          path: app/build/outputs/apk/**/debug/*.apk
