@@ -426,6 +426,9 @@ object LyricsUtils {
         val timestamps = timestampRegex.findAll(content).toList()
 
         if (timestamps.size >= 2) {
+            var currentWordText = ""
+            var currentWordStartTime = -1L
+
             for (i in 0 until timestamps.size - 1) {
                 val startTimeMatch = timestamps[i]
                 val endTimeMatch = timestamps[i + 1]
@@ -438,8 +441,21 @@ object LyricsUtils {
 
                 if (textStartIndex > textEndIndex) continue
 
-                val text = content.substring(textStartIndex, textEndIndex).trim()
-                words.add(Word(text, startTime, endTime))
+                val text = content.substring(textStartIndex, textEndIndex)
+
+                if (currentWordStartTime == -1L) {
+                    currentWordStartTime = startTime
+                }
+                currentWordText += text
+
+                val isLastTimestamp = i == timestamps.size - 2
+                val nextSegmentIsWhitespace = textEndIndex < content.length && content[textEndIndex].isWhitespace()
+
+                if (nextSegmentIsWhitespace || isLastTimestamp) {
+                    words.add(Word(currentWordText.trim(), currentWordStartTime, endTime))
+                    currentWordText = ""
+                    currentWordStartTime = -1L
+                }
             }
         }
         return words
