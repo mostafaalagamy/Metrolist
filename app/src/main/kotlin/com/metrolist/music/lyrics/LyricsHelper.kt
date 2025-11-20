@@ -153,7 +153,7 @@ constructor(
             // If network check fails, try to proceed anyway
             true
         }
-        
+
         if (!isNetworkAvailable) {
             // Still try to proceed in case of false negative
             return
@@ -161,24 +161,24 @@ constructor(
 
         val allResult = mutableListOf<LyricsResult>()
         currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
-            lyricsProviders.forEach { provider ->
-                if (provider.isEnabled(context)) {
-                    try {
-                        provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
+            var lyricsFound = false
+            for (provider in lyricsProviders.filter { it.isEnabled(context) }) {
+                if (lyricsFound) break
+                try {
+                    provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
+                        if (lyrics.isNotEmpty()) {
+                            lyricsFound = true
                             val result = LyricsResult(provider.name, lyrics)
                             allResult += result
                             callback(result)
                         }
-                    } catch (e: Exception) {
-                        // Catch network-related exceptions like UnresolvedAddressException
-                        reportException(e)
                     }
+                } catch (e: Exception) {
+                    reportException(e)
                 }
             }
             cache.put(cacheKey, allResult)
         }
-
-        currentLyricsJob?.join()
     }
 
     fun cancelCurrentLyricsJob() {

@@ -807,8 +807,7 @@ fun Lyrics(
                                             val progress = if (isWordActive) {
                                                 val duration = (word.endTime - word.startTime).toFloat()
                                                 if (duration > 0) {
-                                                    val rawProgress = (currentPosition - word.startTime) / duration
-                                                    (rawProgress / 0.25f).coerceIn(0f, 1f)
+                                                    ((currentPosition - word.startTime) / duration).coerceIn(0f, 1f)
                                                 } else {
                                                     1f
                                                 }
