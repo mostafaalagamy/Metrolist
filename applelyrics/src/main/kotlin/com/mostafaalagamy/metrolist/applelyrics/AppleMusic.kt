@@ -69,7 +69,8 @@ object AppleMusic {
         }
 
         return searchResponse?.firstOrNull {
-            it.songName.equals(songName, ignoreCase = true) &&
+            (songName.contains(it.songName, ignoreCase = true) ||
+                    it.songName.contains(songName, ignoreCase = true)) &&
                     (artistName.contains(it.artistName, ignoreCase = true) ||
                             it.artistName.contains(artistName, ignoreCase = true))
         }
