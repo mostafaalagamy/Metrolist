@@ -23,6 +23,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class LyricsHelper
@@ -93,29 +95,31 @@ constructor(
             return cached.lyrics
         }
 
-        // Check network connectivity before making network requests
-        // Use synchronous check as fallback if flow doesn't emit
         val isNetworkAvailable = try {
             networkConnectivity.isCurrentlyConnected()
         } catch (e: Exception) {
-            // If network check fails, try to proceed anyway
             true
         }
         
         if (!isNetworkAvailable) {
-            // Still proceed but return not found to avoid hanging
             return LYRICS_NOT_FOUND
         }
 
-        for (provider in lyricsProviders.filter { it.isEnabled(context) }) {
+        val enabledProviders = lyricsProviders.filter { it.isEnabled(context) }
+        val preferredProvider = enabledProviders.firstOrNull()
+
+        if (preferredProvider != null) {
             try {
-                val result = provider.getLyrics(
-                    mediaMetadata.id,
-                    mediaMetadata.title,
-                    mediaMetadata.artists.joinToString { it.name },
-                    mediaMetadata.duration,
-                )
-                if (result.isSuccess) {
+                val result = withTimeoutOrNull(PREFERRED_PROVIDER_TIMEOUT_MS) {
+                    preferredProvider.getLyrics(
+                        mediaMetadata.id,
+                        mediaMetadata.title,
+                        mediaMetadata.artists.joinToString { it.name },
+                        mediaMetadata.duration
+                    )
+                }
+
+                if (result?.isSuccess == true) {
                     val lyrics = result.getOrThrow()
                     if (lyrics.isNotEmpty()) {
                         return lyrics
@@ -126,6 +130,40 @@ constructor(
             }
         }
 
+        val otherProviders = if (preferredProvider != null) {
+            enabledProviders.drop(1)
+        } else {
+            enabledProviders
+        }
+
+        if (otherProviders.isNotEmpty()) {
+            coroutineScope {
+                val results = otherProviders.map { provider ->
+                    async {
+                        try {
+                            provider.getLyrics(
+                                mediaMetadata.id,
+                                mediaMetadata.title,
+                                mediaMetadata.artists.joinToString { it.name },
+                                mediaMetadata.duration
+                            )
+                        } catch (e: Exception) {
+                            reportException(e)
+                            Result.failure(e)
+                        }
+                    }
+                }.awaitAll()
+
+                for (result in results) {
+                    if (result.isSuccess) {
+                        val lyrics = result.getOrThrow()
+                        if (lyrics.isNotEmpty()) {
+                            return@coroutineScope lyrics
+                        }
+                    }
+                }
+            }
+        }
         return LYRICS_NOT_FOUND
     }
 
@@ -189,6 +227,7 @@ constructor(
 
     companion object {
         private const val MAX_CACHE_SIZE = 3
+        private const val PREFERRED_PROVIDER_TIMEOUT_MS = 10000L
     }
 }
 
