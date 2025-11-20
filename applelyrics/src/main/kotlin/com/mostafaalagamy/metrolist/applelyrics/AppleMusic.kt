@@ -68,7 +68,10 @@ object AppleMusic {
             client.get(urlBuilder.build()).body<SearchResponse>()
         }
 
-        return searchResponse?.firstOrNull { it.songName.equals(songName, ignoreCase = true) }
+        return searchResponse?.firstOrNull {
+            it.songName.equals(songName, ignoreCase = true) &&
+                    it.artistName.equals(artistName, ignoreCase = true)
+        }
     }
 
     suspend fun getLyrics(id: String): String? {
