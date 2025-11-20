@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
 import javax.inject.Inject
 
 class LyricsHelper
@@ -161,22 +162,22 @@ constructor(
 
         val allResult = mutableListOf<LyricsResult>()
         currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
-            var lyricsFound = false
-            for (provider in lyricsProviders.filter { it.isEnabled(context) }) {
-                if (lyricsFound) break
-                try {
-                    provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
-                        if (lyrics.isNotEmpty()) {
-                            lyricsFound = true
+            val jobs = lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
+                launch {
+                    try {
+                        provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
                             val result = LyricsResult(provider.name, lyrics)
-                            allResult += result
+                            synchronized(allResult) {
+                                allResult += result
+                            }
                             callback(result)
                         }
+                    } catch (e: Exception) {
+                        reportException(e)
                     }
-                } catch (e: Exception) {
-                    reportException(e)
                 }
             }
+            jobs.joinAll()
             cache.put(cacheKey, allResult)
         }
     }
