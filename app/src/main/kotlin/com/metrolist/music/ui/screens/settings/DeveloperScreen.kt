@@ -1,14 +1,20 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.metrolist.music.ui.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.Modifier
+import com.metrolist.music.constants.SliderStyle
+import me.saket.squiggles.SquigglySlider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,35 +25,13 @@ import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.utils.backToMain
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeveloperScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        TopAppBar(
-            title = { Text(stringResource(R.string.developer_mode)) },
-            navigationIcon = {
-                IconButton(
-                    onClick = navController::navigateUp,
-                    onLongClick = navController::backToMain,
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_back),
-                        contentDescription = null,
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior
-        )
-
-        val colors = listOf(
-            "primary" to MaterialTheme.colorScheme.primary,
+    val colors = listOf(
+        "primary" to MaterialTheme.colorScheme.primary,
             "onPrimary" to MaterialTheme.colorScheme.onPrimary,
             "primaryContainer" to MaterialTheme.colorScheme.primaryContainer,
             "onPrimaryContainer" to MaterialTheme.colorScheme.onPrimaryContainer,
@@ -77,15 +61,106 @@ fun DeveloperScreen(
             "outlineVariant" to MaterialTheme.colorScheme.outlineVariant,
             "scrim" to MaterialTheme.colorScheme.scrim,
         )
-
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 128.dp),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.developer_mode)) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = navController::navigateUp,
+                        onLongClick = navController::backToMain,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = null,
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            items(colors) { (name, color) ->
-                ColorChip(name = name, color = color)
+            item {
+                Text("Sliders", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(8.dp))
+                SliderShowcase()
+                Spacer(Modifier.height(16.dp))
+                Text("Progress Indicators", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(8.dp))
+                ComponentShowcase()
+                Spacer(Modifier.height(16.dp))
+                Text("Colors", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.height(8.dp))
             }
+            item {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 128.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(colors) { (name, color) ->
+                        ColorChip(name = name, color = color)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SliderShowcase() {
+    val sliderStyles = SliderStyle.values()
+    var sliderPosition by remember { mutableStateOf(0.5f) }
+
+    Column {
+        sliderStyles.forEach { style ->
+            Text(style.name, style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(4.dp))
+            when (style) {
+                SliderStyle.DEFAULT -> {
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = { sliderPosition = it }
+                    )
+                }
+                SliderStyle.SQUIGGLY -> {
+                    SquigglySlider(
+                        value = sliderPosition,
+                        onValueChange = { sliderPosition = it }
+                    )
+                }
+                SliderStyle.SLIM -> {
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = { sliderPosition = it },
+                        thumb = { Spacer(modifier = Modifier.size(0.dp)) }
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun ComponentShowcase() {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator()
+            LinearProgressIndicator()
         }
     }
 }
