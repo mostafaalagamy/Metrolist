@@ -74,6 +74,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -144,7 +145,6 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.ui.utils.fadingEdge
-import com.metrolist.music.ui.utils.horizontalFade
 import com.metrolist.music.utils.ComposeToImage
 import com.metrolist.music.utils.rememberEnumPreference
 import androidx.compose.ui.graphics.Shadow
@@ -853,15 +853,21 @@ fun Lyrics(
 
                                             val targetColor = if (isCurrent && isSynced) textColor else textColor.copy(alpha = 0.8f)
                                             val fadedColor = targetColor.copy(alpha = 0.5f)
-                                            val color = lerp(fadedColor, targetColor, progress)
                                             val duration = word.endTime - word.startTime
                                             val glow = duration >= 1200
 
+                                            val brush = Brush.horizontalGradient(
+                                                colors = listOf(targetColor, fadedColor),
+                                                startX = 0f,
+                                                endX = progress * 1000f
+                                            )
+
                                             withStyle(
                                                 style = SpanStyle(
-                                                    color = color,
+                                                    brush = brush,
+                                                    alpha = 0.0001f, // Hack to make brush work
                                                     shadow = if (glow && isWordActive) androidx.compose.ui.graphics.Shadow(
-                                                        color = color.copy(alpha = 0.8f),
+                                                        color = targetColor.copy(alpha = 0.8f),
                                                         blurRadius = 24f
                                                     ) else null
                                                 )
@@ -878,11 +884,7 @@ fun Lyrics(
                                     fontSize = fontSize,
                                     lineHeight = lineHeight,
                                     textAlign = lyricTextAlignment,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    modifier = Modifier.horizontalFade(
-                                        isWordActive = isCurrent,
-                                        durationMillis = 500
-                                    )
+                                    fontWeight = FontWeight.ExtraBold
                                 )
                             } else {
                                 Text(
