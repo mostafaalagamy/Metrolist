@@ -55,6 +55,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -158,7 +159,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
 @RequiresApi(Build.VERSION_CODES.M)
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope", "StringFormatInvalid")
 @Composable
 fun Lyrics(
@@ -861,7 +862,6 @@ fun Lyrics(
                                             withStyle(
                                                 style = SpanStyle(
                                                     brush = brush,
-                                                    alpha = 0.0001f, // Hack to make brush work
                                                     shadow = if (glow && isWordActive) androidx.compose.ui.graphics.Shadow(
                                                         color = targetColor.copy(alpha = 0.8f),
                                                         blurRadius = 24f
@@ -931,9 +931,13 @@ fun Lyrics(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 16.dp),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = when (lyricHorizontalArrangement) {
+                                Arrangement.Start -> Alignment.CenterStart
+                                Arrangement.End -> Alignment.CenterEnd
+                                else -> Alignment.Center
+                            }
                         ) {
-                            CircularProgressIndicator()
+                            LoadingIndicator()
                         }
                     }
                 }
