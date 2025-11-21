@@ -81,11 +81,12 @@ fun DeveloperScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(16.dp)
         ) {
             item {
                 Text("Sliders", style = MaterialTheme.typography.titleLarge)
@@ -99,18 +100,8 @@ fun DeveloperScreen(
                 Text("Colors", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(8.dp))
             }
-            item {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 128.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(colors) { (name, color) ->
-                        ColorChip(name = name, color = color)
-                    }
-                }
+            items(colors) { (name, color) ->
+                ColorChip(name = name, color = color)
             }
         }
     }
