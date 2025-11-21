@@ -21,16 +21,27 @@ object AppleMusicLyricsProvider : LyricsProvider {
     ): Result<String> {
         return runCatching {
             Timber.d("AppleMusic: Searching for '$title' by '$artist'")
-            val track = AppleMusic.searchSong(title, artist)
-                ?: throw Exception("No track found for '$title' by '$artist'")
-            Timber.d("AppleMusic: Found track with ID ${track.id}")
+            val tracks = AppleMusic.searchSong(title, artist)
+                ?: throw Exception("No tracks found for '$title' by '$artist'")
+            Timber.d("AppleMusic: Found ${tracks.size} tracks for '$title' by '$artist'")
 
-            val rawLyrics = AppleMusic.getLyrics(track.id)
-                ?: throw Exception("No lyrics found for track ID ${track.id}")
-            Timber.d("AppleMusic: Successfully fetched raw lyrics for track ID ${track.id}:\n$rawLyrics")
+            val bestMatch = tracks.maxByOrNull { track ->
+                var score = 0
+                if (track.songName.equals(title, ignoreCase = true)) score += 10
+                if (track.artistName.equals(artist, ignoreCase = true)) score += 5
+                if (title.contains(track.songName, ignoreCase = true)) score += 2
+                if (artist.contains(track.artistName, ignoreCase = true)) score += 1
+                score
+            } ?: throw Exception("No suitable match found after scoring")
+
+            Timber.d("AppleMusic: Best match is '${bestMatch.songName}' by '${bestMatch.artistName}'")
+
+            val rawLyrics = AppleMusic.getLyrics(bestMatch.id)
+                ?: throw Exception("No lyrics found for track ID ${bestMatch.id}")
+            Timber.d("AppleMusic: Successfully fetched raw lyrics for track ID ${bestMatch.id}")
 
             LrcFormatter.formatLyrics(rawLyrics)
-                ?: throw Exception("Failed to format lyrics for track ID ${track.id}")
+                ?: throw Exception("Failed to format lyrics for track ID ${bestMatch.id}")
         }.onFailure {
             Timber.e(it, "AppleMusic: Error fetching lyrics for '$title' by '$artist'")
         }
