@@ -145,8 +145,8 @@ constructor(
         }
 
         if (otherProviders.isNotEmpty()) {
-            coroutineScope {
-                val results = otherProviders.map { provider ->
+            val results = coroutineScope {
+                otherProviders.map { provider ->
                     async {
                         try {
                             provider.getLyrics(
@@ -161,17 +161,18 @@ constructor(
                         }
                     }
                 }.awaitAll()
+            }
 
-                for (result in results) {
-                    if (result.isSuccess) {
-                        val lyrics = result.getOrThrow()
-                        if (lyrics.isNotEmpty()) {
-                            return@coroutineScope lyrics
-                        }
+            for (result in results) {
+                if (result.isSuccess) {
+                    val lyrics = result.getOrThrow()
+                    if (lyrics.isNotEmpty()) {
+                        return lyrics
                     }
                 }
             }
         }
+
         return LYRICS_NOT_FOUND
     }
 
@@ -228,7 +229,7 @@ constructor(
 
     companion object {
         private const val MAX_CACHE_SIZE = 3
-        private const val PREFERRED_PROVIDER_TIMEOUT_MS = 10000L
+        private const val PREFERRED_PROVIDER_TIMEOUT_MS = 15000L
     }
 }
 
