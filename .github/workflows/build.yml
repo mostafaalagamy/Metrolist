@@ -33,7 +33,7 @@ jobs:
             task_part: Armeabi
             dir_name: armeabi
           - arch: Arm64-v8a
-            task_part: Arm64V8a
+            task_part: Arm64
             dir_name: arm64-v8a
           - arch: x86
             task_part: X86
@@ -83,6 +83,6 @@ jobs:
       - name: Upload ${{ matrix.arch }} Debug APK
         uses: actions/upload-artifact@v4
         with:
-          # Creates unique artifacts like "app-debug-x86", "app-debug-universal"
           name: app-debug-${{ matrix.dir_name }}
-          path: app/build/outputs/apk/${{ matrix.dir_name }}/debug/*.apk
+          # Using wildcards (**) for the folder path to be safe, in case the folder name differs slightly
+          path: app/build/outputs/apk/**/debug/*.apk
