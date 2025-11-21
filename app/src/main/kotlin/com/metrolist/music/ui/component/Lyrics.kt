@@ -14,6 +14,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -373,6 +374,7 @@ fun Lyrics(
     var isSeeking by remember {
         mutableStateOf(false)
     }
+    var currentPosition by remember { mutableLongStateOf(0L) }
 
     var initialScrollDone by rememberSaveable {
         mutableStateOf(false)
@@ -427,6 +429,18 @@ fun Lyrics(
         }
     }
 
+    currentLineIndices = remember(currentPosition) {
+        findCurrentLineIndices(lines, currentPosition)
+    }
+
+    LaunchedEffect(currentLineIndices) {
+        lines.getOrNull(currentLineIndices.firstOrNull() ?: -1)?.let {
+            if (it.voice == "v1" || it.voice == "v2") {
+                lastVoice = it.voice
+            }
+        }
+    }
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
@@ -463,15 +477,7 @@ fun Lyrics(
             delay(50)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
-            currentLineIndices = findCurrentLineIndices(
-                lines,
-                sliderPosition ?: playerConnection.player.currentPosition
-            )
-            lines.getOrNull(currentLineIndices.firstOrNull() ?: -1)?.let {
-                if (it.voice == "v1" || it.voice == "v2") {
-                    lastVoice = it.voice
-                }
-            }
+            currentPosition = sliderPosition ?: playerConnection.player.currentPosition
         }
     }
 
@@ -645,29 +651,19 @@ fun Lyrics(
                     items = lines,
                     key = { index, item -> "$index-${item.time}" } // Add stable key
                 ) { index, item ->
-                    var showLoading by remember { mutableStateOf(false) }
-
-                    if (isSynced) {
-                        val nextLine = lines.getOrNull(index + 1)
-                        if (nextLine != null) {
-                            val endTime = item.words?.lastOrNull()?.endTime ?: item.time
-                            val timeToNext = nextLine.time - endTime
-                            if (timeToNext > 2000) {
-                                LaunchedEffect(currentLineIndices) {
-                                    val isLineActive = index in currentLineIndices
-                                    if (isLineActive) {
-                                        delay(endTime - playerConnection.player.currentPosition)
-                                        showLoading = true
-                                        delay(timeToNext - 300)
-                                        showLoading = false
-                                    }
-                                }
-                            }
-                        }
-                    }
-
                     val isSelected = selectedIndices.contains(index)
                     val isCurrent = index in displayedCurrentLineIndices
+
+                    val showLoading = remember(currentPosition) {
+                        if (!isSynced) return@remember false
+                        val nextLine = lines.getOrNull(index + 1) ?: return@remember false
+                        val endTime = item.words?.lastOrNull()?.endTime
+                            ?: (if (index + 1 < lines.size) lines[index + 1].time else item.time + 5000)
+                        val timeToNext = nextLine.time - endTime
+                        if (timeToNext <= LOADING_INDICATOR_GAP_THRESHOLD_MS) return@remember false
+
+                        currentPosition in endTime..(nextLine.time - LOADING_INDICATOR_DISAPPEAR_OFFSET_MS)
+                    }
 
                     val isBgVocal = item.voice == "bg"
 
@@ -854,12 +850,12 @@ fun Lyrics(
                                             val targetColor = if (isCurrent && isSynced) textColor else textColor.copy(alpha = 0.8f)
                                             val fadedColor = targetColor.copy(alpha = 0.5f)
                                             val duration = word.endTime - word.startTime
-                                            val glow = duration >= 1200
+                                            val glow = duration >= GLOW_DURATION_THRESHOLD_MS
 
                                             val brush = Brush.horizontalGradient(
                                                 colors = listOf(targetColor, fadedColor),
                                                 startX = 0f,
-                                                endX = progress * 1000f
+                                                endX = progress * WIPE_ANIMATION_WIDTH_MULTIPLIER
                                             )
 
                                             withStyle(
@@ -928,7 +924,7 @@ fun Lyrics(
 
                     AnimatedVisibility(
                         visible = showLoading,
-                        enter = fadeIn(),
+                        enter = fadeIn() + scaleIn(),
                         exit = fadeOut()
                     ) {
                         Box(
@@ -1360,6 +1356,11 @@ private const val METROLIST_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scr
 private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
 private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
 private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
+
+private const val GLOW_DURATION_THRESHOLD_MS = 1200
+private const val LOADING_INDICATOR_GAP_THRESHOLD_MS = 2000
+private const val LOADING_INDICATOR_DISAPPEAR_OFFSET_MS = 300
+private const val WIPE_ANIMATION_WIDTH_MULTIPLIER = 1000f
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds

@@ -19,6 +19,8 @@ object LyricsUtils {
     val APPLE_MUSIC_WORD_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>(.*?)<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
     val APPLE_MUSIC_BG_ONLY_LINE_REGEX = "\\[(bg):(.*)\\]".toRegex()
 
+    private const val LAST_LINE_FALLBACK_DURATION_MS = 5000L
+
     private val parserStrategies = listOf(
         AppleMusicLyricsParser,
         BetterLyricsParser,
@@ -473,7 +475,7 @@ object LyricsUtils {
         val activeIndices = lines.indices.filter { index ->
             val line = lines[index]
             val endTime = line.words?.lastOrNull()?.endTime
-                ?: (if (index + 1 < lines.size) lines[index + 1].time else line.time + 5000)
+                ?: (if (index + 1 < lines.size) lines[index + 1].time else line.time + LAST_LINE_FALLBACK_DURATION_MS)
 
             position >= line.time && position < endTime
         }
