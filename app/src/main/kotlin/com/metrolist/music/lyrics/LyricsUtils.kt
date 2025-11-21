@@ -472,8 +472,8 @@ object LyricsUtils {
 
         val activeIndices = lines.indices.filter { index ->
             val line = lines[index]
-            val nextLineTime = if (index + 1 < lines.size) lines[index + 1].time else Long.MAX_VALUE
-            val endTime = line.words?.lastOrNull()?.endTime ?: nextLineTime
+            val endTime = line.words?.lastOrNull()?.endTime
+                ?: (if (index + 1 < lines.size) lines[index + 1].time else line.time + 5000)
 
             position >= line.time && position < endTime
         }
@@ -482,15 +482,7 @@ object LyricsUtils {
             return activeIndices
         }
 
-        // If no line is currently active (e.g., in a musical break), find the last line that has passed.
-        // This is to keep the last sung lyric on screen.
-        val lastPassedIndex = lines.indexOfLast { it.time <= position }
-        return if (lastPassedIndex != -1) {
-            listOf(lastPassedIndex)
-        } else {
-            // Before the first lyric
-            emptyList()
-        }
+        return emptyList()
     }
 
     // TODO: Will be useful if we let the user pick the language, useless for now

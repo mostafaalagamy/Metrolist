@@ -7,10 +7,13 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,6 +51,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -140,8 +144,10 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.ui.utils.fadingEdge
+import com.metrolist.music.ui.utils.horizontalFade
 import com.metrolist.music.utils.ComposeToImage
 import com.metrolist.music.utils.rememberEnumPreference
+import androidx.compose.ui.graphics.Shadow
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -393,6 +399,7 @@ fun Lyrics(
     var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
     val selectedIndices = remember { mutableStateListOf<Int>() }
     var showMaxSelectionToast by remember { mutableStateOf(false) } // State for showing max selection toast
+    var lastVoice by remember { mutableStateOf("v2") }
 
     val lazyListState = rememberLazyListState()
     
@@ -460,6 +467,11 @@ fun Lyrics(
                 lines,
                 sliderPosition ?: playerConnection.player.currentPosition
             )
+            lines.getOrNull(currentLineIndices.firstOrNull() ?: -1)?.let {
+                if (it.voice == "v1" || it.voice == "v2") {
+                    lastVoice = it.voice
+                }
+            }
         }
     }
 
@@ -633,6 +645,27 @@ fun Lyrics(
                     items = lines,
                     key = { index, item -> "$index-${item.time}" } // Add stable key
                 ) { index, item ->
+                    var showLoading by remember { mutableStateOf(false) }
+
+                    if (isSynced) {
+                        val nextLine = lines.getOrNull(index + 1)
+                        if (nextLine != null) {
+                            val endTime = item.words?.lastOrNull()?.endTime ?: item.time
+                            val timeToNext = nextLine.time - endTime
+                            if (timeToNext > 2000) {
+                                LaunchedEffect(currentLineIndices) {
+                                    val isLineActive = index in currentLineIndices
+                                    if (isLineActive) {
+                                        delay(endTime - playerConnection.player.currentPosition)
+                                        showLoading = true
+                                        delay(timeToNext - 300)
+                                        showLoading = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     val isSelected = selectedIndices.contains(index)
                     val isCurrent = index in displayedCurrentLineIndices
 
@@ -761,8 +794,9 @@ fun Lyrics(
 
                     val lyricTextAlignment = if (hasWordSync && item.voice != null) {
                         when (item.voice) {
-                            "v1" -> TextAlign.Left
-                            "v2" -> TextAlign.Right
+                            "v1" -> TextAlign.Right
+                            "v2" -> TextAlign.Left
+                            "bg" -> if (lastVoice == "v1") TextAlign.Right else TextAlign.Left
                             else -> TextAlign.Center
                         }
                     } else {
@@ -775,8 +809,9 @@ fun Lyrics(
 
                     val lyricHorizontalArrangement = if (hasWordSync && item.voice != null) {
                         when (item.voice) {
-                            "v1" -> Arrangement.Start
-                            "v2" -> Arrangement.End
+                            "v1" -> Arrangement.End
+                            "v2" -> Arrangement.Start
+                            "bg" -> if (lastVoice == "v1") Arrangement.End else Arrangement.Start
                             else -> Arrangement.Center
                         }
                     } else {
@@ -793,11 +828,12 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            horizontalAlignment = when(lyricHorizontalArrangement) {
+                            horizontalAlignment = when (lyricHorizontalArrangement) {
                                 Arrangement.Start -> Alignment.Start
                                 Arrangement.End -> Alignment.End
                                 else -> Alignment.CenterHorizontally
-                            }
+                            },
+                            modifier = if (item.voice == "bg") Modifier.padding(top = 8.dp) else Modifier
                         ) {
                             if (hasWordSync) {
                                 val annotatedText = remember(item.words, currentPosition) {
@@ -818,8 +854,18 @@ fun Lyrics(
                                             val targetColor = if (isCurrent && isSynced) textColor else textColor.copy(alpha = 0.8f)
                                             val fadedColor = targetColor.copy(alpha = 0.5f)
                                             val color = lerp(fadedColor, targetColor, progress)
+                                            val duration = word.endTime - word.startTime
+                                            val glow = duration >= 1200
 
-                                            withStyle(style = SpanStyle(color = color)) {
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = color,
+                                                    shadow = if (glow && isWordActive) androidx.compose.ui.graphics.Shadow(
+                                                        color = color.copy(alpha = 0.8f),
+                                                        blurRadius = 24f
+                                                    ) else null
+                                                )
+                                            ) {
                                                 append(word.text.plus(if (index < item.words.size - 1) " " else ""))
                                             }
                                         }
@@ -832,7 +878,11 @@ fun Lyrics(
                                     fontSize = fontSize,
                                     lineHeight = lineHeight,
                                     textAlign = lyricTextAlignment,
-                                    fontWeight = FontWeight.ExtraBold
+                                    fontWeight = FontWeight.ExtraBold,
+                                    modifier = Modifier.horizontalFade(
+                                        isWordActive = isCurrent,
+                                        durationMillis = 500
+                                    )
                                 )
                             } else {
                                 Text(
@@ -871,6 +921,21 @@ fun Lyrics(
                                     )
                                 }
                             }
+                        }
+                    }
+
+                    AnimatedVisibility(
+                        visible = showLoading,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
                 }
