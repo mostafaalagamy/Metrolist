@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -152,7 +153,6 @@ import com.metrolist.music.utils.rememberEnumPreference
 import androidx.compose.ui.graphics.Shadow
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
-import com.metrolist.music.ui.component.WipeAnimation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -836,13 +836,68 @@ fun Lyrics(
                             if (hasWordSync) {
                                 val fontSize = if (item.voice == "bg") 22.sp else 28.sp
                                 val lineHeight = if (item.voice == "bg") 26.sp else 32.sp
-                                Row {
+                                FlowRow(
+                                    horizontalArrangement = lyricHorizontalArrangement
+                                ) {
                                     item.words?.forEach { word ->
-                                        WipeAnimation(
-                                            word = word,
-                                            currentPosition = currentPosition,
-                                            textColor = textColor,
-                                            fadedColor = textColor.copy(alpha = 0.5f)
+                                        val isWordActive = currentPosition in word.startTime..word.endTime
+                                        val translationY by animateFloatAsState(
+                                            targetValue = if (isWordActive) -10f else 0f,
+                                            animationSpec = spring(
+                                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                                stiffness = Spring.StiffnessMedium
+                                            ),
+                                            label = "translationY"
+                                        )
+
+                                        val duration = word.endTime - word.startTime
+                                        val glow = duration > 1200 && (duration / word.text.length) > 150
+                                        val animatedGlow by animateFloatAsState(
+                                            targetValue = if (glow && isWordActive) {
+                                                val progress = (currentPosition - word.startTime).toFloat() / (duration / 2f)
+                                                if (progress < 1f) progress else 1f
+                                            } else {
+                                                0f
+                                            },
+                                            animationSpec = spring(),
+                                            label = "glow"
+                                        )
+
+                                        Text(
+                                            text = buildAnnotatedString {
+                                                word.syllables.forEach { syllable ->
+                                                    val progress = if (currentPosition in syllable.startTime..syllable.endTime) {
+                                                        val syllableDuration = (syllable.endTime - syllable.startTime).toFloat()
+                                                        if (syllableDuration > 0) {
+                                                            ((currentPosition - syllable.startTime) / syllableDuration).coerceIn(0f, 1f)
+                                                        } else {
+                                                            1f
+                                                        }
+                                                    } else {
+                                                        if (currentPosition > syllable.endTime) 1f else 0f
+                                                    }
+                                                    val colorStops = arrayOf(
+                                                        progress to textColor,
+                                                        progress to textColor.copy(alpha = 0.5f)
+                                                    )
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            brush = Brush.horizontalGradient(colorStops = colorStops)
+                                                        )
+                                                    ) {
+                                                        append(syllable.text)
+                                                    }
+                                                }
+                                            },
+                                            fontSize = fontSize,
+                                            lineHeight = lineHeight,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            modifier = Modifier
+                                                .padding(end = 4.dp)
+                                                .graphicsLayer {
+                                                    this.translationY = translationY
+                                                    this.shadowElevation = animatedGlow * 24f
+                                                }
                                         )
                                     }
                                 }
