@@ -152,6 +152,7 @@ import com.metrolist.music.utils.rememberEnumPreference
 import androidx.compose.ui.graphics.Shadow
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
+import com.metrolist.music.ui.component.WipeAnimation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -684,8 +685,8 @@ fun Lyrics(
                             when {
                                 !isSynced || (isSelectionModeActive && isSelected) -> 1f
                                 isCurrent -> 1f
-                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 1 -> 0.6f
-                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 2 -> 0.3f
+                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 1 -> 0.4f
+                                displayedCurrentLineIndices.isNotEmpty() && kotlin.math.abs(index - displayedCurrentLineIndices.first()) == 2 -> 0.2f
                                 else -> 0.1f
                             }
                         },
@@ -833,55 +834,18 @@ fun Lyrics(
                             modifier = if (item.voice == "bg") Modifier.padding(top = 8.dp) else Modifier
                         ) {
                             if (hasWordSync) {
-                                val annotatedText = remember(item.words, currentPosition) {
-                                    buildAnnotatedString {
-                                        item.words?.forEachIndexed { index, word ->
-                                            val isWordActive = currentPosition in word.startTime..word.endTime
-                                            val progress = if (isWordActive) {
-                                                val duration = (word.endTime - word.startTime).toFloat()
-                                                if (duration > 0) {
-                                                    ((currentPosition - word.startTime) / duration).coerceIn(0f, 1f)
-                                                } else {
-                                                    1f
-                                                }
-                                            } else {
-                                                if (currentPosition > word.endTime) 1f else 0f
-                                            }
-
-                                            val targetColor = if (isCurrent && isSynced) textColor else textColor.copy(alpha = 0.8f)
-                                            val fadedColor = targetColor.copy(alpha = 0.5f)
-                                            val duration = word.endTime - word.startTime
-                                            val glow = duration >= GLOW_DURATION_THRESHOLD_MS
-
-                                            val brush = Brush.horizontalGradient(
-                                                colors = listOf(targetColor, fadedColor),
-                                                startX = 0f,
-                                                endX = progress * WIPE_ANIMATION_WIDTH_MULTIPLIER
-                                            )
-
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    brush = brush,
-                                                    shadow = if (glow && isWordActive) androidx.compose.ui.graphics.Shadow(
-                                                        color = targetColor.copy(alpha = 0.8f),
-                                                        blurRadius = 24f
-                                                    ) else null
-                                                )
-                                            ) {
-                                                append(word.text.plus(if (index < item.words.size - 1) " " else ""))
-                                            }
-                                        }
-                                    }
-                                }
                                 val fontSize = if (item.voice == "bg") 22.sp else 28.sp
                                 val lineHeight = if (item.voice == "bg") 26.sp else 32.sp
-                                Text(
-                                    text = annotatedText,
-                                    fontSize = fontSize,
-                                    lineHeight = lineHeight,
-                                    textAlign = lyricTextAlignment,
-                                    fontWeight = FontWeight.ExtraBold
-                                )
+                                Row {
+                                    item.words?.forEach { word ->
+                                        WipeAnimation(
+                                            word = word,
+                                            currentPosition = currentPosition,
+                                            textColor = textColor,
+                                            fadedColor = textColor.copy(alpha = 0.5f)
+                                        )
+                                    }
+                                }
                             } else {
                                 Text(
                                     text = item.text,
@@ -930,7 +894,8 @@ fun Lyrics(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 16.dp),
+                                .padding(vertical = 16.dp)
+                                .padding(horizontal = 24.dp),
                             contentAlignment = when (lyricHorizontalArrangement) {
                                 Arrangement.Start -> Alignment.CenterStart
                                 Arrangement.End -> Alignment.CenterEnd

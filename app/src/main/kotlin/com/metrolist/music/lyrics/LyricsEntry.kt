@@ -1,5 +1,9 @@
 package com.metrolist.music.lyrics
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.metrolist.music.db.entities.LyricsEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class LyricsEntry(
@@ -7,16 +11,29 @@ data class LyricsEntry(
     val text: String,
     val words: List<Word>? = null,
     val voice: String? = null,
-    val romanizedTextFlow: MutableStateFlow<String?> = MutableStateFlow(null)
 ) : Comparable<LyricsEntry> {
-    override fun compareTo(other: LyricsEntry): Int = (time - other.time).toInt()
+    val romanizedTextFlow = MutableStateFlow<String?>(null)
+    override fun compareTo(other: LyricsEntry): Int {
+        return time.compareTo(other.time)
+    }
 
     companion object {
-        val HEAD_LYRICS_ENTRY = LyricsEntry(0L, "")
+        val HEAD_LYRICS_ENTRY =
+            LyricsEntry(
+                time = 0,
+                text = "",
+            )
     }
 }
 
 data class Word(
+    val text: String,
+    val startTime: Long,
+    val endTime: Long,
+    val syllables: List<Syllable>
+)
+
+data class Syllable(
     val text: String,
     val startTime: Long,
     val endTime: Long

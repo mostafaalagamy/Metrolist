@@ -384,7 +384,7 @@ object LyricsUtils {
                 try {
                     val startTime = (parts[1].toDouble() * 1000).toLong()
                     val endTime = (parts[2].toDouble() * 1000).toLong()
-                    words.add(Word(text, startTime, endTime))
+                    words.add(Word(text, startTime, endTime, emptyList()))
                 } catch (e: NumberFormatException) {
                     // Ignore malformed timestamps
                 }
@@ -427,9 +427,9 @@ object LyricsUtils {
         if (fragments.isEmpty()) return emptyList()
 
         val words = mutableListOf<Word>()
+        var currentSyllables = mutableListOf<Syllable>()
         var currentWordText = ""
         var currentWordStartTime = -1L
-        var currentWordEndTime = -1L
 
         fragments.forEachIndexed { index, fragment ->
             val (startTimeString, text, endTimeString) = fragment.destructured
@@ -440,14 +440,23 @@ object LyricsUtils {
                 currentWordStartTime = startTime
             }
             currentWordText += text
-            currentWordEndTime = endTime
+            currentSyllables.add(Syllable(text, startTime, endTime))
 
             val isLastFragment = index == fragments.size - 1
-            val nextCharIsSpace = fragment.range.last + 1 < content.length && content[fragment.range.last + 1].isWhitespace()
+            val nextCharIsSpace =
+                fragment.range.last + 1 < content.length && content[fragment.range.last + 1].isWhitespace()
 
             if (nextCharIsSpace || isLastFragment) {
-                words.add(Word(currentWordText, currentWordStartTime, currentWordEndTime))
+                words.add(
+                    Word(
+                        currentWordText,
+                        currentWordStartTime,
+                        endTime,
+                        currentSyllables.toList()
+                    )
+                )
                 currentWordText = ""
+                currentSyllables = mutableListOf()
                 currentWordStartTime = -1L
             }
         }
