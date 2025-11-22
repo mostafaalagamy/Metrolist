@@ -56,7 +56,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -160,7 +159,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
 @RequiresApi(Build.VERSION_CODES.M)
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedBoxWithConstraintsScope", "StringFormatInvalid")
 @Composable
 fun Lyrics(
@@ -851,7 +850,7 @@ fun Lyrics(
                                         )
 
                                         val duration = word.endTime - word.startTime
-                                        val glow = duration > 1200 && (duration / word.text.length) > 150
+                                        val glow = duration > GLOW_DURATION_THRESHOLD_MS && (duration / word.text.length) > 150
                                         val animatedGlow by animateFloatAsState(
                                             targetValue = if (glow && isWordActive) {
                                                 val progress = (currentPosition - word.startTime).toFloat() / (duration / 2f)
@@ -876,13 +875,20 @@ fun Lyrics(
                                                     } else {
                                                         if (currentPosition > syllable.endTime) 1f else 0f
                                                     }
+                                                    val blurWidth = 0.1f
                                                     val colorStops = arrayOf(
+                                                        (progress - blurWidth).coerceAtLeast(0f) to textColor,
                                                         progress to textColor,
-                                                        progress to textColor.copy(alpha = 0.5f)
+                                                        (progress + blurWidth).coerceAtMost(1f) to textColor.copy(alpha = 0.5f),
+                                                        1f to textColor.copy(alpha = 0.5f)
                                                     )
                                                     withStyle(
                                                         style = SpanStyle(
-                                                            brush = Brush.horizontalGradient(colorStops = colorStops)
+                                                            brush = Brush.horizontalGradient(colorStops = colorStops),
+                                                            shadow = if (glow) Shadow(
+                                                                color = MaterialTheme.colorScheme.primary,
+                                                                blurRadius = animatedGlow * 24f
+                                                            ) else null
                                                         )
                                                     ) {
                                                         append(syllable.text)
@@ -896,8 +902,13 @@ fun Lyrics(
                                                 .padding(end = 4.dp)
                                                 .graphicsLayer {
                                                     this.translationY = translationY
-                                                    this.shadowElevation = animatedGlow * 24f
                                                 }
+                                        )
+                                        Text(
+                                            text = " ",
+                                            fontSize = fontSize,
+                                            lineHeight = lineHeight,
+                                            fontWeight = FontWeight.ExtraBold
                                         )
                                     }
                                 }
@@ -957,7 +968,7 @@ fun Lyrics(
                                 else -> Alignment.Center
                             }
                         ) {
-                            LoadingIndicator()
+                            CircularProgressIndicator()
                         }
                     }
                 }
