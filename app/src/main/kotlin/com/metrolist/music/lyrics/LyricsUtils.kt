@@ -384,8 +384,8 @@ object LyricsUtils {
                 try {
                     val startTime = (parts[1].toDouble() * 1000).toLong()
                     val endTime = (parts[2].toDouble() * 1000).toLong()
-                val syllable = Syllable(text, startTime, endTime)
-                words.add(Word(text, startTime, endTime, listOf(syllable)))
+                    val syllable = Syllable(text, startTime, endTime)
+                    words.add(Word(text, startTime, endTime, listOf(syllable)))
                 } catch (e: NumberFormatException) {
                     // Ignore malformed timestamps
                 }

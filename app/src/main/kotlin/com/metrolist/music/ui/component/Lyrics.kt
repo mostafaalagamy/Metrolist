@@ -478,7 +478,7 @@ fun Lyrics(
             return@LaunchedEffect
         }
         while (isActive) {
-            delay(50)
+            delay(16)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
             currentPosition = sliderPosition ?: playerConnection.player.currentPosition
@@ -868,18 +868,21 @@ fun Lyrics(
                                         Text(
                                             text = buildAnnotatedString {
                                                 word.syllables.forEach { syllable ->
-                                                    val syllableDuration = (syllable.endTime - syllable.startTime).toInt()
-                                                    val progress by animateFloatAsState(
-                                                        targetValue = if (currentPosition >= syllable.startTime) 1f else 0f,
-                                                        animationSpec = tween(
-                                                            durationMillis = if (currentPosition in syllable.startTime..syllable.endTime) syllableDuration else 0,
-                                                            easing = LinearEasing
-                                                        ),
-                                                        label = "progress"
-                                                    )
+                                                    val progress = if (currentPosition in syllable.startTime..syllable.endTime) {
+                                                        val duration = (syllable.endTime - syllable.startTime).toFloat()
+                                                        if (duration > 0) {
+                                                            ((currentPosition - syllable.startTime) / duration).coerceIn(0f, 1f)
+                                                        } else {
+                                                            1f
+                                                        }
+                                                    } else {
+                                                        if (currentPosition > syllable.endTime) 1f else 0f
+                                                    }
                                                     val colorStops = arrayOf(
+                                                        0f to textColor,
                                                         progress to textColor,
-                                                        progress to textColor.copy(alpha = 0.5f)
+                                                        progress to textColor.copy(alpha = 0.5f),
+                                                        1f to textColor.copy(alpha = 0.5f)
                                                     )
                                                     withStyle(
                                                         style = SpanStyle(
