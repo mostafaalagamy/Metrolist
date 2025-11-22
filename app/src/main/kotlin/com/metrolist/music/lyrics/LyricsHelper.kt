@@ -35,7 +35,7 @@ constructor(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    private var lyricsProviders =
+    private val allProviders =
         listOf(
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
@@ -44,53 +44,6 @@ constructor(
             YouTubeSubtitleLyricsProvider,
             YouTubeLyricsProvider
         )
-
-    val preferred =
-        context.dataStore.data
-            .map {
-                it[PreferredLyricsProviderKey].toEnum(PreferredLyricsProvider.LRCLIB)
-            }.distinctUntilChanged()
-            .map {
-                lyricsProviders =
-                    when (it) {
-                        PreferredLyricsProvider.LRCLIB -> listOf(
-                            LrcLibLyricsProvider,
-                            KuGouLyricsProvider,
-                            BetterLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                        PreferredLyricsProvider.KUGOU -> listOf(
-                            KuGouLyricsProvider,
-                            LrcLibLyricsProvider,
-                            BetterLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                        PreferredLyricsProvider.BETTERLYRICS -> listOf(
-                            BetterLyricsProvider,
-                            LrcLibLyricsProvider,
-                            KuGouLyricsProvider,
-                            AppleMusicLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                        PreferredLyricsProvider.APPLEMUSIC -> listOf(
-                            AppleMusicLyricsProvider,
-                            BetterLyricsProvider,
-                            LrcLibLyricsProvider,
-                            KuGouLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                    }
-            }
-
-    init {
-        scope.launch {
-            preferred.first()
-        }
-    }
 
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
     private var currentLyricsJob: Job? = null
@@ -108,13 +61,21 @@ constructor(
         } catch (e: Exception) {
             true
         }
-        
+
         if (!isNetworkAvailable) {
             return LYRICS_NOT_FOUND
         }
 
-        val enabledProviders = lyricsProviders.filter { it.isEnabled(context) }
-        val preferredProvider = enabledProviders.firstOrNull()
+        val preferredProviderEnum = context.dataStore.data.map {
+            it[PreferredLyricsProviderKey].toEnum(PreferredLyricsProvider.LRCLIB)
+        }.first()
+
+        val preferredProviderFromSettings = allProviders.find { it.name.equals(preferredProviderEnum.name, true) }
+        val enabledProviders = allProviders.filter { it.isEnabled(context) }
+
+        val sortedProviders = enabledProviders.sortedBy { it != preferredProviderFromSettings }
+
+        val preferredProvider = sortedProviders.firstOrNull()
 
         if (preferredProvider != null) {
             try {
@@ -138,15 +99,11 @@ constructor(
             }
         }
 
-        val otherProviders = if (preferredProvider != null) {
-            enabledProviders.drop(1)
-        } else {
-            enabledProviders
-        }
+        val otherProviders = sortedProviders.drop(1)
 
         if (otherProviders.isNotEmpty()) {
-            coroutineScope {
-                val results = otherProviders.map { provider ->
+            val results = coroutineScope {
+                otherProviders.map { provider ->
                     async {
                         try {
                             provider.getLyrics(
@@ -161,17 +118,18 @@ constructor(
                         }
                     }
                 }.awaitAll()
+            }
 
-                for (result in results) {
-                    if (result.isSuccess) {
-                        val lyrics = result.getOrThrow()
-                        if (lyrics.isNotEmpty()) {
-                            return@coroutineScope lyrics
-                        }
+            for (result in results) {
+                if (result.isSuccess) {
+                    val lyrics = result.getOrThrow()
+                    if (lyrics.isNotEmpty()) {
+                        return lyrics
                     }
                 }
             }
         }
+
         return LYRICS_NOT_FOUND
     }
 
@@ -201,7 +159,7 @@ constructor(
 
         val allResults = mutableListOf<LyricsResult>()
         val job = CoroutineScope(SupervisorJob()).async {
-            lyricsProviders.filter { it.isEnabled(context) }.map { provider ->
+            allProviders.filter { it.isEnabled(context) }.map { provider ->
                 async {
                     try {
                         provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
@@ -228,7 +186,7 @@ constructor(
 
     companion object {
         private const val MAX_CACHE_SIZE = 3
-        private const val PREFERRED_PROVIDER_TIMEOUT_MS = 10000L
+        private const val PREFERRED_PROVIDER_TIMEOUT_MS = 15000L
     }
 }
 
