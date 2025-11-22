@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -867,22 +868,18 @@ fun Lyrics(
                                         Text(
                                             text = buildAnnotatedString {
                                                 word.syllables.forEach { syllable ->
-                                                    val progress = if (currentPosition in syllable.startTime..syllable.endTime) {
-                                                        val syllableDuration = (syllable.endTime - syllable.startTime).toFloat()
-                                                        if (syllableDuration > 0) {
-                                                            ((currentPosition - syllable.startTime) / syllableDuration).coerceIn(0f, 1f)
-                                                        } else {
-                                                            1f
-                                                        }
-                                                    } else {
-                                                        if (currentPosition > syllable.endTime) 1f else 0f
-                                                    }
-                                                    val blurWidth = 0.1f
+                                                    val syllableDuration = (syllable.endTime - syllable.startTime).toInt()
+                                                    val progress by animateFloatAsState(
+                                                        targetValue = if (currentPosition >= syllable.startTime) 1f else 0f,
+                                                        animationSpec = tween(
+                                                            durationMillis = if (currentPosition in syllable.startTime..syllable.endTime) syllableDuration else 0,
+                                                            easing = LinearEasing
+                                                        ),
+                                                        label = "progress"
+                                                    )
                                                     val colorStops = arrayOf(
-                                                        (progress - blurWidth).coerceAtLeast(0f) to textColor,
                                                         progress to textColor,
-                                                        (progress + blurWidth).coerceAtMost(1f) to textColor.copy(alpha = 0.5f),
-                                                        1f to textColor.copy(alpha = 0.5f)
+                                                        progress to textColor.copy(alpha = 0.5f)
                                                     )
                                                     withStyle(
                                                         style = SpanStyle(
