@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -478,7 +479,7 @@ fun Lyrics(
             return@LaunchedEffect
         }
         while (isActive) {
-            delay(50)
+            delay(16)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
             currentPosition = sliderPosition ?: playerConnection.player.currentPosition
@@ -603,6 +604,7 @@ fun Lyrics(
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
+                .animateContentSize()
                 .nestedScroll(remember {
                     object : NestedScrollConnection {
                         override fun onPostScroll(
@@ -672,7 +674,7 @@ fun Lyrics(
                     val isBgVocal = item.voice == "bg"
 
                     val scale by animateFloatAsState(
-                        targetValue = if (isCurrent && isSynced) 1f else if (isBgVocal) 0.8f else 0.9f,
+                        targetValue = if (isCurrent && isSynced) 1f else if (isBgVocal) 0f else 0.9f,
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioMediumBouncy,
                             stiffness = Spring.StiffnessMedium
@@ -781,16 +783,6 @@ fun Lyrics(
                         }
 
                     val hasWordSync = item.words != null
-                    var currentPosition by remember { mutableLongStateOf(0L) }
-
-                    if (isCurrent && hasWordSync) {
-                        LaunchedEffect(Unit) {
-                            while (isActive) {
-                                currentPosition = playerConnection.player.currentPosition
-                                delay(50)
-                            }
-                        }
-                    }
 
                     val lyricTextAlignment = if (hasWordSync && item.voice != null) {
                         when (item.voice) {
@@ -844,10 +836,10 @@ fun Lyrics(
                                     item.words?.forEach { word ->
                                         val isWordActive = currentPosition in word.startTime..word.endTime
                                         val translationY by animateFloatAsState(
-                                            targetValue = if (isWordActive) -10f else 0f,
+                                            targetValue = if (isWordActive) -5f else 0f,
                                             animationSpec = spring(
-                                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                                stiffness = Spring.StiffnessMedium
+                                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                                stiffness = Spring.StiffnessLow
                                             ),
                                             label = "translationY"
                                         )
@@ -868,18 +860,21 @@ fun Lyrics(
                                         Text(
                                             text = buildAnnotatedString {
                                                 word.syllables.forEach { syllable ->
-                                                    val syllableDuration = (syllable.endTime - syllable.startTime).toInt()
-                                                    val progress by animateFloatAsState(
-                                                        targetValue = if (currentPosition >= syllable.startTime) 1f else 0f,
-                                                        animationSpec = tween(
-                                                            durationMillis = if (currentPosition in syllable.startTime..syllable.endTime) syllableDuration else 0,
-                                                            easing = LinearEasing
-                                                        ),
-                                                        label = "progress"
-                                                    )
+                                                    val progress = if (currentPosition in syllable.startTime..syllable.endTime) {
+                                                        val duration = (syllable.endTime - syllable.startTime).toFloat()
+                                                        if (duration > 0) {
+                                                            ((currentPosition - syllable.startTime) / duration).coerceIn(0f, 1f)
+                                                        } else {
+                                                            1f
+                                                        }
+                                                    } else {
+                                                        if (currentPosition > syllable.endTime) 1f else 0f
+                                                    }
                                                     val colorStops = arrayOf(
+                                                        0f to textColor,
                                                         progress to textColor,
-                                                        progress to textColor.copy(alpha = 0.5f)
+                                                        (progress + 0.0001f).coerceAtMost(1f) to textColor.copy(alpha = 0.5f),
+                                                        1f to textColor.copy(alpha = 0.5f)
                                                     )
                                                     withStyle(
                                                         style = SpanStyle(
