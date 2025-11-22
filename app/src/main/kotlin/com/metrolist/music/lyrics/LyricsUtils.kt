@@ -19,6 +19,8 @@ object LyricsUtils {
     val APPLE_MUSIC_WORD_REGEX = "<(\\d{2}:\\d{2}\\.\\d{2,3})>(.*?)<(\\d{2}:\\d{2}\\.\\d{2,3})>".toRegex()
     val APPLE_MUSIC_BG_ONLY_LINE_REGEX = "\\[(bg):(.*)\\]".toRegex()
 
+    private const val LAST_LINE_FALLBACK_DURATION_MS = 5000L
+
     private val parserStrategies = listOf(
         AppleMusicLyricsParser,
         BetterLyricsParser,
@@ -382,7 +384,7 @@ object LyricsUtils {
                 try {
                     val startTime = (parts[1].toDouble() * 1000).toLong()
                     val endTime = (parts[2].toDouble() * 1000).toLong()
-                    words.add(Word(text, startTime, endTime))
+                    words.add(Word(text, startTime, endTime, emptyList()))
                 } catch (e: NumberFormatException) {
                     // Ignore malformed timestamps
                 }
@@ -425,9 +427,9 @@ object LyricsUtils {
         if (fragments.isEmpty()) return emptyList()
 
         val words = mutableListOf<Word>()
+        var currentSyllables = mutableListOf<Syllable>()
         var currentWordText = ""
         var currentWordStartTime = -1L
-        var currentWordEndTime = -1L
 
         fragments.forEachIndexed { index, fragment ->
             val (startTimeString, text, endTimeString) = fragment.destructured
@@ -438,14 +440,23 @@ object LyricsUtils {
                 currentWordStartTime = startTime
             }
             currentWordText += text
-            currentWordEndTime = endTime
+            currentSyllables.add(Syllable(text, startTime, endTime))
 
             val isLastFragment = index == fragments.size - 1
-            val nextCharIsSpace = fragment.range.last + 1 < content.length && content[fragment.range.last + 1].isWhitespace()
+            val nextCharIsSpace =
+                fragment.range.last + 1 < content.length && content[fragment.range.last + 1].isWhitespace()
 
             if (nextCharIsSpace || isLastFragment) {
-                words.add(Word(currentWordText, currentWordStartTime, currentWordEndTime))
+                words.add(
+                    Word(
+                        currentWordText,
+                        currentWordStartTime,
+                        endTime,
+                        currentSyllables.toList()
+                    )
+                )
                 currentWordText = ""
+                currentSyllables = mutableListOf()
                 currentWordStartTime = -1L
             }
         }
@@ -472,8 +483,8 @@ object LyricsUtils {
 
         val activeIndices = lines.indices.filter { index ->
             val line = lines[index]
-            val nextLineTime = if (index + 1 < lines.size) lines[index + 1].time else Long.MAX_VALUE
-            val endTime = line.words?.lastOrNull()?.endTime ?: nextLineTime
+            val endTime = line.words?.lastOrNull()?.endTime
+                ?: (if (index + 1 < lines.size) lines[index + 1].time else line.time + LAST_LINE_FALLBACK_DURATION_MS)
 
             position >= line.time && position < endTime
         }
@@ -482,15 +493,7 @@ object LyricsUtils {
             return activeIndices
         }
 
-        // If no line is currently active (e.g., in a musical break), find the last line that has passed.
-        // This is to keep the last sung lyric on screen.
-        val lastPassedIndex = lines.indexOfLast { it.time <= position }
-        return if (lastPassedIndex != -1) {
-            listOf(lastPassedIndex)
-        } else {
-            // Before the first lyric
-            emptyList()
-        }
+        return emptyList()
     }
 
     // TODO: Will be useful if we let the user pick the language, useless for now
