@@ -112,6 +112,7 @@ import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.metrolist.music.ui.component.UpdateDialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
@@ -323,32 +324,32 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
+            var showUpdateDialog by remember { mutableStateOf(false) }
+
+            if (showUpdateDialog) {
+                UpdateDialog(
+                    onDismiss = { showUpdateDialog = false },
+                    onUpdate = {
+                        val downloadUrl = Updater.getLatestDownloadUrl()
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+                        startActivity(intent)
+                    },
+                    onBackup = {
+                        navController.navigate("backup_and_restore")
+                    }
+                )
+            }
 
             LaunchedEffect(checkForUpdates) {
                 if (checkForUpdates) {
                     withContext(Dispatchers.IO) {
                         if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
                             val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
-                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
                             if (!updatesEnabled) return@withContext
                             Updater.getLatestVersionName().onSuccess {
                                 latestVersionName = it
-                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
-                                    val downloadUrl = Updater.getLatestDownloadUrl()
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
-
-                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or
-                                        (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-                                    val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
-
-                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
-                                        .setSmallIcon(R.drawable.update)
-                                        .setContentTitle(getString(R.string.update_available_title))
-                                        .setContentText(it)
-                                        .setContentIntent(pending)
-                                        .setAutoCancel(true)
-                                        .build()
-                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                if (it != BuildConfig.VERSION_NAME) {
+                                    showUpdateDialog = true
                                 }
                             }
                         }
