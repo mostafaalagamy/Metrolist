@@ -4,8 +4,8 @@ package com.metrolist.music.ui.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
@@ -88,17 +88,19 @@ fun DeveloperScreen(
                 .padding(padding),
             contentPadding = PaddingValues(16.dp)
         ) {
-            item {
-                Text("Sliders", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(8.dp))
-                SliderShowcase()
-                Spacer(Modifier.height(16.dp))
-                Text("Progress Indicators", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(8.dp))
-                ComponentShowcase()
-                Spacer(Modifier.height(16.dp))
-                Text("Colors", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.height(8.dp))
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Column {
+                    Text("Sliders", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(8.dp))
+                    SliderShowcase()
+                    Spacer(Modifier.height(16.dp))
+                    Text("Progress Indicators", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(8.dp))
+                    ComponentShowcase()
+                    Spacer(Modifier.height(16.dp))
+                    Text("Colors", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(8.dp))
+                }
             }
             items(colors) { (name, color) ->
                 ColorChip(name = name, color = color)
