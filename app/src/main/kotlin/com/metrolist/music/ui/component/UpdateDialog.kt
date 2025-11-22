@@ -19,11 +19,13 @@ fun UpdateDialog(
     onUpdate: () -> Unit,
     onBackup: () -> Unit
 ) {
-    var updateButtonEnabled by remember { mutableStateOf(false) }
+    var countdown by remember { mutableStateOf(3) }
 
     LaunchedEffect(Unit) {
-        delay(3000)
-        updateButtonEnabled = true
+        while (countdown > 0) {
+            delay(1000)
+            countdown--
+        }
     }
 
     AlertDialog(
@@ -36,9 +38,15 @@ fun UpdateDialog(
                     onUpdate()
                     onDismiss()
                 },
-                enabled = updateButtonEnabled
+                enabled = countdown == 0
             ) {
-                Text(text = stringResource(R.string.update_anyways))
+                Text(
+                    text = if (countdown > 0) {
+                        "${stringResource(R.string.update_anyways)} ($countdown)"
+                    } else {
+                        stringResource(R.string.update_anyways)
+                    }
+                )
             }
         },
         dismissButton = {
