@@ -345,11 +345,14 @@ class MainActivity : ComponentActivity() {
                     withContext(Dispatchers.IO) {
                         if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
                             val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
+                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
                             if (!updatesEnabled) return@withContext
                             Updater.getLatestVersionName().onSuccess {
                                 latestVersionName = it
-                                if (it != BuildConfig.VERSION_NAME) {
-                                    showUpdateDialog = true
+                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                                    withContext(Dispatchers.Main) {
+                                        showUpdateDialog = true
+                                    }
                                 }
                             }
                         }
