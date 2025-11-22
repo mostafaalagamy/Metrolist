@@ -22,12 +22,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import com.metrolist.music.constants.DeveloperModeKey
+import com.metrolist.music.utils.rememberPreference
+import android.widget.Toast
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
@@ -49,6 +57,9 @@ fun AboutScreen(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    var devCounter by remember { mutableStateOf(0) }
+    val (isDevMode, setDevMode) = rememberPreference(DeveloperModeKey, false)
 
     Column(
         modifier = Modifier
@@ -95,7 +106,20 @@ fun AboutScreen(
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable {
+                if (isDevMode) return@clickable
+
+                devCounter++
+                if (devCounter >= 9) {
+                    setDevMode(true)
+                    Toast
+                        .makeText(context, "Developer mode unlocked", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        ) {
             Text(
                 text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.labelSmall,

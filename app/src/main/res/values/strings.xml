@@ -339,6 +339,7 @@
 
     <string name="about">About</string>
     <string name="app_version">App version</string>
+    <string name="developer_mode">Developer mode</string>
 
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>

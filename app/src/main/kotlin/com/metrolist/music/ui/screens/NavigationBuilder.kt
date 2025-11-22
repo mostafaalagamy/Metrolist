@@ -60,6 +60,7 @@ import com.metrolist.music.ui.screens.settings.AccountSettings
 import com.metrolist.music.ui.screens.settings.AppearanceSettings
 import com.metrolist.music.ui.screens.settings.BackupAndRestore
 import com.metrolist.music.ui.screens.settings.ContentSettings
+import com.metrolist.music.ui.screens.settings.DeveloperScreen
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.DiscordLoginScreen
 import com.metrolist.music.ui.screens.settings.integrations.DiscordSettings
@@ -327,6 +328,9 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("settings/about") {
         AboutScreen(navController, scrollBehavior)
+    }
+    composable("settings/developer") {
+        DeveloperScreen(navController, scrollBehavior)
     }
     composable("login") {
         LoginScreen(navController)
