@@ -222,4 +222,5 @@
     <string name="seek_seconds_addup">Кумулативно превъртане</string>
     <string name="swipe_song_to_remove">Плъзнете върху песента, за да я премахнете от плейлиста</string>
     <string name="default_lib_chips">Промяна на \'дефолтния\' чип на библиотеката</string>
+    <string name="scrobble_min_track_duration">Песни от Scrobble, по-дълги от</string>
 </resources>
