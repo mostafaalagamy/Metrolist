@@ -3,7 +3,9 @@ name: Build Debug APK
 on:
   workflow_dispatch:
   push:
-    branches: [ '**' ]
+    # CHANGED: Triggers on all branches EXCEPT 'main'
+    branches-ignore:
+      - 'main'
     paths-ignore:
       - 'README.md'
       - 'fastlane/**'
@@ -84,5 +86,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-${{ matrix.dir_name }}
-          # Using wildcards (**) for the folder path to be safe, in case the folder name differs slightly
+          # Using wildcards (**) for the folder path to be safe
           path: app/build/outputs/apk/**/debug/*.apk
