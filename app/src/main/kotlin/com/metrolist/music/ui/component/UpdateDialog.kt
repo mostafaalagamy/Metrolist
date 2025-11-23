@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -50,18 +51,20 @@ fun UpdateDialog(
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onBackup()
-                    onDismiss()
+            Row {
+                TextButton(
+                    onClick = {
+                        onBackup()
+                        onDismiss()
+                    }
+                ) {
+                    Text(text = stringResource(R.string.create_backup))
                 }
-            ) {
-                Text(text = stringResource(R.string.create_backup))
-            }
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text(text = stringResource(android.R.string.cancel))
+                TextButton(
+                    onClick = onDismiss
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
             }
         }
     )
