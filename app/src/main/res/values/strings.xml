@@ -254,8 +254,6 @@
     <string name="player_slider_style">Player slider style</string>
     <string name="default_">Default</string>
     <string name="squiggly">Squiggly</string>
-    <string name="wavy">Wavy</string>
-    <string name="wavy_indeterminate">Wavy (Indeterminate)</string>
     <string name="primary_color_style" translatable="false">Primary</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>

@@ -33,9 +33,7 @@ import androidx.compose.material3.ripple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -105,7 +103,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.metrolist.music.utils.makeTimeString
 
-@OptIn(ExperimentalMaterial3Api::class, androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsScreen(
     mediaMetadata: MediaMetadata,
@@ -460,29 +458,6 @@ fun LyricsScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
-                                SliderStyle.WAVY -> {
-                                    val progress by androidx.compose.animation.core.animateFloatAsState(
-                                        targetValue = (sliderPosition ?: position).toFloat(),
-                                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-                                        label = "progress"
-                                    )
-                                    LinearWavyProgressIndicator(
-                                        progress = {
-                                            if (duration > 0) progress / duration.toFloat()
-                                            else 0f
-                                        },
-                                        color = textBackgroundColor,
-                                        trackColor = textBackgroundColor.copy(alpha = 0.4f),
-                                        modifier = Modifier.fillMaxWidth(),
-                                    )
-                                }
-                                SliderStyle.WAVY_INDETERMINATE -> {
-                                    LinearWavyProgressIndicator(
-                                        color = textBackgroundColor,
-                                        trackColor = textBackgroundColor.copy(alpha = 0.4f),
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
                             }
                             Row(
                                 modifier = Modifier
@@ -723,29 +698,6 @@ fun LyricsScreen(
                                             colors = PlayerSliderColors.getSliderColors(textBackgroundColor, playerBackground, useDarkTheme)
                                         )
                                     },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                            SliderStyle.WAVY -> {
-                                val progress by androidx.compose.animation.core.animateFloatAsState(
-                                    targetValue = (sliderPosition ?: position).toFloat(),
-                                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-                                    label = "progress"
-                                )
-                                LinearWavyProgressIndicator(
-                                    progress = {
-                                        if (duration > 0) progress / duration.toFloat()
-                                        else 0f
-                                    },
-                                    color = textBackgroundColor,
-                                    trackColor = textBackgroundColor.copy(alpha = 0.4f),
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                            }
-                            SliderStyle.WAVY_INDETERMINATE -> {
-                                LinearWavyProgressIndicator(
-                                    color = textBackgroundColor,
-                                    trackColor = textBackgroundColor.copy(alpha = 0.4f),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
