@@ -47,14 +47,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -286,10 +289,12 @@ fun BottomSheetPlayer(
     )
 
     val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
-        PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
-        PlayerButtonsStyle.SECONDARY -> Pair(
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.onSecondary
+        PlayerButtonsStyle.DEFAULT ->
+            if (useDarkTheme) Pair(Color.White, Color.Black)
+            else Pair(Color.Black, Color.White)
+        PlayerButtonsStyle.PRIMARY -> Pair(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.onPrimary
         )
     }
 
@@ -519,13 +524,12 @@ fun BottomSheetPlayer(
             )
         },
     ) {
+        val playPauseRoundness by animateDpAsState(
+            targetValue = if (isPlaying) 24.dp else 36.dp,
+            animationSpec = tween(durationMillis = 90, easing = LinearEasing),
+            label = "playPauseRoundness",
+        )
         val controlsContent: @Composable ColumnScope.(MediaMetadata) -> Unit = { mediaMetadata ->
-            val playPauseRoundness by animateDpAsState(
-                targetValue = if (isPlaying) 24.dp else 36.dp,
-                animationSpec = tween(durationMillis = 90, easing = LinearEasing),
-                label = "playPauseRoundness",
-            )
-
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -684,6 +688,10 @@ fun BottomSheetPlayer(
                                 context.startActivity(Intent.createChooser(intent, null))
                             },
                             shape = shareShape,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor,
+                            ),
                             modifier = Modifier.size(42.dp),
                         ) {
                             Icon(
@@ -696,6 +704,10 @@ fun BottomSheetPlayer(
                         FilledIconButton(
                             onClick = playerConnection::toggleLike,
                             shape = favShape,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor,
+                            ),
                             modifier = Modifier.size(42.dp),
                         ) {
                             Icon(
@@ -751,9 +763,78 @@ fun BottomSheetPlayer(
                     )
                 }
             }
+        }
+
+        Column(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+        ) {
+            when (LocalConfiguration.current.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    Row(
+                        modifier =
+                        Modifier
+                            .padding(bottom = queueSheetState.collapsedBound + 48.dp),
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            val screenWidth = LocalConfiguration.current.screenWidthDp
+                            val thumbnailSize = (screenWidth * 0.4).dp
+                            Thumbnail(
+                                sliderPositionProvider = { sliderPosition },
+                                modifier = Modifier.size(thumbnailSize),
+                                isPlayerExpanded = state.isExpanded
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier =
+                            Modifier
+                                .weight(1f)
+                                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
+                        ) {
+                            Spacer(Modifier.weight(1f))
+
+                            mediaMetadata?.let {
+                                controlsContent(it)
+                            }
+
+                            Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+
+                else -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier =
+                        Modifier
+                            .padding(bottom = queueSheetState.collapsedBound),
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Thumbnail(
+                                sliderPositionProvider = { sliderPosition },
+                                modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                                isPlayerExpanded = state.isExpanded
+                            )
+                        }
+
+                        mediaMetadata?.let {
+                            controlsContent(it)
+                        }
+
+                        Spacer(Modifier.height(30.dp))
+                    }
+                }
+            }
 
             Spacer(Modifier.height(12.dp))
 
+            @OptIn(ExperimentalMaterial3ExpressiveApi::class)
             when (sliderStyle) {
                 SliderStyle.DEFAULT -> {
                     Slider(
@@ -769,7 +850,11 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                        colors = PlayerSliderColors.getSliderColors(
+                            textButtonColor,
+                            playerBackground,
+                            useDarkTheme
+                        ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                     )
                 }
@@ -788,7 +873,11 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                        colors = PlayerSliderColors.getSliderColors(
+                            textButtonColor,
+                            playerBackground,
+                            useDarkTheme
+                        ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                         squigglesSpec =
                         SquigglySlider.SquigglesSpec(
@@ -816,9 +905,38 @@ fun BottomSheetPlayer(
                         track = { sliderState ->
                             PlayerSliderTrack(
                                 sliderState = sliderState,
-                                colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme)
+                                colors = PlayerSliderColors.getSliderColors(
+                                    textButtonColor,
+                                    playerBackground,
+                                    useDarkTheme
+                                )
                             )
                         },
+                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding)
+                    )
+                }
+
+                SliderStyle.WAVY -> {
+                    val progress by animateFloatAsState(
+                        targetValue = (sliderPosition ?: position).toFloat(),
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+                        label = "progress"
+                    )
+                    LinearWavyProgressIndicator(
+                        progress = {
+                            if (duration > 0) progress / duration.toFloat()
+                            else 0f
+                        },
+                        color = textButtonColor,
+                        trackColor = textButtonColor.copy(alpha = 0.4f),
+                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                    )
+                }
+
+                SliderStyle.WAVY_INDETERMINATE -> {
+                    LinearWavyProgressIndicator(
+                        color = textButtonColor,
+                        trackColor = textButtonColor.copy(alpha = 0.4f),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding)
                     )
                 }
@@ -884,6 +1002,20 @@ fun BottomSheetPlayer(
                         enabled = canSkipPrevious,
                         shape = RoundedCornerShape(50),
                         interactionSource = backInteractionSource,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                if (useDarkTheme) Color.Black else Color.White
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                            contentColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            },
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(sideButtonWeight)
@@ -909,6 +1041,10 @@ fun BottomSheetPlayer(
                         },
                         shape = RoundedCornerShape(50),
                         interactionSource = playPauseInteractionSource,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = textButtonColor,
+                            contentColor = iconButtonColor,
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(playPauseWeight)
@@ -939,6 +1075,20 @@ fun BottomSheetPlayer(
                         enabled = canSkipNext,
                         shape = RoundedCornerShape(50),
                         interactionSource = nextInteractionSource,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                if (useDarkTheme) Color.Black else Color.White
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                            contentColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            },
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(sideButtonWeight)
@@ -1057,72 +1207,6 @@ fun BottomSheetPlayer(
                             onClick = playerConnection::toggleLike,
                         )
                     }
-                }
-            }
-        }
-
-        when (LocalConfiguration.current.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                Row(
-                    modifier =
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .padding(bottom = queueSheetState.collapsedBound + 48.dp),
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        val screenWidth = LocalConfiguration.current.screenWidthDp
-                        val thumbnailSize = (screenWidth * 0.4).dp
-                        Thumbnail(
-                            sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.size(thumbnailSize),
-                            isPlayerExpanded = state.isExpanded
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier =
-                        Modifier
-                            .weight(1f)
-                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
-                    ) {
-                        Spacer(Modifier.weight(1f))
-
-                        mediaMetadata?.let {
-                            controlsContent(it)
-                        }
-
-                        Spacer(Modifier.weight(1f))
-                    }
-                }
-            }
-
-            else -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier =
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .padding(bottom = queueSheetState.collapsedBound),
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Thumbnail(
-                            sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
-                            isPlayerExpanded = state.isExpanded
-                        )
-                    }
-
-                    mediaMetadata?.let {
-                        controlsContent(it)
-                    }
-
-                    Spacer(Modifier.height(30.dp))
                 }
             }
         }

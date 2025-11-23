@@ -458,6 +458,7 @@ fun LyricsScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
+                                else -> {}
                             }
                             Row(
                                 modifier = Modifier
@@ -701,6 +702,7 @@ fun LyricsScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                                else -> {}
                         }
                         Row(
                             modifier = Modifier

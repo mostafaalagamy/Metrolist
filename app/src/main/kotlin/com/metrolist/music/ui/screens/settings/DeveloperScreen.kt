@@ -138,6 +138,7 @@ fun SliderShowcase() {
                         thumb = { Spacer(modifier = Modifier.size(0.dp)) }
                     )
                 }
+                else -> {}
             }
             Spacer(Modifier.height(16.dp))
         }
