@@ -28,7 +28,7 @@ val DeveloperModeKey = booleanPreferencesKey("developerMode")
 enum class SliderStyle {
     DEFAULT,
     SQUIGGLY,
-    SLIM,
+    SLIM
 }
 
 const val SYSTEM_DEFAULT = "SYSTEM_DEFAULT"
@@ -283,7 +283,7 @@ enum class PreferredLyricsProvider {
 
 enum class PlayerButtonsStyle {
     DEFAULT,
-    SECONDARY,
+    PRIMARY
 }
 
 enum class PlayerBackgroundStyle {

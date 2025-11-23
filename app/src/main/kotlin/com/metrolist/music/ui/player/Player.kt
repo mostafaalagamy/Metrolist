@@ -286,10 +286,12 @@ fun BottomSheetPlayer(
     )
 
     val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
-        PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
-        PlayerButtonsStyle.SECONDARY -> Pair(
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.onSecondary
+        PlayerButtonsStyle.DEFAULT ->
+            if (useDarkTheme) Pair(Color.White, Color.Black)
+            else Pair(Color.Black, Color.White)
+        PlayerButtonsStyle.PRIMARY -> Pair(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.onPrimary
         )
     }
 
@@ -684,6 +686,10 @@ fun BottomSheetPlayer(
                                 context.startActivity(Intent.createChooser(intent, null))
                             },
                             shape = shareShape,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor,
+                            ),
                             modifier = Modifier.size(42.dp),
                         ) {
                             Icon(
@@ -696,6 +702,10 @@ fun BottomSheetPlayer(
                         FilledIconButton(
                             onClick = playerConnection::toggleLike,
                             shape = favShape,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor,
+                            ),
                             modifier = Modifier.size(42.dp),
                         ) {
                             Icon(
@@ -884,6 +894,20 @@ fun BottomSheetPlayer(
                         enabled = canSkipPrevious,
                         shape = RoundedCornerShape(50),
                         interactionSource = backInteractionSource,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                if (useDarkTheme) Color.Black else Color.White
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                            contentColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            },
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(sideButtonWeight)
@@ -909,6 +933,10 @@ fun BottomSheetPlayer(
                         },
                         shape = RoundedCornerShape(50),
                         interactionSource = playPauseInteractionSource,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = textButtonColor,
+                            contentColor = iconButtonColor,
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(playPauseWeight)
@@ -939,6 +967,20 @@ fun BottomSheetPlayer(
                         enabled = canSkipNext,
                         shape = RoundedCornerShape(50),
                         interactionSource = nextInteractionSource,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                if (useDarkTheme) Color.Black else Color.White
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                            contentColor =
+                            if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            },
+                        ),
                         modifier = Modifier
                             .height(64.dp)
                             .weight(sideButtonWeight)
