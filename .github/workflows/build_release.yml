@@ -70,7 +70,8 @@ jobs:
 
       - name: Restore Release Keystore
         run: |
-          echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ./app/release.keystore
+          mkdir -p ./app/keystore
+          echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > ./app/keystore/release.keystore
 
       - name: Build ${{ matrix.arch }} Release APK and Run Lint
         run: ./gradlew --no-configuration-cache --console=plain assemble${{ matrix.task_part }}Release :app:lint${{ matrix.task_part }}Release --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
@@ -79,7 +80,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
