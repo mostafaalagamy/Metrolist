@@ -344,4 +344,7 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
+    <string name="update_dialog_title">Hold on!</string>
+    <string name="update_dialog_message">It\'s highly recommended to create a backup before you proceed. Updates may cause unexpected issues, and having a backup ensures you don\'t lose any data.</string>
+    <string name="update_anyways">OK</string>
 </resources>
