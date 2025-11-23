@@ -164,9 +164,6 @@ fun AccountSettingsDialog(
                 val downloadUrl = Updater.getLatestDownloadUrl()
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
                 context.startActivity(intent)
-            },
-            onBackup = {
-                navController.navigate("backup_and_restore")
             }
         )
     }
