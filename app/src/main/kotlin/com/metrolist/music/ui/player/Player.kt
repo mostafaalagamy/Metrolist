@@ -1151,11 +1151,21 @@ fun BottomSheetPlayer(
                     ) {
                         val screenWidth = LocalConfiguration.current.screenWidthDp
                         val thumbnailSize = (screenWidth * 0.4).dp
-                        Thumbnail(
-                            sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.size(thumbnailSize),
-                            isPlayerExpanded = state.isExpanded
-                        )
+                        AnimatedContent(
+                            targetState = showInlineLyrics,
+                            label = "Lyrics",
+                            transitionSpec = { fadeIn() togetherWith fadeOut() }
+                        ) { showLyrics ->
+                            if (showLyrics) {
+                                InlineLyricsView(mediaMetadata = mediaMetadata)
+                            } else {
+                                Thumbnail(
+                                    sliderPositionProvider = { sliderPosition },
+                                    modifier = Modifier.size(thumbnailSize),
+                                    isPlayerExpanded = state.isExpanded
+                                )
+                            }
+                        }
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

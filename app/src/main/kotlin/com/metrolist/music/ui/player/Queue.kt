@@ -331,9 +331,17 @@ fun Queue(
 
                     if (showInlineLyrics) {
                         FilledIconButton(
-                            onClick = { onToggleLyrics(false) },
+                            onClick = { },
                             shape = middleShape,
-                            modifier = Modifier.size(buttonSize),
+                            modifier = Modifier
+                                .size(buttonSize)
+                                .combinedClickable(
+                                    onClick = { onToggleLyrics(false) },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        onToggleLyrics(true)
+                                    }
+                                ),
                             colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = textButtonColor,
                                 contentColor = iconButtonColor
@@ -347,9 +355,10 @@ fun Queue(
                         }
                     } else {
                         OutlinedIconButton(
-                            onClick = { onToggleLyrics(false) },
+                            onClick = { },
                             shape = middleShape,
-                            modifier = Modifier.size(buttonSize)
+                            modifier = Modifier
+                                .size(buttonSize)
                                 .combinedClickable(
                                     onClick = { onToggleLyrics(false) },
                                     onLongClick = {
