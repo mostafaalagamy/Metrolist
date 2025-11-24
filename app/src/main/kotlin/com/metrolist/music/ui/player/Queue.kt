@@ -150,6 +150,7 @@ fun Queue(
     iconButtonColor: Color,
     onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
+    onToggleLyrics: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -327,10 +328,18 @@ fun Queue(
                     }
 
 
-                    OutlinedIconButton(
-                        onClick = { onShowLyrics() },
-                        shape = middleShape,
-                        modifier = Modifier.size(buttonSize)
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(middleShape)
+                            .combinedClickable(
+                                onClick = { onToggleLyrics(false) },
+                                onLongClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onToggleLyrics(true)
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.lyrics),
@@ -499,9 +508,18 @@ fun Queue(
                         }
                     }
 
-                    TextButton(
-                        onClick = { onShowLyrics() },
-                        modifier = Modifier.weight(1f)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.medium)
+                            .combinedClickable(
+                                onClick = { onToggleLyrics(false) },
+                                onLongClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onToggleLyrics(true)
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
