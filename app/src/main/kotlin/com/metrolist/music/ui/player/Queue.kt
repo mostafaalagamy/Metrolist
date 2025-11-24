@@ -329,35 +329,51 @@ fun Queue(
                     }
 
 
-                    val lyricsButtonModifier = Modifier
-                        .size(buttonSize)
-                        .clip(middleShape)
-                        .combinedClickable(
-                            onClick = { onToggleLyrics(false) },
-                            onLongClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                onToggleLyrics(true)
-                            }
-                        )
-
-                    Box(
-                        modifier = if (showInlineLyrics) {
-                            lyricsButtonModifier.background(textButtonColor)
-                        } else {
-                            lyricsButtonModifier.border(
-                                width = 1.dp,
-                                color = LocalContentColor.current.copy(alpha = 0.12f),
-                                shape = middleShape
+                    if (showInlineLyrics) {
+                        FilledIconButton(
+                            onClick = { /* Handled by combinedClickable */ },
+                            shape = middleShape,
+                            modifier = Modifier
+                                .size(buttonSize)
+                                .combinedClickable(
+                                    onClick = { onToggleLyrics(false) },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        onToggleLyrics(true)
+                                    }
+                                ),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor
                             )
-                        },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
-                            contentDescription = null,
-                            modifier = Modifier.size(iconSize),
-                            tint = if (showInlineLyrics) iconButtonColor else TextBackgroundColor
-                        )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lyrics),
+                                contentDescription = null,
+                                modifier = Modifier.size(iconSize)
+                            )
+                        }
+                    } else {
+                        OutlinedIconButton(
+                            onClick = { /* Handled by combinedClickable */ },
+                            shape = middleShape,
+                            modifier = Modifier
+                                .size(buttonSize)
+                                .combinedClickable(
+                                    onClick = { onToggleLyrics(false) },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        onToggleLyrics(true)
+                                    }
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lyrics),
+                                contentDescription = null,
+                                modifier = Modifier.size(iconSize),
+                                tint = TextBackgroundColor
+                            )
+                        }
                     }
 
                     if (repeatMode != Player.REPEAT_MODE_OFF) {
