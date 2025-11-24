@@ -110,6 +110,7 @@ import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.SongMenu
+import com.metrolist.music.ui.menu.ArtistProfileMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
@@ -767,17 +768,18 @@ fun ArtistScreen(
         actions = {
             IconButton(
                 onClick = {
-                    viewModel.artistPage?.artist?.shareLink?.let { link ->
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText("Artist Link", link)
-                        clipboard.setPrimaryClip(clip)
-                        Toast.makeText(context, R.string.link_copied, Toast.LENGTH_SHORT).show()
+                    menuState.show {
+                        ArtistProfileMenu(
+                            navController = navController,
+                            viewModel = viewModel,
+                            onDismiss = menuState::dismiss
+                        )
                     }
-                },
+                }
             ) {
                 Icon(
-                    painterResource(R.drawable.link),
-                    contentDescription = null,
+                    painter = painterResource(R.drawable.more_vert),
+                    contentDescription = null
                 )
             }
         },
