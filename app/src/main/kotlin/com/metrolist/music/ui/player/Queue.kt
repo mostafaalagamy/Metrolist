@@ -20,6 +20,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.ripple
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -150,6 +151,8 @@ fun Queue(
     iconButtonColor: Color,
     onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
+    showInlineLyrics: Boolean,
+    onToggleLyrics: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -327,16 +330,36 @@ fun Queue(
                     }
 
 
-                    OutlinedIconButton(
-                        onClick = { onShowLyrics() },
-                        shape = middleShape,
-                        modifier = Modifier.size(buttonSize)
+                    val lyricsButtonModifier = Modifier
+                        .size(buttonSize)
+                        .clip(middleShape)
+                        .combinedClickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(),
+                            onClick = { onToggleLyrics(false) },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onToggleLyrics(true)
+                            }
+                        )
+
+                    Box(
+                        modifier = if (showInlineLyrics) {
+                            lyricsButtonModifier.background(textButtonColor)
+                        } else {
+                            lyricsButtonModifier.border(
+                                width = 1.dp,
+                                color = LocalContentColor.current.copy(alpha = 0.12f),
+                                shape = middleShape
+                            )
+                        },
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.lyrics),
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
-                            tint = TextBackgroundColor
+                            tint = if (showInlineLyrics) iconButtonColor else TextBackgroundColor
                         )
                     }
 
@@ -500,7 +523,7 @@ fun Queue(
                     }
 
                     TextButton(
-                        onClick = { onShowLyrics() },
+                        onClick = { onToggleLyrics(false) },
                         modifier = Modifier.weight(1f)
                     ) {
                         Row(

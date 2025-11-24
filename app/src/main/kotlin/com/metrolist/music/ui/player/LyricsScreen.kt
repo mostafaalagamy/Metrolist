@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -82,13 +83,10 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
-import com.metrolist.music.extensions.togglePlayPause
-import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
-import com.metrolist.music.ui.component.BigSeekBar
 import androidx.navigation.NavController
 import me.saket.squiggles.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -129,9 +127,6 @@ fun LyricsScreen(
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
-    val repeatMode by playerConnection.repeatMode.collectAsState()
-    val shuffleModeEnabled by playerConnection.shuffleModeEnabled.collectAsState()
-    val playerVolume = playerConnection.service.playerVolume.collectAsState()
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
@@ -431,7 +426,7 @@ fun LyricsScreen(
                                         colors = PlayerSliderColors.getSliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                         modifier = Modifier.fillMaxWidth(),
                                         squigglesSpec = SquigglySlider.SquigglesSpec(
-                                            amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
+                                            amplitude = (2.dp).coerceAtLeast(2.dp),
                                             strokeWidth = 3.dp,
                                         )
                                     )
@@ -477,81 +472,7 @@ fun LyricsScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.height(18.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                IconButton(
-                                    onClick = { playerConnection.player.toggleRepeatMode() },
-                                    modifier = Modifier.size(48.dp)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(
-                                            when (repeatMode) {
-                                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                                Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                                else -> R.drawable.repeat
-                                            }
-                                        ),
-                                        contentDescription = "Repeat",
-                                        tint = if (repeatMode == Player.REPEAT_MODE_OFF) textBackgroundColor.copy(alpha = 0.4f) else textBackgroundColor,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                                IconButton(onClick = { player.seekToPrevious() }, modifier = Modifier.size(48.dp)) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.skip_previous),
-                                        contentDescription = null,
-                                        tint = textBackgroundColor,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
-   
-                                IconButton(
-                                    onClick = { player.togglePlayPause() }, 
-                                    modifier = Modifier.size(72.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(64.dp)
-                                            .background(
-                                                textBackgroundColor,
-                                                shape = RoundedCornerShape(50)
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(if (isPlaying) R.drawable.pause else R.drawable.play),
-                                            contentDescription = "Play/Pause",
-                                            tint = iconButtonColor,
-                                            modifier = Modifier.size(32.dp)
-                                        )
-                                    }
-                                }
-    
-                                IconButton(onClick = { player.seekToNext() }, modifier = Modifier.size(48.dp)) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.skip_next),
-                                        contentDescription = null,
-                                        tint = textBackgroundColor,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
-                                IconButton(
-                                    onClick = { playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled },
-                                    modifier = Modifier.size(48.dp)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.shuffle),
-                                        contentDescription = "Shuffle",
-                                        tint = if (shuffleModeEnabled) textBackgroundColor else textBackgroundColor.copy(alpha = 0.4f),
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                            }
+                            Box {}
                         }
                     }
                 }
@@ -720,82 +641,6 @@ fun LyricsScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(18.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(
-                                onClick = { playerConnection.player.toggleRepeatMode() },
-                                modifier = Modifier.size(48.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(
-                                        when (repeatMode) {
-                                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                            else -> R.drawable.repeat
-                                        }
-                                    ),
-                                    contentDescription = "Repeat",
-                                    tint = if (repeatMode == Player.REPEAT_MODE_OFF) textBackgroundColor.copy(alpha = 0.4f) else textBackgroundColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                            IconButton(onClick = { player.seekToPrevious() }, modifier = Modifier.size(48.dp)) {
-                                Icon(
-                                    painter = painterResource(R.drawable.skip_previous),
-                                    contentDescription = null,
-                                    tint = textBackgroundColor,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-   
-                            IconButton(
-                                onClick = { player.togglePlayPause() }, 
-                                modifier = Modifier.size(72.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(64.dp)
-                                        .background(
-                                            textBackgroundColor,
-                                            shape = RoundedCornerShape(50)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        painter = painterResource(if (isPlaying) R.drawable.pause else R.drawable.play),
-                                        contentDescription = "Play/Pause",
-                                        tint = iconButtonColor,
-                                        modifier = Modifier.size(32.dp)
-                                    )
-                                }
-                            }
-    
-                            IconButton(onClick = { player.seekToNext() }, modifier = Modifier.size(48.dp)) {
-                                Icon(
-                                    painter = painterResource(R.drawable.skip_next),
-                                    contentDescription = null,
-                                    tint = textBackgroundColor,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-                            IconButton(
-                                onClick = { playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled },
-                                modifier = Modifier.size(48.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.shuffle),
-                                    contentDescription = "Shuffle",
-                                    tint = if (shuffleModeEnabled) textBackgroundColor else textBackgroundColor.copy(alpha = 0.4f),
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
