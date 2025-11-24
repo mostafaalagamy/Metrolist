@@ -49,7 +49,9 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -1227,6 +1229,7 @@ fun BottomSheetPlayer(
             iconButtonColor = iconButtonColor,
             onShowLyrics = { lyricsSheetState.expandSoft() },
             pureBlack = pureBlack,
+            showInlineLyrics = showInlineLyrics,
             onToggleLyrics = { isLongPress ->
                 if (isLongPress) {
                     lyricsSheetState.expandSoft()
@@ -1265,6 +1268,7 @@ fun BottomSheetPlayer(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun InlineLyricsView(mediaMetadata: MediaMetadata?) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -1303,7 +1307,7 @@ fun InlineLyricsView(mediaMetadata: MediaMetadata?) {
     ) {
         when {
             lyrics == null -> {
-                CircularProgressIndicator()
+                ContainedLoadingIndicator()
             }
             lyrics == LyricsEntity.LYRICS_NOT_FOUND -> {
                 Text(

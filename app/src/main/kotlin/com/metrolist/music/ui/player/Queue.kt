@@ -150,6 +150,7 @@ fun Queue(
     iconButtonColor: Color,
     onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
+    showInlineLyrics: Boolean,
     onToggleLyrics: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -328,25 +329,42 @@ fun Queue(
                     }
 
 
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
-                            .clip(middleShape)
-                            .combinedClickable(
-                                onClick = { onToggleLyrics(false) },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onToggleLyrics(true)
-                                }
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
-                            contentDescription = null,
-                            modifier = Modifier.size(iconSize),
-                            tint = TextBackgroundColor
-                        )
+                    if (showInlineLyrics) {
+                        FilledIconButton(
+                            onClick = { onToggleLyrics(false) },
+                            shape = middleShape,
+                            modifier = Modifier.size(buttonSize),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = textButtonColor,
+                                contentColor = iconButtonColor
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lyrics),
+                                contentDescription = null,
+                                modifier = Modifier.size(iconSize)
+                            )
+                        }
+                    } else {
+                        OutlinedIconButton(
+                            onClick = { onToggleLyrics(false) },
+                            shape = middleShape,
+                            modifier = Modifier.size(buttonSize)
+                                .combinedClickable(
+                                    onClick = { onToggleLyrics(false) },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        onToggleLyrics(true)
+                                    }
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lyrics),
+                                contentDescription = null,
+                                modifier = Modifier.size(iconSize),
+                                tint = TextBackgroundColor
+                            )
+                        }
                     }
 
                     if (repeatMode != Player.REPEAT_MODE_OFF) {
@@ -508,18 +526,9 @@ fun Queue(
                         }
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(MaterialTheme.shapes.medium)
-                            .combinedClickable(
-                                onClick = { onToggleLyrics(false) },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onToggleLyrics(true)
-                                }
-                            ),
-                        contentAlignment = Alignment.Center
+                    TextButton(
+                        onClick = { onToggleLyrics(false) },
+                        modifier = Modifier.weight(1f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
