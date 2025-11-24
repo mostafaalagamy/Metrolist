@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
@@ -170,6 +171,8 @@ fun PlayerMenu(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    Spacer(modifier = Modifier.height(12.dp))
+
     LazyColumn(
         userScrollEnabled = !isPortrait,
         contentPadding = PaddingValues(
@@ -253,7 +256,23 @@ fun PlayerMenu(
                 )
             )
         }
-
+        if (isQueueTrigger != true) {
+            item {
+                Material3MenuGroup(
+                    items = listOf(
+                        Material3MenuItem(
+                            icon = { Icon(painter = painterResource(R.drawable.volume_up), contentDescription = null) },
+                            title = {
+                                Slider(
+                                    value = playerVolume.value,
+                                    onValueChange = { playerConnection.service.playerVolume.value = it }
+                                )
+                            }
+                        )
+                    )
+                )
+            }
+        }
         item {
             Material3MenuGroup(
                 items = listOf(
@@ -317,24 +336,6 @@ fun PlayerMenu(
         if (navigationItems.isNotEmpty()){
             item {
                 Material3MenuGroup(items = navigationItems)
-            }
-        }
-
-        if (isQueueTrigger != true) {
-            item {
-                Material3MenuGroup(
-                    items = listOf(
-                        Material3MenuItem(
-                            icon = { Icon(painter = painterResource(R.drawable.volume_up), contentDescription = null) },
-                            title = {
-                                Slider(
-                                    value = playerVolume.value,
-                                    onValueChange = { playerConnection.service.playerVolume.value = it }
-                                )
-                            }
-                        )
-                    )
-                )
             }
         }
 

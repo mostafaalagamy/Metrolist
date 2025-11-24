@@ -327,7 +327,7 @@ fun SongMenu(
 
     LazyColumn(
         contentPadding =
-        PaddingValues(bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()),
+        PaddingValues(top = 12.dp, bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
