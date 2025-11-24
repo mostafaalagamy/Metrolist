@@ -3,6 +3,7 @@ package com.metrolist.music.ui.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +15,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -59,7 +61,7 @@ fun Material3MenuGroup(
                         .animateContentSize(),
                     shape = shape,
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                        containerColor = item.cardColor ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
@@ -85,26 +87,34 @@ private fun Material3MenuItemRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         item.icon?.let { icon ->
-            Icon(
-                painter = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
+            CompositionLocalProvider(
+                LocalContentColor provides (item.textColor ?: MaterialTheme.colorScheme.primary)
+            ) {
+                Box(
+                    modifier = Modifier.size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    icon()
+                }
+            }
             Spacer(modifier = Modifier.width(16.dp))
         }
 
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+            ProvideTextStyle(
+                value = MaterialTheme.typography.titleMedium.copy(
+                    color = item.textColor ?: Color.Unspecified
+                )
+            ) {
                 item.title()
             }
             item.description?.let { desc ->
                 Spacer(modifier = Modifier.height(2.dp))
                 ProvideTextStyle(
                     MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = item.textColor ?: MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
                     desc()
@@ -115,8 +125,10 @@ private fun Material3MenuItemRow(
 }
 
 data class Material3MenuItem(
-    val icon: Painter? = null,
+    val icon: (@Composable () -> Unit)? = null,
     val title: @Composable () -> Unit,
     val description: (@Composable () -> Unit)? = null,
-    val onClick: (() -> Unit)? = null
+    val onClick: (() -> Unit)? = null,
+    val cardColor: Color? = null,
+    val textColor: Color? = null
 )
