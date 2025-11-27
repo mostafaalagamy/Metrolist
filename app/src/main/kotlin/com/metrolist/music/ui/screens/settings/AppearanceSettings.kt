@@ -50,6 +50,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ChipSortTypeKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
+import com.metrolist.music.constants.EnableDynamicIconKey
 import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
@@ -86,21 +87,55 @@ import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.component.PlayerSliderTrack
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.IconUtils
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
 import kotlin.math.roundToInt
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import android.content.Intent
+import android.app.Activity
+import androidx.compose.material3.SnackbarHostState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
+    activity: Activity,
+    snackbarHostState: SnackbarHostState,
 ) {
     val (dynamicTheme, onDynamicThemeChange) = rememberPreference(
         DynamicThemeKey,
         defaultValue = true
     )
+    val (enableDynamicIcon, onEnableDynamicIconChange) = rememberPreference(
+        EnableDynamicIconKey,
+        defaultValue = true
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    fun handleIconChange(enabled: Boolean) {
+        onEnableDynamicIconChange(enabled)
+        IconUtils.setIcon(activity, enabled)
+        coroutineScope.launch {
+            val result = snackbarHostState.showSnackbar(
+                message = "Icon updated, restart to apply",
+                actionLabel = "Restart"
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                val packageManager = activity.packageManager
+                val intent = packageManager.getLaunchIntentForPackage(activity.packageName)
+                val componentName = intent?.component
+                val mainIntent = Intent.makeRestartActivityTask(componentName)
+                activity.startActivity(mainIntent)
+                Runtime.getRuntime().exit(0)
+            }
+        }
+    }
+
     val (darkMode, onDarkModeChange) = rememberEnumPreference(
         DarkModeKey,
         defaultValue = DarkMode.AUTO
@@ -526,6 +561,19 @@ fun AppearanceSettings(
         Material3SettingsGroup(
             title = stringResource(R.string.theme),
             items = buildList {
+                add(
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.ic_dynamic_icon),
+                        title = { Text(stringResource(R.string.enable_dynamic_icon)) },
+                        trailingContent = {
+                            Switch(
+                                checked = enableDynamicIcon,
+                                onCheckedChange = { handleIconChange(it) }
+                            )
+                        },
+                        onClick = { handleIconChange(!enableDynamicIcon) }
+                    )
+                )
                 add(
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.palette),
