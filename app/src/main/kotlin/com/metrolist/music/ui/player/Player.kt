@@ -574,7 +574,8 @@ fun BottomSheetPlayer(
                                     append(artist.name)
                                 }
                                 pop()
-                                if (index != mediaMetadata.artists.lastIndex) append(", ")
+                                if(index == mediaMetadata.artists.lastIndex-1) append(" & ");
+                                if (index < mediaMetadata.artists.lastIndex-1) append(", ")
                             }
                         }
 
