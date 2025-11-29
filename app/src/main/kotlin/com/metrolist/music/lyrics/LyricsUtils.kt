@@ -75,10 +75,10 @@ object LyricsUtils {
         override fun parse(line: String, nextLine: String?): ParseResult? {
             val matchResult = LINE_REGEX.matchEntire(line.trim()) ?: return null
             if (nextLine?.trim()?.startsWith("<") == true) {
-                val words = parseBetterLyricsWords(nextLine)
+                val text = matchResult.groupValues[3]
+                val words = parseBetterLyricsWords(text, nextLine)
                 if (words.isNotEmpty()) {
                     val times = matchResult.groupValues[1]
-                    val text = matchResult.groupValues[3]
                     val timeMatchResults = TIME_REGEX.findAll(times)
                     val entries = timeMatchResults.map { timeMatchResult ->
                         val time = parseLrcTimestamp(timeMatchResult)
@@ -372,9 +372,9 @@ object LyricsUtils {
         return min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
     }
 
-    private fun parseBetterLyricsWords(line: String): List<Word> {
-        val words = mutableListOf<Word>()
-        val content = line.trim().drop(1).dropLast(1) // Remove < and >
+    private fun parseBetterLyricsWords(textLine: String, timingLine: String): List<Word> {
+        val fragments = mutableListOf<Syllable>()
+        val content = timingLine.trim().drop(1).dropLast(1) // Remove < and >
         val wordData = content.split('|')
 
         for (data in wordData) {
@@ -384,11 +384,33 @@ object LyricsUtils {
                 try {
                     val startTime = (parts[1].toDouble() * 1000).toLong()
                     val endTime = (parts[2].toDouble() * 1000).toLong()
-                    val syllable = Syllable(text, startTime, endTime)
-                    words.add(Word(text, startTime, endTime, listOf(syllable)))
+                    fragments.add(Syllable(text, startTime, endTime))
                 } catch (e: NumberFormatException) {
                     // Ignore malformed timestamps
                 }
+            }
+        }
+
+        if (fragments.isEmpty()) return emptyList()
+
+        val words = mutableListOf<Word>()
+        val plainWords = textLine.split(" ").filter { it.isNotEmpty() }
+        var fragmentIndex = 0
+
+        for (plainWord in plainWords) {
+            val currentSyllables = mutableListOf<Syllable>()
+            var reconstructedWord = ""
+            while (reconstructedWord.length < plainWord.length && fragmentIndex < fragments.size) {
+                val fragment = fragments[fragmentIndex]
+                currentSyllables.add(fragment)
+                reconstructedWord += fragment.text
+                fragmentIndex++
+            }
+
+            if (currentSyllables.isNotEmpty()) {
+                val wordStartTime = currentSyllables.first().startTime
+                val wordEndTime = currentSyllables.last().endTime
+                words.add(Word(plainWord, wordStartTime, wordEndTime, currentSyllables.toList()))
             }
         }
         return words

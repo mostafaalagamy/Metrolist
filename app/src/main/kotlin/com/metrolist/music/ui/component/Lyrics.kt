@@ -409,6 +409,9 @@ fun Lyrics(
     var lastVoice by remember { mutableStateOf("v2") }
 
     val lazyListState = rememberLazyListState()
+    val hasV2Voice = remember(lines) {
+        lines.any { it.voice == "v2" }
+    }
     
     // Professional animation states for smooth Metrolist-style transitions
     var isAnimating by remember { mutableStateOf(false) }
@@ -784,7 +787,7 @@ fun Lyrics(
 
                     val hasWordSync = item.words != null
 
-                    val lyricTextAlignment = if (hasWordSync && item.voice != null) {
+                    val lyricTextAlignment = if (hasWordSync && item.voice != null && hasV2Voice) {
                         when (item.voice) {
                             "v1" -> TextAlign.Right
                             "v2" -> TextAlign.Left
@@ -799,7 +802,7 @@ fun Lyrics(
                         }
                     }
 
-                    val lyricHorizontalArrangement = if (hasWordSync && item.voice != null) {
+                    val lyricHorizontalArrangement = if (hasWordSync && item.voice != null && hasV2Voice) {
                         when (item.voice) {
                             "v1" -> Arrangement.End
                             "v2" -> Arrangement.Start
@@ -830,6 +833,7 @@ fun Lyrics(
                             if (hasWordSync) {
                                 val fontSize = if (item.voice == "bg") 22.sp else 28.sp
                                 val lineHeight = if (item.voice == "bg") 26.sp else 32.sp
+                                val activeLineDuration = item.words?.sumOf { it.endTime - it.startTime } ?: 0
                                 FlowRow(
                                     horizontalArrangement = lyricHorizontalArrangement
                                 ) {
@@ -844,12 +848,39 @@ fun Lyrics(
                                             label = "translationY"
                                         )
 
+                                        val hasSyllableData = word.syllables.size > 1
                                         val duration = word.endTime - word.startTime
-                                        val glow = duration > GLOW_DURATION_THRESHOLD_MS && (duration / word.text.length) > 150
+
+                                        val glow = if (hasSyllableData) {
+                                            val longestSyllable = word.syllables.maxByOrNull { it.endTime - it.startTime }
+                                            longestSyllable != null &&
+                                                    (longestSyllable.endTime - longestSyllable.startTime) > GLOW_DURATION_THRESHOLD_MS &&
+                                                    (duration / word.text.length) > 150 &&
+                                                    (activeLineDuration > 0 && duration > activeLineDuration * SYLLABLE_GLOW_FACTOR)
+                                        } else {
+                                            (duration > GLOW_DURATION_THRESHOLD_MS) &&
+                                                    (activeLineDuration > 0 && duration > activeLineDuration * WORD_GLOW_FACTOR)
+                                        }
+
                                         val animatedGlow by animateFloatAsState(
                                             targetValue = if (glow && isWordActive) {
-                                                val progress = (currentPosition - word.startTime).toFloat() / (duration / 2f)
-                                                if (progress < 1f) progress else 1f
+                                                if (hasSyllableData) {
+                                                    val longestSyllable = word.syllables.maxByOrNull { it.endTime - it.startTime }
+                                                    if (longestSyllable != null && currentPosition in longestSyllable.startTime..longestSyllable.endTime) {
+                                                        val syllableDuration = longestSyllable.endTime - longestSyllable.startTime
+                                                        if (syllableDuration > 0) {
+                                                            val progress = (currentPosition - longestSyllable.startTime).toFloat() / (syllableDuration / 2f)
+                                                            if (progress < 1f) progress else 1f
+                                                        } else {
+                                                            1f
+                                                        }
+                                                    } else {
+                                                        0f
+                                                    }
+                                                } else {
+                                                    // Simple glow for word-timed lyrics
+                                                    1f
+                                                }
                                             } else {
                                                 0f
                                             },
@@ -857,38 +888,31 @@ fun Lyrics(
                                             label = "glow"
                                         )
 
+                                        val wordProgress = if (currentPosition in word.startTime..word.endTime) {
+                                            val wordDuration = (word.endTime - word.startTime).toFloat()
+                                            if (wordDuration > 0) {
+                                                ((currentPosition - word.startTime) / wordDuration).coerceIn(0f, 1f)
+                                            } else {
+                                                1f
+                                            }
+                                        } else {
+                                            if (currentPosition > word.endTime) 1f else 0f
+                                        }
+                                        val colorStops = arrayOf(
+                                            0f to textColor,
+                                            wordProgress to textColor,
+                                            (wordProgress + 0.0001f).coerceAtMost(1f) to textColor.copy(alpha = 0.5f),
+                                            1f to textColor.copy(alpha = 0.5f)
+                                        )
                                         Text(
-                                            text = buildAnnotatedString {
-                                                word.syllables.forEach { syllable ->
-                                                    val progress = if (currentPosition in syllable.startTime..syllable.endTime) {
-                                                        val duration = (syllable.endTime - syllable.startTime).toFloat()
-                                                        if (duration > 0) {
-                                                            ((currentPosition - syllable.startTime) / duration).coerceIn(0f, 1f)
-                                                        } else {
-                                                            1f
-                                                        }
-                                                    } else {
-                                                        if (currentPosition > syllable.endTime) 1f else 0f
-                                                    }
-                                                    val colorStops = arrayOf(
-                                                        0f to textColor,
-                                                        progress to textColor,
-                                                        (progress + 0.0001f).coerceAtMost(1f) to textColor.copy(alpha = 0.5f),
-                                                        1f to textColor.copy(alpha = 0.5f)
-                                                    )
-                                                    withStyle(
-                                                        style = SpanStyle(
-                                                            brush = Brush.horizontalGradient(colorStops = colorStops),
-                                                            shadow = if (glow) Shadow(
-                                                                color = MaterialTheme.colorScheme.primary,
-                                                                blurRadius = animatedGlow * 24f
-                                                            ) else null
-                                                        )
-                                                    ) {
-                                                        append(syllable.text)
-                                                    }
-                                                }
-                                            },
+                                            text = word.text,
+                                            style = TextStyle(
+                                                brush = Brush.horizontalGradient(colorStops = colorStops),
+                                                shadow = if (glow) Shadow(
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    blurRadius = animatedGlow * 24f
+                                                ) else null
+                                            ),
                                             fontSize = fontSize,
                                             lineHeight = lineHeight,
                                             fontWeight = FontWeight.ExtraBold,
@@ -1387,6 +1411,8 @@ private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
 private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
 
 private const val GLOW_DURATION_THRESHOLD_MS = 1200
+private const val WORD_GLOW_FACTOR = 0.4f
+private const val SYLLABLE_GLOW_FACTOR = 0.5f
 private const val LOADING_INDICATOR_GAP_THRESHOLD_MS = 2000
 private const val LOADING_INDICATOR_DISAPPEAR_OFFSET_MS = 300
 private const val WIPE_ANIMATION_WIDTH_MULTIPLIER = 1000f
