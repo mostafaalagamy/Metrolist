@@ -848,19 +848,37 @@ fun Lyrics(
                                             label = "translationY"
                                         )
 
-                                        val longestSyllable = word.syllables.maxByOrNull { it.endTime - it.startTime }
+                                        val hasSyllableData = word.syllables.size > 1
                                         val duration = word.endTime - word.startTime
-                                        val glow = longestSyllable != null &&
-                                                (longestSyllable.endTime - longestSyllable.startTime) > GLOW_DURATION_THRESHOLD_MS &&
-                                                (duration / word.text.length) > 150 &&
-                                                (activeLineDuration > 0 && duration > activeLineDuration * 0.5)
+
+                                        val glow = if (hasSyllableData) {
+                                            val longestSyllable = word.syllables.maxByOrNull { it.endTime - it.startTime }
+                                            longestSyllable != null &&
+                                                    (longestSyllable.endTime - longestSyllable.startTime) > GLOW_DURATION_THRESHOLD_MS &&
+                                                    (duration / word.text.length) > 150 &&
+                                                    (activeLineDuration > 0 && duration > activeLineDuration * SYLLABLE_GLOW_FACTOR)
+                                        } else {
+                                            (duration > GLOW_DURATION_THRESHOLD_MS) &&
+                                                    (activeLineDuration > 0 && duration > activeLineDuration * WORD_GLOW_FACTOR)
+                                        }
+
                                         val animatedGlow by animateFloatAsState(
-                                            targetValue = if (glow && longestSyllable != null && currentPosition in longestSyllable.startTime..longestSyllable.endTime) {
-                                                val syllableDuration = longestSyllable.endTime - longestSyllable.startTime
-                                                if (syllableDuration > 0) {
-                                                    val progress = (currentPosition - longestSyllable.startTime).toFloat() / (syllableDuration / 2f)
-                                                    if (progress < 1f) progress else 1f
+                                            targetValue = if (glow && isWordActive) {
+                                                if (hasSyllableData) {
+                                                    val longestSyllable = word.syllables.maxByOrNull { it.endTime - it.startTime }
+                                                    if (longestSyllable != null && currentPosition in longestSyllable.startTime..longestSyllable.endTime) {
+                                                        val syllableDuration = longestSyllable.endTime - longestSyllable.startTime
+                                                        if (syllableDuration > 0) {
+                                                            val progress = (currentPosition - longestSyllable.startTime).toFloat() / (syllableDuration / 2f)
+                                                            if (progress < 1f) progress else 1f
+                                                        } else {
+                                                            1f
+                                                        }
+                                                    } else {
+                                                        0f
+                                                    }
                                                 } else {
+                                                    // Simple glow for word-timed lyrics
                                                     1f
                                                 }
                                             } else {
@@ -1393,6 +1411,8 @@ private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
 private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
 
 private const val GLOW_DURATION_THRESHOLD_MS = 1200
+private const val WORD_GLOW_FACTOR = 0.4f
+private const val SYLLABLE_GLOW_FACTOR = 0.5f
 private const val LOADING_INDICATOR_GAP_THRESHOLD_MS = 2000
 private const val LOADING_INDICATOR_DISAPPEAR_OFFSET_MS = 300
 private const val WIPE_ANIMATION_WIDTH_MULTIPLIER = 1000f

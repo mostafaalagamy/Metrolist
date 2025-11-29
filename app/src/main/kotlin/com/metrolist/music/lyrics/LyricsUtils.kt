@@ -20,6 +20,7 @@ object LyricsUtils {
     val APPLE_MUSIC_BG_ONLY_LINE_REGEX = "\\[(bg):(.*)\\]".toRegex()
 
     private const val LAST_LINE_FALLBACK_DURATION_MS = 5000L
+    private const val WORD_FRAGMENT_MERGE_TOLERANCE_MS = 5L
 
     private val parserStrategies = listOf(
         AppleMusicLyricsParser,
@@ -78,7 +79,7 @@ object LyricsUtils {
                 val words = parseBetterLyricsWords(nextLine)
                 if (words.isNotEmpty()) {
                     val times = matchResult.groupValues[1]
-                    val text = matchResult.groupValues[3]
+                    val text = words.joinToString(" ") { it.text }
                     val timeMatchResults = TIME_REGEX.findAll(times)
                     val entries = timeMatchResults.map { timeMatchResult ->
                         val time = parseLrcTimestamp(timeMatchResult)
@@ -373,7 +374,7 @@ object LyricsUtils {
     }
 
     private fun parseBetterLyricsWords(line: String): List<Word> {
-        val words = mutableListOf<Word>()
+        val fragments = mutableListOf<Syllable>()
         val content = line.trim().drop(1).dropLast(1) // Remove < and >
         val wordData = content.split('|')
 
@@ -384,13 +385,47 @@ object LyricsUtils {
                 try {
                     val startTime = (parts[1].toDouble() * 1000).toLong()
                     val endTime = (parts[2].toDouble() * 1000).toLong()
-                    val syllable = Syllable(text, startTime, endTime)
-                    words.add(Word(text, startTime, endTime, listOf(syllable)))
+                    fragments.add(Syllable(text, startTime, endTime))
                 } catch (e: NumberFormatException) {
                     // Ignore malformed timestamps
                 }
             }
         }
+
+        if (fragments.isEmpty()) {
+            return emptyList()
+        }
+
+        val words = mutableListOf<Word>()
+        var currentSyllables = mutableListOf(fragments.first())
+
+        for (i in 1 until fragments.size) {
+            val prevSyllable = currentSyllables.last()
+            val currentSyllable = fragments[i]
+
+            // Merge if timestamps are contiguous. A small tolerance is used for floating point inaccuracies.
+            if (currentSyllable.startTime - prevSyllable.endTime <= WORD_FRAGMENT_MERGE_TOLERANCE_MS) {
+                currentSyllables.add(currentSyllable)
+            } else {
+                // End of word, create a Word object.
+                val wordText = currentSyllables.joinToString("") { it.text }
+                val wordStartTime = currentSyllables.first().startTime
+                val wordEndTime = currentSyllables.last().endTime
+                words.add(Word(wordText, wordStartTime, wordEndTime, currentSyllables.toList()))
+
+                // Start a new word.
+                currentSyllables = mutableListOf(currentSyllable)
+            }
+        }
+
+        // Add the last word.
+        if (currentSyllables.isNotEmpty()) {
+            val wordText = currentSyllables.joinToString("") { it.text }
+            val wordStartTime = currentSyllables.first().startTime
+            val wordEndTime = currentSyllables.last().endTime
+            words.add(Word(wordText, wordStartTime, wordEndTime, currentSyllables.toList()))
+        }
+
         return words
     }
 
