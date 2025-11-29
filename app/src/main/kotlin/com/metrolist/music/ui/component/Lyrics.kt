@@ -171,6 +171,7 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
+    showLyrics: Boolean
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val density = LocalDensity.current
@@ -211,10 +212,9 @@ fun Lyrics(
         if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
     }
 
-    var showLyrics by rememberSaveable { mutableStateOf(false) }
-
     val lines by rememberLyrics(
-        lyrics = if (showLyrics) lyrics else null
+        lyrics = if (showLyrics) lyrics else null,
+        showLyrics = showLyrics
     )
 
     LaunchedEffect(lines) {
@@ -931,15 +931,6 @@ fun Lyrics(
                     }
                 }
             }
-        } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Button(onClick = { showLyrics = true }) {
-                    Text(text = stringResource(R.string.show_lyrics))
-                }
-            }
         }
 
 
@@ -1370,11 +1361,12 @@ val LyricsPreviewTime = 2.seconds
 
 @Composable
 private fun rememberLyrics(
-    lyrics: String?
+    lyrics: String?,
+    showLyrics: Boolean
 ): State<List<LyricsEntry>> {
-    return remember(lyrics) {
+    return remember(lyrics, showLyrics) {
         derivedStateOf {
-            if (lyrics == null || lyrics == LYRICS_NOT_FOUND) {
+            if (!showLyrics || lyrics == null || lyrics == LYRICS_NOT_FOUND) {
                 emptyList()
             } else if (lyrics.startsWith("[")) {
                 val parsedLines = parseLyrics(lyrics)

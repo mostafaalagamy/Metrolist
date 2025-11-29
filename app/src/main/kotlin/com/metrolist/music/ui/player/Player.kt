@@ -143,6 +143,11 @@ import com.metrolist.music.ui.component.ResizableIconButton
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
+import com.metrolist.music.lyrics.LyricsEntry
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
+import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.ui.utils.ShowMediaInfo
@@ -1157,7 +1162,7 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata)
+                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = { sliderPosition },
@@ -1203,7 +1208,7 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata)
+                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = { sliderPosition },
@@ -1280,7 +1285,7 @@ fun BottomSheetPlayer(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun InlineLyricsView(mediaMetadata: MediaMetadata?) {
+fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val lyrics = remember(currentLyrics) { currentLyrics?.lyrics?.trim() }
@@ -1331,7 +1336,8 @@ fun InlineLyricsView(mediaMetadata: MediaMetadata?) {
                 val lyricsContent: @Composable () -> Unit = {
                     Lyrics(
                         sliderPositionProvider = { playerConnection.player.currentPosition },
-                        modifier = Modifier.padding(horizontal = 24.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        showLyrics = showLyrics
                     )
                 }
                 ProvideTextStyle(

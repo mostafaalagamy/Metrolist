@@ -200,7 +200,6 @@
     <string name="undo">Undo</string>
 
     <!-- Player -->
-    <string name="show_lyrics">Show lyrics</string>
     <string name="lyrics_not_found">Lyrics not found</string>
     <string name="sleep_timer">Sleep timer</string>
     <string name="end_of_song">End of song</string>
