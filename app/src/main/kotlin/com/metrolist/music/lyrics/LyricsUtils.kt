@@ -20,7 +20,6 @@ object LyricsUtils {
     val APPLE_MUSIC_BG_ONLY_LINE_REGEX = "\\[(bg):(.*)\\]".toRegex()
 
     private const val LAST_LINE_FALLBACK_DURATION_MS = 5000L
-    private const val WORD_FRAGMENT_MERGE_TOLERANCE_MS = 5L
 
     private val parserStrategies = listOf(
         AppleMusicLyricsParser,
@@ -76,10 +75,10 @@ object LyricsUtils {
         override fun parse(line: String, nextLine: String?): ParseResult? {
             val matchResult = LINE_REGEX.matchEntire(line.trim()) ?: return null
             if (nextLine?.trim()?.startsWith("<") == true) {
-                val words = parseBetterLyricsWords(nextLine)
+                val text = matchResult.groupValues[3]
+                val words = parseBetterLyricsWords(text, nextLine)
                 if (words.isNotEmpty()) {
                     val times = matchResult.groupValues[1]
-                    val text = words.joinToString(" ") { it.text }
                     val timeMatchResults = TIME_REGEX.findAll(times)
                     val entries = timeMatchResults.map { timeMatchResult ->
                         val time = parseLrcTimestamp(timeMatchResult)
@@ -373,9 +372,9 @@ object LyricsUtils {
         return min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
     }
 
-    private fun parseBetterLyricsWords(line: String): List<Word> {
+    private fun parseBetterLyricsWords(textLine: String, timingLine: String): List<Word> {
         val fragments = mutableListOf<Syllable>()
-        val content = line.trim().drop(1).dropLast(1) // Remove < and >
+        val content = timingLine.trim().drop(1).dropLast(1) // Remove < and >
         val wordData = content.split('|')
 
         for (data in wordData) {
@@ -392,40 +391,28 @@ object LyricsUtils {
             }
         }
 
-        if (fragments.isEmpty()) {
-            return emptyList()
-        }
+        if (fragments.isEmpty()) return emptyList()
 
         val words = mutableListOf<Word>()
-        var currentSyllables = mutableListOf(fragments.first())
+        val plainWords = textLine.split(" ").filter { it.isNotEmpty() }
+        var fragmentIndex = 0
 
-        for (i in 1 until fragments.size) {
-            val prevSyllable = currentSyllables.last()
-            val currentSyllable = fragments[i]
+        for (plainWord in plainWords) {
+            val currentSyllables = mutableListOf<Syllable>()
+            var reconstructedWord = ""
+            while (reconstructedWord.length < plainWord.length && fragmentIndex < fragments.size) {
+                val fragment = fragments[fragmentIndex]
+                currentSyllables.add(fragment)
+                reconstructedWord += fragment.text
+                fragmentIndex++
+            }
 
-            // Merge if timestamps are contiguous. A small tolerance is used for floating point inaccuracies.
-            if (currentSyllable.startTime - prevSyllable.endTime <= WORD_FRAGMENT_MERGE_TOLERANCE_MS) {
-                currentSyllables.add(currentSyllable)
-            } else {
-                // End of word, create a Word object.
-                val wordText = currentSyllables.joinToString("") { it.text }
+            if (currentSyllables.isNotEmpty()) {
                 val wordStartTime = currentSyllables.first().startTime
                 val wordEndTime = currentSyllables.last().endTime
-                words.add(Word(wordText, wordStartTime, wordEndTime, currentSyllables.toList()))
-
-                // Start a new word.
-                currentSyllables = mutableListOf(currentSyllable)
+                words.add(Word(plainWord, wordStartTime, wordEndTime, currentSyllables.toList()))
             }
         }
-
-        // Add the last word.
-        if (currentSyllables.isNotEmpty()) {
-            val wordText = currentSyllables.joinToString("") { it.text }
-            val wordStartTime = currentSyllables.first().startTime
-            val wordEndTime = currentSyllables.last().endTime
-            words.add(Word(wordText, wordStartTime, wordEndTime, currentSyllables.toList()))
-        }
-
         return words
     }
 
