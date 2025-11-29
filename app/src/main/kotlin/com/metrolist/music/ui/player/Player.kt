@@ -1162,7 +1162,7 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics && !lyricsSheetState.isExpanded)
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = { sliderPosition },
@@ -1208,7 +1208,7 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics && !lyricsSheetState.isExpanded)
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = { sliderPosition },
