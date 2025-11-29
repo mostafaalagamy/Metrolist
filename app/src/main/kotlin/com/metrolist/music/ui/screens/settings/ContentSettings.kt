@@ -13,12 +13,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.core.net.toUri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -49,7 +52,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toLowerCase
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -505,7 +515,12 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
-                    title = { Text("Enable BetterLyrics") },
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Enable BetterLyrics")
+                            WordByWordTag()
+                        }
+                    },
                     trailingContent = {
                         Switch(
                             checked = enableBetterLyrics,
@@ -516,7 +531,12 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
-                    title = { Text("Enable Apple Music") },
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Enable Apple Music")
+                            WordByWordTag()
+                        }
+                    },
                     trailingContent = {
                         Switch(
                             checked = enableAppleMusic,
@@ -591,4 +611,23 @@ fun ContentSettings(
             }
         }
     )
+}
+
+@Composable
+fun WordByWordTag() {
+    Box(
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "W",
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp
+        )
+    }
 }
