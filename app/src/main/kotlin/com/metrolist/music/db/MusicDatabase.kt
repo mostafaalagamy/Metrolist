@@ -112,7 +112,7 @@ class MusicDatabase(
         AutoMigration(from = 20, to = 21, spec = Migration20To21::class),
         AutoMigration(from = 21, to = 22, spec = Migration21To22::class),
         AutoMigration(from = 22, to = 23, spec = Migration22To23::class),
-        AutoMigration(from = 23, to = 24)
+        AutoMigration(from = 23, to = 24, spec = Migration23To24::class)
     ],
 )
 @TypeConverters(Converters::class)
@@ -508,7 +508,30 @@ class Migration21To22 : AutoMigrationSpec {
 class Migration22To23: AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         // Add isUploaded column
-        db.execSQL("ALTER TABLE song ADD COLUMN isUploaded INTEGER NOT NULL DEFAULT 0")
-        db.execSQL("ALTER TABLE album ADD COLUMN isUploaded INTEGER NOT NULL DEFAULT 0")
+        // , `isUploaded` INTEGER NOT NULL DEFAULT false
+        // Deprecated db.execSQL("ALTER TABLE song ADD COLUMN isUploaded INTEGER NOT NULL DEFAULT 0")
+        // Deprecated db.execSQL("ALTER TABLE album ADD COLUMN isUploaded INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+class Migration23To24: AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // Check for column existence
+        var hasIsUploaded = false
+        db.query("PRAGMA table_info('song')").use { cursor ->
+            val nameIndex = cursor.getColumnIndex("name")
+            while (cursor.moveToNext()) {
+                val colName = if (nameIndex >= 0) cursor.getString(nameIndex) else null
+                if (colName == "isUploaded") {
+                    hasIsUploaded = true
+                    break
+                }
+            }
+        }
+
+        if (!hasIsUploaded) {
+            // Add column with default 0 (false). Use integer default for SQLite.
+            db.execSQL("ALTER TABLE `song` ADD COLUMN `isUploaded` INTEGER NOT NULL DEFAULT 0")
+        }
     }
 }
