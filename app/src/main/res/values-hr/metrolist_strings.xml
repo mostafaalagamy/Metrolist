@@ -7,7 +7,7 @@
     <string name="charts">Liste</string>
     <string name="back_button_desc">Natrag</string>
     <string name="unknown_item_type">Nepoznata vrsta stavke</string>
-    <string name="loading_charts">Učitavam ljestvice pjesama...</string>
+    <string name="loading_charts">Učitavam ljestvice pjesama…</string>
     <string name="retry_button">Pokušaj ponovno</string>
     <string name="album_cover_desc">Naslovnica albuma</string>
     <string name="top_music_videos">Najgledaniji glazbeni spotovi</string>
@@ -38,16 +38,16 @@
     <string name="text_color">Tekstualna boja</string>
     <string name="secondary_text_color">Sekundarna boja teksta</string>
     <string name="background_color">Boja pozadine</string>
-    <string name="added_to_play_next">Dodano za igranje sljedeće</string>
+    <string name="added_to_play_next">Dodano sljedeće</string>
     <string name="added_to_queue">Dodano u red</string>
     <string name="remove_from_cache">Uklonite iz predmemorije</string>
-    <string name="copy_link">Veza kopiranja</string>
+    <string name="copy_link">Kopiraj vezu</string>
     <string name="select">Odaberite sve</string>
     <string name="like_all">Slično svemu</string>
     <string name="dislike_all">Ne volim sve</string>
     <string name="sort_by_last_updated">Datum ažuriranja</string>
     <string name="link_copied">Veza kopirana u međuspremnik</string>
-    <string name="lyrics">Tekstovi pjesama</string>
+    <string name="lyrics">Tekst</string>
     <string name="already_in_playlist">Već je u predlošku:</string>
     <plurals name="n_element">
         <item quantity="one">%d element</item>
@@ -62,13 +62,13 @@
     <string name="similar_content">Sličan sadržaj</string>
     <string name="login_settings">Postavke prijave</string>
     <string name="general_settings">Opća postavka</string>
-    <string name="player_background_style">Stil pozadine igrača</string>
+    <string name="player_background_style">Stil pozadine reproduktora</string>
     <string name="follow_theme">Pratite temu</string>
     <string name="gradient">Gradijent</string>
-    <string name="new_player_design">Novi dizajn igrača</string>
-    <string name="new_mini_player_design">Novi minijatići dizajn</string>
+    <string name="new_player_design">Ogavan izgled reproduktora</string>
+    <string name="new_mini_player_design">Novi izgled minijaturnog reproduktora</string>
     <string name="player_background_blur">Zamućenje</string>
-    <string name="player_buttons_style">Boje dugmeta za igrača</string>
+    <string name="player_buttons_style">Boje dugmeta reproduktora</string>
     <string name="default_style">Zadana vrijednost</string>
     <string name="secondary_color_style">Srednja</string>
     <string name="enable_squiggly_slider">Omogući kliznu traku s valovima (izravno prevođenje)</string>
@@ -76,10 +76,10 @@
     <string name="swipe_song_to_add">Proslijedi pjesmu desnom prstom da je dodaješ u red čekanja ili lijevim prstom da je odmah riješiš</string>
     <string name="lyrics_click_change">Promijeni stihove po kliku</string>
     <string name="lyrics_auto_scroll">Automatsko scrollanje teksta pjesme</string>
-    <string name="lyrics_romanize_japanese">Romanizacija japanskih tekstova pjesama</string>
-    <string name="lyrics_romanize_korean">Romaniziraj korejske stihove</string>
+    <string name="lyrics_romanize_japanese">Romanizacija japanskog teksta</string>
+    <string name="lyrics_romanize_korean">Romanizacija korejskog teksta</string>
     <string name="slim">Tanak/a</string>
-    <string name="slim_navbar">Sakrij oznake labele dna navigacijske trake</string>
+    <string name="slim_navbar">Tanka traka navigacije</string>
     <string name="auto_playlists">Automatski odabrane liste</string>
     <string name="show_liked_playlist">Prikaži \"Voleli\" listu</string>
     <string name="show_downloaded_playlist">Prikaži \"Preuzeta\" listu pjesama</string>
@@ -103,7 +103,7 @@
     <string name="configure_app_language">Konfigurirajte jezike aplikacije</string>
     <string name="intent_app_language_not_found">Nemogu pronaći postavke jezika aplikacije, molim ručno konfigurirajte ih</string>
     <string name="open_supported_links">Otvaranje poveznice podržane po zadanom u web pregledniku</string>
-    <string name="configure_supported_links">Konfigurirajte podržane linkove</string>
+    <string name="configure_supported_links">Konfigurirajte podržane poveznice</string>
     <string name="intent_supported_links_not_found">Nemogu pronaći postavke poveznica podržanih linkova, molim konfigurirajte ih ručno</string>
     <string name="set_first_lyrics_provider">Odmiljeni pružatelj stihova</string>
     <string name="audio_quality_max">Max (beta)</string>
@@ -118,7 +118,7 @@
     <string name="playlist_add_local_to_synced_note">Dodavanje lokalnih pjesama na sinkronizirane/udaljene playliste nije podržano. Sve ostale kombinacije su važeće</string>
     <string name="auto_download_on_like">Automatsko preuzimanje na scroll (prijenos) ili na \"like</string>
     <string name="auto_download_on_like_desc">Automatski preuzmi pjesme kada vam se svide</string>
-    <string name="swipe_sensitivity">Osetljivost poteza minijaturnog igrača</string>
+    <string name="swipe_sensitivity">Osetljivost poteza minijaturnog reproduktora</string>
     <string name="swipe_sensitivity_desc">Približi ili otkloni osjetljivost gesta prebacivanja pjesama</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="clear_song_cache_dialog">Sigurno želite obrisati sve pjesme iz memorije?</string>
@@ -127,7 +127,7 @@
     <string name="disable">Onemogući</string>
     <string name="pause_remote_listen_history">Pauziraj, dijelji i slušaj pregledano s YouTube Music</string>
     <string name="not_logged_in_youtube">Nije se prijavljen na YouTube</string>
-    <string name="default_links">Otključajte podržane linkove</string>
+    <string name="default_links">Otavanje podržanih poveznica</string>
     <string name="open_app_settings_error">Nemogu otvoriti postavke aplikacije</string>
     <string name="release_notes">Obavijest o izdanjima [Croatian</string>
     <string name="all_time">Sve vrijeme</string>
@@ -176,4 +176,7 @@
     <string name="settings_section_player_content">Reproduktor i sadržaj</string>
     <string name="settings_section_storage">Pohrana i podaci</string>
     <string name="settings_section_system">Sustav i o aplikaciji</string>
+    <string name="updater">Ažuriranja</string>
+    <string name="check_for_updates">Automatska provjera ažuriranja</string>
+    <string name="integrations">Ugradnja</string>
 </resources>
