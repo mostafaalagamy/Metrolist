@@ -100,6 +100,7 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeBelarusianKey
 import com.metrolist.music.constants.LyricsRomanizeBulgarianKey
 import com.metrolist.music.constants.LyricsRomanizeCyrillicByLineKey
+import com.metrolist.music.constants.LyricsRomanizeChineseKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsRomanizeKoreanKey
 import com.metrolist.music.constants.LyricsRomanizeKyrgyzKey
@@ -128,6 +129,7 @@ import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
+import com.metrolist.music.lyrics.LyricsUtils.romanizeChinese
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
@@ -173,6 +175,7 @@ fun Lyrics(
     val romanizeKyrgyzLyrics by rememberPreference(LyricsRomanizeKyrgyzKey, true)
     val romanizeMacedonianLyrics by rememberPreference(LyricsRomanizeMacedonianKey, true)
     val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
+    val romanizeChineseLyrics by rememberPreference(LyricsRomanizeChineseKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -262,6 +265,12 @@ fun Lyrics(
                     }
                 }
 
+                else if (romanizeChineseLyrics && isChinese(entry.text)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeChinese(entry.text)
+                    }
+                }
+
                 newEntry
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
@@ -329,6 +338,12 @@ fun Lyrics(
                 else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(line) else isMacedonianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                    }
+                }
+
+                else if (romanizeChineseLyrics && isChinese(line)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeChinese(line)
                     }
                 }
 
@@ -758,7 +773,8 @@ fun Lyrics(
                                     romanizeBulgarianLyrics ||
                                     romanizeBelarusianLyrics ||
                                     romanizeKyrgyzLyrics ||
-                                    romanizeMacedonianLyrics)) {
+                                    romanizeMacedonianLyrics ||
+                                    romanizeChineseLyrics)) {
                             // Show romanized text if available
                             val romanizedText by item.romanizedTextFlow.collectAsState()
                             romanizedText?.let { romanized ->

@@ -2,6 +2,8 @@ package com.metrolist.music.lyrics
 
 import android.text.format.DateUtils
 import com.atilika.kuromoji.ipadic.Tokenizer
+import com.github.promeg.pinyinhelper.Pinyin
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -458,7 +460,23 @@ object LyricsUtils {
         romajaBuilder.toString()
     }
 
-
+    suspend fun romanizeChinese(text: String): String = withContext(Dispatchers.Default) {
+        if (text.isEmpty()) return@withContext ""
+        val builder = StringBuilder(text.length * 2)
+        for (ch in text) {
+            if (ch in '\u4E00'..'\u9FFF') {
+                val py = Pinyin.toPinyin(ch).lowercase(Locale.getDefault())
+                builder.append(py).append(' ')
+            } else {
+                builder.append(ch)
+            }
+        }
+        // Remove whitespaces before ASCII and CJK punctuations
+        builder.toString()
+            .replace(Regex("\\s+([,.!?;:])"), "$1")
+            .replace(Regex("\\s+([，。！？；：、（）《》〈〉【】『』「」])"), "$1")
+            .trim()
+    }
 
     suspend fun romanizeCyrillic(text: String): String? = withContext(Dispatchers.Default) {
         if (text.isEmpty()) return@withContext null
