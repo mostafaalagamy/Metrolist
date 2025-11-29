@@ -50,6 +50,7 @@ import com.metrolist.lastfm.LastFM
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
 import com.metrolist.music.constants.LastFMSessionKey
 import com.metrolist.music.constants.LastFMUseNowPlaying
+import com.metrolist.music.constants.LastFMUseSendLikes
 import com.metrolist.music.constants.LastFMUsernameKey
 import com.metrolist.music.constants.ScrobbleMinSongDurationKey
 import com.metrolist.music.constants.ScrobbleDelayPercentKey
@@ -78,6 +79,11 @@ fun LastFMSettings(
 
     val (useNowPlaying, onUseNowPlayingChange) = rememberPreference(
         key = LastFMUseNowPlaying,
+        defaultValue = false
+    )
+
+    val (useSendLikes, onUseSendLikes) = rememberPreference(
+        key = LastFMUseSendLikes,
         defaultValue = false
     )
 
@@ -220,6 +226,14 @@ fun LastFMSettings(
             checked = useNowPlaying,
             onCheckedChange = onUseNowPlayingChange,
             isEnabled = isLoggedIn && lastfmScrobbling,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.last_fm_send_likes)) },
+            description = stringResource(R.string.last_fm_send_likes_description),
+            checked = useSendLikes,
+            onCheckedChange = onUseSendLikes,
+            isEnabled = isLoggedIn,
         )
 
         PreferenceGroupTitle(
