@@ -227,4 +227,6 @@
     <string name="scrobble_delay_percent">Procento zpoždění scrobblování</string>
     <string name="scrobble_delay_minutes">Minuty zpoždění scrobblování</string>
     <string name="swipe_song_to_remove">Posuňte skladbu pro odstranění z playlistu</string>
+    <string name="last_fm_send_likes">Odesílat stav oblíbení</string>
+    <string name="last_fm_send_likes_description">Přidat/odebrat srdíčko u skladby v Last.fm, když ji přidáte/odeberete z oblíbených v Metrolistu</string>
 </resources>
