@@ -229,4 +229,6 @@
     <string name="scrobble_delay_percent">Задержка скробблинга (в процентах)</string>
     <string name="scrobble_delay_minutes">Задержка скробблинга (в минутах)</string>
     <string name="swipe_song_to_remove">Свайп по песне, чтобы удалить её из плейлиста</string>
+    <string name="last_fm_send_likes">Отправлять лайки/дизлайки</string>
+    <string name="last_fm_send_likes_description">Добавлять/убирать отметку «любимая» на Last.fm, когда треки отмечаются как понравившиеся/непонравившиеся в Metrolist</string>
 </resources>
