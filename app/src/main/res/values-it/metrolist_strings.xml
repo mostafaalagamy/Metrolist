@@ -226,4 +226,5 @@
     <string name="password">Password</string>
     <string name="lastfm_integration">Integrazione di last.fm</string>
     <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
+    <string name="last_fm_send_likes">Invia Mi piace/Non mi piace</string>
 </resources>
