@@ -223,4 +223,6 @@
     <string name="scrobble_delay_percent">Scrobble gecikme yüzdesi</string>
     <string name="scrobble_delay_minutes">Scrobble gecikme dakikaları</string>
     <string name="swipe_song_to_remove">Şarkıyı çalma listesinden kaldırmak için kaydırın</string>
+    <string name="last_fm_send_likes">Beğeni/Beğenmeme Gönder</string>
+    <string name="last_fm_send_likes_description">Metrolist\'te Beğenilen/Beğenilmeyen şarkıları Last.fm\'de de Beğen/Beğenme</string>
 </resources>
