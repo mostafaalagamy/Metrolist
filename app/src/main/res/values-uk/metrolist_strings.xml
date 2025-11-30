@@ -229,4 +229,6 @@
     <string name="scrobble_delay_percent">Відсоток затримки Scrobble</string>
     <string name="scrobble_delay_minutes">Затримка Scrobble у хвилинах</string>
     <string name="swipe_song_to_remove">Проведіть пальцем по пісні, щоб вилучити її зі списку відтворення</string>
+    <string name="last_fm_send_likes">Надіслати вподобання/не вподобання</string>
+    <string name="last_fm_send_likes_description">Пісні, які подобається/не подобається, на Last.fm, коли вони вподобані/зняті з Metrolist</string>
 </resources>
