@@ -110,6 +110,26 @@ object LastFM {
         }
     }
 
+
+    suspend fun setLoveStatus(
+        artist: String, track: String, love: Boolean
+    ) = runCatching {
+        val method = if (love) "track.love" else "track.unlove"
+        client.post {
+            lastfmParams(
+                method = method,
+                apiKey = API_KEY,
+                secret = SECRET,
+                sessionKey = sessionKey!!,
+                extra = buildMap {
+                    put("artist", artist)
+                    put("track", track)
+                }
+            )
+            parameter("format", "json")
+        }
+    }
+
     // API keys passed from the app module (loaded from BuildConfig/GitHub Secrets)
     private var API_KEY = ""
     private var SECRET = ""
