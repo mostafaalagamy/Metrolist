@@ -39,8 +39,6 @@ constructor(
         listOf(
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
-            BetterLyricsProvider,
-            AppleMusicLyricsProvider,
             YouTubeSubtitleLyricsProvider,
             YouTubeLyricsProvider
         )

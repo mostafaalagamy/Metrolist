@@ -101,8 +101,6 @@ fun ContentSettings(
     val (proxyPassword, onProxyPasswordChange) = rememberPreference(key = ProxyPasswordKey, defaultValue = "password")
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
-    val (enableBetterLyrics, onEnableBetterLyricsChange) = rememberPreference(key = EnableBetterLyricsKey, defaultValue = false)
-    val (enableAppleMusic, onEnableAppleMusicChange) = rememberPreference(key = EnableAppleMusicKey, defaultValue = false)
     val (preferredProvider, onPreferredProviderChange) =
         rememberEnumPreference(
             key = PreferredLyricsProviderKey,
@@ -312,8 +310,7 @@ fun ContentSettings(
                 when (it) {
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
-                    PreferredLyricsProvider.BETTERLYRICS -> "BetterLyrics"
-                    PreferredLyricsProvider.APPLEMUSIC -> "Apple Music"
+                    else -> it.name
                 }
             }
         )
@@ -515,48 +512,9 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Enable BetterLyrics")
-                            WordByWordTag()
-                        }
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = enableBetterLyrics,
-                            onCheckedChange = onEnableBetterLyricsChange
-                        )
-                    },
-                    onClick = { onEnableBetterLyricsChange(!enableBetterLyrics) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Enable Apple Music")
-                            WordByWordTag()
-                        }
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = enableAppleMusic,
-                            onCheckedChange = onEnableAppleMusicChange
-                        )
-                    },
-                    onClick = { onEnableAppleMusicChange(!enableAppleMusic) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
                     description = {
-                        Text(
-                            when (preferredProvider) {
-                                PreferredLyricsProvider.LRCLIB -> "LrcLib"
-                                PreferredLyricsProvider.KUGOU -> "KuGou"
-                                PreferredLyricsProvider.BETTERLYRICS -> "BetterLyrics"
-                                PreferredLyricsProvider.APPLEMUSIC -> "Apple Music"
-                            }
-                        )
+                        Text(preferredProvider.name)
                     },
                     onClick = { showPreferredProviderDialog = true }
                 ),
@@ -613,21 +571,3 @@ fun ContentSettings(
     )
 }
 
-@Composable
-fun WordByWordTag() {
-    Box(
-        modifier = Modifier
-            .padding(start = 8.dp)
-            .size(24.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "W",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp
-        )
-    }
-}

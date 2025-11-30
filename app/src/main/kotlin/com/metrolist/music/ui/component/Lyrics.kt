@@ -760,128 +760,18 @@ fun Lyrics(
                                     },
                                     modifier = if (item.voice == "bg") Modifier.padding(top = 8.dp) else Modifier
                                 ) {
-                                    if (hasWordSync) {
-                                        val fontSize = if (item.voice == "bg") 22.sp else 28.sp
-                                        val lineHeight = if (item.voice == "bg") 26.sp else 32.sp
-                                        val activeLineDuration = item.words?.sumOf { it.endTime - it.startTime }
-                                            ?: 0
-                                        FlowRow(
-                                            horizontalArrangement = lyricHorizontalArrangement
-                                        ) {
-                                            item.words?.forEach { word ->
-                                                val isWordActive =
-                                                    currentPosition in word.startTime..word.endTime
-                                                val translationY by animateFloatAsState(
-                                                    targetValue = if (isWordActive) -5f else 0f,
-                                                    animationSpec = spring(
-                                                        dampingRatio = Spring.DampingRatioLowBouncy,
-                                                        stiffness = Spring.StiffnessLow
-                                                    ),
-                                                    label = "translationY"
-                                                )
-
-                                                val hasSyllableData = word.syllables.size > 1
-                                                val duration = word.endTime - word.startTime
-
-                                                val glow = if (hasSyllableData) {
-                                                    val longestSyllable =
-                                                        word.syllables.maxByOrNull { it.endTime - it.startTime }
-                                                    longestSyllable != null &&
-                                                            (longestSyllable.endTime - longestSyllable.startTime) > GLOW_DURATION_THRESHOLD_MS &&
-                                                            (duration / word.text.length) > 150 &&
-                                                            (activeLineDuration > 0 && duration > activeLineDuration * SYLLABLE_GLOW_FACTOR)
-                                                } else {
-                                                    (duration > GLOW_DURATION_THRESHOLD_MS) &&
-                                                            (activeLineDuration > 0 && duration > activeLineDuration * WORD_GLOW_FACTOR)
-                                                }
-
-                                                val animatedGlow by animateFloatAsState(
-                                                    targetValue = if (glow && isWordActive) {
-                                                        if (hasSyllableData) {
-                                                            val longestSyllable =
-                                                                word.syllables.maxByOrNull { it.endTime - it.startTime }
-                                                            if (longestSyllable != null && currentPosition in longestSyllable.startTime..longestSyllable.endTime) {
-                                                                val syllableDuration =
-                                                                    longestSyllable.endTime - longestSyllable.startTime
-                                                                if (syllableDuration > 0) {
-                                                                    val progress =
-                                                                        (currentPosition - longestSyllable.startTime).toFloat() / (syllableDuration / 2f)
-                                                                    if (progress < 1f) progress else 1f
-                                                                } else {
-                                                                    1f
-                                                                }
-                                                            } else {
-                                                                0f
-                                                            }
-                                                        } else {
-                                                            // Simple glow for word-timed lyrics
-                                                            1f
-                                                        }
-                                                    } else {
-                                                        0f
-                                                    },
-                                                    animationSpec = spring(),
-                                                    label = "glow"
-                                                )
-
-                                                val wordProgress =
-                                                    if (currentPosition in word.startTime..word.endTime) {
-                                                        val wordDuration =
-                                                            (word.endTime - word.startTime).toFloat()
-                                                        if (wordDuration > 0) {
-                                                            ((currentPosition - word.startTime) / wordDuration).coerceIn(
-                                                                0f,
-                                                                1f
-                                                            )
-                                                        } else {
-                                                            1f
-                                                        }
-                                                    } else {
-                                                        if (currentPosition > word.endTime) 1f else 0f
-                                                    }
-
-                                                WipeText(
-                                                    text = word.text,
-                                                    progress = wordProgress,
-                                                    activeColor = textColor,
-                                                    inactiveColor = textColor.copy(alpha = 0.5f),
-                                                    style = TextStyle(
-                                                        shadow = if (glow) Shadow(
-                                                            color = MaterialTheme.colorScheme.primary,
-                                                            blurRadius = animatedGlow * 24f
-                                                        ) else null,
-                                                        fontSize = fontSize,
-                                                        lineHeight = lineHeight,
-                                                        fontWeight = FontWeight.ExtraBold,
-                                                    ),
-                                                    modifier = Modifier
-                                                        .padding(end = 4.dp)
-                                                        .graphicsLayer {
-                                                            this.translationY = translationY
-                                                        }
-                                                )
-                                                Text(
-                                                    text = " ",
-                                                    fontSize = fontSize,
-                                                    lineHeight = lineHeight,
-                                                    fontWeight = FontWeight.ExtraBold
-                                                )
-                                            }
-                                        }
-                                    } else {
-                                        Text(
-                                            text = item.text,
-                                            fontSize = 28.sp,
-                                            lineHeight = 32.sp,
-                                            color = if (isCurrent && isSynced) {
-                                                textColor // Full color for active line
-                                            } else {
-                                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
-                                            },
-                                            textAlign = lyricTextAlignment,
-                                            fontWeight = if (isCurrent && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                                        )
-                                    }
+                                    Text(
+                                        text = item.text,
+                                        fontSize = 28.sp,
+                                        lineHeight = 32.sp,
+                                        color = if (isCurrent && isSynced) {
+                                            textColor // Full color for active line
+                                        } else {
+                                            textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
+                                        },
+                                        textAlign = lyricTextAlignment,
+                                        fontWeight = if (isCurrent && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                                    )
 
                                     if (currentSong?.romanizeLyrics == true
                                         && (romanizeJapaneseLyrics ||
