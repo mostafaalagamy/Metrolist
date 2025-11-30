@@ -163,6 +163,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 
 @RequiresApi(Build.VERSION_CODES.M)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
@@ -833,26 +839,21 @@ fun Lyrics(
                                                     } else {
                                                         if (currentPosition > word.endTime) 1f else 0f
                                                     }
-                                                val colorStops = arrayOf(
-                                                    0f to textColor,
-                                                    wordProgress to textColor,
-                                                    (wordProgress + 0.0001f).coerceAtMost(1f) to textColor.copy(
-                                                        alpha = 0.5f
-                                                    ),
-                                                    1f to textColor.copy(alpha = 0.5f)
-                                                )
-                                                Text(
+
+                                                WipeText(
                                                     text = word.text,
+                                                    progress = wordProgress,
+                                                    activeColor = textColor,
+                                                    inactiveColor = textColor.copy(alpha = 0.5f),
                                                     style = TextStyle(
-                                                        brush = Brush.horizontalGradient(colorStops = colorStops),
                                                         shadow = if (glow) Shadow(
                                                             color = MaterialTheme.colorScheme.primary,
                                                             blurRadius = animatedGlow * 24f
-                                                        ) else null
+                                                        ) else null,
+                                                        fontSize = fontSize,
+                                                        lineHeight = lineHeight,
+                                                        fontWeight = FontWeight.ExtraBold,
                                                     ),
-                                                    fontSize = fontSize,
-                                                    lineHeight = lineHeight,
-                                                    fontWeight = FontWeight.ExtraBold,
                                                     modifier = Modifier
                                                         .padding(end = 4.dp)
                                                         .graphicsLayer {
@@ -1343,6 +1344,23 @@ fun Lyrics(
     }
 }
 
+private class ProgressClipShape(private val percent: Float) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            Rect(
+                left = 0f,
+                top = 0f,
+                right = size.width * percent,
+                bottom = size.height
+            )
+        )
+    }
+}
+
 // Professional page animation constants inspired by Metrolist design - slower for smoothness
 private const val METROLIST_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
 private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
@@ -1358,6 +1376,39 @@ private const val WIPE_ANIMATION_WIDTH_MULTIPLIER = 1000f
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
+
+@Composable
+private fun WipeText(
+    text: String,
+    progress: Float,
+    activeColor: Color,
+    inactiveColor: Color,
+    style: TextStyle,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Text(
+            text = text,
+            color = inactiveColor,
+            style = style
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(
+                    ProgressClipShape(
+                        percent = progress
+                    )
+                )
+        ) {
+            Text(
+                text = text,
+                color = activeColor,
+                style = style
+            )
+        }
+    }
+}
 
 @Composable
 private fun rememberLyrics(
