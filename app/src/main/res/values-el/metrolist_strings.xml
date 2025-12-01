@@ -223,4 +223,5 @@
     <string name="scrobble_delay_percent">Ποσοστό καθυστέρησης σκρομπλαρίσματος</string>
     <string name="scrobble_delay_minutes">Λεπτά καθυστέρησης καταγραφής ως «scrobbled»</string>
     <string name="romanize_current_track">Λατινοποίηση (transliteration) τρέχοντος κομματιού</string>
+    <string name="last_fm_send_likes">Αποστολή Likes/Unlikes</string>
 </resources>
