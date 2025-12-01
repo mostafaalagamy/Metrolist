@@ -227,4 +227,5 @@
     <string name="lastfm_integration">Integrazione di last.fm</string>
     <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
     <string name="last_fm_send_likes">Invia Mi piace/Non mi piace</string>
+    <string name="last_fm_send_likes_description">Brani che ami/ che non ami in Last.fm quando vengono apprezzate/non apprezzate in Metrolist</string>
 </resources>
