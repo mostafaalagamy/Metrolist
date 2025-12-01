@@ -15,7 +15,7 @@
     <string name="line_by_line_option_title">Line-by-line synced lyrics</string>
     <string name="line_by_line_option_desc">Show synced lyrics on one line</string>
     <string name="line_by_line_dialog_title">Line-by-line Sync</string>
-    <string name="line_by_line_dialog_desc">"This option is intended for devices with smaller screens that can't fit both lines of synced lyrics. It also applies to kleinere displays where dual-line synced lyrics may not fit well, and it also affects translated lyrics."</string>
+    <string name="line_by_line_dialog_desc">"This option is intended for devices with smaller screens that can't fit both lines of synced lyrics. It also applies to smaller displays where dual-line synced lyrics may not fit well, and it also affects translated lyrics."</string>
     <string name="lyrics_romanize_title">Lyrics Romanization</string>
     <string name="settings_section_ui">UI</string>
     <string name="settings_section_player_content">Player and Content</string>
