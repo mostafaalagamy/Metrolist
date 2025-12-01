@@ -1,193 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">Explore</string>
-
-    <string name="local_history">Local</string>
-    <string name="remote_history">Remote</string>
-
-    <string name="charts">Charts</string>
-    <string name="back_button_desc">Back</string>
-    <string name="no_title">No title</string>
-    <string name="unknown_artist">Unknown artist</string>
-    <string name="unknown_item_type">Unknown item type</string>
-    <string name="loading_charts">Loading charts…</string>
-    <string name="retry_button">Retry</string>
-    <string name="album_cover_desc">Album cover</string>
-    <string name="top_music_videos">Top music videos</string>
-    <string name="trending">Trending</string>
-
-    <string name="weeks">Weeks</string>
-    <string name="months">Months</string>
-    <string name="years">Years</string>
-    <string name="continuous">Continuous</string>
-
-    <string name="liked">Liked</string>
-    <string name="offline">Downloaded</string>
-    <string name="my_top">My top</string>
-    <string name="cached_playlist">Cached</string>
-    <string name="uploaded_playlist">Uploaded</string>
-    <string name="filter_uploaded">Uploaded</string>
-    <string name="sync_playlist">Sync playlist</string>
-    <string name="sync_disabled">Sync disabled</string>
-    <string name="elements_selected">%1$d elements selected</string>
-    <string name="allows_for_sync_witch_youtube">Note: This allows for syncing with YouTube Music. This is NOT changeable later.</string>
-    <string name="generating_image">Generating image</string>
-    <string name="please_wait">Please wait</string>
-    <string name="cancel">Cancel</string>
-    <string name="share_lyrics">Share lyrics</string>
-    <string name="share_as_text">Share as text</string>
-    <string name="share_as_image">Share as image</string>
-    <string name="max_selection_limit">Max selection limit</string>
-    <string name="share_selected">Share selected</string>
-    <string name="customize_colors">Customize colors</string>
-    <string name="more_options">More options</string>
-    <string name="text_color">Text color</string>
-    <string name="secondary_text_color">Secondary text color</string>
-    <string name="background_color">Background color</string>
-
-    <string name="added_to_play_next">Added to play next</string>
-    <string name="added_to_queue">Added to the queue</string>
-    <string name="remove_from_cache">Remove from cache</string>
-    <string name="copy_link">Copy link</string>
-    <string name="select">Select all</string>
-    <string name="like_all">Like all</string>
-    <string name="dislike_all">Dislike all</string>
-    <string name="sort_by_last_updated">Date updated</string>
-    <string name="link_copied">Link copied to clipboard</string>
-    <string name="starting_radio">Starting radio</string>
-    <string name="now_playing">Now Playing</string>
-
-    <string name="lyrics">Lyrics</string>
-    <string name="close">Close</string>
-    <string name="minimum_volume">Minimum Volume</string>
-    <string name="maximum_volume">Maximum Volume</string>
-    <string name="hide_player_thumbnail">Hide Player Thumbnail</string>
-    <string name="hide_player_thumbnail_desc">Replace album artwork with app logo in player</string>
-
-    <string name="already_in_playlist">Already in playlist:</string>
-
-    <plurals name="n_element">
-        <item quantity="one">%d element</item>
-        <item quantity="other">%d elements</item>
-    </plurals>
-    <plurals name="n_time">
-        <item quantity="one">%d time</item>
-        <item quantity="other">%d times</item>
-    </plurals>
-
-    <string name="seek_backward">5 seconds backward</string>
-    <string name="seek_forward">5 seconds forward</string>
-    <string name="seek_forward_dynamic">+%1$d seconds forwards</string>
-    <string name="seek_backward_dynamic">-%1$d seconds backwards</string>
-    <string name="seek_seconds_addup">Progressive seek</string>
-    <string name="seek_seconds_addup_description">If enabled,  Adds up 5 extra seconds incrementally on each seek skip</string>
-
-    <string name="similar_content">Similar content</string>
-
-    <string name="login_settings">Login settings</string>
-    <string name="general_settings">General settings</string>
-
-    <string name="player_background_style">Player background style</string>
-    <string name="follow_theme">Follow theme</string>
-    <string name="gradient">Gradient</string>
-    <string name="new_player_design">New player design</string>
-    <string name="new_mini_player_design">New mini player design</string>
-    <string name="player_background_blur">Blur</string>
-    <string name="player_buttons_style">Player button colors</string>
-    <string name="default_style">Default</string>
-    <string name="secondary_color_style">Secondary</string>
-    <string name="enable_squiggly_slider">Enable squiggly slider</string>
-    <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
-    <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
-    <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
-    <string name="lyrics_click_change">Change lyrics on click</string>
-    <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
-    <string name="slim">Slim</string>
-    <string name="slim_navbar">Slim bottom navigation bar</string>
-    <string name="auto_playlists">Auto playlists</string>
-    <string name="show_liked_playlist">Show \"Liked\" playlist</string>
-    <string name="show_downloaded_playlist">Show \"Downloaded\" playlist</string>
-    <string name="show_top_playlist">Show \"Top\" playlist</string>
-    <string name="show_cached_playlist">Show \"Cached\" playlist</string>
-    <string name="show_uploaded_playlist">Show \"Uploaded\" playlist</string>
-
-    <string name="google">Google</string>
-    <string name="discord">Discord</string>
-    <string name="advanced_login">Login with token</string>
-    <string name="token_hidden">Tap to show token</string>
-    <string name="token_shown">Tap again to copy or edit</string>
-    <string name="token_adv_login_description">This is an ADVANCED login method. As an alternative to the web portal, you may directly enter or update your login token here. For example, this can speed up logging in on multiple devices. Please note that any invalid token formats the app fails to parse will not be accepted</string>
-    <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
-    <string name="yt_sync">Auto sync with account</string>
-    <string name="more_content">More content</string>
-    
-    <!-- Playlist cover edit -->
-    <string name="edit_playlist_cover">Edit playlist cover</string>
-    <string name="edit_playlist_cover_note">Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.</string>
-    <string name="edit_playlist_cover_note_wait">After selecting an image, please wait a moment for the new cover to appear in your playlist.</string>
-    <string name="choose_from_library">Choose from library</string>
-    <string name="remove_custom_image">Remove custom image</string>
-
-    <!-- General -->
-    <string name="general">General</string>
-    <string name="proxy">Proxy</string>
-    <string name="default_lib_chips">Change default library chip</string>
-    <string name="set_quick_picks">Set quick picks</string>
-    <string name="last_song_listened">Based on last song listened</string>
-    <string name="app_language">App language</string>
-    <string name="configure_app_language">Configure app languages</string>
-    <string name="intent_app_language_not_found">Couldn\'t find app language settings, please configure them manually</string>
-    <string name="open_supported_links">Open supported link by default</string>
-    <string name="configure_supported_links">Configure supported links</string>
-    <string name="intent_supported_links_not_found">Couldn\'t find supported links settings, please configure them manually</string>
-    <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
-    <string name="config_proxy">Configure proxy</string>
-    <string name="proxy_username">Proxy username</string>
-    <string name="proxy_password">Proxy password</string>
-    <string name="enable_authentication">Enable authentication</string>
-    <string name="discord_use_details">Use details instead of state</string>
-    <string name="discord_use_details_description">Show song title prominently instead of artist names</string>
-
-    <string name="audio_quality_max">Max (beta)</string>
-    <string name="enable_similar_content">Enable similar content</string>
-    <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
-    <string name="min_playback_duration_title">Minimum playback duration</string>
-    <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
-    <string name="percentage_format">%d%%</string>
-    <string name="minimum_playback_duration">Minimum playback duration</string>
-
-    <string name="import_online">Import a \"m3u\" playlists</string>
-    <string name="import_csv">Import a \"csv\" playlists</string>
-    <string name="playlist_add_local_to_synced_note">Note: Adding local songs to synced/remote playlists is unsupported. Any other combination is valid</string>
-
-    <string name="auto_download_on_like">Auto download on like</string>
-    <string name="auto_download_on_like_desc">Automatically download songs when you like them</string>
-
-    <string name="swipe_sensitivity">Mini player swipe sensitivity</string>
-    <string name="swipe_sensitivity_desc">Adjust how sensitive swipe gestures are for changing songs</string>
-    <string name="sensitivity_percentage">%1$d%%</string>
-
-    <string name="clear_song_cache_dialog">  Are you sure you want to clear all cached songs?</string>
-    <string name="clear_image_cache_dialog">  Are you sure you want to clear all cached image?</string>
-    <string name="clear_downloads_dialog">  Are you sure you want to clear all downloads?</string>
-
+    <string name="lyrics_mode">Lyrics mode</string>
+    <string name="lyrics_romanization">Romanization</string>
+    <string name="lyrics_romanize_japanese">Romanize Japanese</string>
+    <string name="lyrics_romanize_korean">Romanize Korean</string>
+    <string name="lyrics_romanize_chinese">Romanize Chinese</string>
+    <string name="lyrics_romanize_russian">Romanize Russian</string>
+    <string name="lyrics_romanize_ukrainian">Romanize Ukrainian</string>
+    <string name="lyrics_romanize_serbian">Romanize Serbian</string>
+    <string name="lyrics_romanize_bulgarian">Romanize Bulgarian</string>
+    <string name="lyrics_romanize_belarusian">Romanize Belarusian</string>
+    <string name="lyrics_romanize_kyrgyz">Romanize Kyrgyz</string>
+    <string name="lyrics_romanize_macedonian">Romanize Macedonian</string>
+    <string name="line_by_line_option_title">Line-by-line synced lyrics</string>
+    <string name="line_by_line_option_desc">Show synced lyrics on one line</string>
+    <string name="line_by_line_dialog_title">Line-by-line Sync</string>
+    <string name="line_by_line_dialog_desc">"This option is intended for devices with smaller screens that can't fit both lines of synced lyrics. It also applies to kleinere displays where dual-line synced lyrics may not fit well, and it also affects translated lyrics."</string>
+    <string name="lyrics_romanize_title">Lyrics Romanization</string>
+    <string name="settings_section_ui">UI</string>
+    <string name="settings_section_player_content">Player and Content</string>
+    <string name="settings_section_privacy">Privacy and Security</string>
+    <string name="settings_section_storage">Storage</string>
+    <string name="settings_section_system">System</string>
+    <string name="default_links">Default Links</string>
+    <string name="open_app_settings_error">Could not open app settings</string>
+    <string name="show">Show</string>
+    <string name="updater">Updater</string>
+    <string name="clear_downloads_dialog">Are you sure you want to clear all downloads?</string>
     <string name="disable">Disable</string>
-
-    <string name="pause_remote_listen_history">Pause share listen history with YouTube Music</string>
-    <string name="not_logged_in_youtube">Not logged in to YouTube</string>
-
-    <string name="default_links">Open supported links</string>
-    <string name="open_app_settings_error">Couldn\'t open app settings</string>
-
-    <string name="release_notes">Release notes</string>
-
-    <string name="all_time">All time</string>
-    <string name="past_24_hours">Past 24 hours</string>
-    <string name="past_week">Past week</string>
-    <string name="past_month">Past month</string>
-    <string name="past_year">Past year</string>
-    <string name="top_length">My Top list length</string>
-    <string name="history_duration">History duration</string>
+    <string name="clear_song_cache_dialog">Are you sure you want to clear the song cache?</string>
+    <string name="clear_image_cache_dialog">Are you sure you want to clear the image cache?</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="update_notifications">Update notifications</string>
+    <string name="token_adv_login_description">"Don't have access to your PC? Use this to log in with your token."</string>
+    <string name="advanced_login">Advanced Login</string>
+    <string name="discord_use_details">Show song details</string>
+    <string name="discord_use_details_description">"When enabled, the presence will show the song title and artist."</string>
+    <string name="general">General</string>
+    <string name="lastfm_integration">Last.fm</string>
+    <string name="integrations">Integrations</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="enable_scrobbling">Enable scrobbling</string>
+    <string name="lastfm_now_playing">Update now playing</string>
+    <string name="last_fm_send_likes">Send likes</string>
+    <string name="last_fm_send_likes_description">"When a song is liked in Metrolist, it's also liked on Last.fm."</string>
+    <string name="scrobbling_configuration">Scrobbling Configuration</string>
+    <string name="scrobble_min_track_duration">Minimum track duration to scrobble</string>
+    <string name="sensitivity_percentage">Sensitivity percentage</string>
+    <string name="scrobble_delay_percent">"Scrobble when this percentage of the song is played."</string>
+    <string name="scrobble_delay_minutes">Scrobble after this many minutes</string>
     <string name="information">Information</string>
     <string name="description">Description</string>
     <string name="numbers">Numbers</string>
@@ -195,74 +58,144 @@
     <string name="views">Views</string>
     <string name="likes">Likes</string>
     <string name="dislikes">Dislikes</string>
-    <string name="subscribe">Subscribe</string>
+    <string name="mini_player_outline">Mini-player outline</string>
+    <string name="new_player_design">New player design</string>
+    <string name="new_mini_player_design">New mini-player design</string>
+    <string name="player_background_style">Player background style</string>
+    <string name="follow_theme">Follow theme</string>
+    <string name="gradient">Gradient</string>
+    <string name="player_background_blur">Player background blur</string>
+    <string name="hide_player_thumbnail">Hide player thumbnail</string>
+    <string name="hide_player_thumbnail_desc">"Hides the thumbnail in the player, showing only the background."</string>
+    <string name="player_buttons_style">Player buttons style</string>
+    <string name="default_style">Default</string>
+    <string name="primary_color_style">Primary color</string>
+    <string name="slim">Slim</string>
+    <string name="enable_swipe_thumbnail">Enable swipe thumbnail</string>
+    <string name="swipe_sensitivity">Swipe sensitivity</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="lyrics_click_change">"Lyrics click doesn't change"</string>
+    <string name="lyrics_auto_scroll">Lyrics auto scroll</string>
+    <string name="default_lib_chips">Default library chips</string>
+    <string name="swipe_song_to_add">Swipe song to add to queue</string>
+    <string name="swipe_song_to_remove">Swipe song to remove from queue</string>
+    <string name="slim_navbar">Slim navigation bar</string>
+    <string name="auto_playlists">Auto playlists</string>
+    <string name="show_liked_playlist">Show liked playlist</string>
+    <string name="show_downloaded_playlist">Show downloaded playlist</string>
+    <string name="show_top_playlist">Show top playlist</string>
+    <string name="show_cached_playlist">Show cached playlist</string>
+    <string name="show_uploaded_playlist">Show uploaded playlist</string>
+    <string name="import_online">Import online playlist</string>
+    <string name="import_csv">Import from CSV</string>
+    <string name="config_proxy">Configure proxy</string>
+    <string name="enable_authentication">Enable authentication</string>
+    <string name="proxy_username">Proxy username</string>
+    <string name="proxy_password">Proxy password</string>
+    <string name="app_language">App language</string>
+    <string name="set_first_lyrics_provider">Set first lyrics provider</string>
+    <string name="set_quick_picks">Set quick picks</string>
+    <string name="last_song_listened">Last song listened</string>
+    <string name="top_length">Top length</string>
+    <string name="proxy">Proxy</string>
+    <string name="developer_mode">Developer mode</string>
+    <string name="history_duration">History duration</string>
+    <string name="audio_offload">Audio offload</string>
+    <string name="audio_offload_description">"Disabling this may help with track skipping issues, but it will also increase battery consumption."</string>
+    <string name="seek_seconds_addup">Seek seconds add up</string>
+    <string name="seek_seconds_addup_description">"The longer you hold the seek button, the more seconds it will add up."</string>
+    <string name="disable_load_more_when_repeat_all">"Disable 'load more' when repeat all is enabled"</string>
+    <string name="disable_load_more_when_repeat_all_desc">"This is useful when you want to listen to a specific playlist on repeat."</string>
+    <string name="auto_download_on_like">Auto download on like</string>
+    <string name="auto_download_on_like_desc">"When you like a song, it will be automatically downloaded."</string>
+    <string name="enable_similar_content">Enable similar content</string>
+    <string name="similar_content_desc">"When the queue is finished, similar content will be added."</string>
+    <string name="lyrics_romanization_cyrillic">Romanize Cyrillic</string>
+    <string name="close">Close</string>
+    <string name="now_playing">Now playing</string>
+    <string name="more_options">More options</string>
+    <string name="similar_content">Similar content</string>
+    <string name="elements_selected">%d selected</string>
+    <string name="seek_backward_dynamic">Seek backward %d seconds</string>
+    <string name="seek_forward_dynamic">Seek forward %d seconds</string>
+    <string name="charts">Charts</string>
+    <string name="trending">Trending</string>
+    <string name="top_music_videos">Top music videos</string>
+    <string name="local_history">Local history</string>
+    <string name="remote_history">Remote history</string>
+    <string name="continuous">Continuous</string>
+    <string name="weeks">Weeks</string>
+    <string name="months">Months</string>
+    <string name="years">Years</string>
     <string name="subscribed">Subscribed</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="filter_uploaded">Uploaded</string>
+    <string name="liked">Liked</string>
+    <string name="offline">Offline</string>
+    <string name="my_top">My Top</string>
+    <string name="cached_playlist">Cached Playlist</string>
+    <string name="uploaded_playlist">Uploaded Playlist</string>
+    <string name="sort_by_last_updated">Last updated</string>
+    <string name="edit_playlist_cover">Edit playlist cover</string>
+    <string name="edit_playlist_cover_note">"Note: This will upload the image to Imgur."</string>
+    <string name="edit_playlist_cover_note_wait">"Please wait for the image to upload before saving."</string>
+    <string name="empty_playlist">Empty playlist</string>
+    <string name="empty_playlist_desc">"Add some songs to this playlist to see them here."</string>
     <string name="playlist_not_found">Playlist not found</string>
-    <string name="playlist_not_found_desc">The requested playlist could not be loaded</string>
-    <string name="empty_playlist">Empty Playlist</string>
-    <string name="empty_playlist_desc">This playlist doesn\'t contain any songs</string>
+    <string name="playlist_not_found_desc">"This playlist could not be found. It may have been deleted."</string>
+    <string name="all_time">All time</string>
+    <string name="past_24_hours">Past 24 hours</string>
+    <string name="past_week">Past week</string>
+    <string name="past_month">Past month</string>
+    <string name="past_year">Past year</string>
+    <string name="token_shown">Token shown</string>
+    <string name="token_hidden">Token hidden</string>
+    <string name="more_content">More content</string>
+    <string name="yt_sync">YouTube Sync</string>
+    <string name="mini_player">Mini-player</string>
+    <string name="pure_black_mini_player">Pure black mini-player</string>
+    <string name="update_channel_name">Updates</string>
+    <string name="update_channel_desc">"Shows a notification when a new update is available."</string>
+    <string name="update_available_title">Update available</string>
+    <string name="sync_playlist">Sync playlist</string>
+    <string name="allows_for_sync_witch_youtube">"Allows for sync with YouTube."</string>
+    <string name="not_logged_in_youtube">"You need to be logged in to YouTube to use this feature."</string>
+    <string name="sync_disabled">"Sync is disabled for this playlist."</string>
+    <string name="max_selection_limit">"You can only select up to 25 lyrics at once."</string>
+    <string name="share_selected">Share selected</string>
+    <string name="generating_image">Generating image</string>
+    <string name="please_wait">Please wait</string>
+    <string name="share_lyrics">Share lyrics</string>
+    <string name="share_as_text">Share as text</string>
+    <string name="share_as_image">Share as image</string>
+    <string name="customize_colors">Customize colors</string>
+    <string name="background_color">Background color</string>
+    <string name="text_color">Text color</string>
+    <string name="secondary_text_color">Secondary text color</string>
+    <string name="release_notes">Release notes</string>
+    <string name="update_dialog_title">Hold on!</string>
+    <string name="update_dialog_message">"It's highly recommended to create a backup before you proceed. Updates may cause unexpected issues, and having a backup ensures you don't lose any data."</string>
+    <string name="update_anyways">OK</string>
+    <string name="playlist_add_local_to_synced_note">"Note: Adding local songs to a synced playlist will not upload them to YouTube."</string>
+    <string name="already_in_playlist">Already in playlist</string>
+    <string name="copy_link">Copy link</string>
+    <string name="link_copied">Link copied</string>
+    <string name="choose_from_library">Choose from library</string>
+    <string name="remove_custom_image">Remove custom image</string>
+    <string name="romanize_current_track">Romanize current track</string>
+    <string name="starting_radio">Starting radio</string>
+    <string name="dislike_all">Dislike all</string>
+    <string name="like_all">Like all</string>
+    <string name="remove_from_cache">Remove from cache</string>
+    <string name="select">Select</string>
+    <string name="enable_dynamic_icon">Enable dynamic icon</string>
+
+    <plurals name="n_time">
+        <item quantity="one">%d time</item>
+        <item quantity="other">%d times</item>
+    </plurals>
     <plurals name="seconds">
-        <item quantity="one">1 second</item>
+        <item quantity="one">%d second</item>
         <item quantity="other">%d seconds</item>
     </plurals>
-
-    <!-- Player Settings -->
-    <string name="disable_load_more_when_repeat_all">Disable load more when repeat all</string>
-    <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
-
-    <!-- Romanization Settings -->
-    <string name="lyrics_romanization_cyrillic">Cyrillic</string>
-    <string name="lyrics_romanize_title">Romanization</string>
-    <string name="lyrics_romanization">Lyrics romanization</string>
-    <string name="romanization">Romanization</string>
-    <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
-    <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
-    <string name="lyrics_romanize_russian">Romanize Russian lyrics</string>
-    <string name="lyrics_romanize_ukrainian">Romanize Ukrainian lyrics</string>
-    <string name="lyrics_romanize_belarusian">Romanize Belarusian lyrics</string>
-    <string name="lyrics_romanize_kyrgyz">Romanize Kyrgyz lyrics</string>
-    <string name="lyrics_romanize_serbian">Romanize Serbian lyrics</string>
-    <string name="lyrics_romanize_bulgarian">Romanize Bulgarian lyrics</string>
-    <string name="line_by_line_option_title">EXPERIMENTAL: Detect language line by line</string>
-    <string name="line_by_line_option_desc">The Cyrillic language will be detected line by line instead of the entire song.</string>
-    <string name="line_by_line_dialog_title">Are you sure?</string>
-    <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
-    <string name="line_by_line_dialog_enable">Enable</string>
-    <string name="romanize_current_track">Romanize current track</string>
-
-    <!-- Material 3 Settings Sections -->
-    <string name="settings_section_ui">Interface</string>
-    <string name="settings_section_privacy">Privacy &amp; Security</string>
-    <string name="settings_section_player">Player &amp; Media</string>
-    <string name="settings_section_player_content">Player &amp; Content</string>
-    <string name="settings_section_storage">Storage &amp; Data</string>
-    <string name="settings_section_system">System &amp; About</string>
-
-    <!-- Updater -->
-    <string name="updater">Updater</string>
-    <string name="check_for_updates">Automatically check for updates</string>
-    <string name="update_notifications">Enable update notifications</string>
-    <string name="update_available_title">Update available</string>
-    <string name="update_channel_name">App updates</string>
-    <string name="update_channel_desc">Notifications about new versions</string>
-
-    <!-- Offload -->
-    <string name="audio_offload">Enable offload</string>
-    <string name="audio_offload_description">Use the offload audio path for audio playback. Disabling this may increase power usage but can be useful if you experience issues with audio playback or post processing</string>
-    <string name="lyrics_romanize_macedonian">Romanize Macedonian lyrics</string>
-
-    <string name="integrations">Integrations</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <!-- Last.fm -->
-    <string name="lastfm_integration">Last.fm Integration</string>
-    <string name="enable_scrobbling">Enable scrobbling</string>
-    <string name="lastfm_now_playing">Send Now Playing</string>
-    <string name="last_fm_send_likes">Send Likes/Unlikes</string>
-    <string name="last_fm_send_likes_description">Love/Unlove songs in Last.fm when they are Liked/Unliked in Metrolist</string>
-
-    <string name="scrobbling_configuration">Scrobbling Configuration</string>
-    <string name="scrobble_min_track_duration">Scrobble songs longer than</string>
-    <string name="scrobble_delay_percent">Scrobble delay percent</string>
-    <string name="scrobble_delay_minutes">Scrobble delay minutes</string>
 </resources>
