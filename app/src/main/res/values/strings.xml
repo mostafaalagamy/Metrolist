@@ -234,16 +234,12 @@
     <string name="settings">Settings</string>
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
-    <string name="enable_dynamic_icon">Enable dynamic icon</string>
     <string name="enable_dynamic_theme">Enable dynamic theme</string>
     <string name="dark_theme">Dark theme</string>
     <string name="dark_theme_on">On</string>
     <string name="dark_theme_off">Off</string>
     <string name="dark_theme_follow_system">Follow system</string>
     <string name="pure_black">Pure black</string>
-    <string name="mini_player">Mini-player</string>
-    <string name="pure_black_mini_player">Pure black mini-player</string>
-    <string name="mini_player_outline">Mini-player outline</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
     <string name="player">Player</string>
     <string name="player_text_alignment">Player text alignment</string>
@@ -255,7 +251,6 @@
     <string name="player_slider_style">Player slider style</string>
     <string name="default_">Default</string>
     <string name="squiggly">Squiggly</string>
-    <string name="primary_color_style" translatable="false">Primary</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>
     <string name="grid_cell_size">Grid cell size</string>
@@ -341,12 +336,8 @@
 
     <string name="about">About</string>
     <string name="app_version">App version</string>
-    <string name="developer_mode">Developer mode</string>
 
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-    <string name="update_dialog_title">Hold on!</string>
-    <string name="update_dialog_message">It\'s highly recommended to create a backup before you proceed. Updates may cause unexpected issues, and having a backup ensures you don\'t lose any data.</string>
-    <string name="update_anyways">OK</string>
 </resources>

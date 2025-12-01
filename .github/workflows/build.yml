@@ -1,11 +1,9 @@
-name: Build Debug APK
+name: Build APKs
 
 on:
   workflow_dispatch:
   push:
-    # CHANGED: Triggers on all branches EXCEPT 'main'
-    branches-ignore:
-      - 'main'
+    branches: [ '**' ]
     paths-ignore:
       - 'README.md'
       - 'fastlane/**'
@@ -19,33 +17,15 @@ permissions:
   discussions: write
 
 jobs:
-  build_debug:
-    name: Build Debug (${{ matrix.arch }})
+  build:
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
-    
+
     strategy:
-      fail-fast: false
       matrix:
-        include:
-          - arch: Universal
-            task_part: Universal
-            dir_name: universal
-          - arch: Armeabi
-            task_part: Armeabi
-            dir_name: armeabi
-          - arch: Arm64-v8a
-            task_part: Arm64
-            dir_name: arm64-v8a
-          - arch: x86
-            task_part: X86
-            dir_name: x86
-          - arch: x86_64
-            task_part: X86_64
-            dir_name: x86_64
+        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
 
     steps:
-
       - uses: actions/checkout@v6
       
       - name: Set up JDK 21
@@ -98,26 +78,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@6
+      - uses: actions/checkout@v6
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-      
       - name: Install SDK components
         run: |
           sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
           yes | sdkmanager --licenses
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
           
       - name: Set Up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
-          cache-disabled: false
+          cache-disabled: true
           cache-cleanup: on-success
           
       - name: Grant execute permission for gradlew
@@ -127,8 +106,8 @@ jobs:
         run: |
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
-      - name: Build ${{ matrix.arch }} Debug APK and Run Lint
-        run: ./gradlew --no-configuration-cache --console=plain assemble${{ matrix.task_part }}Debug :app:lint${{ matrix.task_part }}Debug --warning-mode summary --stacktrace -Dorg.gradle.jvmargs=-Xmx2g
+      - name: Build Debug APK and Run Lint
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -138,6 +117,5 @@ jobs:
       - name: Upload Debug APK
         uses: actions/upload-artifact@v5
         with:
-          name: app-debug-${{ matrix.dir_name }}
-          # Using wildcards (**) for the folder path to be safe
-          path: app/build/outputs/apk/**/debug/*.apk
+          name: app-universal-debug
+          path: app/build/outputs/apk/universal/debug/*.apk
