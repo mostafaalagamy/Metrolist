@@ -130,6 +130,7 @@ import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.ui.utils.fadingEdge
@@ -150,15 +151,16 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
+    onExpandLyrics: () -> Unit = {},
+    showControls: Boolean = true, // Show menu and fullscreen buttons
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val menuState = LocalMenuState.current
     val density = LocalDensity.current
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current // Get configuration
+    val configuration = LocalConfiguration.current
 
-    val landscapeOffset =
-        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val landscapeOffset = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
@@ -224,39 +226,27 @@ fun Lyrics(
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(entry.text) else isUkrainianLyrics)) {
+                } else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(entry.text) else isUkrainianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(entry.text) else isSerbianLyrics)) {
+                } else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(entry.text) else isSerbianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(entry.text) else isBulgarianLyrics)) {
+                } else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(entry.text) else isBulgarianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(entry.text) else isBelarusianLyrics)) {
+                } else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(entry.text) else isBelarusianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(entry.text) else isKyrgyzLyrics)) {
+                } else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(entry.text) else isKyrgyzLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
-                }
-
-                else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(entry.text) else isMacedonianLyrics)) {
+                } else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(entry.text) else isMacedonianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
@@ -294,39 +284,27 @@ fun Lyrics(
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(line) else isUkrainianLyrics)) {
+                } else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(line) else isUkrainianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(line) else isSerbianLyrics)) {
+                } else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(line) else isSerbianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(line) else isBulgarianLyrics)) {
+                } else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(line) else isBulgarianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(line) else isBelarusianLyrics)) {
+                } else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(line) else isBelarusianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(line) else isKyrgyzLyrics)) {
+                } else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(line) else isKyrgyzLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
-                }
-
-                else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(line) else isMacedonianLyrics)) {
+                } else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(line) else isMacedonianLyrics)) {
                     scope.launch {
                         newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
@@ -336,81 +314,43 @@ fun Lyrics(
             }
         }
     }
-    val isSynced =
-        remember(lyrics) {
-            !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
-        }
+
+    val isSynced = remember(lyrics) {
+        !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
+    }
 
     val textColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if (useDarkTheme)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
+        else -> if (useDarkTheme) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary
     }
 
-    var currentLineIndex by remember {
-        mutableIntStateOf(-1)
-    }
-    // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
-    // we use deferredCurrentLineIndex when user is scrolling
-    var deferredCurrentLineIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
-
-    var previousLineIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
-
-    var lastPreviewTime by rememberSaveable {
-        mutableLongStateOf(0L)
-    }
-    var isSeeking by remember {
-        mutableStateOf(false)
-    }
-
-    var initialScrollDone by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    var shouldScrollToFirstLine by rememberSaveable {
-        mutableStateOf(true)
-    }
-
-    var isAppMinimized by rememberSaveable {
-        mutableStateOf(false)
-    }
-
+    var currentLineIndex by remember { mutableIntStateOf(-1) }
+    var deferredCurrentLineIndex by rememberSaveable { mutableIntStateOf(0) }
+    var previousLineIndex by rememberSaveable { mutableIntStateOf(0) }
+    var lastPreviewTime by rememberSaveable { mutableLongStateOf(0L) }
+    var isSeeking by remember { mutableStateOf(false) }
+    var initialScrollDone by rememberSaveable { mutableStateOf(false) }
+    var shouldScrollToFirstLine by rememberSaveable { mutableStateOf(true) }
+    var isAppMinimized by rememberSaveable { mutableStateOf(false) }
     var showProgressDialog by remember { mutableStateOf(false) }
     var showShareDialog by remember { mutableStateOf(false) }
     var shareDialogData by remember { mutableStateOf<Triple<String, String, String>?>(null) }
-
     var showColorPickerDialog by remember { mutableStateOf(false) }
     var previewBackgroundColor by remember { mutableStateOf(Color(0xFF242424)) }
     var previewTextColor by remember { mutableStateOf(Color.White) }
     var previewSecondaryTextColor by remember { mutableStateOf(Color.White.copy(alpha = 0.7f)) }
-
-    // State for multi-selection
     var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
     val selectedIndices = remember { mutableStateListOf<Int>() }
-    var showMaxSelectionToast by remember { mutableStateOf(false) } // State for showing max selection toast
-
+    var showMaxSelectionToast by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
-    
-    // Professional animation states for smooth Metrolist-style transitions
     var isAnimating by remember { mutableStateOf(false) }
+    val maxSelectionLimit = 5
 
-    // Handle back button press - close selection mode instead of exiting screen
     BackHandler(enabled = isSelectionModeActive) {
         isSelectionModeActive = false
         selectedIndices.clear()
     }
 
-    // Define max selection limit
-    val maxSelectionLimit = 5
-
-    // Show toast when max selection is reached
     LaunchedEffect(showMaxSelectionToast) {
         if (showMaxSelectionToast) {
             Toast.makeText(
@@ -423,7 +363,6 @@ fun Lyrics(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
-
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
@@ -443,7 +382,6 @@ fun Lyrics(
         }
     }
 
-    // Reset selection mode if lyrics change
     LaunchedEffect(lines) {
         isSelectionModeActive = false
         selectedIndices.clear()
@@ -475,31 +413,22 @@ fun Lyrics(
     }
 
     LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
-
-        /**
-         * Calculate the lyric offset Based on how many lines (\n chars)
-         */
         fun calculateOffset() = with(density) {
             if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
             val currentItem = lines[currentLineIndex]
             val totalNewLines = currentItem.text.count { it == '\n' }
-
             val dpValue = if (landscapeOffset) 16.dp else 20.dp
             dpValue.toPx().toInt() * totalNewLines
         }
 
         if (!isSynced) return@LaunchedEffect
         
-        // Smooth page animation without sudden jumps - direct animation to center
         suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 1500) {
-            if (isAnimating) return // Prevent multiple animations
-            
+            if (isAnimating) return
             isAnimating = true
-            
             try {
                 val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
                 if (itemInfo != null) {
-                    // Item is visible, animate directly to center without sudden jumps
                     val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
                     val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
                     val itemCenter = itemInfo.offset + itemInfo.size / 2
@@ -512,7 +441,6 @@ fun Lyrics(
                         )
                     }
                 } else {
-                    // Item is not visible, scroll to it first without animation, then it will be handled in next cycle
                     lazyListState.scrollToItem(targetIndex)
                 }
             } finally {
@@ -522,24 +450,20 @@ fun Lyrics(
         
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
-            // Initial scroll to center the first line with medium animation (600ms)
             val initialCenterIndex = kotlin.math.max(0, currentLineIndex)
-            performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
+            performSmoothPageScroll(initialCenterIndex, 800)
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
         } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
-                // Fast scroll for seeking to center the target line (300ms)
                 val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-                performSmoothPageScroll(seekCenterIndex, 500) // Fast seek duration
+                performSmoothPageScroll(seekCenterIndex, 500)
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                // Auto-scroll when lyrics settings allow it
                 if (currentLineIndex != previousLineIndex) {
-                    // Calculate which line should be at the top to center the active group
                     val centerTargetIndex = currentLineIndex
-                    performSmoothPageScroll(centerTargetIndex, 1500) // Auto scroll duration
+                    performSmoothPageScroll(centerTargetIndex, 1500)
                 }
             }
         }
@@ -555,7 +479,6 @@ fun Lyrics(
             .fillMaxSize()
             .padding(bottom = 12.dp)
     ) {
-
         if (lyrics == LYRICS_NOT_FOUND) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -572,208 +495,185 @@ fun Lyrics(
             }
         } else {
             LazyColumn(
-            state = lazyListState,
-            contentPadding = WindowInsets.systemBars
-                .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 3, bottom = maxHeight / 2))
-                .asPaddingValues(),
-            modifier = Modifier
-                .fadingEdge(vertical = 64.dp)
-                .nestedScroll(remember {
-                    object : NestedScrollConnection {
-                        override fun onPostScroll(
-                            consumed: Offset,
-                            available: Offset,
-                            source: NestedScrollSource
-                        ): Offset {
-                            if (!isSelectionModeActive) { // Only update preview time if not selecting
-                                lastPreviewTime = System.currentTimeMillis()
+                state = lazyListState,
+                contentPadding = WindowInsets.systemBars
+                    .only(WindowInsetsSides.Top)
+                    .add(WindowInsets(top = maxHeight / 3, bottom = maxHeight / 2))
+                    .asPaddingValues(),
+                modifier = Modifier
+                    .fadingEdge(vertical = 64.dp)
+                    .nestedScroll(remember {
+                        object : NestedScrollConnection {
+                            override fun onPostScroll(
+                                consumed: Offset,
+                                available: Offset,
+                                source: NestedScrollSource
+                            ): Offset {
+                                if (!isSelectionModeActive) {
+                                    lastPreviewTime = System.currentTimeMillis()
+                                }
+                                return super.onPostScroll(consumed, available, source)
                             }
-                            return super.onPostScroll(consumed, available, source)
-                        }
 
-                        override suspend fun onPostFling(
-                            consumed: Velocity,
-                            available: Velocity
-                        ): Velocity {
-                            if (!isSelectionModeActive) { // Only update preview time if not selecting
-                                lastPreviewTime = System.currentTimeMillis()
+                            override suspend fun onPostFling(
+                                consumed: Velocity,
+                                available: Velocity
+                            ): Velocity {
+                                if (!isSelectionModeActive) {
+                                    lastPreviewTime = System.currentTimeMillis()
+                                }
+                                return super.onPostFling(consumed, available)
                             }
-                            return super.onPostFling(consumed, available)
+                        }
+                    })
+            ) {
+                val displayedCurrentLineIndex = if (isSeeking || isSelectionModeActive) deferredCurrentLineIndex else currentLineIndex
+
+                if (lyrics == null) {
+                    item {
+                        ShimmerHost {
+                            repeat(10) {
+                                Box(
+                                    contentAlignment = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> Alignment.CenterStart
+                                        LyricsPosition.CENTER -> Alignment.Center
+                                        LyricsPosition.RIGHT -> Alignment.CenterEnd
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp, vertical = 4.dp)
+                                ) {
+                                    TextPlaceholder()
+                                }
+                            }
                         }
                     }
-                })
-        ) {
-            val displayedCurrentLineIndex =
-                if (isSeeking || isSelectionModeActive) deferredCurrentLineIndex else currentLineIndex
-
-            if (lyrics == null) {
-                item {
-                    ShimmerHost {
-                        repeat(10) {
-                            Box(
-                                contentAlignment = when (lyricsTextPosition) {
-                                    LyricsPosition.LEFT -> Alignment.CenterStart
-                                    LyricsPosition.CENTER -> Alignment.Center
-                                    LyricsPosition.RIGHT -> Alignment.CenterEnd
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 24.dp, vertical = 4.dp)
-                            ) {
-                                TextPlaceholder()
-                            }
-                        }
-                    }
-                }
-            } else {
-                itemsIndexed(
-                    items = lines,
-                    key = { index, item -> "$index-${item.time}" } // Add stable key
-                ) { index, item ->
-                    val isSelected = selectedIndices.contains(index)
-                    val itemModifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp)) // Clip for background
-                        .combinedClickable(
-                            enabled = true,
-                            onClick = {
-                                if (isSelectionModeActive) {
-                                    // Toggle selection
-                                    if (isSelected) {
-                                        selectedIndices.remove(index)
-                                        if (selectedIndices.isEmpty()) {
-                                            isSelectionModeActive =
-                                                false // Exit mode if last item deselected
-                                        }
-                                    } else {
-                                        if (selectedIndices.size < maxSelectionLimit) {
-                                            selectedIndices.add(index)
+                } else {
+                    itemsIndexed(
+                        items = lines,
+                        key = { index, item -> "$index-${item.time}" }
+                    ) { index, item ->
+                        val isSelected = selectedIndices.contains(index)
+                        val itemModifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .combinedClickable(
+                                enabled = true,
+                                onClick = {
+                                    if (isSelectionModeActive) {
+                                        if (isSelected) {
+                                            selectedIndices.remove(index)
+                                            if (selectedIndices.isEmpty()) {
+                                                isSelectionModeActive = false
+                                            }
                                         } else {
-                                            showMaxSelectionToast = true
-                                        }
-                                    }
-                                } else if (isSynced && changeLyrics) {
-                                    // Professional seek action with smooth animation
-                                    playerConnection.player.seekTo(item.time)
-                                    // Smooth slow scroll when clicking on lyrics (3 seconds)
-                                    scope.launch {
-                                        // First scroll to the clicked item without animation
-                                        lazyListState.scrollToItem(index = index)
-
-                                        // Then animate it to center position slowly
-                                        val itemInfo =
-                                            lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
-                                        if (itemInfo != null) {
-                                            val viewportHeight =
-                                                lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
-                                            val center =
-                                                lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
-                                            val itemCenter = itemInfo.offset + itemInfo.size / 2
-                                            val offset = itemCenter - center
-
-                                            if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
-                                                lazyListState.animateScrollBy(
-                                                    value = offset.toFloat(),
-                                                    animationSpec = tween(durationMillis = 1500) // Reduced to half speed
-                                                )
+                                            if (selectedIndices.size < maxSelectionLimit) {
+                                                selectedIndices.add(index)
+                                            } else {
+                                                showMaxSelectionToast = true
                                             }
                                         }
-                                    }
-                                    lastPreviewTime = 0L
-                                }
-                            },
-                            onLongClick = {
-                                if (!isSelectionModeActive) {
-                                    isSelectionModeActive = true
-                                    selectedIndices.add(index)
-                                } else if (!isSelected && selectedIndices.size < maxSelectionLimit) {
-                                    // If already in selection mode and item not selected, add it if below limit
-                                    selectedIndices.add(index)
-                                } else if (!isSelected) {
-                                    // If already at limit, show toast
-                                    showMaxSelectionToast = true
-                                }
-                            }
-                        )
-                        .background(
-                            if (isSelected && isSelectionModeActive) MaterialTheme.colorScheme.primary.copy(
-                                alpha = 0.3f
-                            )
-                            else Color.Transparent
-                        )
-                        .padding(horizontal = 24.dp, vertical = 8.dp)
-                        // Metrolist-style depth effect with professional alpha transitions
-                        .alpha(
-                            when {
-                                !isSynced || (isSelectionModeActive && isSelected) -> 1f
-                                index == displayedCurrentLineIndex -> 1f // Active line - full opacity
-                                kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f // Adjacent lines - medium opacity
-                                kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f // 2 lines away - low opacity  
-                                else -> 0.2f // Far lines - very low opacity (deep water effect)
-                            }
-                        )
-                        // Add subtle scale effect for depth
-                        .graphicsLayer {
-                            val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
-                            val scale = when {
-                                !isSynced || index == displayedCurrentLineIndex -> 1f
-                                distance == 1 -> 0.95f // Slightly smaller
-                                distance >= 2 -> 0.9f // Even smaller for distant lines
-                                else -> 1f
-                            }
-                            scaleX = scale
-                            scaleY = scale
-                        }
+                                    } else if (isSynced && changeLyrics) {
+                                        playerConnection.player.seekTo(item.time)
+                                        scope.launch {
+                                            lazyListState.scrollToItem(index = index)
+                                            val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
+                                            if (itemInfo != null) {
+                                                val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                                                val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
+                                                val itemCenter = itemInfo.offset + itemInfo.size / 2
+                                                val offset = itemCenter - center
 
-                    Column(
-                        modifier = itemModifier,
-                        horizontalAlignment = when (lyricsTextPosition) {
-                            LyricsPosition.LEFT -> Alignment.Start
-                            LyricsPosition.CENTER -> Alignment.CenterHorizontally
-                            LyricsPosition.RIGHT -> Alignment.End
-                        }
-                    ) {
-                        Text(
-                            text = item.text,
-                            fontSize = 24.sp, // Uniform size for all lines matching latest enh version
-                            color = if (index == displayedCurrentLineIndex && isSynced) {
-                                textColor // Full color for active line
-                            } else {
-                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
-                            },
-                            textAlign = when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> TextAlign.Left
-                                LyricsPosition.CENTER -> TextAlign.Center
-                                LyricsPosition.RIGHT -> TextAlign.Right
-                            },
-                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
-                        )
-                        if (currentSong?.romanizeLyrics == true
-                            && (romanizeJapaneseLyrics ||
-                                    romanizeKoreanLyrics ||
-                                    romanizeRussianLyrics ||
-                                    romanizeUkrainianLyrics ||
-                                    romanizeSerbianLyrics ||
-                                    romanizeBulgarianLyrics ||
-                                    romanizeBelarusianLyrics ||
-                                    romanizeKyrgyzLyrics ||
-                                    romanizeMacedonianLyrics)) {
-                            // Show romanized text if available
-                            val romanizedText by item.romanizedTextFlow.collectAsState()
-                            romanizedText?.let { romanized ->
-                                Text(
-                                    text = romanized,
-                                    fontSize = 18.sp,
-                                    color = textColor.copy(alpha = 0.8f),
-                                    textAlign = when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> TextAlign.Left
-                                        LyricsPosition.CENTER -> TextAlign.Center
-                                        LyricsPosition.RIGHT -> TextAlign.Right
-                                    },
-                                    fontWeight = FontWeight.Normal,
-                                    modifier = Modifier.padding(top = 2.dp)
-                                )
+                                                if (kotlin.math.abs(offset) > 10) {
+                                                    lazyListState.animateScrollBy(
+                                                        value = offset.toFloat(),
+                                                        animationSpec = tween(durationMillis = 1500)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        lastPreviewTime = 0L
+                                    }
+                                },
+                                onLongClick = {
+                                    if (!isSelectionModeActive) {
+                                        isSelectionModeActive = true
+                                        selectedIndices.add(index)
+                                    } else if (!isSelected && selectedIndices.size < maxSelectionLimit) {
+                                        selectedIndices.add(index)
+                                    } else if (!isSelected) {
+                                        showMaxSelectionToast = true
+                                    }
+                                }
+                            )
+                            .background(
+                                if (isSelected && isSelectionModeActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                else Color.Transparent
+                            )
+                            .padding(horizontal = 24.dp, vertical = 8.dp)
+                            .alpha(
+                                when {
+                                    !isSynced || (isSelectionModeActive && isSelected) -> 1f
+                                    index == displayedCurrentLineIndex -> 1f
+                                    kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f
+                                    kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f
+                                    else -> 0.2f
+                                }
+                            )
+                            .graphicsLayer {
+                                val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
+                                val scale = when {
+                                    !isSynced || index == displayedCurrentLineIndex -> 1f
+                                    distance == 1 -> 0.95f
+                                    distance >= 2 -> 0.9f
+                                    else -> 1f
+                                }
+                                scaleX = scale
+                                scaleY = scale
+                            }
+
+                        Column(
+                            modifier = itemModifier,
+                            horizontalAlignment = when (lyricsTextPosition) {
+                                LyricsPosition.LEFT -> Alignment.Start
+                                LyricsPosition.CENTER -> Alignment.CenterHorizontally
+                                LyricsPosition.RIGHT -> Alignment.End
+                            }
+                        ) {
+                            Text(
+                                text = item.text,
+                                fontSize = 24.sp,
+                                color = if (index == displayedCurrentLineIndex && isSynced) {
+                                    textColor
+                                } else {
+                                    textColor.copy(alpha = 0.8f)
+                                },
+                                textAlign = when (lyricsTextPosition) {
+                                    LyricsPosition.LEFT -> TextAlign.Left
+                                    LyricsPosition.CENTER -> TextAlign.Center
+                                    LyricsPosition.RIGHT -> TextAlign.Right
+                                },
+                                fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                            )
+                            if (currentSong?.romanizeLyrics == true &&
+                                (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics ||
+                                romanizeUkrainianLyrics || romanizeSerbianLyrics || romanizeBulgarianLyrics ||
+                                romanizeBelarusianLyrics || romanizeKyrgyzLyrics || romanizeMacedonianLyrics)) {
+                                val romanizedText by item.romanizedTextFlow.collectAsState()
+                                romanizedText?.let { romanized ->
+                                    Text(
+                                        text = romanized,
+                                        fontSize = 18.sp,
+                                        color = textColor.copy(alpha = 0.8f),
+                                        textAlign = when (lyricsTextPosition) {
+                                            LyricsPosition.LEFT -> TextAlign.Left
+                                            LyricsPosition.CENTER -> TextAlign.Center
+                                            LyricsPosition.RIGHT -> TextAlign.Right
+                                        },
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -781,26 +681,21 @@ fun Lyrics(
             }
         }
 
-
-
-        // Action buttons: Close and Share buttons grouped together
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 16.dp), // Just above player slider
+                        .padding(bottom = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Row containing both close and share buttons
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Close button (circular, right side of share)
                         Box(
                             modifier = Modifier
-                                .size(48.dp) // Larger for better touch target
+                                .size(48.dp)
                                 .background(
                                     color = Color.Black.copy(alpha = 0.3f),
                                     shape = CircleShape
@@ -819,14 +714,13 @@ fun Lyrics(
                             )
                         }
 
-                        // Share button (rectangular with text)
                         Row(
                             modifier = Modifier
                                 .background(
                                     color = if (selectedIndices.isNotEmpty())
-                                        Color.White.copy(alpha = 0.9f) // White background when active
+                                        Color.White.copy(alpha = 0.9f)
                                     else
-                                        Color.White.copy(alpha = 0.5f), // Lighter white when inactive
+                                        Color.White.copy(alpha = 0.5f),
                                     shape = RoundedCornerShape(24.dp)
                                 )
                                 .clickable(enabled = selectedIndices.isNotEmpty()) {
@@ -855,12 +749,12 @@ fun Lyrics(
                             Icon(
                                 painter = painterResource(id = R.drawable.share),
                                 contentDescription = stringResource(R.string.share_selected),
-                                tint = Color.Black, // Black icon on white background
+                                tint = Color.Black,
                                 modifier = Modifier.size(20.dp)
                             )
                             Text(
                                 text = stringResource(R.string.share),
-                                color = Color.Black, // Black text on white background
+                                color = Color.Black,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium
                             )
@@ -869,12 +763,79 @@ fun Lyrics(
                 }
             }
         }
-        // Removed the more button from bottom - it's now in the top header
+
+        if (showControls && mediaMetadata != null) {
+            val currentMetadata = mediaMetadata
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(
+                        top = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Top)
+                            .asPaddingValues()
+                            .calculateTopPadding() + 12.dp,
+                        end = 16.dp
+                    )
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                onExpandLyrics()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.fullscreen),
+                            contentDescription = stringResource(R.string.lyrics),
+                            tint = textColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                menuState.show {
+                                    LyricsMenu(
+                                        lyricsProvider = { lyricsEntity },
+                                        songProvider = { currentSong?.song },
+                                        mediaMetadataProvider = { currentMetadata!! },
+                                        onDismiss = menuState::dismiss
+                                    )
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.more_horiz),
+                            contentDescription = stringResource(R.string.more_options),
+                            tint = textColor
+                        )
+                    }
+                }
+            }
+        }
     }
 
     if (showProgressDialog) {
         BasicAlertDialog(onDismissRequest = { /* Don't dismiss */ }) {
-            Card( // Use Card for better styling
+            Card(
                 shape = MaterialTheme.shapes.medium,
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -890,7 +851,7 @@ fun Lyrics(
     }
 
     if (showShareDialog && shareDialogData != null) {
-        val (lyricsText, songTitle, artists) = shareDialogData!! // Renamed 'lyrics' to 'lyricsText' for clarity
+        val (lyricsText, songTitle, artists) = shareDialogData!!
         BasicAlertDialog(onDismissRequest = { showShareDialog = false }) {
             Card(
                 shape = MaterialTheme.shapes.medium,
@@ -910,7 +871,6 @@ fun Lyrics(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    // Share as Text Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -918,9 +878,7 @@ fun Lyrics(
                                 val shareIntent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     type = "text/plain"
-                                    val songLink =
-                                        "https://music.youtube.com/watch?v=${mediaMetadata?.id}"
-                                    // Use the potentially multi-line lyricsText here
+                                    val songLink = "https://music.youtube.com/watch?v=${mediaMetadata?.id}"
                                     putExtra(
                                         Intent.EXTRA_TEXT,
                                         "\"$lyricsText\"\n\n$songTitle - $artists\n$songLink"
@@ -938,7 +896,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.share), // Use new share icon
+                            painter = painterResource(id = R.drawable.share),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -949,12 +907,10 @@ fun Lyrics(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    // Share as Image Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // Pass the potentially multi-line lyrics to the color picker
                                 shareDialogData = Triple(lyricsText, songTitle, artists)
                                 showColorPickerDialog = true
                                 showShareDialog = false
@@ -963,7 +919,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.share), // Use new share icon
+                            painter = painterResource(id = R.drawable.share),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -974,7 +930,6 @@ fun Lyrics(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    // Cancel Button Row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1188,15 +1143,12 @@ fun Lyrics(
                 }
             }
         }
-        } // إغلاق else block
     }
 }
 
-// Professional page animation constants inspired by Metrolist design - slower for smoothness
-private const val METROLIST_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
-private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
-private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
-private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
+private const val METROLIST_AUTO_SCROLL_DURATION = 1500L
+private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L
+private const val METROLIST_SEEK_DURATION = 800L
+private const val METROLIST_FAST_SEEK_DURATION = 600L
 
-// Lyrics constants
 val LyricsPreviewTime = 2.seconds
