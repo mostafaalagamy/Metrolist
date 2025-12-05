@@ -78,7 +78,6 @@ import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.db.entities.ArtistEntity
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.launch
@@ -140,6 +139,15 @@ private fun NewMiniPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+    
+    // Cast state
+    val castHandler = playerConnection.service.castConnectionHandler
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf<String?>(null) }
+    
+    // Use Cast state when casting
+    val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
@@ -161,7 +169,7 @@ private fun NewMiniPlayer(
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (isPlaying) 0.0f else 0.4f,
+        targetValue = if (effectiveIsPlaying) 0.0f else 0.4f,
         label = "overlay_alpha",
         animationSpec = animationSpec
     )
@@ -309,11 +317,17 @@ private fun NewMiniPlayer(
                                 shape = CircleShape
                             )
                             .clickable {
-                                if (playbackState == Player.STATE_ENDED) {
+                                if (isCasting) {
+                                    if (castIsPlaying) {
+                                        castHandler?.pause()
+                                    } else {
+                                        castHandler?.play()
+                                    }
+                                } else if (playbackState == Player.STATE_ENDED) {
                                     playerConnection.player.seekTo(0, 0)
                                     playerConnection.player.playWhenReady = true
                                 } else {
-                                    playerConnection.player.togglePlayPause()
+                                    playerConnection.togglePlayPause()
                                 }
                             }
                     ) {
@@ -340,7 +354,7 @@ private fun NewMiniPlayer(
                         )
 
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = playbackState == Player.STATE_ENDED || !isPlaying,
+                            visible = playbackState == Player.STATE_ENDED || !effectiveIsPlaying,
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
@@ -419,6 +433,17 @@ private fun NewMiniPlayer(
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
+                
+                // Cast indicator (simple icon, no button styling)
+                if (isCasting) {
+                    Icon(
+                        painter = painterResource(R.drawable.cast_connected),
+                        contentDescription = "Casting",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
 
                 // Subscribe/Subscribed button
                 mediaMetadata?.let { metadata ->
@@ -544,6 +569,14 @@ private fun LegacyMiniPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+    
+    // Cast state
+    val castHandler = playerConnection.service.castConnectionHandler
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
+    
+    // Use Cast state when casting
+    val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
@@ -687,11 +720,17 @@ private fun LegacyMiniPlayer(
 
             IconButton(
                 onClick = {
-                    if (playbackState == Player.STATE_ENDED) {
+                    if (isCasting) {
+                        if (castIsPlaying) {
+                            castHandler?.pause()
+                        } else {
+                            castHandler?.play()
+                        }
+                    } else if (playbackState == Player.STATE_ENDED) {
                         playerConnection.player.seekTo(0, 0)
                         playerConnection.player.playWhenReady = true
                     } else {
-                        playerConnection.player.togglePlayPause()
+                        playerConnection.togglePlayPause()
                     }
                 },
             ) {
@@ -699,7 +738,7 @@ private fun LegacyMiniPlayer(
                     painter = painterResource(
                         if (playbackState == Player.STATE_ENDED) {
                             R.drawable.replay
-                        } else if (isPlaying) {
+                        } else if (effectiveIsPlaying) {
                             R.drawable.pause
                         } else {
                             R.drawable.play

@@ -233,6 +233,10 @@ class MusicService :
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
     private var consecutivePlaybackErr = 0
+    
+    // Google Cast support
+    var castConnectionHandler: CastConnectionHandler? = null
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -304,6 +308,9 @@ class MusicService :
         audioQuality = dataStore.get(AudioQualityKey).toEnum(com.metrolist.music.constants.AudioQuality.AUTO)
         playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
+        // Initialize Google Cast
+        initializeCast()
+
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
@@ -312,7 +319,10 @@ class MusicService :
                     waitingForNetworkConnection.value = false
                     if (player.currentMediaItem != null && player.playWhenReady) {
                         player.prepare()
-                        player.play()
+                        // Don't start local playback if casting
+                        if (castConnectionHandler?.isCasting?.value != true) {
+                            player.play()
+                        }
                     }
                 }
             }
@@ -552,7 +562,10 @@ class MusicService :
                     scope.launch {
                         delay(300)
                         if (hasAudioFocus && wasPlayingBeforeAudioFocusLoss && !player.isPlaying) {
-                            player.play()
+                            // Don't start local playback if casting
+                            if (castConnectionHandler?.isCasting?.value != true) {
+                                player.play()
+                            }
                             wasPlayingBeforeAudioFocusLoss = false
                         }
                         reentrantFocusGain = false
@@ -640,7 +653,10 @@ class MusicService :
         if (consecutivePlaybackErr <= MAX_CONSECUTIVE_ERR && nextWindowIndex != C.INDEX_UNSET) {
             player.seekTo(nextWindowIndex, C.TIME_UNSET)
             player.prepare()
-            player.play()
+            // Don't start local playback if casting
+            if (castConnectionHandler?.isCasting?.value != true) {
+                player.play()
+            }
             return
         }
 
@@ -888,7 +904,10 @@ class MusicService :
         if (player.mediaItemCount == 0 || player.playbackState == STATE_IDLE) {
             player.setMediaItems(items)
             player.prepare()
-            player.play()
+            // Don't start local playback if casting
+            if (castConnectionHandler?.isCasting?.value != true) {
+                player.play()
+            }
             return
         }
 
@@ -1115,6 +1134,23 @@ class MusicService :
             scrobbleManager?.onSongStart(player.currentMetadata, duration = player.duration)
         }
 
+        // Sync Cast when media changes and Cast is connected
+        // Skip if this change was triggered by Cast sync (to prevent loops)
+        if (castConnectionHandler?.isCasting?.value == true && 
+            castConnectionHandler?.isSyncingFromCast != true && 
+            mediaItem != null) {
+            val metadata = mediaItem.metadata
+            if (metadata != null) {
+                // Try to navigate to the item if it's already in Cast queue
+                // This avoids a full reload which causes the widget to refresh
+                val navigated = castConnectionHandler?.navigateToMediaIfInQueue(metadata.id) ?: false
+                if (!navigated) {
+                    // Item not in Cast queue, need to reload
+                    castConnectionHandler?.loadMedia(metadata)
+                }
+            }
+        }
+
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -1151,6 +1187,12 @@ class MusicService :
     }
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        // Safety net: if local player tries to start while casting, immediately pause it
+        if (playWhenReady && castConnectionHandler?.isCasting?.value == true) {
+            player.pause()
+            return
+        }
+        
         if (playWhenReady) {
             setupLoudnessEnhancer()
         }
@@ -1520,6 +1562,7 @@ class MusicService :
     }
 
     override fun onDestroy() {
+        castConnectionHandler?.release()
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
         }
@@ -1549,6 +1592,41 @@ class MusicService :
     inner class MusicBinder : Binder() {
         val service: MusicService
             get() = this@MusicService
+    }
+
+    /**
+     * Get the stream URL for a given media ID.
+     * This is used for Google Cast to send the audio URL to Chromecast.
+     */
+    suspend fun getStreamUrl(mediaId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val playbackData = YTPlayerUtils.playerResponseForPlayback(
+                    videoId = mediaId,
+                    audioQuality = audioQuality,
+                    connectivityManager = connectivityManager
+                ).getOrNull()
+                playbackData?.streamUrl
+            } catch (e: Exception) {
+                timber.log.Timber.e(e, "Failed to get stream URL for Cast")
+                null
+            }
+        }
+    }
+
+    /**
+     * Initialize Google Cast support
+     */
+    private fun initializeCast() {
+        if (dataStore.get(com.metrolist.music.constants.EnableGoogleCastKey, true)) {
+            try {
+                castConnectionHandler = CastConnectionHandler(this, scope, this)
+                castConnectionHandler?.initialize()
+                timber.log.Timber.d("Google Cast initialized")
+            } catch (e: Exception) {
+                timber.log.Timber.e(e, "Failed to initialize Google Cast")
+            }
+        }
     }
 
     companion object {
