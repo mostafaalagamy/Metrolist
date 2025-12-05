@@ -12,7 +12,7 @@
     <string name="my_top">我的Top</string>
     <string name="sync_playlist">同步播放清單</string>
     <string name="elements_selected">%1$d 個項目已選取</string>
-    <string name="allows_for_sync_witch_youtube">注意:這允許與Youtube Music同步，之後無法更改。</string>
+    <string name="allows_for_sync_witch_youtube">注意：這允許與 Youtube Music 同步，之後無法更改。</string>
     <string name="copy_link">複製連結</string>
     <string name="select">全選</string>
     <string name="like_all">全部喜歡</string>
@@ -46,7 +46,7 @@
     <string name="slim_navbar">隱藏底部導覽列標籤</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">進階登入 (token)</string>
+    <string name="advanced_login">透過 token 登入</string>
     <string name="token_hidden">點擊以顯示 token</string>
     <string name="token_shown">再次點擊以複製或編輯</string>
     <string name="token_adv_login_description">這是進階登入方法。作為網路入口網站的替代方案，您可以在此直接輸入或更新您的登入 Token。例如，這可以加快在多個裝置上登入的速度。請注意，任何應用程式無法解析的無效 Token 格式將不被接受</string>
@@ -136,8 +136,8 @@
     <string name="information">資訊</string>
     <string name="dislikes">不喜歡</string>
     <string name="new_player_design">新播放器設計</string>
-    <string name="lyrics_romanize_japanese">日文羅馬歌詞</string>
-    <string name="lyrics_romanize_korean">韓文羅馬歌詞</string>
+    <string name="lyrics_romanize_japanese">羅馬化日文歌詞</string>
+    <string name="lyrics_romanize_korean">羅馬化韓文歌詞</string>
     <string name="yt_sync">自動與帳號同步</string>
     <string name="more_content">更多內容</string>
     <string name="swipe_sensitivity">迷你播放器滑動靈敏度</string>
@@ -187,7 +187,7 @@
     <string name="line_by_line_option_title">實驗性：逐行偵測語言</string>
     <string name="line_by_line_option_desc">西里爾語將逐行偵測，而不是整首歌曲。</string>
     <string name="line_by_line_dialog_title">您確定嗎？</string>
-    <string name="line_by_line_dialog_desc">這功能不一定好用\n\n預設情況下，語言是根據整首歌曲確定的，但啟用此選項後，將改為逐行確定。這允許我們羅馬化多語言的歌曲，但語言可能並不總是正確的（例如，如果烏克蘭語歌詞不包含任何烏克蘭語特有的字母，則可能會被羅馬化為俄語\n\n如果您未有需要，我們推薦您關閉此選項</string>
+    <string name="line_by_line_dialog_desc">實驗性功能不一定好用\n\n預設情況下，語言是根據整首歌曲確定的，但啟用此選項後，將改為逐行確定。這允許我們羅馬化多語言的歌曲，但語言可能並不總是正確的（例如，如果烏克蘭語歌詞不包含任何烏克蘭語特有的字母，則可能會被羅馬化為俄語\n\n如果您未有需要，我們推薦您關閉此選項</string>
     <string name="line_by_line_dialog_enable">開啟</string>
     <string name="romanize_current_track">將當前曲目羅馬化</string>
     <string name="settings_section_ui">介面</string>
@@ -200,4 +200,29 @@
     <string name="update_available_title">可用更新</string>
     <string name="swipe_song_to_remove">滑動歌曲即可將其從播放清單刪除</string>
     <string name="show_uploaded_playlist">顯示「已上傳」播放清單</string>
+    <string name="filter_uploaded">已上傳</string>
+    <string name="choose_from_library">從媒體庫選擇</string>
+    <string name="remove_custom_image">移除自定義圖片</string>
+    <string name="discord_use_details">使用詳細內容而非狀態</string>
+    <string name="discord_use_details_description">強化顯示曲名而非作曲家</string>
+    <string name="updater">更新器</string>
+    <string name="check_for_updates">自動檢查更新</string>
+    <string name="update_notifications">開啟更新通知</string>
+    <string name="update_channel_name">應用程式更新</string>
+    <string name="update_channel_desc">新版本更新通知</string>
+    <string name="audio_offload">啟動音訊卸載</string>
+    <string name="audio_offload_description">使用音訊卸載來播放音訊。關閉這個選項可能會增加耗電，不過可以解決一些播放或後處理的問題。</string>
+    <string name="lyrics_romanize_macedonian">羅馬化馬其頓語歌詞</string>
+    <string name="integrations">整合</string>
+    <string name="username">使用者名稱</string>
+    <string name="password">密碼</string>
+    <string name="lastfm_integration">Last.fm 整合功能</string>
+    <string name="enable_scrobbling">開啟紀錄播放歌曲</string>
+    <string name="lastfm_now_playing">傳送正在播放歌曲</string>
+    <string name="last_fm_send_likes">傳送喜歡/不喜歡歌曲</string>
+    <string name="last_fm_send_likes_description">同步 Metrolist 喜歡/不喜歡歌曲到 Last.fm</string>
+    <string name="scrobbling_configuration">歌曲紀錄設定</string>
+    <string name="scrobble_min_track_duration">歌曲紀錄最短長度限制</string>
+    <string name="scrobble_delay_percent">紀錄延遲比例</string>
+    <string name="scrobble_delay_minutes">紀錄延遲時間</string>
 </resources>
