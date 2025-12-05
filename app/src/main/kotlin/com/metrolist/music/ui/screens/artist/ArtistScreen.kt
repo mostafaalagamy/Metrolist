@@ -89,7 +89,6 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.entities.ArtistEntity
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
@@ -138,7 +137,7 @@ fun ArtistScreen(
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val artistPage = viewModel.artistPage
     val libraryArtist by viewModel.libraryArtist.collectAsState()
@@ -502,7 +501,7 @@ fun ArtistScreen(
                                     .combinedClickable(
                                         onClick = {
                                             if (song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
+                                                playerConnection.togglePlayPause()
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(
@@ -629,7 +628,7 @@ fun ArtistScreen(
                                         .combinedClickable(
                                             onClick = {
                                                 if (song.id == mediaMetadata?.id) {
-                                                    playerConnection.player.togglePlayPause()
+                                                    playerConnection.togglePlayPause()
                                                 } else {
                                                     playerConnection.playQueue(
                                                         YouTubeQueue(

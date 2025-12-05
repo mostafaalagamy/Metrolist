@@ -81,7 +81,6 @@ import com.metrolist.music.constants.MyTopFilter
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.AutoResizeText
@@ -112,7 +111,7 @@ fun TopPlaylistScreen(
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val maxSize = viewModel.top
 
@@ -489,7 +488,7 @@ fun TopPlaylistScreen(
                                     onClick = {
                                         if (!selection) {
                                             if (songWrapper.item.song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
+                                                playerConnection.togglePlayPause()
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(

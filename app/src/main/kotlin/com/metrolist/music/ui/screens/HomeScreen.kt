@@ -89,7 +89,6 @@ import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.LocalAlbumRadio
@@ -141,7 +140,7 @@ fun HomeScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val haptic = LocalHapticFeedback.current
 
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val quickPicks by viewModel.quickPicks.collectAsState()
@@ -211,7 +210,7 @@ fun HomeScreen(
                     .combinedClickable(
                         onClick = {
                             if (it.id == mediaMetadata?.id) {
-                                playerConnection.player.togglePlayPause()
+                                playerConnection.togglePlayPause()
                             } else {
                                 playerConnection.playQueue(
                                     YouTubeQueue.radio(it.toMediaMetadata()),
@@ -452,7 +451,7 @@ fun HomeScreen(
                                         .combinedClickable(
                                             onClick = {
                                                 if (song!!.id == mediaMetadata?.id) {
-                                                    playerConnection.player.togglePlayPause()
+                                                    playerConnection.togglePlayPause()
                                                 } else {
                                                     playerConnection.playQueue(
                                                         YouTubeQueue.radio(
@@ -623,7 +622,7 @@ fun HomeScreen(
                                         .combinedClickable(
                                             onClick = {
                                                 if (song!!.id == mediaMetadata?.id) {
-                                                    playerConnection.player.togglePlayPause()
+                                                    playerConnection.togglePlayPause()
                                                 } else {
                                                     playerConnection.playQueue(
                                                         YouTubeQueue.radio(

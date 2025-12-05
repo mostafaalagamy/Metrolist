@@ -92,7 +92,6 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.AutoResizeText
@@ -124,7 +123,7 @@ fun OnlinePlaylistScreen(
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val playlist by viewModel.playlist.collectAsState()
@@ -514,7 +513,7 @@ fun OnlinePlaylistScreen(
                                     onClick = {
                                         if (!selection) {
                                             if (song.item.second.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
+                                                playerConnection.togglePlayPause()
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(

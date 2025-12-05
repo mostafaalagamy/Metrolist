@@ -45,6 +45,7 @@ import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
+import com.metrolist.music.constants.EnableGoogleCastKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
@@ -87,6 +88,11 @@ fun PlayerSettings(
     val (audioOffload, onAudioOffloadChange) = rememberPreference(
         key = AudioOffload,
         defaultValue = false
+    )
+
+    val (enableGoogleCast, onEnableGoogleCastChange) = rememberPreference(
+        key = EnableGoogleCastKey,
+        defaultValue = true
     )
 
     val (seekExtraSeconds, onSeekExtraSeconds) = rememberPreference(
@@ -181,6 +187,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
             checked = audioOffload,
             onCheckedChange = onAudioOffloadChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.google_cast)) },
+            description = stringResource(R.string.google_cast_description),
+            icon = { Icon(painterResource(R.drawable.cast), null) },
+            checked = enableGoogleCast,
+            onCheckedChange = onEnableGoogleCastChange
         )
 
         SwitchPreference(

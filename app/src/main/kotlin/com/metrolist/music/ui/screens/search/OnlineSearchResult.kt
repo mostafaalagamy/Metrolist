@@ -53,7 +53,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.SearchFilterHeight
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.ChipsRow
@@ -79,7 +78,7 @@ fun OnlineSearchResult(
     val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val haptic = LocalHapticFeedback.current
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -164,7 +163,7 @@ fun OnlineSearchResult(
                         when (item) {
                             is SongItem -> {
                                 if (item.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
+                                    playerConnection.togglePlayPause()
                                 } else {
                                     playerConnection.playQueue(
                                         YouTubeQueue(

@@ -71,7 +71,6 @@ import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.DraggableScrollbar
 import com.metrolist.music.ui.component.EmptyPlaceholder
@@ -101,7 +100,7 @@ fun CachePlaylistScreen(
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
 
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val cachedSongs by viewModel.cachedSongs.collectAsState()
 
@@ -335,7 +334,7 @@ fun CachePlaylistScreen(
                                 onClick = {
                                     if (!selection) {
                                         if (songWrapper.item.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
+                                            playerConnection.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
                                                 ListQueue(

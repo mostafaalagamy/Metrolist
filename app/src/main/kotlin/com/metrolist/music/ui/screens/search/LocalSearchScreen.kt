@@ -31,7 +31,6 @@ import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.menu.SongMenu
@@ -55,7 +54,7 @@ fun LocalSearchScreen(
     val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val searchFilter by viewModel.filter.collectAsState()
@@ -180,7 +179,7 @@ fun LocalSearchScreen(
                                 .combinedClickable(
                                     onClick = {
                                         if (item.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
+                                            playerConnection.togglePlayPause()
                                         } else {
                                             val songs = result.map
                                                 .getOrDefault(LocalFilter.SONG, emptyList())
