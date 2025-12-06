@@ -226,4 +226,6 @@
     <string name="scrobble_delay_percent">Porcentaje de retraso de Scrobble</string>
     <string name="scrobble_delay_minutes">Minutos de retraso de Scrobble</string>
     <string name="swipe_song_to_remove">Desliza la canción para quitarla de la playlist</string>
+    <string name="last_fm_send_likes">Enviar Me gusta/No me gusta</string>
+    <string name="last_fm_send_likes_description">Marcar como Me gusta o No me gusta las canciones en Last.fm cuando aparecen marcadas como Me gusta o No me gusta en Metrolist</string>
 </resources>

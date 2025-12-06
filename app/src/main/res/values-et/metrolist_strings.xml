@@ -27,7 +27,7 @@
     </plurals>
     <string name="unknown_artist">Tundmatu esitaja</string>
     <string name="unknown_item_type">Tundmatu objekti tüüp</string>
-    <string name="loading_charts">Laadin edetabeleid...</string>
+    <string name="loading_charts">Laadin edetabeleid…</string>
     <string name="retry_button">Proovi uuesti</string>
     <string name="album_cover_desc">Albumi kaanepilt</string>
     <string name="explore">Uuri ja tutvu</string>
@@ -128,4 +128,34 @@
     <string name="seek_forward_dynamic">+%1$d sekundit edasi</string>
     <string name="seek_backward_dynamic">-%1$d sekundit tagasi</string>
     <string name="new_mini_player_design">Meediaesitaja uus kompaktne kujundus</string>
+    <string name="uploaded_playlist">Üleslaaditud</string>
+    <string name="filter_uploaded">Üleslaaditud</string>
+    <string name="general">Üldised</string>
+    <string name="show_uploaded_playlist">Näita esitusloendit „Üleslaaditud“</string>
+    <string name="more_content">Täiendav sisu</string>
+    <string name="edit_playlist_cover">Muuda esitusloendi kaanepilti</string>
+    <string name="choose_from_library">Vali meediakogust</string>
+    <string name="remove_custom_image">Eemalda sinu valitud pilt</string>
+    <string name="set_quick_picks">Lisa kiirvalikud</string>
+    <string name="config_proxy">Seadista proksiserverit</string>
+    <string name="proxy_username">Puhverserveri kasutajanimi</string>
+    <string name="proxy_password">Puhverserveri salasõna</string>
+    <string name="min_playback_duration_title">Minimaalne taasesituse kestus</string>
+    <string name="empty_playlist">Tühi esitusloend</string>
+    <string name="empty_playlist_desc">Selles esitusloendis pole ühtegi lugu</string>
+    <string name="settings_section_ui">Kasutajaliides</string>
+    <string name="settings_section_privacy">Privaatsus ja turvalisus</string>
+    <string name="updater">Uuendaja</string>
+    <string name="check_for_updates">Kontrolli uuendusi automaatselt</string>
+    <string name="update_notifications">Lülita uuenduste teavitused sisse</string>
+    <string name="update_available_title">Uus versioon on saadaval</string>
+    <string name="update_channel_name">Rakenduse uuendused</string>
+    <string name="integrations">Lõimingud</string>
+    <string name="username">Kasutajanimi</string>
+    <string name="password">Salasõna</string>
+    <string name="lastfm_integration">Last.fm-i lõiming</string>
+    <string name="enable_scrobbling">Lülita kraasimine sisse</string>
+    <string name="lastfm_now_playing">Saada hetkel esitatava loo andmed</string>
+    <string name="last_fm_send_likes">Saada meeldimised/mittemeeldimised</string>
+    <string name="scrobbling_configuration">Kraasimise seadistused</string>
 </resources>
