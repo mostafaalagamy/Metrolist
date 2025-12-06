@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
@@ -41,10 +43,15 @@ constructor(
                         params = params,
                     ),
                 ).onSuccess { artistItemsPage ->
+                    val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+                    val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
                     title.value = artistItemsPage.title
                     itemsPage.value =
                         ItemsPage(
-                            items = artistItemsPage.items.distinctBy { it.id },
+                            items = artistItemsPage.items
+                                .distinctBy { it.id }
+                                .filterExplicit(hideExplicit)
+                                .filterVideoSongs(hideVideoSongs),
                             continuation = artistItemsPage.continuation,
                         )
                 }.onFailure {
@@ -60,12 +67,15 @@ constructor(
             YouTube
                 .artistItemsContinuation(continuation)
                 .onSuccess { artistItemsContinuationPage ->
+                    val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+                    val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
                     itemsPage.update {
                         ItemsPage(
                             items =
                             (oldItemsPage.items + artistItemsContinuationPage.items)
                                 .distinctBy { it.id }
-                                .filterExplicit(context.dataStore.get(HideExplicitKey, false)),
+                                .filterExplicit(hideExplicit)
+                                .filterVideoSongs(hideVideoSongs),
                             continuation = artistItemsContinuationPage.continuation,
                         )
                     }

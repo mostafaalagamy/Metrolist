@@ -13,6 +13,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideoSongs
 
 data class HomePage(
     val chips: List<Chip>?,
@@ -86,6 +87,7 @@ data class HomePage(
                                 )
                             },
                             duration = null,
+                            musicVideoType = renderer.musicVideoType,
                             thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                             explicit = renderer.subtitleBadges?.any {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
@@ -163,4 +165,10 @@ data class HomePage(
             })
         } else this
 
+    fun filterVideoSongs(disableVideos: Boolean = false) =
+        if (disableVideos) {
+            copy(sections = sections.map { section ->
+                section.copy(items = section.items.filterVideoSongs(true))
+            })
+        } else this
 }

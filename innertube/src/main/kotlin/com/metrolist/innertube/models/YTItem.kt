@@ -1,5 +1,7 @@
 package com.metrolist.innertube.models
 
+import com.metrolist.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
+
 sealed class YTItem {
     abstract val id: String
     abstract val title: String
@@ -24,6 +26,7 @@ data class SongItem(
     val artists: List<Artist>,
     val album: Album? = null,
     val duration: Int? = null,
+    val musicVideoType: String? = null,
     val chartPosition: Int? = null,
     val chartChange: String? = null,
     override val thumbnail: String,
@@ -34,6 +37,9 @@ data class SongItem(
     val libraryRemoveToken: String? = null,
     val historyRemoveToken: String? = null
 ) : YTItem() {
+    val isVideoSong: Boolean
+        get() = musicVideoType != null && musicVideoType != MUSIC_VIDEO_TYPE_ATV
+
     override val shareLink: String
         get() = "https://music.youtube.com/watch?v=$id"
 }
@@ -87,6 +93,13 @@ data class ArtistItem(
 fun <T : YTItem> List<T>.filterExplicit(enabled: Boolean = true) =
     if (enabled) {
         filter { !it.explicit }
+    } else {
+        this
+    }
+
+fun <T : YTItem> List<T>.filterVideoSongs(disableVideos: Boolean = false) =
+    if (disableVideos) {
+        filterNot { it is SongItem && it.isVideoSong }
     } else {
         this
     }
