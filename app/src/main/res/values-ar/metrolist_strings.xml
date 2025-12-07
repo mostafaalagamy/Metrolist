@@ -235,4 +235,6 @@
     <string name="scrobble_delay_percent">نسبة تأخير سكرابل</string>
     <string name="scrobble_delay_minutes">دقائق تأخير سكرابل</string>
     <string name="swipe_song_to_remove">مرر الأغنية لإزالتها من قائمة التشغيل</string>
+    <string name="last_fm_send_likes_description">عندما تعجبك أغنية أو تلغي إعجابك بها في Metrolist سيتم تلقائيًا وضع علامة (أحببت) أو (غير محبوب) على نفس الأغنية في Last.fm</string>
+    <string name="last_fm_send_likes">إرسال الإعجابات/إلغاء الإعجابات</string>
 </resources>
