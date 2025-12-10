@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
+        android:src="@mipmap/ic_launcher"
         android:contentDescription="Album Art" />
 
     <LinearLayout
@@ -30,6 +30,7 @@
             android:gravity="center_vertical|start"
             android:ellipsize="end"
             android:maxLines="1"
+            android:paddingStart="15dp"
             android:text="No Song Playing"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
@@ -48,7 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_previous"
+                android:src="@drawable/ic_skip_previous"
                 android:scaleType="fitCenter"
                 android:padding="4dp"
                 android:tint="#FFFFFF" />
@@ -59,7 +60,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_play"
+                android:src="@drawable/ic_play"
                 android:scaleType="fitCenter"
                 android:padding="4dp"
                 android:tint="#FFFFFF" />
@@ -70,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_next"
+                android:src="@drawable/ic_skip_next"
                 android:scaleType="fitCenter"
                 android:padding="4dp"
                 android:tint="#FFFFFF" />
@@ -81,7 +82,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:src="@android:drawable/star_off"
+                android:src="@drawable/ic_heart"
                 android:scaleType="fitCenter"
                 android:padding="4dp"
                 android:tint="#FFFFFF" />
