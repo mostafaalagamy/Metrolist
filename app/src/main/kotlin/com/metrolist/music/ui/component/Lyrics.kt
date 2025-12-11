@@ -150,6 +150,7 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
+    showLyrics: Boolean
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val menuState = LocalMenuState.current

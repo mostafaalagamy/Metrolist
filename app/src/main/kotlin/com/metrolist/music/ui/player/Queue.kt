@@ -20,6 +20,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.ripple
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,11 +49,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -145,8 +149,9 @@ fun Queue(
     TextBackgroundColor: Color,
     textButtonColor: Color,
     iconButtonColor: Color,
-    onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
+    showInlineLyrics: Boolean,
+    onToggleLyrics: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -229,140 +234,87 @@ fun Queue(
                 ) {
                     val buttonSize = 42.dp
                     val iconSize = 24.dp
-                    val borderColor = TextBackgroundColor.copy(alpha = 0.35f)
+                    val queueShape = RoundedCornerShape(
+                        topStart = 50.dp, bottomStart = 50.dp,
+                        topEnd = 5.dp, bottomEnd = 5.dp
+                    )
+                    val middleShape = RoundedCornerShape(5.dp)
+                    val repeatShape = RoundedCornerShape(
+                        topStart = 5.dp, bottomStart = 5.dp,
+                        topEnd = 50.dp, bottomEnd = 50.dp
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp,
-                                    topEnd = 5.dp,
-                                    bottomEnd = 5.dp
-                                )
-                            )
-                            .border(
-                                1.dp,
-                                borderColor,
-                                RoundedCornerShape(
-                                    topStart = 50.dp,
-                                    bottomStart = 50.dp,
-                                    topEnd = 5.dp,
-                                    bottomEnd = 5.dp
-                                )
-                            )
-                            .clickable { state.expandSoft() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.queue_music),
-                            contentDescription = null,
-                            modifier = Modifier.size(iconSize),
-                            tint = TextBackgroundColor
-                        )
-                    }
+                    PlayerQueueButton(
+                        icon = R.drawable.queue_music,
+                        onClick = { state.expandSoft() },
+                        isActive = false,
+                        shape = queueShape,
+                        modifier = Modifier.size(buttonSize),
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                        iconSize = iconSize,
+                        textBackgroundColor = TextBackgroundColor
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
-                            .clickable {
-                                if (sleepTimerEnabled) {
-                                    playerConnection.service.sleepTimer.clear()
-                                } else {
-                                    showSleepTimerDialog = true
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AnimatedContent(
-                            label = "sleepTimer",
-                            targetState = sleepTimerEnabled,
-                        ) { enabled ->
-                            if (enabled) {
-                                Text(
-                                    text = makeTimeString(sleepTimerTimeLeft),
-                                    color = TextBackgroundColor,
-                                    fontSize = 10.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .basicMarquee()
-                                )
+                    PlayerQueueButton(
+                        icon = R.drawable.bedtime,
+                        onClick = {
+                            if (sleepTimerEnabled) {
+                                playerConnection.service.sleepTimer.clear()
                             } else {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.bedtime),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(iconSize),
-                                    tint = TextBackgroundColor
-                                )
+                                showSleepTimerDialog = true
                             }
-                        }
-                    }
+                        },
+                        isActive = sleepTimerEnabled,
+                        shape = middleShape,
+                        modifier = Modifier.size(buttonSize),
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                        text = if (sleepTimerEnabled) makeTimeString(sleepTimerTimeLeft) else null,
+                        iconSize = iconSize,
+                        textBackgroundColor = TextBackgroundColor
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
-                            .clickable {
-                                onShowLyrics()
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
-                            contentDescription = null,
-                            modifier = Modifier.size(iconSize),
-                            tint = TextBackgroundColor
-                        )
-                    }
+                    val shuffleModeEnabled by playerConnection.shuffleModeEnabled.collectAsState()
+                    PlayerQueueButton(
+                        icon = R.drawable.shuffle,
+                        onClick = { playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled },
+                        isActive = shuffleModeEnabled,
+                        shape = middleShape,
+                        modifier = Modifier.size(buttonSize),
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                        iconSize = iconSize,
+                        textBackgroundColor = TextBackgroundColor
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = 5.dp,
-                                    bottomStart = 5.dp,
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            )
-                            .border(
-                                1.dp,
-                                borderColor,
-                                RoundedCornerShape(
-                                    topStart = 5.dp,
-                                    bottomStart = 5.dp,
-                                    topEnd = 50.dp,
-                                    bottomEnd = 50.dp
-                                )
-                            )
-                            .clickable {
-                                playerConnection.player.toggleRepeatMode()
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                id = when (repeatMode) {
-                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                    else -> R.drawable.repeat
-                                }
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(iconSize)
-                                .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
-                            tint = TextBackgroundColor
-                        )
-                    }
+                    PlayerQueueButton(
+                        icon = R.drawable.lyrics,
+                        onClick = { onToggleLyrics() },
+                        isActive = showInlineLyrics,
+                        shape = middleShape,
+                        modifier = Modifier.size(buttonSize),
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                        iconSize = iconSize,
+                        textBackgroundColor = TextBackgroundColor
+                    )
+
+                    PlayerQueueButton(
+                        icon = when (repeatMode) {
+                            Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                            else -> R.drawable.repeat
+                        },
+                        onClick = { playerConnection.player.toggleRepeatMode() },
+                        isActive = repeatMode != Player.REPEAT_MODE_OFF,
+                        shape = repeatShape,
+                        modifier = Modifier.size(buttonSize),
+                        textButtonColor = textButtonColor,
+                        iconButtonColor = iconButtonColor,
+                        iconSize = iconSize,
+                        textBackgroundColor = TextBackgroundColor
+                    )
 
                     Spacer(modifier = Modifier.weight(1f))
 
@@ -439,6 +391,33 @@ fun Queue(
                     }
 
                     TextButton(
+                        onClick = { onToggleLyrics() },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lyrics),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = TextBackgroundColor
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Lyrics",
+                                color = TextBackgroundColor,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.basicMarquee()
+                            )
+                        }
+                    }
+
+                    TextButton(
                         onClick = {
                             if (sleepTimerEnabled) {
                                 playerConnection.service.sleepTimer.clear()
@@ -484,33 +463,6 @@ fun Queue(
                                     )
                                 }
                             }
-                        }
-                    }
-
-                    TextButton(
-                        onClick = { onShowLyrics() },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.lyrics),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp),
-                                tint = TextBackgroundColor
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = stringResource(id = R.string.lyrics),
-                                color = TextBackgroundColor,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.basicMarquee()
-                            )
                         }
                     }
                 }
@@ -1147,5 +1099,59 @@ fun Queue(
                 )
                 .align(Alignment.BottomCenter),
         )
+    }
+}
+
+@Composable
+private fun PlayerQueueButton(
+    icon: Int,
+    onClick: () -> Unit,
+    isActive: Boolean,
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    textButtonColor: Color,
+    iconButtonColor: Color,
+    iconSize: androidx.compose.ui.unit.Dp,
+    textBackgroundColor: Color
+) {
+    val buttonModifier = Modifier
+        .clip(shape)
+        .clickable(onClick = onClick)
+
+    Box(
+        modifier = if (isActive) {
+            modifier.then(buttonModifier.background(textButtonColor))
+        } else {
+            modifier.then(
+                buttonModifier.border(
+                    width = 1.dp,
+                    color = LocalContentColor.current.copy(alpha = 0.12f),
+                    shape = shape
+                )
+            )
+        },
+        contentAlignment = Alignment.Center
+    ) {
+        if (text != null) {
+            Text(
+                text = text,
+                color = iconButtonColor,
+                fontSize = 10.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .basicMarquee()
+            )
+        } else {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = Modifier.size(iconSize),
+                tint = if (isActive) iconButtonColor else textBackgroundColor
+            )
+        }
     }
 }

@@ -44,7 +44,7 @@ fun SongItem.toMediaItem() =
                 .setTitle(title)
                 .setSubtitle(artists.joinToString { it.name })
                 .setArtist(artists.joinToString { it.name })
-                .setArtworkUri(thumbnail.resize(544, 544).toUri())
+                .setArtworkUri(thumbnail.toUri())
                 .setAlbumTitle(album?.name)
                 .setMediaType(MEDIA_TYPE_MUSIC)
                 .build(),

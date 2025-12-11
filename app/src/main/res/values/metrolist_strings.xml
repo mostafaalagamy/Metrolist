@@ -95,6 +95,7 @@
     <string name="player_background_blur">Blur</string>
     <string name="player_buttons_style">Player button colors</string>
     <string name="default_style">Default</string>
+    <string name="primary_color_style">Primary color</string>
     <string name="secondary_color_style">Secondary</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>

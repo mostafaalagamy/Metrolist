@@ -76,11 +76,16 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 
 
+import android.app.Activity
+import androidx.compose.material3.SnackbarHostState
+
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.navigationBuilder(
     navController: NavHostController,
     scrollBehavior: TopAppBarScrollBehavior,
     latestVersionName: String,
+    activity: Activity,
+    snackbarHostState: SnackbarHostState
 ) {
     composable(Screens.Home.route) {
         HomeScreen(navController)
@@ -290,7 +295,7 @@ fun NavGraphBuilder.navigationBuilder(
         SettingsScreen(navController, scrollBehavior, latestVersionName)
     }
     composable("settings/appearance") {
-        AppearanceSettings(navController, scrollBehavior)
+        AppearanceSettings(navController, scrollBehavior, activity, snackbarHostState)
     }
     composable("settings/content") {
         ContentSettings(navController, scrollBehavior)

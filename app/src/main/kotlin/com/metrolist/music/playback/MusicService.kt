@@ -966,27 +966,32 @@ class MusicService :
     }
 
     fun toggleLike() {
-        database.query {
-            currentSong.value?.let {
+        scope.launch {
+            val songToToggle = currentSong.first()
+            songToToggle?.let {
                 val song = it.song.toggleLike()
-                update(song)
-                syncUtils.likeSong(song)
+                database.query {
+                    update(song)
+                    syncUtils.likeSong(song)
 
-                // Check if auto-download on like is enabled and the song is now liked
-                if (dataStore.get(AutoDownloadOnLikeKey, false) && song.liked) {
-                    // Trigger download for the liked song
-                    val downloadRequest = androidx.media3.exoplayer.offline.DownloadRequest
-                        .Builder(song.id, song.id.toUri())
-                        .setCustomCacheKey(song.id)
-                        .setData(song.title.toByteArray())
-                        .build()
-                    androidx.media3.exoplayer.offline.DownloadService.sendAddDownload(
-                        this@MusicService,
-                        ExoDownloadService::class.java,
-                        downloadRequest,
-                        false
-                    )
+                    // Check if auto-download on like is enabled and the song is now liked
+                    if (dataStore.get(AutoDownloadOnLikeKey, false) && song.liked) {
+                        // Trigger download for the liked song
+                        val downloadRequest =
+                            androidx.media3.exoplayer.offline.DownloadRequest
+                                .Builder(song.id, song.id.toUri())
+                                .setCustomCacheKey(song.id)
+                                .setData(song.title.toByteArray())
+                                .build()
+                        androidx.media3.exoplayer.offline.DownloadService.sendAddDownload(
+                            this@MusicService,
+                            ExoDownloadService::class.java,
+                            downloadRequest,
+                            false
+                        )
+                    }
                 }
+                currentMediaMetadata.value = player.currentMetadata
             }
         }
     }

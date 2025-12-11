@@ -62,6 +62,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -698,6 +700,7 @@ class MainActivity : ComponentActivity() {
                     var sharedSong: SongItem? by remember {
                         mutableStateOf(null)
                     }
+                    val snackbarHostState = remember { SnackbarHostState() }
 
                     LaunchedEffect(Unit) {
                         if (pendingIntent != null) {
@@ -741,6 +744,7 @@ class MainActivity : ComponentActivity() {
                         LocalSyncUtils provides syncUtils,
                     ) {
                         Scaffold(
+                            snackbarHost = { SnackbarHost(snackbarHostState) },
                             topBar = {
                                 AnimatedVisibility(
                                     visible = shouldShowTopBar,
@@ -1216,9 +1220,11 @@ class MainActivity : ComponentActivity() {
                                         )
                                     ) {
                                         navigationBuilder(
-                                            navController,
-                                            topAppBarScrollBehavior,
-                                            latestVersionName
+                                            navController = navController,
+                                            scrollBehavior = topAppBarScrollBehavior,
+                                            latestVersionName = latestVersionName,
+                                            activity = this@MainActivity,
+                                            snackbarHostState = snackbarHostState
                                         )
                                     }
                                 }

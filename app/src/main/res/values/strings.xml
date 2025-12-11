@@ -88,31 +88,44 @@
 
     <!-- Menu -->
     <string name="details">Details</string>
+    <string name="details_desc">View the song\'s information</string>
     <string name="edit">Edit</string>
+    <string name="edit_desc">Change the title or artist</string>
     <string name="start_radio">Start radio</string>
+    <string name="start_radio_desc">Create a station based on this item</string>
     <string name="play">Play</string>
     <string name="play_next">Play next</string>
+    <string name="play_next_desc">Add to the top of your queue</string>
     <string name="add_to_queue">Add to queue</string>
+    <string name="add_to_queue_desc">Add to the bottom of your queue</string>
     <string name="add_to_library">Add to library</string>
+    <string name="add_to_library_desc">Save to your library</string>
     <string name="add_all_to_library">Add all to library</string>
     <string name="remove_from_library">Remove from library</string>
     <string name="remove_all_from_library">Remove all from library</string>
     <string name="action_download">Download</string>
+    <string name="download_desc">Make available for offline playback</string>
     <string name="downloading">Downloading</string>
     <string name="remove_download">Remove download</string>
     <string name="import_playlist">Import playlist</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="add_to_playlist_desc">Add to one of your playlists</string>
     <string name="view_artist">View artist</string>
     <string name="view_album">View album</string>
     <string name="refetch">Refetch</string>
+    <string name="refetch_desc">Fetch the latest metadata from YouTube Music</string>
     <string name="share">Share</string>
+    <string name="share_desc">Share a link to this item</string>
     <string name="delete">Delete</string>
+    <string name="delete_desc">Permanently remove this item</string>
     <string name="remove_from_history">Remove from history</string>
     <string name="remove_from_playlist">Remove from playlist</string>
     <string name="remove_from_queue">Remove from queue</string>
     <string name="search_online">Search online</string>
     <string name="action_sync">Sync</string>
     <string name="advanced">Advanced</string>
+    <string name="advanced_desc">Change the song\'s tempo and pitch</string>
+    <string name="equalizer_desc">Adjust the audio equalizer</string>
     <string name="tempo_and_pitch">Tempo and Pitch</string>
 
     <!-- Sort menu -->
@@ -234,12 +247,16 @@
     <string name="settings">Settings</string>
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
+    <string name="enable_dynamic_icon">Enable dynamic icon</string>
     <string name="enable_dynamic_theme">Enable dynamic theme</string>
     <string name="dark_theme">Dark theme</string>
     <string name="dark_theme_on">On</string>
     <string name="dark_theme_off">Off</string>
     <string name="dark_theme_follow_system">Follow system</string>
     <string name="pure_black">Pure black</string>
+    <string name="mini_player">Mini-player</string>
+    <string name="pure_black_mini_player">Pure black mini-player</string>
+    <string name="mini_player_outline">Mini-player outline</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
     <string name="player">Player</string>
     <string name="player_text_alignment">Player text alignment</string>
@@ -301,6 +318,9 @@
     <string name="max_song_cache_size">Max song cache size</string>
     <string name="clear_song_cache">Clear song cache</string>
     <string name="size_used">%s used</string>
+    <string name="cache_size_warning_title">Hold on!</string>
+    <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
+    <string name="cache_size_warning_confirm">Continue</string>
 
     <string name="privacy">Privacy</string>
     <string name="listen_history">Listen history</string>
