@@ -785,7 +785,7 @@ fun Lyrics(
     }
 
     AnimatedVisibility(
-        visible = !isAutoScrollEnabled || isSelectionModeActive,
+        visible = (!isAutoScrollEnabled && isSynced) || isSelectionModeActive,
         enter = slideInVertically { it } + fadeIn(),
         exit = slideOutVertically { it } + fadeOut(),
         modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp)
@@ -796,7 +796,7 @@ fun Lyrics(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AnimatedVisibility(
-                visible = !isAutoScrollEnabled,
+                visible = !isAutoScrollEnabled && isSynced,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
