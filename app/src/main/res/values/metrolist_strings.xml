@@ -103,6 +103,7 @@
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
+    <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
     <string name="auto_playlists">Auto playlists</string>
