@@ -1306,23 +1306,6 @@ fun BottomSheetPlayer(
                                 )
                             }
                         }
-                        if (showInlineLyrics) {
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(10.dp)
-                            ) {
-                                mediaMetadata?.let {
-                                    MoreActionsButton(
-                                        mediaMetadata = it,
-                                        navController = navController,
-                                        state = state,
-                                        textButtonColor = textButtonColor,
-                                        iconButtonColor = iconButtonColor,
-                                    )
-                                }
-                            }
-                        }
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
