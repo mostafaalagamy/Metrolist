@@ -109,7 +109,7 @@
     <string name="lyrics_auto_scroll">Автоматическая прокрутка текстов песен</string>
     <string name="lyrics_romanize_japanese">Романизировать японскую лирику</string>
     <string name="lyrics_romanize_korean">Романизировать корейскую лирику</string>
-    <string name="auto_playlists">Автоматические списки воспроизведения</string>
+    <string name="auto_playlists">Автоплейлисты</string>
     <string name="show_liked_playlist">Показать плейлист \"Понравившееся\"</string>
     <string name="show_downloaded_playlist">Показать плейлист \"Скачанное\"</string>
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
@@ -124,9 +124,9 @@
     <string name="intent_supported_links_not_found">Не удалось найти поддерживаемые параметры ссылок, пожалуйста, настройте их вручную</string>
     <string name="set_first_lyrics_provider">Предпочитаемый поставщик текстов песен</string>
     <string name="percentage_format">%d%%</string>
-    <string name="import_online">Импорт списков воспроизведения в формате \"m3u\"</string>
-    <string name="import_csv">Импорт плейлиста в формате \"csv\"</string>
-    <string name="playlist_add_local_to_synced_note">Примечание: Добавление локальных композиций в синхронизированные/удаленные списки воспроизведения не поддерживается. Любая другая комбинация допустима</string>
+    <string name="import_online">Импортировать плейлисты \"m3u\"</string>
+    <string name="import_csv">Импортировать плейлисты \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Примечание: добавление локальных композиций в синхронизированные/удаленные плейлисты не поддерживается. Любая другая комбинация допустима</string>
     <string name="auto_download_on_like">Автозагрузка по понравившимся</string>
     <string name="auto_download_on_like_desc">Автоматически загружать треки, отмечаемые как понравившиеся</string>
     <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все закэшированные треки?</string>
