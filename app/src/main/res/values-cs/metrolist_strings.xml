@@ -229,4 +229,8 @@
     <string name="swipe_song_to_remove">Posuňte skladbu pro odstranění z playlistu</string>
     <string name="last_fm_send_likes">Odesílat stav oblíbení</string>
     <string name="last_fm_send_likes_description">Přidat/odebrat srdíčko u skladby v Last.fm, když ji přidáte/odeberete z oblíbených v Metrolistu</string>
+    <string name="lyrics_romanize_chinese">Přepsat čínské texty do latinky</string>
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Povolit streamování zvuku do Chromecastu a dalších zařízení kompatibilních s protokolem Cast</string>
+    <string name="hide_video_songs">Skrýt videoklipy</string>
 </resources>
