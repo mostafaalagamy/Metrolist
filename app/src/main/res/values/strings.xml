@@ -319,6 +319,7 @@
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="hide_explicit">Hide explicit content</string>
 
+
     <string name="backup_restore">Backup and restore</string>
     <string name="action_backup">Backup</string>
     <string name="action_restore">Restore</string>
