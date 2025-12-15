@@ -110,7 +110,6 @@ import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.QueueEditLockKey
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.move
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.ActionPromptDialog
@@ -155,13 +154,18 @@ fun Queue(
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
 
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
+    
+    // Cast state
+    val castHandler = playerConnection.service.castConnectionHandler
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
 
     val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
     val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
@@ -792,12 +796,32 @@ fun Queue(
                                                     }
                                                 } else {
                                                     if (index == currentWindowIndex) {
-                                                        playerConnection.player.togglePlayPause()
+                                                        // Toggle play/pause for current song
+                                                        if (isCasting) {
+                                                            if (castIsPlaying) {
+                                                                castHandler?.pause()
+                                                            } else {
+                                                                castHandler?.play()
+                                                            }
+                                                        } else {
+                                                            playerConnection.togglePlayPause()
+                                                        }
                                                     } else {
-                                                        playerConnection.player.seekToDefaultPosition(
-                                                            window.firstPeriodIndex,
-                                                        )
-                                                        playerConnection.player.playWhenReady = true
+                                                        // Switch to different song
+                                                        if (isCasting) {
+                                                            // Navigate within Cast queue or load new song
+                                                            val mediaId = window.mediaItem.mediaId
+                                                            val navigated = castHandler?.navigateToMediaIfInQueue(mediaId) ?: false
+                                                            if (!navigated) {
+                                                                // Not in Cast queue, need to load it
+                                                                playerConnection.player.seekToDefaultPosition(window.firstPeriodIndex)
+                                                            }
+                                                        } else {
+                                                            playerConnection.player.seekToDefaultPosition(
+                                                                window.firstPeriodIndex,
+                                                            )
+                                                            playerConnection.player.playWhenReady = true
+                                                        }
                                                     }
                                                 }
                                             },

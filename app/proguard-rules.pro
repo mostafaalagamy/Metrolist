@@ -111,3 +111,8 @@
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+## Google Cast Rules
+-keep class com.metrolist.music.cast.** { *; }
+-keep class com.google.android.gms.cast.** { *; }
+-keep class androidx.mediarouter.** { *; }
