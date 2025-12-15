@@ -67,7 +67,7 @@ jobs:
           find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
   
       - name: Upload Signed APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ matrix.abi }}-release
           path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
@@ -115,7 +115,7 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Upload Debug APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: app-universal-debug
           path: app/build/outputs/apk/universal/debug/*.apk
