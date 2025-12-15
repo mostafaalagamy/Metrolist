@@ -75,6 +75,7 @@ import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.LastFMUseNowPlaying
 import com.metrolist.music.constants.ScrobbleDelayPercentKey
@@ -103,6 +104,7 @@ import com.metrolist.music.extensions.collect
 import com.metrolist.music.extensions.collectLatest
 import com.metrolist.music.extensions.currentMetadata
 import com.metrolist.music.extensions.findNextMediaItemById
+import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.extensions.mediaItems
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.setOffloadEnabled
@@ -117,6 +119,7 @@ import com.metrolist.music.playback.queues.EmptyQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
+import com.metrolist.music.playback.queues.filterVideoSongs
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
 import com.metrolist.music.utils.NetworkConnectivityObserver
@@ -179,6 +182,7 @@ class MusicService :
     private var lastAudioFocusState = AudioManager.AUDIOFOCUS_NONE
     private var wasPlayingBeforeAudioFocusLoss = false
     private var hasAudioFocus = false
+    private var reentrantFocusGain = false
 
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
@@ -188,11 +192,7 @@ class MusicService :
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
 
-    private val audioQuality by enumPreference(
-        this,
-        AudioQualityKey,
-        com.metrolist.music.constants.AudioQuality.AUTO
-    )
+    private lateinit var audioQuality: com.metrolist.music.constants.AudioQuality
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
@@ -208,7 +208,7 @@ class MusicService :
             database.format(mediaMetadata?.id)
         }
 
-    val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
+    lateinit var playerVolume: MutableStateFlow<Float>
 
     lateinit var sleepTimer: SleepTimer
 
@@ -303,6 +303,8 @@ class MusicService :
 
         connectivityManager = getSystemService()!!
         connectivityObserver = NetworkConnectivityObserver(this)
+        audioQuality = dataStore.get(AudioQualityKey).toEnum(com.metrolist.music.constants.AudioQuality.AUTO)
+        playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
@@ -542,75 +544,58 @@ class MusicService :
 
     private fun handleAudioFocusChange(focusChange: Int) {
         when (focusChange) {
-            AudioManager.AUDIOFOCUS_GAIN -> {
+
+            AudioManager.AUDIOFOCUS_GAIN,
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
                 hasAudioFocus = true
 
-                if (wasPlayingBeforeAudioFocusLoss) {
-                    player.play()
-                    wasPlayingBeforeAudioFocusLoss = false
+                if (wasPlayingBeforeAudioFocusLoss && !player.isPlaying && !reentrantFocusGain) {
+                    reentrantFocusGain = true
+                    scope.launch {
+                        delay(300)
+                        if (hasAudioFocus && wasPlayingBeforeAudioFocusLoss && !player.isPlaying) {
+                            player.play()
+                            wasPlayingBeforeAudioFocusLoss = false
+                        }
+                        reentrantFocusGain = false
+                    }
                 }
 
                 player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS -> {
                 hasAudioFocus = false
-                wasPlayingBeforeAudioFocusLoss = false
-
+                wasPlayingBeforeAudioFocusLoss = player.isPlaying
                 if (player.isPlaying) {
                     player.pause()
                 }
-
                 abandonAudioFocus()
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
                 hasAudioFocus = false
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
-
                 if (player.isPlaying) {
                     player.pause()
                 }
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-
                 hasAudioFocus = false
-
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
-
                 if (player.isPlaying) {
                     player.volume = (playerVolume.value * 0.2f)
                 }
-
-                lastAudioFocusState = focusChange
-            }
-
-            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
-
-                hasAudioFocus = true
-
-                if (wasPlayingBeforeAudioFocusLoss) {
-                    player.play()
-                    wasPlayingBeforeAudioFocusLoss = false
-                }
-
-                player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
-
                 player.volume = playerVolume.value
-
                 lastAudioFocusState = focusChange
             }
         }
@@ -778,7 +763,9 @@ class MusicService :
         scope.launch(SilentHandler) {
             val initialStatus =
                 withContext(Dispatchers.IO) {
-                    queue.getInitialStatus().filterExplicit(dataStore.get(HideExplicitKey, false))
+                    queue.getInitialStatus()
+                        .filterExplicit(dataStore.get(HideExplicitKey, false))
+                        .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
                 }
             if (queue.preloadItem != null && player.playbackState == STATE_IDLE) return@launch
             if (initialStatus.title != null) {
@@ -1051,7 +1038,7 @@ class MusicService :
 
                     withContext(Dispatchers.Main) {
                         if (loudnessDb != null) {
-                            val targetGain = (-loudnessDb * 100).toInt()
+                            val targetGain = (-loudnessDb * 100).toInt() + 400
                             val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
                             try {
                                 loudnessEnhancer?.setTargetGain(clampedGain)
@@ -1141,7 +1128,9 @@ class MusicService :
         ) {
             scope.launch(SilentHandler) {
                 val mediaItems =
-                    currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
+                    currentQueue.nextPage()
+                        .filterExplicit(dataStore.get(HideExplicitKey, false))
+                        .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
                 if (player.playbackState != STATE_IDLE) {
                     player.addMediaItems(mediaItems.drop(1))
                 }
@@ -1585,8 +1574,8 @@ class MusicService :
         const val PERSISTENT_PLAYER_STATE_FILE = "persistent_player_state.data"
         const val MAX_CONSECUTIVE_ERR = 5
         // Constants for audio normalization
-        private const val MAX_GAIN_MB = 800 // Maximum gain in millibels (8 dB)
-        private const val MIN_GAIN_MB = -800 // Minimum gain in millibels (-8 dB)
+        private const val MAX_GAIN_MB = 1000 // Maximum gain in millibels (8 dB)
+        private const val MIN_GAIN_MB = -1000 // Minimum gain in millibels (-8 dB)
 
         private const val TAG = "MusicService"
     }
