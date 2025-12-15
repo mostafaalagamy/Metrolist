@@ -82,7 +82,6 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
@@ -511,7 +510,7 @@ fun LyricsScreen(
                                 }
    
                                 IconButton(
-                                    onClick = { player.togglePlayPause() }, 
+                                    onClick = { playerConnection.togglePlayPause() }, 
                                     modifier = Modifier.size(72.dp)
                                 ) {
                                     Box(
@@ -754,7 +753,7 @@ fun LyricsScreen(
                             }
    
                             IconButton(
-                                onClick = { player.togglePlayPause() }, 
+                                onClick = { playerConnection.togglePlayPause() }, 
                                 modifier = Modifier.size(72.dp)
                             ) {
                                 Box(

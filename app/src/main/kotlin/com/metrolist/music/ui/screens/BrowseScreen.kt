@@ -49,7 +49,7 @@ package com.metrolist.music.ui.screens
 ) {
      val menuState = LocalMenuState.current
      val playerConnection = LocalPlayerConnection.current ?: return
-     val isPlaying by playerConnection.isPlaying.collectAsState()
+     val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
      val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
  
      val title by viewModel.title.collectAsState()

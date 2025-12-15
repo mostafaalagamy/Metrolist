@@ -15,6 +15,7 @@ import com.metrolist.music.extensions.currentMetadata
 import com.metrolist.music.extensions.getCurrentQueueIndex
 import com.metrolist.music.extensions.getQueueWindows
 import com.metrolist.music.extensions.metadata
+import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.utils.reportException
@@ -46,6 +47,20 @@ class PlayerConnection(
             SharingStarted.Lazily,
             player.playWhenReady && player.playbackState != STATE_ENDED
         )
+    
+    // Effective playing state - considers Cast when active
+    val isEffectivelyPlaying = combine(
+        isPlaying,
+        service.castConnectionHandler?.isCasting ?: MutableStateFlow(false),
+        service.castConnectionHandler?.castIsPlaying ?: MutableStateFlow(false)
+    ) { localPlaying, isCasting, castPlaying ->
+        if (isCasting) castPlaying else localPlaying
+    }.stateIn(
+        scope,
+        SharingStarted.Lazily,
+        player.playWhenReady && player.playbackState != STATE_ENDED
+    )
+    
     val mediaMetadata = MutableStateFlow(player.currentMetadata)
     val currentSong =
         mediaMetadata.flatMapLatest {
@@ -111,13 +126,68 @@ class PlayerConnection(
         service.toggleLike()
     }
 
+    /**
+     * Toggle play/pause - handles Cast when active
+     */
+    fun togglePlayPause() {
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            if (castHandler.castIsPlaying.value) {
+                castHandler.pause()
+            } else {
+                castHandler.play()
+            }
+        } else {
+            player.togglePlayPause()
+        }
+    }
+    
+    /**
+     * Start playback - handles Cast when active
+     */
+    fun play() {
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            castHandler.play()
+        } else {
+            if (player.playbackState == Player.STATE_IDLE) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+        }
+    }
+    
+    /**
+     * Pause playback - handles Cast when active
+     */
+    fun pause() {
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            castHandler.pause()
+        } else {
+            player.playWhenReady = false
+        }
+    }
+
     fun seekToNext() {
+        // When casting, use Cast skip instead of local player
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            castHandler.skipToNext()
+            return
+        }
         player.seekToNext()
         player.prepare()
         player.playWhenReady = true
     }
 
     fun seekToPrevious() {
+        // When casting, use Cast skip instead of local player
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            castHandler.skipToPrevious()
+            return
+        }
         player.seekToPrevious()
         player.prepare()
         player.playWhenReady = true

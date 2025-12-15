@@ -217,6 +217,7 @@
     <string name="romanization">Romanization</string>
     <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
+    <string name="lyrics_romanize_chinese">Romanize Chinese lyrics</string>
     <string name="lyrics_romanize_russian">Romanize Russian lyrics</string>
     <string name="lyrics_romanize_ukrainian">Romanize Ukrainian lyrics</string>
     <string name="lyrics_romanize_belarusian">Romanize Belarusian lyrics</string>
@@ -249,6 +250,11 @@
     <!-- Offload -->
     <string name="audio_offload">Enable offload</string>
     <string name="audio_offload_description">Use the offload audio path for audio playback. Disabling this may increase power usage but can be useful if you experience issues with audio playback or post processing</string>
+
+    <!-- Google Cast -->
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Enable casting audio to Chromecast and other Cast-enabled devices</string>
+
     <string name="lyrics_romanize_macedonian">Romanize Macedonian lyrics</string>
 
     <string name="integrations">Integrations</string>
@@ -265,4 +271,5 @@
     <string name="scrobble_min_track_duration">Scrobble songs longer than</string>
     <string name="scrobble_delay_percent">Scrobble delay percent</string>
     <string name="scrobble_delay_minutes">Scrobble delay minutes</string>
+    <string name="hide_video_songs">Hide video songs</string>
 </resources>

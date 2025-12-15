@@ -34,7 +34,6 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
-import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.LocalMenuState
@@ -59,7 +58,7 @@ fun ChartsScreen(
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val chartsPage by viewModel.chartsPage.collectAsState()
@@ -246,7 +245,7 @@ fun ChartsScreen(
                                                 .combinedClickable(
                                                     onClick = {
                                                         if (song.id == mediaMetadata?.id) {
-                                                            playerConnection.player.togglePlayPause()
+                                                            playerConnection.togglePlayPause()
                                                         } else {
                                                             playerConnection.playQueue(
                                                                 YouTubeQueue(
@@ -301,7 +300,7 @@ fun ChartsScreen(
                                             .combinedClickable(
                                                 onClick = {
                                                     if (video.id == mediaMetadata?.id) {
-                                                        playerConnection.player.togglePlayPause()
+                                                        playerConnection.togglePlayPause()
                                                     } else {
                                                         playerConnection.playQueue(
                                                             YouTubeQueue(
