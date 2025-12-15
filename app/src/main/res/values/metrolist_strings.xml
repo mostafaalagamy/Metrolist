@@ -219,6 +219,7 @@
     <string name="romanization">Romanization</string>
     <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
+    <string name="lyrics_romanize_chinese">Romanize Chinese lyrics</string>
     <string name="lyrics_romanize_russian">Romanize Russian lyrics</string>
     <string name="lyrics_romanize_ukrainian">Romanize Ukrainian lyrics</string>
     <string name="lyrics_romanize_belarusian">Romanize Belarusian lyrics</string>
@@ -267,4 +268,5 @@
     <string name="scrobble_min_track_duration">Scrobble songs longer than</string>
     <string name="scrobble_delay_percent">Scrobble delay percent</string>
     <string name="scrobble_delay_minutes">Scrobble delay minutes</string>
+    <string name="hide_video_songs">Hide video songs</string>
 </resources>

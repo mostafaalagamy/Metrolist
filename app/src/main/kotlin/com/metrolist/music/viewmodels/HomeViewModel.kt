@@ -8,10 +8,12 @@ import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
@@ -85,6 +87,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun load() {
         isLoading.value = true
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+        val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
 
         getQuickPicks()
         forgottenFavorites.value = database.forgottenFavorites().first().shuffled().take(20)
@@ -114,7 +117,11 @@ class HomeViewModel @Inject constructor(
                 }
                 SimilarRecommendation(
                     title = it,
-                    items = items.filterExplicit(hideExplicit).shuffled().ifEmpty { return@mapNotNull null }
+                    items = items
+                        .filterExplicit(hideExplicit)
+                        .filterVideoSongs(hideVideoSongs)
+                        .shuffled()
+                        .ifEmpty { return@mapNotNull null }
                 )
             }
 
@@ -131,6 +138,7 @@ class HomeViewModel @Inject constructor(
                             page.artists.shuffled().take(4) +
                             page.playlists.shuffled().take(4))
                         .filterExplicit(hideExplicit)
+                        .filterVideoSongs(hideVideoSongs)
                         .shuffled()
                         .ifEmpty { return@mapNotNull null }
                 )
@@ -140,7 +148,7 @@ class HomeViewModel @Inject constructor(
         YouTube.home().onSuccess { page ->
             homePage.value = page.copy(
                 sections = page.sections.map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                    section.copy(items = section.items.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs))
                 }
             )
         }.onFailure {
@@ -167,6 +175,7 @@ class HomeViewModel @Inject constructor(
     fun loadMoreYouTubeItems(continuation: String?) {
         if (continuation == null || _isLoadingMore.value) return
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+        val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
 
         viewModelScope.launch(Dispatchers.IO) {
             _isLoadingMore.value = true
@@ -178,7 +187,7 @@ class HomeViewModel @Inject constructor(
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,
                 sections = (homePage.value?.sections.orEmpty() + nextSections.sections).map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                    section.copy(items = section.items.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs))
                 }
             )
             _isLoadingMore.value = false
@@ -199,12 +208,13 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+            val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
             val nextSections = YouTube.home(params = chip?.endpoint?.params).getOrNull() ?: return@launch
 
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,
                 sections = nextSections.sections.map { section ->
-                    section.copy(items = section.items.filterExplicit(hideExplicit))
+                    section.copy(items = section.items.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs))
                 }
             )
             selectedChip.value = chip
