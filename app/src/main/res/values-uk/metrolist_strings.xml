@@ -231,4 +231,8 @@
     <string name="swipe_song_to_remove">Проведіть пальцем по пісні, щоб вилучити її зі списку відтворення</string>
     <string name="last_fm_send_likes">Надіслати вподобання/не вподобання</string>
     <string name="last_fm_send_likes_description">Пісні, які подобається/не подобається, на Last.fm, коли вони вподобані/зняті з Metrolist</string>
+    <string name="lyrics_romanize_chinese">Романізація китайських текстів</string>
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Увімкнути трансляцію аудіо на Chromecast та інші пристрої з підтримкою Cast</string>
+    <string name="hide_video_songs">Приховати відеопісні</string>
 </resources>
