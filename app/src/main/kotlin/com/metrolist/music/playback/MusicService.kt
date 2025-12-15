@@ -1714,6 +1714,9 @@ class MusicService :
             views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
 
             appWidgetManager.updateAppWidget(ids, views)
+        }
+    }
+
     /**
      * Get the stream URL for a given media ID.
      * This is used for Google Cast to send the audio URL to Chromecast.
