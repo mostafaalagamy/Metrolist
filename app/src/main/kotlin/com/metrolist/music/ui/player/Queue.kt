@@ -940,7 +940,7 @@ fun Queue(
                 .clickable (
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
-                )
+                ) { }
                 .background(
                     if (pureBlack) Color.Black
                     else MaterialTheme.colorScheme
