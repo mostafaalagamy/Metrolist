@@ -937,6 +937,10 @@ fun Queue(
         Column(
             modifier =
             Modifier
+                .clickable (
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
                 .background(
                     if (pureBlack) Color.Black
                     else MaterialTheme.colorScheme
