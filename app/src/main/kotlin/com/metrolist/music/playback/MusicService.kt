@@ -2,6 +2,17 @@
 
 package com.metrolist.music.playback
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.core.graphics.drawable.toBitmap
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.toBitmap
+import kotlinx.coroutines.launch
+import com.metrolist.music.widget.HelloWidget
+import android.appwidget.AppWidgetManager
+import android.widget.RemoteViews
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -148,7 +159,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -347,6 +357,7 @@ class MusicService :
 
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
+            updateWidgetUI(player.isPlaying)
             if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
                 discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
             } else {
@@ -691,7 +702,7 @@ class MusicService :
                             },
                         ),
                     )
-                    .setIconResId(if (currentSong.value?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border)
+                    .setIconResId(if (currentSong.value?.song?.liked == true) R.drawable.ic_heart else R.drawable.ic_heart_outline)
                     .setSessionCommand(CommandToggleLike)
                     .setEnabled(currentSong.value != null)
                     .build(),
@@ -1237,6 +1248,7 @@ class MusicService :
 
         // Update the Discord RPC activity if the player is playing
         if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
+            updateWidgetUI(player.isPlaying)
             if (player.isPlaying) {
                 currentSong.value?.let { song ->
                     scope.launch {
@@ -1603,6 +1615,111 @@ class MusicService :
     inner class MusicBinder : Binder() {
         val service: MusicService
             get() = this@MusicService
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Intercept Widget Commands
+        when (intent?.action) {
+            HelloWidget.ACTION_PLAY_PAUSE -> {
+                if (player.isPlaying) player.pause() else player.play()
+                updateWidgetUI(player.isPlaying) // Instant UI update
+            }
+            HelloWidget.ACTION_NEXT -> {
+                player.seekToNext()
+                updateWidgetUI(player.isPlaying)
+            }
+            HelloWidget.ACTION_PREV -> {
+                player.seekToPrevious()
+                updateWidgetUI(player.isPlaying)
+            }
+            HelloWidget.ACTION_LIKE -> {
+                toggleLike()
+                updateWidgetUI(player.isPlaying)
+            }
+        }
+
+        // IMPORTANT: Pass everything else to Media3 so notification buttons still work!
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    // --- WIDGET UPDATE HELPER ---
+    private fun updateWidgetUI(isPlaying: Boolean) {
+        val context = this
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, HelloWidget::class.java))
+        if (ids.isEmpty()) return
+
+        scope.launch(Dispatchers.IO) {
+            val song = currentSong.value?.song
+            val songTitle = song?.title ?: "No Song Playing"
+
+            val views = RemoteViews(packageName, R.layout.widget_hello)
+            views.setTextViewText(R.id.txt_song_title, songTitle)
+
+            val playIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
+            views.setImageViewResource(R.id.btn_play, playIcon)
+
+            // --- COIL 3 IMAGE LOADING (SAFE MODE) ---
+            if (song?.thumbnailUrl != null) {
+                try {
+                    val loader = ImageLoader(context)
+                    val request = ImageRequest.Builder(context)
+                        .data(song.thumbnailUrl)
+                        .size(300, 300)
+                        .build()
+
+                    val result = loader.execute(request)
+
+                    if (result is SuccessResult) {
+                        val originalBitmap = result.image.toBitmap()
+                        val safeBitmap = if (originalBitmap.config == Bitmap.Config.HARDWARE) {
+                            originalBitmap.copy(Bitmap.Config.ARGB_8888, false)
+                        } else {
+                            originalBitmap
+                        }
+                        views.setImageViewBitmap(R.id.img_album_art, safeBitmap)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                views.setImageViewResource(R.id.img_album_art, android.R.drawable.ic_menu_gallery)
+            }
+
+            // --- FIXED: Renamed 'flags' to 'piFlags' to avoid conflict ---
+            val piFlags = if (android.os.Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+
+            fun getPending(action: String): PendingIntent {
+                val i = Intent(context, MusicService::class.java).apply { this.action = action }
+                return if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    PendingIntent.getForegroundService(context, 0, i, piFlags)
+                } else {
+                    PendingIntent.getService(context, 0, i, piFlags)
+                }
+            }
+
+            views.setOnClickPendingIntent(R.id.btn_prev, getPending(HelloWidget.ACTION_PREV))
+            views.setOnClickPendingIntent(R.id.btn_play, getPending(HelloWidget.ACTION_PLAY_PAUSE))
+            views.setOnClickPendingIntent(R.id.btn_next, getPending(HelloWidget.ACTION_NEXT))
+            views.setOnClickPendingIntent(R.id.btn_like, getPending(HelloWidget.ACTION_LIKE))
+
+            // --- APP OPEN LOGIC ---
+            val openAppIntent = Intent(context, MainActivity::class.java).apply {
+                // Now this works because 'flags' refers to the Intent, not the variable above
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+            val openAppPendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                openAppIntent,
+                piFlags // Use the renamed variable here
+            )
+
+            views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
+
+            appWidgetManager.updateAppWidget(ids, views)
+        }
     }
 
     /**
