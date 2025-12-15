@@ -136,7 +136,7 @@ jobs:
           ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
 
       - name: Upload Signed APKs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.abi == 'universal' && 'Metrolist' || format('app-{0}-release', matrix.abi) }}
           path: app/build/outputs/apk/${{ matrix.abi }}/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
@@ -151,7 +151,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download all APKs
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: downloaded_artifacts/
 

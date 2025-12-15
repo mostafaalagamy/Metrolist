@@ -106,6 +106,13 @@ fun PlayerMenu(
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val playerVolume = playerConnection.service.playerVolume.collectAsState()
+    
+    // Cast state for volume control
+    val castHandler = playerConnection.service.castConnectionHandler
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castVolume by castHandler?.castVolume?.collectAsState() ?: remember { mutableStateOf(1f) }
+    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf<String?>(null) }
+    
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
     val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
@@ -185,19 +192,61 @@ fun PlayerMenu(
     }
 
     if (isQueueTrigger != true) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp, bottom = 6.dp),
         ) {
-            Icon(
-                painter = painterResource(R.drawable.volume_up),
-                contentDescription = null,
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Slider(
-                value = playerVolume.value,
-                onValueChange = { playerConnection.service.playerVolume.value = it }
-            )
+            // Show Cast indicator when casting
+            if (isCasting && castDeviceName != null) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.cast),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Casting to ${castDeviceName}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.volume_up),
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp),
+                    tint = if (isCasting) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                )
+
+                Slider(
+                    value = if (isCasting) castVolume else playerVolume.value,
+                    onValueChange = { volume ->
+                        if (isCasting) {
+                            castHandler?.setVolume(volume)
+                        } else {
+                            playerConnection.service.playerVolume.value = volume
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(36.dp),
+                )
+            }
         }
     }
 

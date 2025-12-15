@@ -82,6 +82,9 @@ val DiscordNameKey = stringPreferencesKey("discordName")
 val EnableDiscordRPCKey = booleanPreferencesKey("discordRPCEnable")
 val DiscordUseDetailsKey = booleanPreferencesKey("discordUseDetails")
 
+// Google Cast
+val EnableGoogleCastKey = booleanPreferencesKey("enableGoogleCast")
+
 val LastFMSessionKey = stringPreferencesKey("lastfmSession")
 val LastFMUsernameKey = stringPreferencesKey("lastfmUsername")
 val EnableLastFMScrobblingKey = booleanPreferencesKey("lastfmScrobblingEnable")

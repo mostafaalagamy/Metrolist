@@ -1,13 +1,15 @@
 [versions]
-androidGradlePlugin = "8.13.1"
+androidGradlePlugin = "8.13.2"
 annotation = "1.9.1"
 json = "20250517"
 kotlin = "2.2.10"
-compose = "1.9.5"
+compose = "1.10.0"
 lifecycle = "2.10.0"
 material3 = "1.5.0-alpha09"
 appcompat = "1.7.1"
 media3 = "1.7.1"
+mediarouter = "1.8.1"
+castFramework = "22.2.0"
 room = "2.8.4"
 hilt = "2.57.1"
 ktor = "3.3.3"
@@ -19,7 +21,7 @@ ucrop = "2.2.11"
 guava = "33.5.0-android"
 coroutinesGuava = "1.10.2"
 concurrentFutures = "1.3.0"
-activity = "1.12.0"
+activity = "1.12.1"
 navigation = "2.9.5"
 hiltNavigation = "1.3.0"
 datastore = "1.2.0"
@@ -78,6 +80,10 @@ palette = { module = "androidx.palette:palette-ktx", version.ref = "palette" }
 media3 = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 media3-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
 media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
+media3-cast = { module = "androidx.media3:media3-cast", version.ref = "media3" }
+
+mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouter" }
+cast-framework = { module = "com.google.android.gms:play-services-cast-framework", version.ref = "castFramework" }
 
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }

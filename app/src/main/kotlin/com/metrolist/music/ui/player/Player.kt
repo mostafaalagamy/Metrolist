@@ -141,6 +141,7 @@ import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.BottomSheet
 import com.metrolist.music.ui.component.BottomSheetState
+import com.metrolist.music.ui.component.CastButton
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.Lyrics
@@ -226,6 +227,16 @@ fun BottomSheetPlayer(
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
+    
+    // Cast state
+    val castHandler = playerConnection.service.castConnectionHandler
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
+    val castPosition by castHandler?.castPosition?.collectAsState() ?: remember { mutableStateOf(0L) }
+    val castDuration by castHandler?.castDuration?.collectAsState() ?: remember { mutableStateOf(0L) }
+    val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
+    
+    // Use Cast state when casting, otherwise local player
+    val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     var position by rememberSaveable(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
@@ -236,6 +247,9 @@ fun BottomSheetPlayer(
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
+    // Track when we last manually set position to avoid Cast overwriting it
+    var lastManualSeekTime by remember { mutableStateOf(0L) }
+    
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
@@ -425,12 +439,29 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(playbackState) {
-        if (playbackState == STATE_READY) {
+    // Position update - only for local playback
+    // When casting, we use castPosition directly to avoid sync issues
+    LaunchedEffect(playbackState, isCasting) {
+        if (!isCasting && playbackState == STATE_READY) {
             while (isActive) {
                 delay(500)
-                position = playerConnection.player.currentPosition
-                duration = playerConnection.player.duration
+                if (sliderPosition == null) { // Only update if user isn't dragging
+                    position = playerConnection.player.currentPosition
+                    duration = playerConnection.player.duration
+                }
+            }
+        }
+    }
+    
+    // When casting, use Cast position/duration directly
+    // But wait a bit after manual seeks to let Cast catch up
+    LaunchedEffect(isCasting, castPosition, castDuration) {
+        if (isCasting && sliderPosition == null) {
+            val timeSinceManualSeek = System.currentTimeMillis() - lastManualSeekTime
+            if (timeSinceManualSeek > 1500) {
+                // Only update from Cast if we haven't manually seeked recently
+                position = castPosition
+                if (castDuration > 0) duration = castDuration
             }
         }
     }
@@ -934,7 +965,12 @@ fun BottomSheetPlayer(
                         },
                         onValueChangeFinished = {
                             sliderPosition?.let {
-                                playerConnection.player.seekTo(it)
+                                if (isCasting) {
+                                    castHandler?.seekTo(it)
+                                    lastManualSeekTime = System.currentTimeMillis()
+                                } else {
+                                    playerConnection.player.seekTo(it)
+                                }
                                 position = it
                             }
                             sliderPosition = null
@@ -953,7 +989,12 @@ fun BottomSheetPlayer(
                         },
                         onValueChangeFinished = {
                             sliderPosition?.let {
-                                playerConnection.player.seekTo(it)
+                                if (isCasting) {
+                                    castHandler?.seekTo(it)
+                                    lastManualSeekTime = System.currentTimeMillis()
+                                } else {
+                                    playerConnection.player.seekTo(it)
+                                }
                                 position = it
                             }
                             sliderPosition = null
@@ -977,7 +1018,12 @@ fun BottomSheetPlayer(
                         },
                         onValueChangeFinished = {
                             sliderPosition?.let {
-                                playerConnection.player.seekTo(it)
+                                if (isCasting) {
+                                    castHandler?.seekTo(it)
+                                    lastManualSeekTime = System.currentTimeMillis()
+                                } else {
+                                    playerConnection.player.seekTo(it)
+                                }
                                 position = it
                             }
                             sliderPosition = null
@@ -1090,11 +1136,17 @@ fun BottomSheetPlayer(
 
                             FilledIconButton(
                                 onClick = {
-                                    if (playbackState == STATE_ENDED) {
+                                    if (isCasting) {
+                                        if (castIsPlaying) {
+                                            castHandler?.pause()
+                                        } else {
+                                            castHandler?.play()
+                                        }
+                                    } else if (playbackState == STATE_ENDED) {
                                         playerConnection.player.seekTo(0, 0)
                                         playerConnection.player.playWhenReady = true
                                     } else {
-                                        playerConnection.player.togglePlayPause()
+                                        playerConnection.togglePlayPause()
                                     }
                                 },
                                 shape = RoundedCornerShape(50),
@@ -1113,14 +1165,14 @@ fun BottomSheetPlayer(
                                 ) {
                                     Icon(
                                         painter = painterResource(
-                                            if (isPlaying) R.drawable.pause else R.drawable.play
+                                            if (effectiveIsPlaying) R.drawable.pause else R.drawable.play
                                         ),
-                                        contentDescription = if (isPlaying) "Pause" else stringResource(R.string.play),
+                                        contentDescription = if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
                                         modifier = Modifier.size(32.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = if (isPlaying) "Pause" else stringResource(R.string.play),
+                                        text = if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                 }
@@ -1208,7 +1260,13 @@ fun BottomSheetPlayer(
                                     .clip(RoundedCornerShape(playPauseRoundness))
                                     .background(textButtonColor)
                                     .clickable {
-                                        if (playbackState == STATE_ENDED) {
+                                        if (isCasting) {
+                                            if (castIsPlaying) {
+                                                castHandler?.pause()
+                                            } else {
+                                                castHandler?.play()
+                                            }
+                                        } else if (playbackState == STATE_ENDED) {
                                             playerConnection.player.seekTo(0, 0)
                                             playerConnection.player.playWhenReady = true
                                         } else {
@@ -1223,7 +1281,7 @@ fun BottomSheetPlayer(
                                             STATE_ENDED
                                         ) {
                                             R.drawable.replay
-                                        } else if (isPlaying) {
+                                        } else if (effectiveIsPlaying) {
                                             R.drawable.pause
                                         } else {
                                             R.drawable.play

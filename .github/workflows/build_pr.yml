@@ -57,7 +57,7 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Upload APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: app-universal-debug-pr-${{ github.event.number }}
           path: app/build/outputs/apk/universal/debug/*.apk
