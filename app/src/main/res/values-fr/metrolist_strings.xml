@@ -24,14 +24,14 @@
     <string name="explore">Explorer</string>
     <string name="remote_history">Dans d\'autres applications</string>
     <string name="top_music_videos">Meilleurs Clips Musicaux</string>
-    <string name="added_to_play_next">Ajouté à jouer après</string>
+    <string name="added_to_play_next">Ajouté à la playlist</string>
     <string name="allows_for_sync_witch_youtube">Remarque : Ceci permet la synchronisation avec YouTube Music. Ce paramètre ne peut pas être modifié ultérieurement.</string>
     <string name="copy_link">Copier le lien</string>
     <string name="added_to_queue">Ajouté à la file d\'attente</string>
     <string name="dislike_all">Ne pas aimer tout</string>
     <string name="general_settings">Paramètres généraux</string>
     <string name="remove_from_cache">Retirer du cache</string>
-    <string name="link_copied">Lien copié au presse-papier</string>
+    <string name="link_copied">Lien copié dans le presse-papiers</string>
     <string name="slim_navbar">Barre de navigation inférieure mince</string>
     <string name="lyrics">Paroles</string>
     <string name="already_in_playlist">Déjà dans la playlist :</string>
@@ -228,4 +228,8 @@
     <string name="swipe_song_to_remove">Faites glisser le titre pour le supprimer de la playlist</string>
     <string name="last_fm_send_likes">Envoyer des mentions « J’aime »/« Je n’aime pas »</string>
     <string name="last_fm_send_likes_description">Titres aimés/détestés sur Last.fm selon qu\'ils soient aimés/détestés dans Metrolist</string>
+    <string name="lyrics_romanize_chinese">Paroles chinoises romanisées</string>
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Activer la diffusion audio sur Chromecast et autres appareils compatibles Cast</string>
+    <string name="hide_video_songs">Masquer les chansons vidéo</string>
 </resources>
