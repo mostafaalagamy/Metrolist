@@ -214,7 +214,7 @@
     <string name="update_available_title">Un aggiornamento è disponibile</string>
     <string name="update_channel_name">Aggiornamenti dell\'app</string>
     <string name="update_channel_desc">Notifiche sulle nuove versioni</string>
-    <string name="lyrics_romanize_macedonian">Romanizza testi in macedone</string>
+    <string name="lyrics_romanize_macedonian">Romanizza testo in macedone</string>
     <string name="enable_scrobbling">Attiva scrobbling</string>
     <string name="lastfm_now_playing">Invia l\'ascolto attuale</string>
     <string name="scrobbling_configuration">Configurazione dello scrobbling</string>
@@ -228,4 +228,8 @@
     <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
     <string name="last_fm_send_likes">Invia Mi piace/Non mi piace</string>
     <string name="last_fm_send_likes_description">Brani che ami/ che non ami in Last.fm quando vengono apprezzate/non apprezzate in Metrolist</string>
+    <string name="lyrics_romanize_chinese">Romanizza testo in cinese</string>
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Attiva l\'invio dell\'audio a Chromecast e altri dispositivi</string>
+    <string name="hide_video_songs">Nascondi brani video</string>
 </resources>
