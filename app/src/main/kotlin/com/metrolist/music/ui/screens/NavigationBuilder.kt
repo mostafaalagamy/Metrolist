@@ -55,6 +55,7 @@ import com.metrolist.music.ui.screens.playlist.OnlinePlaylistScreen
 import com.metrolist.music.ui.screens.playlist.TopPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.CachePlaylistScreen
 import com.metrolist.music.ui.screens.search.OnlineSearchResult
+import com.metrolist.music.ui.screens.search.SearchScreen
 import com.metrolist.music.ui.screens.settings.AboutScreen
 import com.metrolist.music.ui.screens.settings.AccountSettings
 import com.metrolist.music.ui.screens.settings.AppearanceSettings
@@ -89,6 +90,13 @@ fun NavGraphBuilder.navigationBuilder(
 ) {
     composable(Screens.Home.route) {
         HomeScreen(navController)
+    }
+    composable(Screens.Search.route) {
+        val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+        SearchScreen(
+            navController = navController,
+            pureBlack = pureBlack
+        )
     }
     composable(
         Screens.Library.route,
