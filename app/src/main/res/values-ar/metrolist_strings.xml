@@ -237,4 +237,8 @@
     <string name="swipe_song_to_remove">مرر الأغنية لإزالتها من قائمة التشغيل</string>
     <string name="last_fm_send_likes_description">عندما تعجبك أغنية أو تلغي إعجابك بها في Metrolist سيتم تلقائيًا وضع علامة (أحببت) أو (غير محبوب) على نفس الأغنية في Last.fm</string>
     <string name="last_fm_send_likes">إرسال الإعجابات/إلغاء الإعجابات</string>
+    <string name="lyrics_romanize_chinese">كلمات الأغاني الصينية بالحروف اللاتينية</string>
+    <string name="hide_video_songs">إخفاء أغاني الفيديو</string>
+    <string name="google_cast">جوجل كاست</string>
+    <string name="google_cast_description">تمكين بث الصوت إلى كروم كاست والأجهزة الأخرى التي تدعم البث</string>
 </resources>
