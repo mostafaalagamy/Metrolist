@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
  * @param items List of settings items to display
  */
 @Composable
-fun Material3SettingsGroup(
+fun IntegrationCard(
     title: String? = null,
-    items: List<Material3SettingsItem>
+    items: List<IntegrationCardItem>
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +76,7 @@ fun Material3SettingsGroup(
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
-                    Material3SettingsItemRow(item = item)
+                    IntegrationCardItemRow(item = item)
                 }
             }
         }
@@ -87,8 +87,8 @@ fun Material3SettingsGroup(
  * Individual settings item row with Material 3 styling
  */
 @Composable
-private fun Material3SettingsItemRow(
-    item: Material3SettingsItem
+private fun IntegrationCardItemRow(
+    item: IntegrationCardItem
 ) {
     Row(
         modifier = Modifier
@@ -180,7 +180,7 @@ private fun Material3SettingsItemRow(
 /**
  * Data class for Material 3 settings item
  */
-data class Material3SettingsItem(
+data class IntegrationCardItem(
     val icon: Painter? = null,
     val title: @Composable () -> Unit,
     val description: (@Composable () -> Unit)? = null,

@@ -74,6 +74,8 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
+import com.metrolist.music.constants.MiniPlayerOutlineKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
@@ -84,13 +86,16 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.ui.screens.settings.DarkMode
+import com.metrolist.music.utils.rememberEnumPreference
 
 @Composable
 fun MiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
 
@@ -98,8 +103,7 @@ fun MiniPlayer(
         NewMiniPlayer(
             position = position,
             duration = duration,
-            modifier = modifier,
-            pureBlack = pureBlack
+            modifier = modifier
         )
     } else {
         // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
@@ -117,8 +121,7 @@ fun MiniPlayer(
                     Modifier.align(Alignment.CenterEnd)
                 } else {
                     Modifier.align(Alignment.Center)
-                },
-                pureBlack = pureBlack
+                }
             )
         }
     }
@@ -128,11 +131,16 @@ fun MiniPlayer(
 private fun NewMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+    }
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
@@ -280,7 +288,12 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
+                    color = if (pureBlack && useDarkTheme) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(32.dp)
                 )
         ) {
             Row(
@@ -559,9 +572,9 @@ private fun NewMiniPlayer(
 private fun LegacyMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
@@ -620,7 +633,7 @@ private fun LegacyMiniPlayer(
             // preventing sharp edges when the width is reduced.
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(
-                if (pureBlack)
+                if (pureBlack && isSystemInDarkTheme())
                     Color.Black
                 else
                     MaterialTheme.colorScheme.surfaceContainer // Fixed background independent of player background

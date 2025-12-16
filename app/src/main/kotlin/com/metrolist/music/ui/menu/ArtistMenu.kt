@@ -46,6 +46,8 @@ import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.ArtistListItem
+import com.metrolist.music.ui.component.Material3MenuItemData
+import com.metrolist.music.ui.component.Material3MenuGroup
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +82,6 @@ fun ArtistMenu(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     LazyColumn(
-        userScrollEnabled = !isPortrait,
         contentPadding = PaddingValues(
             start = 0.dp,
             top = 0.dp,
@@ -189,21 +190,25 @@ fun ArtistMenu(
         }
 
         item {
-            ListItem(
-                headlineContent = { 
-                    Text(text = if (artist.artist.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
-                },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(if (artist.artist.bookmarkedAt != null) R.drawable.subscribed else R.drawable.subscribe),
-                        contentDescription = null,
+            Material3MenuGroup(
+                items = listOf(
+                    Material3MenuItemData(
+                        title = {
+                            Text(text = if (artist.artist.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(if (artist.artist.bookmarkedAt != null) R.drawable.subscribed else R.drawable.subscribe),
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            database.transaction {
+                                update(artist.artist.toggleLike())
+                            }
+                        }
                     )
-                },
-                modifier = Modifier.clickable {
-                    database.transaction {
-                        update(artist.artist.toggleLike())
-                    }
-                }
+                )
             )
         }
     }

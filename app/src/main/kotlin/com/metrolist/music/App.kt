@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import timber.log.Timber
@@ -64,7 +65,7 @@ class App : Application(), SingletonImageLoader.Factory {
     private suspend fun initializeSettings() {
         val settings = dataStore.data.first()
         val locale = Locale.getDefault()
-        val languageTag = locale.toLanguageTag().replace("-Hant", "")
+        val languageTag = locale.language
 
         YouTube.locale = YouTubeLocale(
             gl = settings[ContentCountryKey]?.takeIf { it != SYSTEM_DEFAULT }
@@ -185,8 +186,9 @@ class App : Application(), SingletonImageLoader.Factory {
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-        val cacheSize = dataStore.get(MaxImageCacheSizeKey, 512)
-
+        val cacheSize = runBlocking {
+            dataStore.data.map { it[MaxImageCacheSizeKey] ?: 512 }.first()
+        }
         return ImageLoader.Builder(this).apply {
             crossfade(false)
             allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)

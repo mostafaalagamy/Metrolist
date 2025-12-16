@@ -95,6 +95,7 @@
     <string name="player_background_blur">Blur</string>
     <string name="player_buttons_style">Player button colors</string>
     <string name="default_style">Default</string>
+    <string name="primary_color_style">Primary color</string>
     <string name="secondary_color_style">Secondary</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
@@ -102,6 +103,7 @@
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
+    <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
     <string name="auto_playlists">Auto playlists</string>
@@ -272,4 +274,25 @@
     <string name="scrobble_delay_percent">Scrobble delay percent</string>
     <string name="scrobble_delay_minutes">Scrobble delay minutes</string>
     <string name="hide_video_songs">Hide video songs</string>
+
+    <string name="details_desc">View the song\'s information</string>
+    <string name="edit_desc">Change the title or artist</string>
+    <string name="start_radio_desc">Create a station based on this item</string>
+    <string name="play_next_desc">Add to the top of your queue</string>
+    <string name="add_to_queue_desc">Add to the bottom of your queue</string>
+    <string name="add_to_library_desc">Save to your library</string>
+    <string name="download_desc">Make available for offline playback</string>
+    <string name="add_to_playlist_desc">Add to one of your playlists</string>
+    <string name="refetch_desc">Fetch the latest metadata from YouTube Music</string>
+    <string name="share_desc">Share a link to this item</string>
+    <string name="delete_desc">Permanently remove this item</string>
+    <string name="advanced_desc">Change the song\'s tempo and pitch</string>
+    <string name="equalizer_desc">Adjust the audio equalizer</string>
+    <string name="enable_dynamic_icon">Enable dynamic icon</string>
+    <string name="mini_player">Mini-player</string>
+    <string name="pure_black_mini_player">Pure black mini-player</string>
+    <string name="mini_player_outline">Mini-player outline</string>
+    <string name="cache_size_warning_title">Hold on!</string>
+    <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
+    <string name="cache_size_warning_confirm">Continue</string>
 </resources>
