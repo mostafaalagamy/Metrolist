@@ -417,7 +417,7 @@ fun ContentSettings(
                         )
                     },
                     onClick = { onHideExplicitChange(!hideExplicit) }
-                )
+                ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.slow_motion_video),
                     title = { Text(stringResource(R.string.hide_video_songs)) },
