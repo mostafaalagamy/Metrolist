@@ -106,7 +106,7 @@
     <string name="default_style">По умолчанию</string>
     <string name="secondary_color_style">Вторичный</string>
     <string name="lyrics_click_change">Изменение текста песни по клику</string>
-    <string name="lyrics_auto_scroll">Автоматическая прокрутка текстов песен</string>
+    <string name="lyrics_auto_scroll">Автопрокрутка текстов песен</string>
     <string name="lyrics_romanize_japanese">Романизировать японский текст</string>
     <string name="lyrics_romanize_korean">Романизировать корейский текст</string>
     <string name="auto_playlists">Автоплейлисты</string>
@@ -115,8 +115,8 @@
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
     <string name="show_cached_playlist">Показать плейлист \"Кэшированное\"</string>
     <string name="advanced_login">Вход в систему с помощью токена</string>
-    <string name="yt_sync">Автоматическая синхронизация с учетной записью</string>
-    <string name="more_content">Доп. содержание</string>
+    <string name="yt_sync">Автосинхронизация с аккаунтом</string>
+    <string name="more_content">Доп. контент</string>
     <string name="general">Общие</string>
     <string name="default_lib_chips">Изменение чипа библиотеки (по умолчанию)</string>
     <string name="set_quick_picks">Установите быстрый выбор</string>
@@ -131,8 +131,8 @@
     <string name="auto_download_on_like_desc">Автоматически загружать треки, отмечаемые как понравившиеся</string>
     <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все закэшированные треки?</string>
     <string name="clear_downloads_dialog">Вы уверены, что хотите очистить все загрузки?</string>
-    <string name="pause_remote_listen_history">Приостановить совместное прослушивание истории с YouTube Music</string>
-    <string name="not_logged_in_youtube">Не вошел в систему YouTube</string>
+    <string name="pause_remote_listen_history">Не делиться историей прослушивания с YouTube Music</string>
+    <string name="not_logged_in_youtube">Вы не вошли в YouTube</string>
     <string name="default_links">Открыть поддерживаемые ссылки</string>
     <string name="open_app_settings_error">Невозможно открыть настройки приложения</string>
     <string name="release_notes">Примечания к выпуску</string>
@@ -185,7 +185,7 @@
     <string name="enable_authentication">Включить аутентификацию</string>
     <string name="lyrics_romanization_cyrillic">Кириллица</string>
     <string name="lyrics_romanize_title">Романизация</string>
-    <string name="lyrics_romanization">Романизация лирики</string>
+    <string name="lyrics_romanization">Романизация текста</string>
     <string name="romanization">Романизация</string>
     <string name="lyrics_romanize_russian">Романизировать русский текст</string>
     <string name="lyrics_romanize_ukrainian">Романизировать украинский текст</string>
@@ -217,7 +217,7 @@
     <string name="update_channel_name">Обновления приложения</string>
     <string name="update_channel_desc">Уведомления о новых версиях</string>
     <string name="discord_use_details">Использовать подробности вместо статуса</string>
-    <string name="discord_use_details_description">Выделять название песни вместо имён исполнителей</string>
+    <string name="discord_use_details_description">Показывать в заголовке название трека вместо исполнителя</string>
     <string name="integrations">Интеграции</string>
     <string name="username">Имя пользователя</string>
     <string name="password">Пароль</string>
