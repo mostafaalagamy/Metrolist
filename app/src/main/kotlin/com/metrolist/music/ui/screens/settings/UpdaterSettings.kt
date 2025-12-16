@@ -31,9 +31,13 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.CheckForUpdatesKey
 import com.metrolist.music.constants.UpdateNotificationsEnabledKey
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.component.Material3SettingsGroup
+import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +56,8 @@ fun UpdaterScreen(
                     WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
                 )
             )
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(
@@ -65,34 +70,57 @@ fun UpdaterScreen(
 
         Spacer(Modifier.height(4.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(8.dp)
-        ) {
-            SwitchPreference(
-                title = { Text(stringResource(R.string.check_for_updates)) },
-                icon = { Icon(painterResource(R.drawable.update), null) },
-                checked = checkForUpdates,
-                onCheckedChange = onCheckForUpdatesChange,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            if (checkForUpdates) {
-                Spacer(Modifier.height(4.dp))
-
-                SwitchPreference(
-                    title = { Text(stringResource(R.string.update_notifications)) },
-                    icon = { Icon(painterResource(R.drawable.notification), null) },
-                    checked = updateNotifications,
-                    onCheckedChange = onUpdateNotificationsChange,
-                    isEnabled = checkForUpdates,
-                    modifier = Modifier.fillMaxWidth()
+        Material3SettingsGroup(
+            items = buildList {
+                add(
+                    Material3SettingsItem(
+                        title = { Text(stringResource(R.string.check_for_updates)) },
+                        icon = painterResource(R.drawable.update),
+                        trailingContent = {
+                            Switch(
+                                checked = checkForUpdates,
+                                onCheckedChange = onCheckForUpdatesChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = if (checkForUpdates) R.drawable.check else R.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(androidx.compose.material3.SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onCheckForUpdatesChange(!checkForUpdates) }
+                    )
                 )
+
+                if (checkForUpdates) {
+                    add(
+                        Material3SettingsItem(
+                            title = { Text(stringResource(R.string.update_notifications)) },
+                            icon = painterResource(R.drawable.notification),
+                            trailingContent = {
+                                Switch(
+                                    checked = updateNotifications,
+                                    onCheckedChange = onUpdateNotificationsChange,
+                                    thumbContent = {
+                                        Icon(
+                                            painter = painterResource(
+                                                id = if (updateNotifications) R.drawable.check else R.drawable.close
+                                            ),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(androidx.compose.material3.SwitchDefaults.IconSize)
+                                        )
+                                    }
+                                )
+                            },
+                            onClick = { onUpdateNotificationsChange(!updateNotifications) }
+                        )
+                    )
+                }
             }
-        }
+        )
 
         Spacer(Modifier.height(32.dp))
     }

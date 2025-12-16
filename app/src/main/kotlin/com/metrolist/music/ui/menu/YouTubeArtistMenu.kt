@@ -46,6 +46,8 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.Material3MenuItemData
+import com.metrolist.music.ui.component.Material3MenuGroup
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.YouTubeListItem
@@ -74,7 +76,6 @@ fun YouTubeArtistMenu(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     LazyColumn(
-        userScrollEnabled = !isPortrait,
         contentPadding = PaddingValues(
             start = 0.dp,
             top = 0.dp,
@@ -153,39 +154,43 @@ fun YouTubeArtistMenu(
         }
 
         item {
-            ListItem(
-                headlineContent = { 
-                    Text(text = if (libraryArtist?.artist?.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
-                },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(
-                            if (libraryArtist?.artist?.bookmarkedAt != null) {
-                                R.drawable.subscribed
-                            } else {
-                                R.drawable.subscribe
-                            }
-                        ),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable {
-                    database.query {
-                        val libraryArtist = libraryArtist
-                        if (libraryArtist != null) {
-                            update(libraryArtist.artist.toggleLike())
-                        } else {
-                            insert(
-                                ArtistEntity(
-                                    id = artist.id,
-                                    name = artist.title,
-                                    channelId = artist.channelId,
-                                    thumbnailUrl = artist.thumbnail,
-                                ).toggleLike()
+            Material3MenuGroup(
+                items = listOf(
+                    Material3MenuItemData(
+                        title = {
+                            Text(text = if (libraryArtist?.artist?.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(
+                                    if (libraryArtist?.artist?.bookmarkedAt != null) {
+                                        R.drawable.subscribed
+                                    } else {
+                                        R.drawable.subscribe
+                                    }
+                                ),
+                                contentDescription = null,
                             )
+                        },
+                        onClick = {
+                            database.query {
+                                val libraryArtist = libraryArtist
+                                if (libraryArtist != null) {
+                                    update(libraryArtist.artist.toggleLike())
+                                } else {
+                                    insert(
+                                        ArtistEntity(
+                                            id = artist.id,
+                                            name = artist.title,
+                                            channelId = artist.channelId,
+                                            thumbnailUrl = artist.thumbnail,
+                                        ).toggleLike()
+                                    )
+                                }
+                            }
                         }
-                    }
-                }
+                    )
+                )
             )
         }
     }

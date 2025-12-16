@@ -11,13 +11,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.IntegrationCard
+import com.metrolist.music.ui.component.IntegrationCardItem
 import com.metrolist.music.ui.utils.backToMain
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,27 +33,28 @@ fun IntegrationScreen(
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
     ) {
-        PreferenceGroupTitle(title = stringResource(R.string.general))
-
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.discord_integration)) },
-            icon = { Icon(painterResource(R.drawable.discord), null) },
-            onClick = {
-                navController.navigate("settings/integrations/discord")
-            }
+        IntegrationCard(
+            title = stringResource(R.string.general),
+            items = listOf(
+                IntegrationCardItem(
+                    icon = painterResource(R.drawable.discord),
+                    title = { Text(stringResource(R.string.discord_integration)) },
+                    onClick = {
+                        navController.navigate("settings/integrations/discord")
+                    }
+                ),
+                IntegrationCardItem(
+                    icon = painterResource(R.drawable.music_note),
+                    title = { Text(stringResource(R.string.lastfm_integration)) },
+                    onClick = {
+                        navController.navigate("settings/integrations/lastfm")
+                    }
+                )
+            )
         )
-
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.lastfm_integration)) },
-            icon = { Icon(painterResource(R.drawable.music_note), null) },
-            onClick = {
-                navController.navigate("settings/integrations/lastfm")
-            }
-        )
-
-
     }
 
     TopAppBar(
