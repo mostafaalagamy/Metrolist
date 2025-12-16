@@ -418,6 +418,26 @@ fun ContentSettings(
                     },
                     onClick = { onHideExplicitChange(!hideExplicit) }
                 )
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.slow_motion_video),
+                    title = { Text(stringResource(R.string.hide_video_songs)) },
+                    trailingContent = {
+                        Switch(
+                            checked = hideVideoSongs,
+                            onCheckedChange = onHideVideoSongsChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (hideVideoSongs) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onHideVideoSongsChange(!hideVideoSongs) }
+                )
             )
         )
 
