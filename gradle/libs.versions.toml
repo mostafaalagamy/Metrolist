@@ -2,7 +2,7 @@
 androidGradlePlugin = "8.13.2"
 annotation = "1.9.1"
 json = "20250517"
-kotlin = "2.2.10"
+kotlin = "2.3.0"
 compose = "1.10.0"
 lifecycle = "2.10.0"
 material3 = "1.5.0-alpha09"
