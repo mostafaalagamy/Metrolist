@@ -150,8 +150,6 @@ import com.metrolist.music.constants.NavigationBarHeight
 import com.metrolist.music.constants.PauseSearchHistoryKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SYSTEM_DEFAULT
-import com.metrolist.music.constants.SearchSource
-import com.metrolist.music.constants.SearchSourceKey
 import com.metrolist.music.constants.SlimNavBarHeight
 import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
@@ -170,15 +168,12 @@ import com.metrolist.music.ui.component.BottomSheetPage
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.TopSearch
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.component.shimmer.ShimmerTheme
 import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.player.BottomSheetPlayer
 import com.metrolist.music.ui.screens.Screens
 import com.metrolist.music.ui.screens.navigationBuilder
-import com.metrolist.music.ui.screens.search.LocalSearchScreen
-import com.metrolist.music.ui.screens.search.OnlineSearchScreen
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
@@ -460,7 +455,6 @@ class MainActivity : ComponentActivity() {
                     val topLevelScreens = remember {
                         listOf(
                             Screens.Home.route,
-                            Screens.Search.route,
                             Screens.Library.route,
                             "settings",
                         )
@@ -471,28 +465,9 @@ class MainActivity : ComponentActivity() {
                             mutableStateOf(TextFieldValue())
                         }
 
-                    var active by rememberSaveable {
-                        mutableStateOf(false)
-                    }
-
-                    val onActiveChange: (Boolean) -> Unit = { newActive ->
-                        active = newActive
-                        if (!newActive) {
-                            focusManager.clearFocus()
-                            if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
-                                onQueryChange(TextFieldValue())
-                            }
-                        }
-                    }
-
-                    var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
-
-                    val searchBarFocusRequester = remember { FocusRequester() }
-
                     val onSearch: (String) -> Unit = remember {
                         { searchQuery ->
                             if (searchQuery.isNotEmpty()) {
-                                onActiveChange(false)
                                 navController.navigate("search/${URLEncoder.encode(searchQuery, "UTF-8")}")
 
                                 if (dataStore[PauseSearchHistoryKey] != true) {
@@ -506,24 +481,15 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    var openSearchImmediately: Boolean by remember {
-                        mutableStateOf(intent?.action == ACTION_SEARCH)
-                    }
-
                     val inSearchScreen = remember(navBackStackEntry) {
                         navBackStackEntry?.destination?.route?.startsWith("search/") == true
                     }
 
-                    val shouldShowSearchBar = remember(active, navBackStackEntry) {
-                        active ||
-                                navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                inSearchScreen
-                    }
-
-                    val shouldShowNavigationBar = remember(navBackStackEntry, active) {
-                        navBackStackEntry?.destination?.route == null ||
-                                navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
-                                !active
+                    val shouldShowNavigationBar = remember(navBackStackEntry) {
+                    val currentRoute = navBackStackEntry?.destination?.route
+                        currentRoute == null ||
+                            navigationItems.fastAny { it.route == currentRoute } ||
+                            currentRoute.startsWith("search/")
                     }
 
                     val isLandscape = remember(configuration) {
@@ -645,14 +611,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    LaunchedEffect(active) {
-                        if (active) {
-                            searchBarScrollBehavior.state.resetHeightOffset()
-                            topAppBarScrollBehavior.state.resetHeightOffset()
-                            searchBarFocusRequester.requestFocus()
-                        }
-                    }
-
                     LaunchedEffect(playerConnection) {
                         val player = playerConnection?.player ?: return@LaunchedEffect
                         if (player.currentMediaItem == null) {
@@ -693,7 +651,7 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(navBackStackEntry) {
                         shouldShowTopBar =
-                            !active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings"
+                            navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings"
                     }
 
                     val coroutineScope = rememberCoroutineScope()
@@ -821,175 +779,6 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
-                                AnimatedVisibility(
-                                    visible = active || inSearchScreen,
-                                    enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(150)),
-                                    exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(100))
-                                ) {
-                                    TopSearch(
-                                        query = query,
-                                        onQueryChange = onQueryChange,
-                                        onSearch = onSearch,
-                                        active = active,
-                                        onActiveChange = onActiveChange,
-                                        placeholder = {
-                                            Text(
-                                                text = stringResource(
-                                                    when (searchSource) {
-                                                        SearchSource.LOCAL -> R.string.search_library
-                                                        SearchSource.ONLINE -> R.string.search_yt_music
-                                                    }
-                                                ),
-                                            )
-                                        },
-                                        leadingIcon = {
-                                            IconButton(
-                                                onClick = {
-                                                    when {
-                                                        active -> onActiveChange(false)
-                                                        !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
-                                                            navController.navigateUp()
-                                                        }
-
-                                                        else -> onActiveChange(true)
-                                                    }
-                                                },
-                                                onLongClick = {
-                                                    when {
-                                                        active -> {}
-                                                        !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
-                                                            navController.backToMain()
-                                                        }
-                                                        else -> {}
-                                                    }
-                                                },
-                                            ) {
-                                                Icon(
-                                                    painterResource(
-                                                        if (active ||
-                                                            !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                        ) {
-                                                            R.drawable.arrow_back
-                                                        } else {
-                                                            R.drawable.search
-                                                        },
-                                                    ),
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                        },
-                                        trailingIcon = {
-                                            Row {
-                                                if (active) {
-                                                    if (query.text.isNotEmpty()) {
-                                                        IconButton(
-                                                            onClick = {
-                                                                onQueryChange(
-                                                                    TextFieldValue(
-                                                                        ""
-                                                                    )
-                                                               )
-                                                            },
-                                                        ) {
-                                                            Icon(
-                                                                painter = painterResource(R.drawable.close),
-                                                                contentDescription = null,
-                                                            )
-                                                        }
-                                                    }
-                                                    IconButton(
-                                                        onClick = {
-                                                            searchSource =
-                                                                if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
-                                                        },
-                                                    ) {
-                                                        Icon(
-                                                            painter = painterResource(
-                                                                when (searchSource) {
-                                                                    SearchSource.LOCAL -> R.drawable.library_music
-                                                                    SearchSource.ONLINE -> R.drawable.language
-                                                                },
-                                                            ),
-                                                            contentDescription = null,
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        focusRequester = searchBarFocusRequester,
-                                        modifier = Modifier
-                                            .align(Alignment.TopCenter)
-                                            .windowInsetsPadding(
-                                                if (showRail) {
-                                                    WindowInsets(left = NavigationBarHeight)
-                                                } else {
-                                                    WindowInsets(0.dp)
-                                                }
-                                            ),
-                                        colors = if (pureBlack && active) {
-                                            SearchBarDefaults.colors(
-                                                containerColor = Color.Black,
-                                                dividerColor = Color.DarkGray,
-                                                inputFieldColors = TextFieldDefaults.colors(
-                                                    focusedTextColor = Color.White,
-                                                    unfocusedTextColor = Color.Gray,
-                                                    focusedContainerColor = Color.Transparent,
-                                                    unfocusedContainerColor = Color.Transparent,
-                                                    cursorColor = Color.White,
-                                                    focusedIndicatorColor = Color.Transparent,
-                                                    unfocusedIndicatorColor = Color.Transparent,
-                                                )
-                                            )
-                                        } else {
-                                            SearchBarDefaults.colors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                                            )
-                                        }
-                                    ) {
-                                        // Disable crossfade transitions as requested
-                                        Crossfade(
-                                            targetState = searchSource,
-                                            label = "",
-                                            animationSpec = tween(150),
-                                            modifier =
-                                            Modifier
-                                                .fillMaxSize()
-                                                .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
-                                                .navigationBarsPadding(),
-                                        ) { searchSource ->
-                                            when (searchSource) {
-                                                SearchSource.LOCAL ->
-                                                    LocalSearchScreen(
-                                                        query = query.text,
-                                                        navController = navController,
-                                                        onDismiss = { onActiveChange(false) },
-                                                        pureBlack = pureBlack,
-                                                    )
-
-                                                SearchSource.ONLINE ->
-                                                    OnlineSearchScreen(
-                                                        query = query.text,
-                                                        onQueryChange = onQueryChange,
-                                                        navController = navController,
-                                                        onSearch = { searchQuery ->
-                                                            navController.navigate(
-                                                                "search/${URLEncoder.encode(searchQuery, "UTF-8")}"
-                                                            )
-                                                            if (dataStore[PauseSearchHistoryKey] != true) {
-                                                                lifecycleScope.launch(Dispatchers.IO) {
-                                                                    database.query {
-                                                                        insert(SearchHistory(query = searchQuery))
-                                                                    }
-                                                                }
-                                                            }
-                                                        },
-                                                        onDismiss = { onActiveChange(false) },
-                                                        pureBlack = pureBlack
-                                                    )
-                                            }
-                                        }
-                                    }
-                                }
                             },
                             bottomBar = {
                                 if (!showRail) {
@@ -1051,9 +840,7 @@ class MainActivity : ComponentActivity() {
                                                         }
                                                     },
                                                     onClick = {
-                                                        if (screen.route == Screens.Search.route) {
-                                                            onActiveChange(true)
-                                                        } else if (isSelected) {
+                                                        if (isSelected) {
                                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                                             coroutineScope.launch {
                                                                 searchBarScrollBehavior.state.resetHeightOffset()
@@ -1113,9 +900,7 @@ class MainActivity : ComponentActivity() {
                                             NavigationRailItem(
                                                 selected = isSelected,
                                                 onClick = {
-                                                    if (screen.route == Screens.Search.route) {
-                                                        onActiveChange(true)
-                                                    } else if (isSelected) {
+                                                    if (isSelected) {
                                                         navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                                         coroutineScope.launch {
                                                             searchBarScrollBehavior.state.resetHeightOffset()
@@ -1276,14 +1061,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                        }
-                    }
-
-                    LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
-                        if (shouldShowSearchBar && openSearchImmediately) {
-                            onActiveChange(true)
-                            searchBarFocusRequester.requestFocus()
-                            openSearchImmediately = false
                         }
                     }
                 }
