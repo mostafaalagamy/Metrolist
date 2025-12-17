@@ -19,8 +19,8 @@
     <string name="past_24_hours">Dernières 24 heures</string>
     <string name="past_week">Semaine dernière</string>
     <string name="past_month">Mois dernier</string>
-    <string name="past_year">L\’année dernière</string>
-    <string name="top_length">Longueur de ma Top liste</string>
+    <string name="past_year">Année dernière</string>
+    <string name="top_length">Longueur de la liste Mon Top</string>
     <string name="explore">Explorer</string>
     <string name="remote_history">Dans d\'autres applications</string>
     <string name="top_music_videos">Meilleurs Clips Musicaux</string>
@@ -39,13 +39,13 @@
     <string name="show_top_playlist">Afficher la playlist « Top »</string>
     <string name="show_cached_playlist">Afficher la playlist « Mise en cache »</string>
     <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
-    <string name="intent_supported_links_not_found">Paramètres des liens supportés introuvables, configurez-les manuellement</string>
+    <string name="intent_supported_links_not_found">Impossible de trouver les paramètres des liens pris en charge. Veuillez les configurer manuellement.</string>
     <plurals name="seconds">
         <item quantity="one">%d seconde</item>
         <item quantity="many">%d secondes</item>
         <item quantity="other">%d secondes</item>
     </plurals>
-    <string name="min_playback_duration_description">Le temps minimum d\'un titre qui doit être lu avant d\'être considéré comme \"lu\"</string>
+    <string name="min_playback_duration_description">La durée minimale d\'un titre qui doit être lu avant qu\'il soit considéré comme « lu ».</string>
     <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
     <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
@@ -95,7 +95,7 @@
     <string name="general">Général</string>
     <string name="app_language">Langue de l\'application</string>
     <string name="configure_app_language">Configurer les langues de l\'application</string>
-    <string name="intent_app_language_not_found">Paramètres des langues de l\'application introuvables, configurez-les manuellement</string>
+    <string name="intent_app_language_not_found">Impossible de trouver les paramètres de langue de l\'application. Veuillez les configurer manuellement.</string>
     <string name="open_supported_links">Ouvrir les liens supportés par défaut</string>
     <string name="configure_supported_links">Configurer les liens supportés</string>
     <string name="set_first_lyrics_provider">Fournisseur de paroles préférées</string>
@@ -135,7 +135,7 @@
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque : L\'ajout de titres locaux aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
@@ -143,7 +143,7 @@
     <string name="yt_sync">Synchronisation automatique avec le compte</string>
     <string name="more_content">Plus de contenu</string>
     <string name="new_player_design">Nouveau design du lecteur</string>
-    <string name="swipe_sensitivity">Sensibilité du mini lecteur au glissement</string>
+    <string name="swipe_sensitivity">Sensibilité du mini-lecteur au balayage</string>
     <string name="swipe_sensitivity_desc">Ajuster la sensibilité des gestes de balayage pour changer de titre</string>
     <string name="clear_image_cache_dialog">Êtes-vous sûr de vouloir effacer toutes les images mises en cache ?</string>
     <string name="disable">Désactiver</string>
@@ -151,10 +151,10 @@
     <string name="subscribe">S\'abonner</string>
     <string name="subscribed">Abonné</string>
     <string name="new_mini_player_design">Nouveau design du mini lecteur</string>
-    <string name="playlist_not_found">Liste de lecture introuvable</string>
-    <string name="playlist_not_found_desc">La liste de lecture demandée n\'a pas pu être chargée</string>
-    <string name="empty_playlist">Liste de lecture vide</string>
-    <string name="empty_playlist_desc">Cette liste de lecture ne contient aucune musique</string>
+    <string name="playlist_not_found">Playlist introuvable</string>
+    <string name="playlist_not_found_desc">La playlist demandée n\'a pas pu être chargée</string>
+    <string name="empty_playlist">Playlist vide</string>
+    <string name="empty_playlist_desc">Cette playlist ne contient aucun titre</string>
     <string name="now_playing">En cours de lecture</string>
     <string name="seek_backward">5 secondes en arrière</string>
     <string name="seek_forward">5 secondes en avant</string>
@@ -232,4 +232,26 @@
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Activer la diffusion audio sur Chromecast et autres appareils compatibles Cast</string>
     <string name="hide_video_songs">Masquer les chansons vidéo</string>
+    <string name="primary_color_style">Couleur primaire</string>
+    <string name="auto_scroll">Resynchroniser</string>
+    <string name="details_desc">Consultez les informations sur le titre</string>
+    <string name="edit_desc">Modifier le titre ou l\'artiste</string>
+    <string name="start_radio_desc">Créez une station basée sur cet élément</string>
+    <string name="play_next_desc">Ajouter en haut de votre file d\'attente</string>
+    <string name="add_to_queue_desc">Ajouter en bas de votre file d\'attente</string>
+    <string name="add_to_library_desc">Enregistrer dans votre bibliothèque</string>
+    <string name="download_desc">Rendre disponible pour la lecture hors ligne</string>
+    <string name="add_to_playlist_desc">Ajouter à l\'une de vos playlists</string>
+    <string name="refetch_desc">Récupérez les métadonnées les plus récentes de YouTube Music</string>
+    <string name="share_desc">Partager un lien vers cet élément</string>
+    <string name="delete_desc">Supprimer définitivement cet élément</string>
+    <string name="advanced_desc">Modifiez le tempo et la hauteur du titre</string>
+    <string name="equalizer_desc">Réglez l\'égaliseur audio</string>
+    <string name="enable_dynamic_icon">Activer l\'icône dynamique</string>
+    <string name="mini_player">Mini-lecteur</string>
+    <string name="pure_black_mini_player">Mini-lecteur noir pur</string>
+    <string name="mini_player_outline">Contour du mini-lecteur</string>
+    <string name="cache_size_warning_title">Attendez !</string>
+    <string name="cache_size_warning_message">Vous avez choisi une limite de taille de cache inférieure à celle actuellement utilisée par l\'application (%1$s). Si vous continuez, l\'application risque de supprimer une partie du cache %2$s pour respecter la nouvelle limite. Voulez-vous continuer malgré tout ?</string>
+    <string name="cache_size_warning_confirm">Continuer</string>
 </resources>
