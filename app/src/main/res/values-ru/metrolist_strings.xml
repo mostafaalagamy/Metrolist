@@ -235,4 +235,26 @@
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Включить трансляцию звука на Chromecast и другие устройства с поддержкой Cast</string>
     <string name="hide_video_songs">Скрыть видео</string>
+    <string name="primary_color_style">Основной цвет</string>
+    <string name="auto_scroll">Повторная синхронизация</string>
+    <string name="details_desc">Просмотреть информацию о треке</string>
+    <string name="edit_desc">Изменить название или исполнителя</string>
+    <string name="start_radio_desc">Создать радиостанцию на основе этого элемента</string>
+    <string name="play_next_desc">Добавить в начало очереди</string>
+    <string name="add_to_queue_desc">Добавить в конец очереди</string>
+    <string name="add_to_library_desc">Сохранить в библиотеку</string>
+    <string name="download_desc">Сделать доступным офлайн</string>
+    <string name="add_to_playlist_desc">Добавить в один из ваших плейлистов</string>
+    <string name="refetch_desc">Обновить метаданные из YouTube Music</string>
+    <string name="share_desc">Поделиться ссылкой на этот элемент</string>
+    <string name="delete_desc">Безвозвратно удалить этот элемент</string>
+    <string name="advanced_desc">Изменить темп и высоту тона трека</string>
+    <string name="equalizer_desc">Настроить эквалайзер</string>
+    <string name="enable_dynamic_icon">Включить динамическую иконку</string>
+    <string name="mini_player">Мини-плеер</string>
+    <string name="pure_black_mini_player">Чисто чёрный мини-плеер</string>
+    <string name="mini_player_outline">Контур мини-плеера</string>
+    <string name="cache_size_warning_title">Внимание!</string>
+    <string name="cache_size_warning_message">Вы выбрали лимит кэша меньше того, который приложение использует сейчас (%1$s). Если вы продолжите, часть кэшированных %2$s может быть удалена, чтобы уложиться в новый лимит. Всё равно продолжить?</string>
+    <string name="cache_size_warning_confirm">Продолжить</string>
 </resources>
