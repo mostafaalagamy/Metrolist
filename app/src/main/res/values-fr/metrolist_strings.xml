@@ -37,7 +37,7 @@
     <string name="already_in_playlist">Déjà dans la playlist :</string>
     <string name="swipe_song_to_add">Faites glisser le titre vers la gauche pour l\'ajouter à la file d\'attente ou vers la droite pour le lire ensuite</string>
     <string name="show_top_playlist">Afficher la playlist « Top »</string>
-    <string name="show_cached_playlist">Afficher la playlist « Mise en cache »</string>
+    <string name="show_cached_playlist">Afficher la playlist « Mise en Cache »</string>
     <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
     <string name="intent_supported_links_not_found">Impossible de trouver les paramètres des liens pris en charge. Veuillez les configurer manuellement.</string>
     <plurals name="seconds">
@@ -61,7 +61,7 @@
     <string name="months">Mois</string>
     <string name="years">Années</string>
     <string name="continuous">Continu</string>
-    <string name="cached_playlist">En cache</string>
+    <string name="cached_playlist">Mise en Cache</string>
     <string name="sync_playlist">Synchroniser la Playlist</string>
     <string name="sync_disabled">Synchronisation désactivée</string>
     <string name="elements_selected">%1$d éléments sélectionnés</string>
