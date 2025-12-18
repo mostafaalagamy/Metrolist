@@ -150,71 +150,88 @@ fun OnlinePlaylistScreen(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
         ) {
-            playlist?.let { playlist ->
-                if (!isSearching) {
-                    item(key = "playlist_header") {
-                        OnlinePlaylistHeader(
-                            playlist = playlist,
-                            songs = songs,
-                            dbPlaylist = dbPlaylist,
-                            navController = navController,
-                            coroutineScope = coroutineScope,
-                            modifier = Modifier.animateItem()
-                        )
+            if (playlist == null || songs.isEmpty()) {
+                if (isLoading) {
+                    item(key = "loading_placeholder") {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
-
-                itemsIndexed(wrappedSongs) { index, song ->
-                    YouTubeListItem(
-                        item = song.item.second,
-                        isActive = mediaMetadata?.id == song.item.second.id,
-                        isPlaying = isPlaying,
-                        isSelected = song.isSelected && selection,
-                        modifier = Modifier
-                            .combinedClickable(
-                                enabled = !hideExplicit || !song.item.second.explicit,
-                                onClick = {
-                                    if (song.item.second.id == mediaMetadata?.id)
-                                        playerConnection.togglePlayPause()
-                                    else
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = playlist.title,
-                                                items = filteredSongs.map { it.second.toMediaItem() },
-                                                startIndex = index
-                                            )
-                                        )
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    selection = true
-                                    wrappedSongs.forEach { it.isSelected = false }
-                                    song.isSelected = true
-                                }
+            } else {
+                playlist?.let { playlist ->
+                    if (!isSearching) {
+                        item(key = "playlist_header") {
+                            OnlinePlaylistHeader(
+                                playlist = playlist,
+                                songs = songs,
+                                dbPlaylist = dbPlaylist,
+                                navController = navController,
+                                coroutineScope = coroutineScope,
+                                modifier = Modifier.animateItem()
                             )
-                            .animateItem(),
-                        trailingContent = {
-                            IconButton(onClick = {
-                                menuState.show {
-                                    YouTubeSongMenu(song.item.second, navController, menuState::dismiss)
+                        }
+                    }
+
+                    itemsIndexed(wrappedSongs) { index, song ->
+                        YouTubeListItem(
+                            item = song.item.second,
+                            isActive = mediaMetadata?.id == song.item.second.id,
+                            isPlaying = isPlaying,
+                            isSelected = song.isSelected && selection,
+                            modifier = Modifier
+                                .combinedClickable(
+                                    enabled = !hideExplicit || !song.item.second.explicit,
+                                    onClick = {
+                                        if (song.item.second.id == mediaMetadata?.id)
+                                            playerConnection.togglePlayPause()
+                                        else
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = playlist.title,
+                                                    items = filteredSongs.map { it.second.toMediaItem() },
+                                                    startIndex = index
+                                                )
+                                            )
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        selection = true
+                                        wrappedSongs.forEach { it.isSelected = false }
+                                        song.isSelected = true
+                                    }
+                                )
+                                .animateItem(),
+                            trailingContent = {
+                                IconButton(onClick = {
+                                    menuState.show {
+                                        YouTubeSongMenu(song.item.second, navController, menuState::dismiss)
+                                    }
+                                }) {
+                                    Icon(painterResource(R.drawable.more_vert), null)
                                 }
-                            }) {
-                                Icon(painterResource(R.drawable.more_vert), null)
+                            }
+                        )
+                    }
+
+                    if (isLoadingMore) {
+                        item(key = "loading_more") {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
                         }
-                    )
+                    }
                 }
-            }
-        }
-
-        if (playlist == null && isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
             }
         }
 
@@ -245,7 +262,7 @@ fun OnlinePlaylistScreen(
                             .focusRequester(focusRequester)
                     )
                 } else if (lazyListState.firstVisibleItemIndex > 0) {
-                    Text(playlist?.title.orEmpty())
+                    Text(playlist?.title ?: "")
                 }
             },
             navigationIcon = {
@@ -310,7 +327,6 @@ private fun OnlinePlaylistHeader(
             .padding(top = 8.dp, bottom = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Playlist Thumbnail - Large centered with shadow
         Surface(
             modifier = Modifier
                 .size(240.dp)
@@ -331,7 +347,6 @@ private fun OnlinePlaylistHeader(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Playlist Name
         Text(
             text = playlist.title,
             style = MaterialTheme.typography.headlineSmall,
@@ -344,7 +359,6 @@ private fun OnlinePlaylistHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Metadata Row - Song Count, Duration, Date
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -352,13 +366,11 @@ private fun OnlinePlaylistHeader(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Song Count
             MetadataChip(
                 icon = R.drawable.music_note,
                 text = pluralStringResource(R.plurals.n_song, songs.size, songs.size)
             )
 
-            // Duration
             val totalDuration = songs.sumOf { it.duration ?: 0 }
             if (totalDuration > 0) {
                 MetadataChip(
@@ -370,7 +382,6 @@ private fun OnlinePlaylistHeader(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Action Buttons Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -378,14 +389,12 @@ private fun OnlinePlaylistHeader(
             horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Like Button
             Surface(
                 onClick = {
                     database.query {
                         if (dbPlaylist != null) {
                             update(dbPlaylist.playlist.toggleLike())
                         } else {
-                            // Create new playlist entry if it doesn't exist
                             insert(
                                 PlaylistEntity(
                                     id = playlist.id,
@@ -419,7 +428,6 @@ private fun OnlinePlaylistHeader(
                 }
             }
 
-            // Play Button
             Button(
                 onClick = {
                     if (songs.isNotEmpty()) {
@@ -438,7 +446,6 @@ private fun OnlinePlaylistHeader(
                 )
             }
 
-            // Shuffle Button
             Button(
                 onClick = {
                     playerConnection.playQueue(
@@ -457,7 +464,6 @@ private fun OnlinePlaylistHeader(
                 )
             }
 
-            // More Button
             Surface(
                 onClick = {
                     menuState.show {
