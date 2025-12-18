@@ -245,6 +245,7 @@ class MusicService :
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
     private var consecutivePlaybackErr = 0
+    private var retryJob: Job? = null
     
     // Google Cast support
     var castConnectionHandler: CastConnectionHandler? = null
@@ -327,15 +328,7 @@ class MusicService :
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
                 if (isConnected && waitingForNetworkConnection.value) {
-                    // Simple auto-play logic like OuterTune
-                    waitingForNetworkConnection.value = false
-                    if (player.currentMediaItem != null && player.playWhenReady) {
-                        player.prepare()
-                        // Don't start local playback if casting
-                        if (castConnectionHandler?.isCasting?.value != true) {
-                            player.play()
-                        }
-                    }
+                    triggerRetry()
                 }
                 if (isConnected && discordRpc != null && player.isPlaying) {
                     currentSong.value?.let { song ->
@@ -655,7 +648,32 @@ class MusicService :
     }
 
     private fun waitOnNetworkError() {
+        if (waitingForNetworkConnection.value) return
         waitingForNetworkConnection.value = true
+        
+        // Start a retry timer to periodically check if we can resume playback
+        // even if the connectivity observer hasn't notified us of a change
+        retryJob?.cancel()
+        retryJob = scope.launch {
+            while (waitingForNetworkConnection.value) {
+                delay(3000) // Retry every 3 seconds
+                if (isNetworkConnected.value && waitingForNetworkConnection.value) {
+                    triggerRetry()
+                }
+            }
+        }
+    }
+
+    private fun triggerRetry() {
+        waitingForNetworkConnection.value = false
+        retryJob?.cancel()
+        if (player.currentMediaItem != null && player.playWhenReady) {
+            player.prepare()
+            // Don't start local playback if casting
+            if (castConnectionHandler?.isCasting?.value != true) {
+                player.play()
+            }
+        }
     }
 
     private fun skipOnError() {
@@ -1208,6 +1226,12 @@ class MusicService :
             saveQueueToDisk()
         }
 
+        if (playbackState == Player.STATE_READY) {
+            consecutivePlaybackErr = 0
+            waitingForNetworkConnection.value = false
+            retryJob?.cancel()
+        }
+
         if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
             scrobbleManager?.onSongStop()
         }
@@ -1329,12 +1353,20 @@ class MusicService :
         }
     }
 
+    private fun isNetworkRelatedError(error: PlaybackException): Boolean {
+        return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+                error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
+                error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
+                error.errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE ||
+                error.errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED ||
+                error.cause is java.io.IOException ||
+                (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+    }
+
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        val isConnectionError = (error.cause?.cause is PlaybackException) &&
-                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
-
-        if (!isNetworkConnected.value || isConnectionError) {
+        
+        if (!isNetworkConnected.value || isNetworkRelatedError(error)) {
             waitOnNetworkError()
             return
         }
