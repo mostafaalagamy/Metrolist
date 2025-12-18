@@ -44,7 +44,7 @@ fun GridItemPlaceHolder(
                 Modifier.height(GridThumbnailHeight)
             }.aspectRatio(1f)
                 .clip(thumbnailShape)
-                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
+                .background(MaterialTheme.colorScheme.onSurface),
         )
 
         Spacer(modifier = Modifier.height(6.dp))

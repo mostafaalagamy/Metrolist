@@ -62,5 +62,3 @@ val ShimmerTheme =
             Color.Unspecified.copy(alpha = 0.25f),
         ),
     )
-
-
