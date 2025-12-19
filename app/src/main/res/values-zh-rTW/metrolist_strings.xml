@@ -22,11 +22,9 @@
     <string name="lyrics">歌詞</string>
     <string name="already_in_playlist">已在播放清單中:</string>
     <plurals name="n_element">
-        <item quantity="one">%d 個項目</item>
         <item quantity="other">%d 個項目</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d 次</item>
         <item quantity="other">%d 次</item>
     </plurals>
     <string name="similar_content">相似內容</string>
@@ -81,7 +79,6 @@
     <string name="top_length">我的熱門清單長度</string>
     <string name="history_duration">加入歷史紀錄的播放時長</string>
     <plurals name="seconds">
-        <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="lyrics_auto_scroll">自動滾動歌詞</string>

@@ -135,7 +135,7 @@
     <string name="similar_content_desc">Legg automatisk til fleire liknande songar når køen tek slutt</string>
     <string name="min_playback_duration_title">Minst avspelingstid</string>
     <string name="min_playback_duration_description">Den minste delen av ein song som må verte spela før songen vert sett på som «spela»</string>
-    <string name="percentage_format">%d %%</string>
+    <string name="percentage_format">%d %%</string>
     <string name="minimum_playback_duration">Minst speletid</string>
     <string name="import_online">Importer m3u-speleliste</string>
     <string name="import_csv">Importer csv-speleliste</string>
