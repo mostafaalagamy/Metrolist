@@ -257,4 +257,5 @@
     <string name="cache_size_warning_title">Внимание!</string>
     <string name="cache_size_warning_message">Вы выбрали лимит кэша меньше того, который приложение использует сейчас (%1$s). Если вы продолжите, часть кэшированных %2$s может быть удалена, чтобы уложиться в новый лимит. Всё равно продолжить?</string>
     <string name="cache_size_warning_confirm">Продолжить</string>
+    <string name="tertiary_color_style">Третичный цвет</string>
 </resources>
