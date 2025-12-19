@@ -145,7 +145,9 @@ fun YouTubeSelectionSongMenu(
                         com.metrolist.music.db.entities.AlbumEntity(
                             id = album.id,
                             title = album.title,
-                            thumbnailUrl = album.thumbnailUrl
+                            thumbnailUrl = album.thumbnailUrl,
+                            songCount = 0,
+                            duration = 0
                         )
                     }
                 )
@@ -395,14 +397,14 @@ fun YouTubeSelectionSongMenu(
                                             albumId = metadata.album?.id,
                                             albumName = metadata.album?.title,
                                             liked = !metadata.liked,
-                                            totalPlayTime = metadata.totalPlayTime ?: 0,
+                                            totalPlayTime = 0,
                                             inLibrary = metadata.inLibrary,
                                             isLocal = false,
                                             libraryAddToken = metadata.libraryAddToken,
                                             libraryRemoveToken = metadata.libraryRemoveToken
                                         )
                                         update(songEntity)
-                                        syncUtils.likeSong(metadata.copy(liked = !metadata.liked))
+                                        syncUtils.likeSong(songEntity)
                                     }
                                 }
                             }
