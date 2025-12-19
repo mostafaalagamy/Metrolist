@@ -1154,7 +1154,7 @@ private fun PlayerQueueButton(
             modifier.then(
                 buttonModifier.border(
                     width = 1.dp,
-                    color = LocalContentColor.current.copy(alpha = 0.12f),
+                    color = textButtonColor.copy(alpha = 0.3f),
                     shape = shape
                 )
             )
@@ -1178,7 +1178,7 @@ private fun PlayerQueueButton(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 modifier = Modifier.size(iconSize),
-                tint = if (isActive) iconButtonColor else textBackgroundColor
+                tint = if (isActive) iconButtonColor else textButtonColor.copy(alpha = 0.7f)
             )
         }
     }

@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.core.view.WindowCompat
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -203,13 +205,38 @@ fun BottomSheetPlayer(
     val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
         if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
     }
+
+    val shouldUseDarkButtonColors = remember(playerBackground, useDarkTheme) {
+        when (playerBackground) {
+            PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> true
+            PlayerBackgroundStyle.DEFAULT -> useDarkTheme
+        }
+    }
+    DisposableEffect(playerBackground, state.isExpanded, useDarkTheme) {
+        val window = (context as? android.app.Activity)?.window
+        if (window != null && state.isExpanded) {
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            
+            when (playerBackground) {
+                PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
+                    insetsController.isAppearanceLightStatusBars = false
+                }
+                PlayerBackgroundStyle.DEFAULT -> {
+                    insetsController.isAppearanceLightStatusBars = !useDarkTheme
+                }
+            }
+        }
+        
+        onDispose {
+            if (window != null) {
+                val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+                insetsController.isAppearanceLightStatusBars = !useDarkTheme
+            }
+        }
+    }
     val onBackgroundColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if (useDarkTheme)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
+        else -> MaterialTheme.colorScheme.onSurface
     }
     val useBlackBackground =
         remember(isSystemInDarkTheme, darkTheme, pureBlack) {
@@ -322,18 +349,36 @@ fun BottomSheetPlayer(
         label = "icBackgroundColor"
     )
 
-    val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
-        PlayerButtonsStyle.DEFAULT ->
-            if (useDarkTheme) Pair(Color.White, Color.Black)
-            else Pair(Color.Black, Color.White)
-        PlayerButtonsStyle.PRIMARY -> Pair(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.onPrimary
-        )
-        PlayerButtonsStyle.TERTIARY -> Pair(
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.onTertiary
-        )
+    val (textButtonColor, iconButtonColor) = when {
+        playerBackground == PlayerBackgroundStyle.BLUR || 
+        playerBackground == PlayerBackgroundStyle.GRADIENT -> {
+            when (playerButtonsStyle) {
+                PlayerButtonsStyle.DEFAULT -> Pair(Color.White, Color.Black)
+                PlayerButtonsStyle.PRIMARY -> Pair(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onPrimary
+                )
+                PlayerButtonsStyle.TERTIARY -> Pair(
+                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.onTertiary
+                )
+            }
+        }
+        else -> {
+            when (playerButtonsStyle) {
+                PlayerButtonsStyle.DEFAULT ->
+                    if (useDarkTheme) Pair(Color.White, Color.Black)
+                    else Pair(Color.Black, Color.White)
+                PlayerButtonsStyle.PRIMARY -> Pair(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onPrimary
+                )
+                PlayerButtonsStyle.TERTIARY -> Pair(
+                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.onTertiary
+                )
+            }
+        }
     }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
@@ -1088,9 +1133,7 @@ fun BottomSheetPlayer(
                                 .padding(horizontal = PlayerHorizontalPadding)
                         ) {
                             val backInteractionSource = remember { MutableInteractionSource() }
-
                             val nextInteractionSource = remember { MutableInteractionSource() }
-
                             val playPauseInteractionSource = remember { MutableInteractionSource() }
                             val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
@@ -1105,28 +1148,14 @@ fun BottomSheetPlayer(
                                 label = "sideButtonWeight"
                             )
 
-                            FilledTonalIconButton(
+                            FilledIconButton(
                                 onClick = playerConnection::seekToPrevious,
                                 enabled = canSkipPrevious,
                                 shape = RoundedCornerShape(50),
                                 interactionSource = backInteractionSource,
-                                colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                    containerColor =
-                                    if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.White
-                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
-                                        MaterialTheme.colorScheme.secondaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.tertiaryContainer
-                                    },
-                                    contentColor =
-                                    if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.Black
-                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
-                                        MaterialTheme.colorScheme.onSecondaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.onTertiaryContainer
-                                    },
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = textButtonColor,
+                                    contentColor = iconButtonColor,
                                 ),
                                 modifier = Modifier
                                     .height(64.dp)
@@ -1188,28 +1217,14 @@ fun BottomSheetPlayer(
 
                             Spacer(modifier = Modifier.width(8.dp))
 
-                            FilledTonalIconButton(
+                            FilledIconButton(
                                 onClick = playerConnection::seekToNext,
                                 enabled = canSkipNext,
                                 shape = RoundedCornerShape(50),
                                 interactionSource = nextInteractionSource,
-                                colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                    containerColor =
-                                    if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.White
-                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
-                                        MaterialTheme.colorScheme.secondaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.tertiaryContainer
-                                    },
-                                    contentColor =
-                                    if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.Black
-                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
-                                        MaterialTheme.colorScheme.onSecondaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.onTertiaryContainer
-                                    },
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = textButtonColor,
+                                    contentColor = iconButtonColor,
                                 ),
                                 modifier = Modifier
                                     .height(64.dp)
