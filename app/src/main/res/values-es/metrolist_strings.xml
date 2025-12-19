@@ -254,4 +254,7 @@
     <string name="cache_size_warning_title">¡Espera!</string>
     <string name="cache_size_warning_message">Has elegido un límite de tamaño de caché menor que el que usa la aplicación (%1$s). Si continúas, la aplicación podría eliminar algunos %2$s de la caché para que coincidan con el nuevo límite. ¿Continuar de todos modos?</string>
     <string name="cache_size_warning_confirm">Continuar</string>
+    <string name="lyrics_glow_effect">Habilitar el efecto de letras brillantes</string>
+    <string name="lyrics_glow_effect_desc">Agregue animación brillante y efecto de rebote a las letras activas</string>
+    <string name="lyrics_romanize_chinese">Romanizar letras chinas</string>
 </resources>
