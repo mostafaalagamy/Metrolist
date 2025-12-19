@@ -145,7 +145,7 @@ fun YouTubeSelectionSongMenu(
                         com.metrolist.music.db.entities.AlbumEntity(
                             id = album.id,
                             title = album.title,
-                            thumbnailUrl = album.thumbnailUrl,
+                            thumbnailUrl = metadata.thumbnailUrl, // Use song's thumbnail as album thumbnail
                             songCount = 0,
                             duration = 0
                         )
