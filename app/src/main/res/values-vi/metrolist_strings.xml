@@ -149,8 +149,8 @@
     <string name="maximum_volume">Âm lượng tối đa</string>
     <string name="seek_backward">5 giây lùi lại</string>
     <string name="seek_forward">5 giây chuyển tiếp</string>
-    <string name="seek_forward_dynamic">+%1$d giây chuyển tiếp</string>
-    <string name="seek_backward_dynamic">-%1$d giây ngược lại</string>
+    <string name="seek_forward_dynamic">+%1$d giây chuyển tiếp</string>
+    <string name="seek_backward_dynamic">-%1$d giây ngược lại</string>
     <string name="hide_player_thumbnail">Ẩn hình thu nhỏ của trình phát</string>
     <string name="hide_player_thumbnail_desc">Thay thế ảnh bìa album với logo ứng dụng trong trình phát</string>
     <string name="new_mini_player_design">Thiết kế trình phát mini mới</string>
