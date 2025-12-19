@@ -59,11 +59,13 @@
     <plurals name="n_element">
         <item quantity="one">%d prvok</item>
         <item quantity="few">%d prvky</item>
+        <item quantity="many">%d prvkov</item>
         <item quantity="other">%d prvkov</item>
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d raz</item>
         <item quantity="few">%d krát</item>
+        <item quantity="many">%d krát</item>
         <item quantity="other">%d krát</item>
     </plurals>
     <string name="seek_backward">5 sekúnd dozadu</string>
@@ -166,6 +168,7 @@
     <plurals name="seconds">
         <item quantity="one">1 sekunda</item>
         <item quantity="few">%d sekundy</item>
+        <item quantity="many">%d sekúnd</item>
         <item quantity="other">%d sekúnd</item>
     </plurals>
     <string name="disable_load_more_when_repeat_all">Zakázať načítanie ďalších položiek pri opakovaní všetkých položiek</string>
