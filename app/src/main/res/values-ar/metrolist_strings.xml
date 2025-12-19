@@ -264,4 +264,6 @@
     <string name="cache_size_warning_message">لقد اخترت حدًا لحجم ذاكرة التخزين المؤقت أصغر مما يستخدمه التطبيق حاليًا ( %1$s ). إذا تابعت، فقد يقوم التطبيق بإزالة بعض البيانات المخزنة مؤقتًا (%2$s) لتتوافق مع الحد الجديد. هل تريد المتابعة على أي حال؟</string>
     <string name="cache_size_warning_confirm">متابعة</string>
     <string name="tertiary_color_style">اللون الثانوي</string>
+    <string name="lyrics_glow_effect">تفعيل تأثير توهج كلمات الأغاني</string>
+    <string name="lyrics_glow_effect_desc">أضف تأثير توهج وارتداد للكلمات النشطة</string>
 </resources>
