@@ -25,7 +25,7 @@
     <string name="remote_history">Dans d\'autres applications</string>
     <string name="top_music_videos">Meilleurs Clips Musicaux</string>
     <string name="added_to_play_next">Ajouté à la playlist</string>
-    <string name="allows_for_sync_witch_youtube">Remarque : Ceci permet la synchronisation avec YouTube Music. Ce paramètre ne peut pas être modifié ultérieurement.</string>
+    <string name="allows_for_sync_witch_youtube">Remarque : Ceci permet la synchronisation avec YouTube Music. Ce paramètre ne peut pas être modifié ultérieurement.</string>
     <string name="copy_link">Copier le lien</string>
     <string name="added_to_queue">Ajouté à la file d\'attente</string>
     <string name="dislike_all">Ne pas aimer tout</string>
@@ -34,9 +34,9 @@
     <string name="link_copied">Lien copié dans le presse-papiers</string>
     <string name="slim_navbar">Barre de navigation inférieure mince</string>
     <string name="lyrics">Paroles</string>
-    <string name="already_in_playlist">Déjà dans la playlist :</string>
+    <string name="already_in_playlist">Déjà dans la playlist :</string>
     <string name="swipe_song_to_add">Faites glisser le titre vers la gauche pour l\'ajouter à la file d\'attente ou vers la droite pour le lire ensuite</string>
-    <string name="show_top_playlist">Afficher la playlist « Top »</string>
+    <string name="show_top_playlist">Afficher la playlist « Top »</string>
     <string name="show_cached_playlist">Afficher la playlist « Mise en Cache »</string>
     <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
     <string name="intent_supported_links_not_found">Impossible de trouver les paramètres des liens pris en charge. Veuillez les configurer manuellement.</string>
@@ -105,7 +105,7 @@
     <string name="min_playback_duration_title">Durée minimum de lecture</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Durée minimum de lecture</string>
-    <string name="clear_song_cache_dialog">Êtes-vous sûr de vouloir effacer tous les titres en cache ?</string>
+    <string name="clear_song_cache_dialog">Êtes-vous sûr de vouloir effacer tous les titres en cache ?</string>
     <string name="clear_downloads_dialog">Êtes-vous sûr·e de vouloir supprimer tous les téléchargements ?</string>
     <string name="pause_remote_listen_history">Mettre en pause et partager l\'historique d\'écoute avec YouTube Music</string>
     <string name="not_logged_in_youtube">Non connecté à YouTube</string>
@@ -135,9 +135,9 @@
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
-    <string name="import_csv">Importer une playlist « csv »</string>
+    <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
     <string name="lyrics_romanize_korean">Romaniser les paroles coréennes</string>
     <string name="yt_sync">Synchronisation automatique avec le compte</string>
@@ -145,7 +145,7 @@
     <string name="new_player_design">Nouveau design du lecteur</string>
     <string name="swipe_sensitivity">Sensibilité du mini-lecteur au balayage</string>
     <string name="swipe_sensitivity_desc">Ajuster la sensibilité des gestes de balayage pour changer de titre</string>
-    <string name="clear_image_cache_dialog">Êtes-vous sûr de vouloir effacer toutes les images mises en cache ?</string>
+    <string name="clear_image_cache_dialog">Êtes-vous sûr de vouloir effacer toutes les images mises en cache ?</string>
     <string name="disable">Désactiver</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="subscribe">S\'abonner</string>
@@ -190,14 +190,14 @@
     <string name="lyrics_romanize_kyrgyz">Romaniser les paroles kirghizes</string>
     <string name="lyrics_romanize_serbian">Romaniser les paroles serbes</string>
     <string name="lyrics_romanize_bulgarian">Romaniser les paroles bulgares</string>
-    <string name="line_by_line_option_title">EXPÉRIMENTAL : Détecter la langue ligne par ligne</string>
+    <string name="line_by_line_option_title">EXPÉRIMENTAL : Détecter la langue ligne par ligne</string>
     <string name="line_by_line_option_desc">La langue cyrillique sera détectée ligne par ligne au lieu du titre entier.</string>
-    <string name="line_by_line_dialog_title">Êtes-vous sûr ?</string>
+    <string name="line_by_line_dialog_title">Êtes-vous sûr ?</string>
     <string name="line_by_line_dialog_desc">Il s\'agit d\'une fonctionnalité expérimentale aléatoire.\n\nPar défaut, la langue est déterminée à partir du titre entier, mais avec cette option activée, il sera déterminé ligne par ligne. Cela permettra aux titres multilingues de fonctionner, mais la langue pourrait ne pas être toujours correcte (par exemple, si des paroles en ukrainien ne contiennent aucune lettre spécifique à l\'ukrainien, elles pourraient être romanisées en russe).\n\nSi vous ne rencontrez pas de problème, il est recommandé de désactiver cette option.</string>
     <string name="line_by_line_dialog_enable">Activer</string>
     <string name="romanize_current_track">Romaniser la piste actuelle</string>
     <string name="edit_playlist_cover">Modifier la couverture de la playlist</string>
-    <string name="edit_playlist_cover_note">Remarque : votre compte doit être lié à un numéro de téléphone et vérifié sur YouTube Music pour modifier la couverture de la playlist.</string>
+    <string name="edit_playlist_cover_note">Remarque : votre compte doit être lié à un numéro de téléphone et vérifié sur YouTube Music pour modifier la couverture de la playlist.</string>
     <string name="edit_playlist_cover_note_wait">Après avoir sélectionné une image, veuillez patienter un instant pour que la nouvelle couverture apparaisse dans votre playlist.</string>
     <string name="choose_from_library">Choisissez dans la bibliothèque</string>
     <string name="remove_custom_image">Supprimer l\'image personnalisée</string>
@@ -251,7 +251,7 @@
     <string name="mini_player">Mini-lecteur</string>
     <string name="pure_black_mini_player">Mini-lecteur noir pur</string>
     <string name="mini_player_outline">Contour du mini-lecteur</string>
-    <string name="cache_size_warning_title">Attendez !</string>
-    <string name="cache_size_warning_message">Vous avez choisi une limite de taille de cache inférieure à celle actuellement utilisée par l\'application (%1$s). Si vous continuez, l\'application risque de supprimer une partie du cache %2$s pour respecter la nouvelle limite. Voulez-vous continuer malgré tout ?</string>
+    <string name="cache_size_warning_title">Attendez !</string>
+    <string name="cache_size_warning_message">Vous avez choisi une limite de taille de cache inférieure à celle actuellement utilisée par l\'application (%1$s). Si vous continuez, l\'application risque de supprimer une partie du cache %2$s pour respecter la nouvelle limite. Voulez-vous continuer malgré tout ?</string>
     <string name="cache_size_warning_confirm">Continuer</string>
 </resources>
