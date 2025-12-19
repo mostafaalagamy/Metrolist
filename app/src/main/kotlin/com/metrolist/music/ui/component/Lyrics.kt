@@ -380,6 +380,10 @@ fun Lyrics(
     // Use Material 3 expressive accents and keep glow/text colors unified
     val expressiveAccent = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.primary
+        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
+            // For blur/gradient backgrounds, always use light colors regardless of theme
+            Color.White
+        }
         else -> MaterialTheme.colorScheme.tertiary
     }
     val textColor = expressiveAccent

@@ -381,6 +381,43 @@ fun BottomSheetPlayer(
         }
     }
 
+    // Separate colors for Previous/Next buttons in PRIMARY/TERTIARY modes
+    val (sideButtonContainerColor, sideButtonContentColor) = when {
+        playerBackground == PlayerBackgroundStyle.BLUR || 
+        playerBackground == PlayerBackgroundStyle.GRADIENT -> {
+            when (playerButtonsStyle) {
+                PlayerButtonsStyle.DEFAULT -> Pair(
+                    Color.White.copy(alpha = 0.2f), 
+                    Color.White
+                )
+                PlayerButtonsStyle.PRIMARY -> Pair(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                PlayerButtonsStyle.TERTIARY -> Pair(
+                    MaterialTheme.colorScheme.tertiaryContainer,
+                    MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            }
+        }
+        else -> {
+            when (playerButtonsStyle) {
+                PlayerButtonsStyle.DEFAULT -> Pair(
+                    MaterialTheme.colorScheme.surfaceContainerHighest,
+                    MaterialTheme.colorScheme.onSurface
+                )
+                PlayerButtonsStyle.PRIMARY -> Pair(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                PlayerButtonsStyle.TERTIARY -> Pair(
+                    MaterialTheme.colorScheme.tertiaryContainer,
+                    MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            }
+        }
+    }
+
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
         .collectAsState(initial = null)
 
@@ -1052,8 +1089,9 @@ fun BottomSheetPlayer(
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                         squigglesSpec =
                         SquigglySlider.SquigglesSpec(
-                            amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
+                            amplitude = if (isPlaying) (4.dp).coerceAtLeast(2.dp) else 0.dp,
                             strokeWidth = 3.dp,
+                            wavelength = 36.dp,
                         ),
                     )
                 }
@@ -1138,12 +1176,12 @@ fun BottomSheetPlayer(
                             val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
                             val playPauseWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 2.55f else 1.7f,
+                                targetValue = if (isPlayPausePressed) 1.9f else 1.3f,
                                 animationSpec = spring(),
                                 label = "playPauseWeight"
                             )
                             val sideButtonWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 0.3f else 0.4f,
+                                targetValue = if (isPlayPausePressed) 0.4f else 0.5f,
                                 animationSpec = spring(),
                                 label = "sideButtonWeight"
                             )
@@ -1154,11 +1192,11 @@ fun BottomSheetPlayer(
                                 shape = RoundedCornerShape(50),
                                 interactionSource = backInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = textButtonColor,
-                                    contentColor = iconButtonColor,
+                                    containerColor = sideButtonContainerColor,
+                                    contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(72.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(backInteractionSource)
                             ) {
@@ -1193,7 +1231,7 @@ fun BottomSheetPlayer(
                                     contentColor = iconButtonColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(72.dp)
                                     .weight(playPauseWeight)
                             ) {
                                 Row(
@@ -1223,11 +1261,11 @@ fun BottomSheetPlayer(
                                 shape = RoundedCornerShape(50),
                                 interactionSource = nextInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = textButtonColor,
-                                    contentColor = iconButtonColor,
+                                    containerColor = sideButtonContainerColor,
+                                    contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(72.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(nextInteractionSource)
                             ) {
@@ -1469,6 +1507,7 @@ fun BottomSheetPlayer(
             iconButtonColor = iconButtonColor,
             pureBlack = pureBlack,
             showInlineLyrics = showInlineLyrics,
+            playerBackground = playerBackground,
             onToggleLyrics = {
                 showInlineLyrics = !showInlineLyrics
             },
