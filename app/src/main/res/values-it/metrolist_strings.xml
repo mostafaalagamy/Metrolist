@@ -234,7 +234,7 @@
     <string name="hide_video_songs">Nascondi brani video</string>
     <string name="primary_color_style">Colore primario</string>
     <string name="auto_scroll">Risincronizza</string>
-    <string name="details_desc">Guarda le informazioni del brano</string>
+    <string name="details_desc">Visualizza le informazioni del brano</string>
     <string name="edit_desc">Cambia il titolo o l\'artista</string>
     <string name="start_radio_desc">Crea una stazione in base a questo brano</string>
     <string name="play_next_desc">Aggiungi in cima alla coda</string>
@@ -254,4 +254,5 @@
     <string name="cache_size_warning_title">Aspetta!</string>
     <string name="cache_size_warning_message">Hai scelto un limite alla dimensione della cache più piccola di quella che l\'app sta usando attualmente (%1$s). Se continui, l\'app può rimuovere %2$s di cache per arrivare al nuovo limite. Procedere comunque?</string>
     <string name="cache_size_warning_confirm">Continua</string>
+    <string name="tertiary_color_style">Colore terziario</string>
 </resources>
