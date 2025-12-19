@@ -235,4 +235,26 @@
     <string name="google_cast">Google Cast</string>
     <string name="google_cast_description">Povolit streamování zvuku do Chromecastu a dalších zařízení kompatibilních s protokolem Cast</string>
     <string name="hide_video_songs">Skrýt videoklipy</string>
+    <string name="refetch_desc">Načíst aktuální metadata z YouTube Music</string>
+    <string name="play_next_desc">Přidat na začátek vaší fronty</string>
+    <string name="cache_size_warning_message">Vybrali jste si limit velikosti mezipaměti menší, než kolik aplikace aktuálně používá (%1$s). Pokud budete pokračovat, může aplikace odstranit některé %2$s v mezipaměti pro splnění nového limitu. Chcete přesto pokračovat?</string>
+    <string name="cache_size_warning_confirm">Pokračovat</string>
+    <string name="add_to_queue_desc">Přidat na konec vaší fronty</string>
+    <string name="primary_color_style">Primární barva</string>
+    <string name="download_desc">Umožnit offline přehrávání</string>
+    <string name="mini_player_outline">Okraj mini přehrávače</string>
+    <string name="auto_scroll">Znovu synchronizovat</string>
+    <string name="delete_desc">Trvale odstranit tuto položku</string>
+    <string name="start_radio_desc">Vytvořit stanici založenou na této položce</string>
+    <string name="share_desc">Sdílet odkaz na tuto položku</string>
+    <string name="edit_desc">Změnit název nebo umělce</string>
+    <string name="details_desc">Zobrazit informace o skladbě</string>
+    <string name="add_to_playlist_desc">Přidat do jednoho z vašich playlistů</string>
+    <string name="equalizer_desc">Upravit ekvalizér</string>
+    <string name="cache_size_warning_title">Pozor!</string>
+    <string name="pure_black_mini_player">Čistě černý mini přehrávač</string>
+    <string name="enable_dynamic_icon">Povolit dynamickou ikonu</string>
+    <string name="mini_player">Mini přehrávač</string>
+    <string name="advanced_desc">Změnit tempo a výšku skladby</string>
+    <string name="add_to_library_desc">Uložit do vaší knihovny</string>
 </resources>
