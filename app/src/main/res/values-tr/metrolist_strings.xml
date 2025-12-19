@@ -251,4 +251,5 @@
     <string name="cache_size_warning_title">Bekle!</string>
     <string name="cache_size_warning_message">Uygulamanın şu anda kullandığı (%1$s) değerden daha küçük bir önbellek boyutu sınırı seçtiniz. Devam ederseniz, uygulama yeni sınıra uymak için önbelleğe alınmış bazı %2$s\'leri silebilir. Yine de devam edilsin mi?</string>
     <string name="cache_size_warning_confirm">Devam etmek</string>
+    <string name="tertiary_color_style">Üçüncül renk</string>
 </resources>
