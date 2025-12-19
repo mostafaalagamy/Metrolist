@@ -586,23 +586,43 @@ fun Lyrics(
             ) {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                     ),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)),
                     modifier = Modifier.padding(horizontal = 32.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.lyrics_not_found),
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 16.dp)
-                            .fillMaxWidth()
-                    )
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                                        Color.Transparent
+                                    ),
+                                    radius = 400f
+                                )
+                            )
+                            .padding(horizontal = 28.dp, vertical = 24.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.lyrics_not_found),
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(
+                                shadow = Shadow(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                    offset = Offset(0f, 2f),
+                                    blurRadius = 8f
+                                )
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         } else {
