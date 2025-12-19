@@ -121,17 +121,33 @@ fun YouTubeSelectionSongMenu(
                 // Convert SongItem to Song entity
                 val metadata = song.toMediaMetadata()
                 com.metrolist.music.db.entities.Song(
-                    id = metadata.id,
-                    title = metadata.title,
-                    artists = metadata.artists.joinToString(", ") { it.name },
-                    albumId = metadata.album?.id,
-                    albumName = metadata.album?.title,
-                    duration = metadata.duration ?: -1,
-                    thumbnailUrl = metadata.thumbnailUrl,
-                    liked = metadata.liked,
-                    totalPlayTime = 0,
-                    inLibrary = metadata.inLibrary,
-                    isLocal = false
+                    song = com.metrolist.music.db.entities.SongEntity(
+                        id = metadata.id,
+                        title = metadata.title,
+                        duration = metadata.duration ?: -1,
+                        thumbnailUrl = metadata.thumbnailUrl,
+                        albumId = metadata.album?.id,
+                        albumName = metadata.album?.title,
+                        liked = metadata.liked,
+                        totalPlayTime = 0,
+                        inLibrary = metadata.inLibrary,
+                        isLocal = false,
+                        libraryAddToken = metadata.libraryAddToken,
+                        libraryRemoveToken = metadata.libraryRemoveToken
+                    ),
+                    artists = metadata.artists.map { artist ->
+                        com.metrolist.music.db.entities.ArtistEntity(
+                            id = artist.id ?: "",
+                            name = artist.name
+                        )
+                    },
+                    album = metadata.album?.let { album ->
+                        com.metrolist.music.db.entities.AlbumEntity(
+                            id = album.id,
+                            title = album.title,
+                            thumbnailUrl = album.thumbnailUrl
+                        )
+                    }
                 )
             }.toMutableStateList()
         },
@@ -368,9 +384,25 @@ fun YouTubeSelectionSongMenu(
                                 songSelection.forEach { song ->
                                     val metadata = song.toMediaMetadata()
                                     if ((!allLiked && !metadata.liked) || allLiked) {
-                                        val updatedMetadata = metadata.copy(liked = !metadata.liked)
-                                        update(updatedMetadata)
-                                        syncUtils.likeSong(updatedMetadata)
+                                        // Insert the song first if it doesn't exist
+                                        insert(metadata)
+                                        // Create SongEntity with toggled like status
+                                        val songEntity = com.metrolist.music.db.entities.SongEntity(
+                                            id = metadata.id,
+                                            title = metadata.title,
+                                            duration = metadata.duration ?: -1,
+                                            thumbnailUrl = metadata.thumbnailUrl,
+                                            albumId = metadata.album?.id,
+                                            albumName = metadata.album?.title,
+                                            liked = !metadata.liked,
+                                            totalPlayTime = metadata.totalPlayTime ?: 0,
+                                            inLibrary = metadata.inLibrary,
+                                            isLocal = false,
+                                            libraryAddToken = metadata.libraryAddToken,
+                                            libraryRemoveToken = metadata.libraryRemoveToken
+                                        )
+                                        update(songEntity)
+                                        syncUtils.likeSong(metadata.copy(liked = !metadata.liked))
                                     }
                                 }
                             }
