@@ -257,4 +257,5 @@
     <string name="cache_size_warning_title">Тримайся!</string>
     <string name="cache_size_warning_message">Ви вибрали обмеження розміру кешу, менше за те, що зараз використовує програма (%1$s). Якщо ви продовжите, програма може видалити деякі кешовані %2$s, щоб вони відповідали новому ліміту. Продовжити все одно?</string>
     <string name="cache_size_warning_confirm">Продовжити</string>
+    <string name="tertiary_color_style">Третинний колір</string>
 </resources>
