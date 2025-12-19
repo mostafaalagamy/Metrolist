@@ -330,6 +330,10 @@ fun BottomSheetPlayer(
             MaterialTheme.colorScheme.primary,
             MaterialTheme.colorScheme.onPrimary
         )
+        PlayerButtonsStyle.TERTIARY -> Pair(
+            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.onTertiary
+        )
     }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
@@ -1109,15 +1113,19 @@ fun BottomSheetPlayer(
                                 colors = IconButtonDefaults.filledTonalIconButtonColors(
                                     containerColor =
                                     if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        if (useDarkTheme) Color.Black else Color.White
-                                    } else {
+                                        Color.White
+                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
                                         MaterialTheme.colorScheme.secondaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.tertiaryContainer
                                     },
                                     contentColor =
                                     if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.Gray
-                                    } else {
+                                        Color.Black
+                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
                                         MaterialTheme.colorScheme.onSecondaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onTertiaryContainer
                                     },
                                 ),
                                 modifier = Modifier
@@ -1188,15 +1196,19 @@ fun BottomSheetPlayer(
                                 colors = IconButtonDefaults.filledTonalIconButtonColors(
                                     containerColor =
                                     if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        if (useDarkTheme) Color.Black else Color.White
-                                    } else {
+                                        Color.White
+                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
                                         MaterialTheme.colorScheme.secondaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.tertiaryContainer
                                     },
                                     contentColor =
                                     if (playerButtonsStyle == PlayerButtonsStyle.DEFAULT) {
-                                        Color.Gray
-                                    } else {
+                                        Color.Black
+                                    } else if (playerButtonsStyle == PlayerButtonsStyle.PRIMARY) {
                                         MaterialTheme.colorScheme.onSecondaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onTertiaryContainer
                                     },
                                 ),
                                 modifier = Modifier
