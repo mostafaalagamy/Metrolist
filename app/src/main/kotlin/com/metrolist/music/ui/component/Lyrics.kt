@@ -120,6 +120,7 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeBelarusianKey
 import com.metrolist.music.constants.LyricsRomanizeBulgarianKey
 import com.metrolist.music.constants.LyricsRomanizeCyrillicByLineKey
+import com.metrolist.music.constants.LyricsGlowEffectKey
 import com.metrolist.music.constants.LyricsRomanizeChineseKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsRomanizeKoreanKey
@@ -197,6 +198,7 @@ fun Lyrics(
     val romanizeMacedonianLyrics by rememberPreference(LyricsRomanizeMacedonianKey, true)
     val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
     val romanizeChineseLyrics by rememberPreference(LyricsRomanizeChineseKey, true)
+    val lyricsGlowEffect by rememberPreference(LyricsGlowEffectKey, false)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -762,7 +764,7 @@ fun Lyrics(
                             LyricsPosition.RIGHT -> TextAlign.Right
                         }
                         
-                        if (isActiveLine) {
+                        if (isActiveLine && lyricsGlowEffect) {
                             // Initial animation for glow fill from left to right
                             val fillProgress = remember { Animatable(0f) }
                             // Continuous pulsing animation for the glow
@@ -844,7 +846,17 @@ fun Lyrics(
                                         scaleY = bounceScale
                                     }
                             )
+                        } else if (isActiveLine && !lyricsGlowEffect) {
+                            // Active line without glow effect - just bold text
+                            Text(
+                                text = item.text,
+                                fontSize = 24.sp,
+                                color = expressiveAccent,
+                                textAlign = alignment,
+                                fontWeight = FontWeight.ExtraBold
+                            )
                         } else {
+                            // Inactive line
                             Text(
                                 text = item.text,
                                 fontSize = 24.sp,
