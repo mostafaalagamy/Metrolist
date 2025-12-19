@@ -134,6 +134,7 @@ import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.roundToInt
+import com.metrolist.music.constants.PlayerBackgroundStyle
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
@@ -150,6 +151,7 @@ fun Queue(
     iconButtonColor: Color,
     pureBlack: Boolean,
     showInlineLyrics: Boolean,
+    playerBackground: PlayerBackgroundStyle = PlayerBackgroundStyle.DEFAULT,
     onToggleLyrics: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -257,7 +259,8 @@ fun Queue(
                         textButtonColor = textButtonColor,
                         iconButtonColor = iconButtonColor,
                         iconSize = iconSize,
-                        textBackgroundColor = TextBackgroundColor
+                        textBackgroundColor = TextBackgroundColor,
+                        playerBackground = playerBackground
                     )
 
                     PlayerQueueButton(
@@ -276,7 +279,8 @@ fun Queue(
                         iconButtonColor = iconButtonColor,
                         text = if (sleepTimerEnabled) makeTimeString(sleepTimerTimeLeft) else null,
                         iconSize = iconSize,
-                        textBackgroundColor = TextBackgroundColor
+                        textBackgroundColor = TextBackgroundColor,
+                        playerBackground = playerBackground
                     )
 
                     val shuffleModeEnabled by playerConnection.shuffleModeEnabled.collectAsState()
@@ -289,7 +293,8 @@ fun Queue(
                         textButtonColor = textButtonColor,
                         iconButtonColor = iconButtonColor,
                         iconSize = iconSize,
-                        textBackgroundColor = TextBackgroundColor
+                        textBackgroundColor = TextBackgroundColor,
+                        playerBackground = playerBackground
                     )
 
                     PlayerQueueButton(
@@ -301,7 +306,8 @@ fun Queue(
                         textButtonColor = textButtonColor,
                         iconButtonColor = iconButtonColor,
                         iconSize = iconSize,
-                        textBackgroundColor = TextBackgroundColor
+                        textBackgroundColor = TextBackgroundColor,
+                        playerBackground = playerBackground
                     )
 
                     PlayerQueueButton(
@@ -317,7 +323,8 @@ fun Queue(
                         textButtonColor = textButtonColor,
                         iconButtonColor = iconButtonColor,
                         iconSize = iconSize,
-                        textBackgroundColor = TextBackgroundColor
+                        textBackgroundColor = TextBackgroundColor,
+                        playerBackground = playerBackground
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -1141,7 +1148,8 @@ private fun PlayerQueueButton(
     textButtonColor: Color,
     iconButtonColor: Color,
     iconSize: androidx.compose.ui.unit.Dp,
-    textBackgroundColor: Color
+    textBackgroundColor: Color,
+    playerBackground: PlayerBackgroundStyle
 ) {
     val buttonModifier = Modifier
         .clip(shape)
@@ -1154,7 +1162,7 @@ private fun PlayerQueueButton(
             modifier.then(
                 buttonModifier.border(
                     width = 1.dp,
-                    color = LocalContentColor.current.copy(alpha = 0.12f),
+                    color = textButtonColor.copy(alpha = 0.3f),
                     shape = shape
                 )
             )
@@ -1178,7 +1186,17 @@ private fun PlayerQueueButton(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 modifier = Modifier.size(iconSize),
-                tint = if (isActive) iconButtonColor else textBackgroundColor
+                tint = if (isActive) {
+                    iconButtonColor
+                } else {
+                    when (playerBackground) {
+                        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> 
+                            Color.White
+                        PlayerBackgroundStyle.DEFAULT -> 
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    }
+                }
             )
         }
     }
