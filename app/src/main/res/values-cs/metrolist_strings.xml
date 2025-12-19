@@ -43,6 +43,7 @@
     <plurals name="n_time">
         <item quantity="one">%dkrát</item>
         <item quantity="few">%dkrát</item>
+        <item quantity="many">%dkrát</item>
         <item quantity="other">%dkrát</item>
     </plurals>
     <string name="similar_content">Podobný obsah</string>
@@ -133,6 +134,7 @@
     <plurals name="seconds">
         <item quantity="one">1 sekunda</item>
         <item quantity="few">%d sekundy</item>
+        <item quantity="many">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="lyrics_auto_scroll">Automaticky posouvat texty</string>
