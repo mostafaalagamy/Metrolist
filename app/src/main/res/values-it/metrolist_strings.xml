@@ -255,4 +255,6 @@
     <string name="cache_size_warning_message">Hai scelto un limite alla dimensione della cache più piccola di quella che l\'app sta usando attualmente (%1$s). Se continui, l\'app può rimuovere %2$s di cache per arrivare al nuovo limite. Procedere comunque?</string>
     <string name="cache_size_warning_confirm">Continua</string>
     <string name="tertiary_color_style">Colore terziario</string>
+    <string name="lyrics_glow_effect">Attiva l\'effetto luminoso del testo</string>
+    <string name="lyrics_glow_effect_desc">Aggiungi l\'animazione luminosa e l\'effetto rimbalzo al testo attivo</string>
 </resources>
