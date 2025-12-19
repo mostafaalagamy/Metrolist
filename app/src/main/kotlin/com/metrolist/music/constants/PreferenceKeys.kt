@@ -286,7 +286,8 @@ enum class PreferredLyricsProvider {
 
 enum class PlayerButtonsStyle {
     DEFAULT,
-    PRIMARY
+    PRIMARY,
+    TERTIARY
 }
 
 enum class PlayerBackgroundStyle {
