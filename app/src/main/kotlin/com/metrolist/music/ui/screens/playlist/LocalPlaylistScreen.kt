@@ -896,7 +896,7 @@ fun LocalPlaylistScreen(
                         )
                     }
 
-                    Surface(
+                    IconButton(
                         onClick = {
                             menuState.show {
                                 SelectionSongMenu(
@@ -911,21 +911,12 @@ fun LocalPlaylistScreen(
                                     }
                                 )
                             }
-                        },
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.more_vert),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
                         }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
                     }
                 } else if (!isSearching) {
                     // Only search button remains in TopAppBar
