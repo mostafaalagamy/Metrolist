@@ -1176,12 +1176,12 @@ fun BottomSheetPlayer(
                             val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
                             val playPauseWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 1.9f else 1.3f,
+                                targetValue = if (isPlayPausePressed) 2.1f else 1.5f,
                                 animationSpec = spring(),
                                 label = "playPauseWeight"
                             )
                             val sideButtonWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 0.4f else 0.5f,
+                                targetValue = if (isPlayPausePressed) 0.35f else 0.45f,
                                 animationSpec = spring(),
                                 label = "sideButtonWeight"
                             )
@@ -1196,7 +1196,7 @@ fun BottomSheetPlayer(
                                     contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(72.dp)
+                                    .height(64.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(backInteractionSource)
                             ) {
@@ -1231,7 +1231,7 @@ fun BottomSheetPlayer(
                                     contentColor = iconButtonColor,
                                 ),
                                 modifier = Modifier
-                                    .height(72.dp)
+                                    .height(64.dp)
                                     .weight(playPauseWeight)
                             ) {
                                 Row(
@@ -1265,7 +1265,7 @@ fun BottomSheetPlayer(
                                     contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(72.dp)
+                                    .height(64.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(nextInteractionSource)
                             ) {
