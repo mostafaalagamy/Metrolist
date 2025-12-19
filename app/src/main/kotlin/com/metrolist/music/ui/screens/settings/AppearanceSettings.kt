@@ -299,6 +299,7 @@ fun AppearanceSettings(
                 when (it) {
                     PlayerButtonsStyle.DEFAULT -> stringResource(R.string.default_style)
                     PlayerButtonsStyle.PRIMARY -> stringResource(R.string.primary_color_style)
+                    PlayerButtonsStyle.TERTIARY -> stringResource(R.string.tertiary_color_style)
                 }
             }
         )
@@ -774,6 +775,7 @@ fun AppearanceSettings(
                             when (playerButtonsStyle) {
                                 PlayerButtonsStyle.DEFAULT -> stringResource(R.string.default_style)
                                 PlayerButtonsStyle.PRIMARY -> stringResource(R.string.primary_color_style)
+                                PlayerButtonsStyle.TERTIARY -> stringResource(R.string.tertiary_color_style)
                             }
                         )
                     },
