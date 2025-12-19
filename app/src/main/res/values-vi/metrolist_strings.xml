@@ -20,11 +20,9 @@
     <string name="lyrics">Lời bài hát</string>
     <string name="already_in_playlist">Đã tồn tại trong danh sách phát:</string>
     <plurals name="n_element">
-        <item quantity="one">%d mục</item>
         <item quantity="other">%d mục</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d lần</item>
         <item quantity="other">%d lần</item>
     </plurals>
     <string name="similar_content">Nội dung tương tự</string>
@@ -64,8 +62,8 @@
     <string name="min_playback_duration_description">Thời lượng nghe tối thiểu của 1 bài hát trước khi nó được đánh dấu là \"đã phát\"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Thời lượng nghe tối thiểu</string>
-    <string name="clear_song_cache_dialog">  Bạn có muốn xóa tất cả bộ nhớ đệm (cache) liên quan đến nhạc?</string>
-    <string name="clear_downloads_dialog">  Bạn có muốn xóa tất cả bài hát đã tải xuống?</string>
+    <string name="clear_song_cache_dialog">Bạn có muốn xóa tất cả bộ nhớ đệm (cache) liên quan đến nhạc?</string>
+    <string name="clear_downloads_dialog">Bạn có muốn xóa tất cả bài hát đã tải xuống?</string>
     <string name="not_logged_in_youtube">Chưa đăng nhập vào YouTube</string>
     <string name="default_links">Mở đường liên kết được hỗ trợ</string>
     <string name="open_app_settings_error">Không thể mở ứng dụng cài đặt</string>
@@ -85,7 +83,6 @@
     <string name="likes">Thích</string>
     <string name="dislikes">Không thích</string>
     <plurals name="seconds">
-        <item quantity="one">1 giây</item>
         <item quantity="other">%d giây</item>
     </plurals>
     <string name="lyrics_auto_scroll">Tự động cuộn lời bài hát</string>
@@ -200,4 +197,55 @@
     <string name="remove_custom_image">Xoá ảnh bìa tùy chỉnh</string>
     <string name="audio_offload">Cho phép giảm tải</string>
     <string name="audio_offload_description">Sử dụng đường dẫn giảm tải để phát. Tắt tính năng này có thể làm tiêu tốn pin nhưng có thể hữu ích nếu bạn gặp sự cố khi phát hoặc xử lý hậu kỳ</string>
+    <string name="swipe_song_to_remove"></string>
+    <string name="update_channel_desc"></string>
+    <string name="password"></string>
+    <string name="refetch_desc"></string>
+    <string name="integrations"></string>
+    <string name="scrobble_delay_minutes"></string>
+    <string name="play_next_desc"></string>
+    <string name="last_fm_send_likes"></string>
+    <string name="scrobbling_configuration"></string>
+    <string name="lyrics_romanize_macedonian"></string>
+    <string name="cache_size_warning_message"></string>
+    <string name="cache_size_warning_confirm"></string>
+    <string name="google_cast_description"></string>
+    <string name="filter_uploaded"></string>
+    <string name="lyrics_romanize_chinese"></string>
+    <string name="uploaded_playlist"></string>
+    <string name="add_to_queue_desc"></string>
+    <string name="username"></string>
+    <string name="scrobble_min_track_duration"></string>
+    <string name="updater"></string>
+    <string name="show_uploaded_playlist"></string>
+    <string name="primary_color_style"></string>
+    <string name="google_cast"></string>
+    <string name="download_desc"></string>
+    <string name="mini_player_outline"></string>
+    <string name="lastfm_now_playing"></string>
+    <string name="lastfm_integration"></string>
+    <string name="auto_scroll"></string>
+    <string name="scrobble_delay_percent"></string>
+    <string name="last_fm_send_likes_description"></string>
+    <string name="delete_desc"></string>
+    <string name="update_notifications"></string>
+    <string name="discord_use_details_description"></string>
+    <string name="start_radio_desc"></string>
+    <string name="update_channel_name"></string>
+    <string name="enable_scrobbling"></string>
+    <string name="share_desc"></string>
+    <string name="edit_desc"></string>
+    <string name="hide_video_songs"></string>
+    <string name="check_for_updates"></string>
+    <string name="details_desc"></string>
+    <string name="add_to_playlist_desc"></string>
+    <string name="equalizer_desc"></string>
+    <string name="cache_size_warning_title"></string>
+    <string name="pure_black_mini_player"></string>
+    <string name="enable_dynamic_icon"></string>
+    <string name="mini_player"></string>
+    <string name="discord_use_details"></string>
+    <string name="advanced_desc"></string>
+    <string name="add_to_library_desc"></string>
+    <string name="update_available_title"></string>
 </resources>
