@@ -22,11 +22,9 @@
     <string name="lyrics">歌詞</string>
     <string name="already_in_playlist">已在播放清單中:</string>
     <plurals name="n_element">
-        <item quantity="one">%d 個項目</item>
         <item quantity="other">%d 個項目</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d 次</item>
         <item quantity="other">%d 次</item>
     </plurals>
     <string name="similar_content">相似內容</string>
@@ -81,7 +79,6 @@
     <string name="top_length">我的熱門清單長度</string>
     <string name="history_duration">加入歷史紀錄的播放時長</string>
     <plurals name="seconds">
-        <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="lyrics_auto_scroll">自動滾動歌詞</string>
@@ -225,4 +222,30 @@
     <string name="scrobble_min_track_duration">歌曲紀錄最短長度限制</string>
     <string name="scrobble_delay_percent">紀錄延遲比例</string>
     <string name="scrobble_delay_minutes">紀錄延遲時間</string>
+    <string name="refetch_desc"></string>
+    <string name="play_next_desc"></string>
+    <string name="cache_size_warning_message"></string>
+    <string name="cache_size_warning_confirm"></string>
+    <string name="google_cast_description"></string>
+    <string name="lyrics_romanize_chinese"></string>
+    <string name="add_to_queue_desc"></string>
+    <string name="primary_color_style"></string>
+    <string name="google_cast"></string>
+    <string name="download_desc"></string>
+    <string name="mini_player_outline"></string>
+    <string name="auto_scroll"></string>
+    <string name="delete_desc"></string>
+    <string name="start_radio_desc"></string>
+    <string name="share_desc"></string>
+    <string name="edit_desc"></string>
+    <string name="hide_video_songs"></string>
+    <string name="details_desc"></string>
+    <string name="add_to_playlist_desc"></string>
+    <string name="equalizer_desc"></string>
+    <string name="cache_size_warning_title"></string>
+    <string name="pure_black_mini_player"></string>
+    <string name="enable_dynamic_icon"></string>
+    <string name="mini_player"></string>
+    <string name="advanced_desc"></string>
+    <string name="add_to_library_desc"></string>
 </resources>
