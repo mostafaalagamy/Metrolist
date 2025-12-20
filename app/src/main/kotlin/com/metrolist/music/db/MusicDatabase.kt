@@ -88,7 +88,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 24,
+    version = 25,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -127,7 +127,7 @@ abstract class InternalDatabase : RoomDatabase() {
                 delegate =
                 Room
                     .databaseBuilder(context, InternalDatabase::class.java, DB_NAME)
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_24_25)
                     .build(),
             )
     }
@@ -535,3 +535,25 @@ class Migration23To24: AutoMigrationSpec {
         }
     }
 }
+
+val MIGRATION_24_25 =
+    object : Migration(24, 25) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Add perceptualLoudnessDb column to format table for improved audio normalization
+            var columnExists = false
+            db.query("PRAGMA table_info(format)").use { cursor ->
+                val nameIndex = cursor.getColumnIndex("name")
+                while (cursor.moveToNext()) {
+                    if (cursor.getString(nameIndex) == "perceptualLoudnessDb") {
+                        columnExists = true
+                        break
+                    }
+                }
+            }
+
+            if (!columnExists) {
+                // Add the column allowing NULL values (since existing rows won't have this data)
+                db.execSQL("ALTER TABLE format ADD COLUMN perceptualLoudnessDb REAL DEFAULT NULL")
+            }
+        }
+    }
