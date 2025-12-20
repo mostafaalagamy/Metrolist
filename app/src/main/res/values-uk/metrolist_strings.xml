@@ -258,4 +258,6 @@
     <string name="cache_size_warning_message">Ви вибрали обмеження розміру кешу, менше за те, що зараз використовує програма (%1$s). Якщо ви продовжите, програма може видалити деякі кешовані %2$s, щоб вони відповідали новому ліміту. Продовжити все одно?</string>
     <string name="cache_size_warning_confirm">Продовжити</string>
     <string name="tertiary_color_style">Третинний колір</string>
+    <string name="lyrics_glow_effect">Увімкнути ефект світяться текстів пісень</string>
+    <string name="lyrics_glow_effect_desc">Додайте анімацію сяйва та ефект відскоку до активних текстів пісень</string>
 </resources>
