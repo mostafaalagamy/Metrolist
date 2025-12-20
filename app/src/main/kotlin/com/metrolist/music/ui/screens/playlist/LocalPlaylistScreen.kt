@@ -1602,8 +1602,6 @@ fun LocalPlaylistHeader(
                 }
             }
         }
-
-
     }
 }
 
