@@ -215,7 +215,7 @@ fun AlbumScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 20.dp),
+                        .padding(top = 8.dp, bottom = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Album Thumbnail - Large centered with shadow
