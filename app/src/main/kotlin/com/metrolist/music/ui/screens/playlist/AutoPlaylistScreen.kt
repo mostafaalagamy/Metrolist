@@ -755,8 +755,6 @@ private fun AutoPlaylistHeader(
                 }
             }
         }
-
-
     }
 }
 
