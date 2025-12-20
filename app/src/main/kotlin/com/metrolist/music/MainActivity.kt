@@ -252,7 +252,23 @@ class MainActivity : ComponentActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1000)
             }
         }
-        startService(Intent(this, MusicService::class.java))
+        
+        // Use startForegroundService on Android O+ for better compatibility
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, MusicService::class.java))
+            } else {
+                startService(Intent(this, MusicService::class.java))
+            }
+        } catch (e: Exception) {
+            // Fallback to regular startService if foreground service fails
+            try {
+                startService(Intent(this, MusicService::class.java))
+            } catch (fallbackException: Exception) {
+                // Log the error but don't crash the app
+                android.util.Log.e("MainActivity", "Failed to start MusicService", fallbackException)
+            }
+        }
         bindService(
             Intent(this, MusicService::class.java),
             serviceConnection,

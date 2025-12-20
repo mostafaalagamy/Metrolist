@@ -708,8 +708,6 @@ private fun TopPlaylistHeader(
                 }
             }
         }
-
-
     }
 }
 
