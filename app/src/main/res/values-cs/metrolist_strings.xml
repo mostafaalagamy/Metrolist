@@ -257,4 +257,7 @@
     <string name="mini_player">Mini přehrávač</string>
     <string name="advanced_desc">Změnit tempo a výšku skladby</string>
     <string name="add_to_library_desc">Uložit do vaší knihovny</string>
+    <string name="tertiary_color_style">Tetriární barva</string>
+    <string name="lyrics_glow_effect">Povolit efekt zářících textů</string>
+    <string name="lyrics_glow_effect_desc">Přidat animaci záře a efekty odražení k aktivním textům</string>
 </resources>
