@@ -257,4 +257,5 @@
     <string name="tertiary_color_style">Couleur tertiaire</string>
     <string name="lyrics_glow_effect">Activer l\'effet de paroles lumineuses</string>
     <string name="lyrics_glow_effect_desc">Ajoutez une animation lumineuse et un effet de rebond aux paroles actives</string>
+    <string name="logging_in">Connexion…</string>
 </resources>
