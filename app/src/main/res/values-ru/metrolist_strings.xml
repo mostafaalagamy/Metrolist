@@ -260,4 +260,5 @@
     <string name="tertiary_color_style">Третичный цвет</string>
     <string name="lyrics_glow_effect">Включить эффект свечения текста</string>
     <string name="lyrics_glow_effect_desc">Добавить анимацию свечения и эффект подпрыгивания для активной строки текста</string>
+    <string name="logging_in">Выполняется вход…</string>
 </resources>
