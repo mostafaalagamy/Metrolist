@@ -49,7 +49,7 @@ jobs:
           fi
 
       - name: Build and Lint Universal Debug APK
-        run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalFossDebug :app:lintUniversalFossDebug --warning-mode summary
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           PULL_REQUEST: 'true'
@@ -60,4 +60,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: app-universal-debug-pr-${{ github.event.number }}
-          path: app/build/outputs/apk/universal/debug/*.apk
+          path: app/build/outputs/apk/universalFoss/debug/*.apk
