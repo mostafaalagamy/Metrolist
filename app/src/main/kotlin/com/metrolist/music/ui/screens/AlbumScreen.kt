@@ -107,7 +107,6 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AlbumViewModel
 import com.metrolist.music.utils.makeTimeString
 
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumScreen(
