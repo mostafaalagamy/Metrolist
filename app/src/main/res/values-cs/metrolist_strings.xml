@@ -260,4 +260,5 @@
     <string name="tertiary_color_style">Tetriární barva</string>
     <string name="lyrics_glow_effect">Povolit efekt zářících textů</string>
     <string name="lyrics_glow_effect_desc">Přidat animaci záře a efekty odražení k aktivním textům</string>
+    <string name="logging_in">Přihlašování…</string>
 </resources>
