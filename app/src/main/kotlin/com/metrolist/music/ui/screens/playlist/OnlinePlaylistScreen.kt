@@ -140,9 +140,15 @@ fun OnlinePlaylistScreen(
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(isSearching) { if (isSearching) focusRequester.requestFocus() }
 
-    BackHandler(isSearching) {
-        isSearching = false
-        query = TextFieldValue()
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+            query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -188,20 +194,26 @@ fun OnlinePlaylistScreen(
                                 .combinedClickable(
                                     enabled = !hideExplicit || !song.item.second.explicit,
                                     onClick = {
-                                        if (song.item.second.id == mediaMetadata?.id)
-                                            playerConnection.togglePlayPause()
-                                        else
-                                            playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = playlist.title,
-                                                    items = filteredSongs.map { it.second.toMediaItem() },
-                                                    startIndex = index
+                                        if (!selection) {
+                                            if (song.item.second.id == mediaMetadata?.id)
+                                                playerConnection.togglePlayPause()
+                                            else
+                                                playerConnection.playQueue(
+                                                    ListQueue(
+                                                        title = playlist.title,
+                                                        items = filteredSongs.map { it.second.toMediaItem() },
+                                                        startIndex = index
+                                                    )
                                                 )
-                                            )
+                                        } else {
+                                            song.isSelected = !song.isSelected
+                                        }
                                     },
                                     onLongClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        selection = true
+                                        if (!selection) {
+                                            selection = true
+                                        }
                                         wrappedSongs.forEach { it.isSelected = false }
                                         song.isSelected = true
                                     }
@@ -237,7 +249,13 @@ fun OnlinePlaylistScreen(
 
         TopAppBar(
             title = {
-                if (isSearching) {
+                if (selection) {
+                    val count = wrappedSongs.count { it.isSelected }
+                    Text(
+                        text = pluralStringResource(R.plurals.n_song, count, count),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                } else if (isSearching) {
                     TextField(
                         value = query,
                         onValueChange = { query = it },
@@ -271,6 +289,8 @@ fun OnlinePlaylistScreen(
                         if (isSearching) {
                             isSearching = false
                             query = TextFieldValue()
+                        } else if (selection) {
+                            selection = false
                         } else {
                             navController.navigateUp()
                         }
@@ -282,13 +302,53 @@ fun OnlinePlaylistScreen(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.arrow_back),
+                        painter = painterResource(
+                            if (selection) R.drawable.close else R.drawable.arrow_back
+                        ),
                         contentDescription = null
                     )
                 }
             },
             actions = {
-                if (!isSearching) {
+                if (selection) {
+                    val count = wrappedSongs.count { it.isSelected }
+                    IconButton(
+                        onClick = {
+                            if (count == wrappedSongs.size) {
+                                wrappedSongs.forEach { it.isSelected = false }
+                            } else {
+                                wrappedSongs.forEach { it.isSelected = true }
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
+                            ),
+                            contentDescription = null
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            menuState.show {
+                                YouTubeSelectionSongMenu(
+                                    songSelection = wrappedSongs.filter { it.isSelected }
+                                        .map { it.item.second },
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = {
+                                        selection = false
+                                    }
+                                )
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
+                    }
+                } else if (!isSearching) {
                     IconButton(
                         onClick = { isSearching = true }
                     ) {
