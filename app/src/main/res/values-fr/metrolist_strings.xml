@@ -255,4 +255,6 @@
     <string name="cache_size_warning_message">Vous avez choisi une limite de taille de cache inférieure à celle actuellement utilisée par l\'application (%1$s). Si vous continuez, l\'application risque de supprimer une partie du cache %2$s pour respecter la nouvelle limite. Voulez-vous continuer malgré tout ?</string>
     <string name="cache_size_warning_confirm">Continuer</string>
     <string name="tertiary_color_style">Couleur tertiaire</string>
+    <string name="lyrics_glow_effect">Activer l\'effet de paroles lumineuses</string>
+    <string name="lyrics_glow_effect_desc">Ajoutez une animation lumineuse et un effet de rebond aux paroles actives</string>
 </resources>
