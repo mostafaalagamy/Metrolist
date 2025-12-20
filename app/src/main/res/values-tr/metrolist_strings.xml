@@ -162,7 +162,7 @@
     <string name="seek_backward_dynamic">-%1$d saniye geri</string>
     <string name="seek_seconds_addup">Kademeli atlama</string>
     <string name="seek_seconds_addup_description">Eğer etkinleştirilirse, her ileri/geri sarma atlamasında kademeli olarak fazladan 5 saniye ekler</string>
-    <string name="disable_load_more_when_repeat_all">Tümünü tekrarla açıkken daha fazla yükle seçeneğini devre dışı bırak.</string>
+    <string name="disable_load_more_when_repeat_all">Tümünü tekrarla açıkken daha fazla yükle seçeneğini devre dışı bırak</string>
     <string name="disable_load_more_when_repeat_all_desc">Tümünü tekrarla modu açıkken daha fazla şarkı veya benzer içerik yükleme</string>
     <string name="hide_player_thumbnail">Oynatıcı Küçük Resmini Gizle</string>
     <string name="hide_player_thumbnail_desc">Oynatıcıdaki albüm resmini uygulama logosuyla değiştirin</string>
@@ -192,14 +192,14 @@
     <string name="lyrics_romanize_kyrgyz">Kırgızca şarkı sözlerini Latinleştir</string>
     <string name="lyrics_romanize_serbian">Sırpça şarkı sözlerini Latinleştir</string>
     <string name="lyrics_romanize_bulgarian">Bulgarca şarkı sözlerini Latinleştir</string>
-    <string name="line_by_line_option_title">Deneysel: Her satırın dilini ayrı ayrı algıla</string>
+    <string name="line_by_line_option_title">DENEYSEL: Her satırın dilini ayrı ayrı algıla</string>
     <string name="line_by_line_option_desc">Kiril dili, şarkının tamamı yerine satır satır algılanacaktır.</string>
     <string name="line_by_line_dialog_title">Emin misiniz?</string>
     <string name="line_by_line_dialog_desc">Bu, başarılı veya başarısız olabilecek deneysel bir özelliktir.\n\nVarsayılan olarak, dil tüm şarkı üzerinden belirlenir; ancak bu seçenek açık olduğunda, dil satır satır belirlenecektir. Bu sayede çok dilli şarkılar da çalışabilir, ama dil her zaman doğru olmayabilir (örneğin, Ukraynaca bir satır Ukraynaca’ya özgü harf içermiyorsa, yanlışlıkla Rusça olarak Latinleştirilebilir).\n\nSorun yaşamıyorsanız, bu seçeneği kapalı bırakmanız önerilir.</string>
     <string name="line_by_line_dialog_enable">Etkinleştir</string>
     <string name="romanize_current_track">Geçerli parçayı Latinleştir</string>
     <string name="audio_offload">Offload\'u etkinleştir</string>
-    <string name="audio_offload_description">Ses çalmak için offload ses yolunu kullan. Bu seçeneği devre dışı bırakmak güç tüketimini artırabilir, ancak ses çalma veya sonrası işleme ile ilgili sorunlar yaşıyorsanız faydalı olabilir.</string>
+    <string name="audio_offload_description">Ses çalmak için offload ses yolunu kullan. Bu seçeneği devre dışı bırakmak güç tüketimini artırabilir, ancak ses çalma veya sonrası işleme ile ilgili sorunlar yaşıyorsanız faydalı olabilir</string>
     <string name="uploaded_playlist">Yüklendi</string>
     <string name="filter_uploaded">Yüklendi</string>
     <string name="show_uploaded_playlist">\"Yüklenen\" çalma listesini göster</string>
@@ -249,7 +249,9 @@
     <string name="pure_black_mini_player">Saf siyah mini oynatıcı</string>
     <string name="mini_player_outline">Mini oynatıcı taslağı</string>
     <string name="cache_size_warning_title">Bekle!</string>
-    <string name="cache_size_warning_message">Uygulamanın şu anda kullandığı (%1$s) değerden daha küçük bir önbellek boyutu sınırı seçtiniz. Devam ederseniz, uygulama yeni sınıra uymak için önbelleğe alınmış bazı %2$s\'leri silebilir. Yine de devam edilsin mi?</string>
+    <string name="cache_size_warning_message">Uygulamanın şu an kullandığı boyuttan (%1$s) daha küçük bir önbellek sınırı seçtiniz. Devam ederseniz uygulama, yeni sınıra uymak için önbelleğe alınmış bazı %2$s içeriklerini silebilir. Yine de devam edilsin mi?</string>
     <string name="cache_size_warning_confirm">Devam etmek</string>
     <string name="tertiary_color_style">Üçüncül renk</string>
+    <string name="lyrics_glow_effect">Parlayan şarkı sözü efektini etkinleştir</string>
+    <string name="lyrics_glow_effect_desc">Aktif şarkı sözlerine parlayan animasyon ve zıplama efekti ekleyin</string>
 </resources>
