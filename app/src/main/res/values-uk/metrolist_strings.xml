@@ -260,4 +260,5 @@
     <string name="tertiary_color_style">Третинний колір</string>
     <string name="lyrics_glow_effect">Увімкнути ефект світяться текстів пісень</string>
     <string name="lyrics_glow_effect_desc">Додайте анімацію сяйва та ефект відскоку до активних текстів пісень</string>
+    <string name="logging_in">Вхід до…</string>
 </resources>
