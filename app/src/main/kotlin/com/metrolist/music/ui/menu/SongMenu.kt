@@ -462,17 +462,6 @@ fun SongMenu(
                                 )
                             },
                             onClick = {
-                                val currentSong = song.song
-                                val isInLibrary = currentSong.inLibrary != null
-                                val token =
-                                    if (isInLibrary) currentSong.libraryRemoveToken else currentSong.libraryAddToken
-
-                                token?.let {
-                                    coroutineScope.launch {
-                                        YouTube.feedback(listOf(it))
-                                    }
-                                }
-
                                 database.query {
                                     update(song.song.toggleLibrary())
                                 }

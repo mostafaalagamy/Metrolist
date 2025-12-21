@@ -386,14 +386,6 @@ fun YouTubeSongMenu(
                             },
                             onClick = {
                                 val isInLibrary = librarySong?.song?.inLibrary != null
-                                val token =
-                                    if (isInLibrary) song.libraryRemoveToken else song.libraryAddToken
-
-                                token?.let {
-                                    coroutineScope.launch {
-                                        YouTube.feedback(listOf(it))
-                                    }
-                                }
 
                                 if (isInLibrary) {
                                     database.query {
@@ -403,11 +395,6 @@ fun YouTubeSongMenu(
                                     database.transaction {
                                         insert(song.toMediaMetadata())
                                         inLibrary(song.id, LocalDateTime.now())
-                                        addLibraryTokens(
-                                            song.id,
-                                            song.libraryAddToken,
-                                            song.libraryRemoveToken
-                                        )
                                     }
                                 }
                             }

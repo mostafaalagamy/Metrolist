@@ -276,25 +276,11 @@ fun YouTubeSelectionSongMenu(
                                         inLibrary(song.id, null)
                                     }
                                 }
-                                coroutineScope.launch {
-                                    val tokens = songSelection.mapNotNull { it.toMediaMetadata().libraryRemoveToken }
-                                    tokens.chunked(20).forEach {
-                                        YouTube.feedback(it)
-                                    }
-                                }
                             } else {
                                 database.transaction {
                                     songSelection.forEach { song ->
                                         insert(song.toMediaMetadata())
                                         inLibrary(song.id, LocalDateTime.now())
-                                    }
-                                }
-                                coroutineScope.launch {
-                                    val tokens = songSelection.filter { song ->
-                                        song.toMediaMetadata().inLibrary == null
-                                    }.mapNotNull { it.toMediaMetadata().libraryAddToken }
-                                    tokens.chunked(20).forEach {
-                                        YouTube.feedback(it)
                                     }
                                 }
                             }
