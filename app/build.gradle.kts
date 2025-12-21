@@ -36,8 +36,21 @@ android {
         buildConfigField("String", "LASTFM_SECRET", "\"$lastFmSecret\"")
     }
 
-    flavorDimensions += "abi"
+    flavorDimensions += listOf("abi", "variant")
     productFlavors {
+        // FOSS variant (default) - F-Droid compatible, no Google Play Services
+        create("foss") {
+            dimension = "variant"
+            isDefault = true
+            buildConfigField("Boolean", "CAST_AVAILABLE", "false")
+        }
+        
+        // GMS variant - with Google Cast support (requires Google Play Services)
+        create("gms") {
+            dimension = "variant"
+            buildConfigField("Boolean", "CAST_AVAILABLE", "true")
+        }
+        
         create("universal") {
             dimension = "abi"
             ndk {
@@ -211,12 +224,12 @@ dependencies {
     implementation(libs.media3)
     implementation(libs.media3.session)
     implementation(libs.media3.okhttp)
-    implementation(libs.media3.cast)
     implementation(libs.squigglyslider)
 
-    // Google Cast
-    implementation(libs.mediarouter)
-    implementation(libs.cast.framework)
+    // Google Cast - only included in GMS flavor (not available in F-Droid/FOSS builds)
+    "gmsImplementation"(libs.media3.cast)
+    "gmsImplementation"(libs.mediarouter)
+    "gmsImplementation"(libs.cast.framework)
 
     implementation(libs.room.runtime)
     implementation(libs.kuromoji.ipadic)

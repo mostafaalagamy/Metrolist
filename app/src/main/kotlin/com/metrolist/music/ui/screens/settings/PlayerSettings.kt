@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
@@ -165,8 +166,8 @@ fun PlayerSettings(
 
         Material3SettingsGroup(
             title = stringResource(R.string.player),
-            items = listOf(
-                Material3SettingsItem(
+            items = buildList {
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.graphic_eq),
                     title = { Text(stringResource(R.string.audio_quality)) },
                     description = {
@@ -179,8 +180,8 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { showAudioQualityDialog = true }
-                ),
-                Material3SettingsItem(
+                ))
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.history),
                     title = { Text(stringResource(R.string.history_duration)) },
                     description = {
@@ -193,8 +194,8 @@ fun PlayerSettings(
                             )
                         }
                     }
-                ),
-                Material3SettingsItem(
+                ))
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.fast_forward),
                     title = { Text(stringResource(R.string.skip_silence)) },
                     trailingContent = {
@@ -213,8 +214,8 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onSkipSilenceChange(!skipSilence) }
-                ),
-                Material3SettingsItem(
+                ))
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.volume_up),
                     title = { Text(stringResource(R.string.audio_normalization)) },
                     trailingContent = {
@@ -233,8 +234,8 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onAudioNormalizationChange(!audioNormalization) }
-                ),
-                Material3SettingsItem(
+                ))
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.graphic_eq),
                     title = { Text(stringResource(R.string.audio_offload)) },
                     description = { Text(stringResource(R.string.audio_offload_description)) },
@@ -254,29 +255,32 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onAudioOffloadChange(!audioOffload) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.cast),
-                    title = { Text(stringResource(R.string.google_cast)) },
-                    description = { Text(stringResource(R.string.google_cast_description)) },
-                    trailingContent = {
-                        Switch(
-                            checked = enableGoogleCast,
-                            onCheckedChange = onEnableGoogleCastChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(
-                                        id = if (enableGoogleCast) R.drawable.check else R.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onEnableGoogleCastChange(!enableGoogleCast) }
-                ),
-                Material3SettingsItem(
+                ))
+                // Only show Cast setting in GMS builds (not in F-Droid/FOSS)
+                if (BuildConfig.CAST_AVAILABLE) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(R.drawable.cast),
+                        title = { Text(stringResource(R.string.google_cast)) },
+                        description = { Text(stringResource(R.string.google_cast_description)) },
+                        trailingContent = {
+                            Switch(
+                                checked = enableGoogleCast,
+                                onCheckedChange = onEnableGoogleCastChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = if (enableGoogleCast) R.drawable.check else R.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onEnableGoogleCastChange(!enableGoogleCast) }
+                    ))
+                }
+                add(Material3SettingsItem(
                     icon = painterResource(R.drawable.arrow_forward),
                     title = { Text(stringResource(R.string.seek_seconds_addup)) },
                     description = { Text(stringResource(R.string.seek_seconds_addup_description)) },
@@ -296,8 +300,8 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onSeekExtraSeconds(!seekExtraSeconds) }
-                )
-            )
+                ))
+            }
         )
 
         Spacer(modifier = Modifier.height(27.dp))
