@@ -257,4 +257,5 @@
     <string name="tertiary_color_style">Colore terziario</string>
     <string name="lyrics_glow_effect">Attiva l\'effetto luminoso del testo</string>
     <string name="lyrics_glow_effect_desc">Aggiungi l\'animazione luminosa e l\'effetto rimbalzo al testo attivo</string>
+    <string name="logging_in">Connessione in corso…</string>
 </resources>
