@@ -257,6 +257,13 @@ fun LocalPlaylistScreen(
 
     val editable: Boolean = playlist?.playlist?.isEditable == true
 
+    // Auto-exit selection mode when no songs are selected
+    LaunchedEffect(selection, wrappedSongs.map { it.isSelected }) {
+        if (selection && wrappedSongs.none { it.isSelected }) {
+            selection = false
+        }
+    }
+
     LaunchedEffect(songs) {
         mutableSongs.apply {
             clear()
@@ -646,10 +653,15 @@ fun LocalPlaylistScreen(
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                             if (!selection) {
                                                 selection = true
+                                                // Only clear selection when entering selection mode
+                                                wrappedSongs.forEach { it.isSelected = false }
+                                                wrappedSongs.find { it.item.map.id == song.map.id }?.isSelected = true
+                                            } else {
+                                                // Toggle selection of the current song
+                                                wrappedSongs.find { it.item.map.id == song.map.id }?.let {
+                                                    it.isSelected = !it.isSelected
+                                                }
                                             }
-                                            wrappedSongs.forEach { it.isSelected = false }
-                                            wrappedSongs.find { it.item.map.id == song.map.id }?.isSelected =
-                                                true
                                         },
                                     ),
                             )
@@ -777,9 +789,13 @@ fun LocalPlaylistScreen(
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                             if (!selection) {
                                                 selection = true
+                                                // Only clear selection when entering selection mode
+                                                wrappedSongs.forEach { it.isSelected = false }
+                                                songWrapper.isSelected = true
+                                            } else {
+                                                // Toggle selection of the current song
+                                                songWrapper.isSelected = !songWrapper.isSelected
                                             }
-                                            wrappedSongs.forEach { it.isSelected = false }
-                                            songWrapper.isSelected = true
                                         },
                                     ),
                             )
