@@ -266,4 +266,5 @@
     <string name="tertiary_color_style">اللون الثانوي</string>
     <string name="lyrics_glow_effect">تفعيل تأثير توهج كلمات الأغاني</string>
     <string name="lyrics_glow_effect_desc">أضف تأثير توهج وارتداد للكلمات النشطة</string>
+    <string name="logging_in">جارٍ تسجيل الدخول…</string>
 </resources>
