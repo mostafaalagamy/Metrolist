@@ -8,9 +8,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.Cache
-import okhttp3.ConnectionPool
-import okhttp3.Protocol
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -19,10 +16,6 @@ import java.util.concurrent.TimeUnit
  * Inspired by ArchiveTune optimizations
  */
 object NetworkConfig {
-    
-    // Connection pool settings
-    private const val MAX_IDLE_CONNECTIONS = 10
-    private const val KEEP_ALIVE_DURATION_MINUTES = 5L
     
     // Timeout settings
     private const val CONNECT_TIMEOUT_SECONDS = 30L
@@ -52,7 +45,6 @@ object NetworkConfig {
         install(ContentEncoding) {
             gzip(0.9F)
             deflate(0.8F)
-            br(0.7F) // Brotli compression
         }
 
         install(HttpTimeout) {
@@ -63,43 +55,19 @@ object NetworkConfig {
 
         engine {
             config {
-                // Enhanced connection pool
-                connectionPool(
-                    ConnectionPool(
-                        MAX_IDLE_CONNECTIONS,
-                        KEEP_ALIVE_DURATION_MINUTES,
-                        TimeUnit.MINUTES
-                    )
-                )
-                
                 // Timeout configurations
                 connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 
-                // Protocol optimization
-                protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
-                
                 // Retry configuration
                 retryOnConnectionFailure(true)
-                
-                // DNS optimization
-                dns(okhttp3.Dns.SYSTEM)
                 
                 // Cache configuration
                 if (enableCache) {
                     val cacheDirectory = cacheDir ?: File(System.getProperty("java.io.tmpdir"), "metrolist_http_cache")
-                    cache(Cache(cacheDirectory, CACHE_SIZE_MB))
+                    cache(okhttp3.Cache(cacheDirectory, CACHE_SIZE_MB))
                 }
-                
-                // Connection specs for better security
-                connectionSpecs(
-                    listOf(
-                        okhttp3.ConnectionSpec.MODERN_TLS,
-                        okhttp3.ConnectionSpec.COMPATIBLE_TLS,
-                        okhttp3.ConnectionSpec.CLEARTEXT
-                    )
-                )
             }
         }
     }
@@ -110,16 +78,10 @@ object NetworkConfig {
     @OptIn(ExperimentalSerializationApi::class)
     fun createYouTubeMusicClient(
         cacheDir: File? = null
-    ): HttpClient = createOptimizedHttpClient(cacheDir).config {
-        defaultRequest {
-            header("Accept", "application/json")
-            header("Accept-Language", "en-US,en;q=0.9")
-            header("Accept-Encoding", "gzip, deflate, br")
-            header("Connection", "keep-alive")
-            header("DNT", "1")
-            header("Sec-Fetch-Dest", "empty")
-            header("Sec-Fetch-Mode", "cors")
-            header("Sec-Fetch-Site", "same-origin")
+    ): HttpClient {
+        val baseClient = createOptimizedHttpClient(cacheDir)
+        return baseClient.config {
+            // Additional configuration can be added here if needed
         }
     }
     

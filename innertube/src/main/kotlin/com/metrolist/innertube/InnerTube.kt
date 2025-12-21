@@ -79,9 +79,11 @@ class InnerTube {
             config {
                 // Connection pool settings for better connection reuse
                 connectionPool(
-                    maxIdleConnections = 10,
-                    keepAliveDuration = 5,
-                    java.util.concurrent.TimeUnit.MINUTES
+                    okhttp3.ConnectionPool(
+                        10, // maxIdleConnections
+                        5, // keepAliveDuration
+                        java.util.concurrent.TimeUnit.MINUTES
+                    )
                 )
                 
                 // Timeout configurations
