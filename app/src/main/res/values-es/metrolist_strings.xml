@@ -257,4 +257,5 @@
     <string name="lyrics_glow_effect">Habilitar el efecto de letras brillantes</string>
     <string name="lyrics_glow_effect_desc">Agregue animación brillante y efecto de rebote a las letras activas</string>
     <string name="lyrics_romanize_chinese">Romanizar letras chinas</string>
+    <string name="logging_in">Iniciando sesión…</string>
 </resources>
