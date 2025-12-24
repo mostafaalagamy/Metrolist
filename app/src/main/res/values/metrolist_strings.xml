@@ -299,4 +299,16 @@
     <string name="cache_size_warning_title">Hold on!</string>
     <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
     <string name="cache_size_warning_confirm">Continue</string>
+
+    <!-- Lyrics Animation Styles -->
+    <string name="lyrics_animation_style">Lyrics animation style</string>
+    <string name="none">None</string>
+    <string name="fade">Fade</string>
+    <string name="glow">Glow</string>
+    <string name="slide">Slide</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Lyrics text size</string>
+    <string name="lyrics_line_spacing">Lyrics line spacing</string>
+    <string name="reset">Reset</string>
 </resources>

@@ -32,6 +32,7 @@ constructor(
 ) {
     private var lyricsProviders =
         listOf(
+            BetterLyricsProvider,
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
             YouTubeSubtitleLyricsProvider,
@@ -47,6 +48,7 @@ constructor(
                 lyricsProviders =
                     if (it == PreferredLyricsProvider.LRCLIB) {
                         listOf(
+                            BetterLyricsProvider,
                             LrcLibLyricsProvider,
                             KuGouLyricsProvider,
                             YouTubeSubtitleLyricsProvider,
@@ -54,6 +56,7 @@ constructor(
                         )
                     } else {
                         listOf(
+                            BetterLyricsProvider,
                             KuGouLyricsProvider,
                             LrcLibLyricsProvider,
                             YouTubeSubtitleLyricsProvider,
