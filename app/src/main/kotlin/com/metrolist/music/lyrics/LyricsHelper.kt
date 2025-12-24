@@ -45,24 +45,29 @@ constructor(
                 it[PreferredLyricsProviderKey].toEnum(PreferredLyricsProvider.LRCLIB)
             }.distinctUntilChanged()
             .map {
-                lyricsProviders =
-                    if (it == PreferredLyricsProvider.LRCLIB) {
-                        listOf(
-                            BetterLyricsProvider,
-                            LrcLibLyricsProvider,
-                            KuGouLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                    } else {
-                        listOf(
-                            BetterLyricsProvider,
-                            KuGouLyricsProvider,
-                            LrcLibLyricsProvider,
-                            YouTubeSubtitleLyricsProvider,
-                            YouTubeLyricsProvider
-                        )
-                    }
+                lyricsProviders = when (it) {
+                    PreferredLyricsProvider.LRCLIB -> listOf(
+                        BetterLyricsProvider,
+                        LrcLibLyricsProvider,
+                        KuGouLyricsProvider,
+                        YouTubeSubtitleLyricsProvider,
+                        YouTubeLyricsProvider
+                    )
+                    PreferredLyricsProvider.KUGOU -> listOf(
+                        BetterLyricsProvider,
+                        KuGouLyricsProvider,
+                        LrcLibLyricsProvider,
+                        YouTubeSubtitleLyricsProvider,
+                        YouTubeLyricsProvider
+                    )
+                    PreferredLyricsProvider.BETTER_LYRICS -> listOf(
+                        BetterLyricsProvider,
+                        LrcLibLyricsProvider,
+                        KuGouLyricsProvider,
+                        YouTubeSubtitleLyricsProvider,
+                        YouTubeLyricsProvider
+                    )
+                }
             }
 
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)

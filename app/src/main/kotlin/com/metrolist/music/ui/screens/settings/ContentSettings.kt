@@ -304,6 +304,7 @@ fun ContentSettings(
                 when (it) {
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
+                    PreferredLyricsProvider.BETTER_LYRICS -> "Better Lyrics"
                 }
             }
         )
@@ -588,6 +589,7 @@ fun ContentSettings(
                             when (preferredProvider) {
                                 PreferredLyricsProvider.LRCLIB -> "LrcLib"
                                 PreferredLyricsProvider.KUGOU -> "KuGou"
+                                PreferredLyricsProvider.BETTER_LYRICS -> "Better Lyrics"
                             }
                         )
                     },

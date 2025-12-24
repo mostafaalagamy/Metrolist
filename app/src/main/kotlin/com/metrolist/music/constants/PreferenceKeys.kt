@@ -283,6 +283,7 @@ enum class QuickPicks {
 enum class PreferredLyricsProvider {
     LRCLIB,
     KUGOU,
+    BETTER_LYRICS,
 }
 
 enum class PlayerButtonsStyle {
