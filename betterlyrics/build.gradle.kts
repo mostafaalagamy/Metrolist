@@ -1,10 +1,10 @@
 plugins {
+    alias(libs.plugins.kotlin.serialization)
     kotlin("jvm")
-    kotlin("plugin.serialization")
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 dependencies {
