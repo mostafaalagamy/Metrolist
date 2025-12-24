@@ -286,6 +286,8 @@
     <string name="audio_normalization">Audio normalization</string>
     <string name="auto_skip_next_on_error">Auto skip to next song when error occurs</string>
     <string name="auto_skip_next_on_error_desc">Ensure your continuous playback experience</string>
+    <string name="shuffle_playlist_first">Shuffle playlist/album first</string>
+    <string name="shuffle_playlist_first_desc">When shuffling, play all songs from the original playlist/album before similar content</string>
     <string name="stop_music_on_task_clear">Stop music on task clear</string>
     <string name="equalizer">Equalizer</string>
 

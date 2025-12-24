@@ -40,6 +40,7 @@ import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.EnableGoogleCastKey
+import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
@@ -111,6 +112,10 @@ fun PlayerSettings(
     )
     val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(
         AutoSkipNextOnErrorKey,
+        defaultValue = false
+    )
+    val (shufflePlaylistFirst, onShufflePlaylistFirstChange) = rememberPreference(
+        ShufflePlaylistFirstKey,
         defaultValue = false
     )
     val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(
@@ -413,6 +418,27 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { similarContentEnabledChange(!similarContentEnabled) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.shuffle),
+                    title = { Text(stringResource(R.string.shuffle_playlist_first)) },
+                    description = { Text(stringResource(R.string.shuffle_playlist_first_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = shufflePlaylistFirst,
+                            onCheckedChange = onShufflePlaylistFirstChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (shufflePlaylistFirst) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShufflePlaylistFirstChange(!shufflePlaylistFirst) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.skip_next),
