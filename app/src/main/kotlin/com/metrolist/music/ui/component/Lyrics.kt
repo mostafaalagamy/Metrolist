@@ -120,7 +120,6 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeBelarusianKey
 import com.metrolist.music.constants.LyricsRomanizeBulgarianKey
 import com.metrolist.music.constants.LyricsRomanizeCyrillicByLineKey
-import com.metrolist.music.constants.LyricsGlowEffectKey
 import com.metrolist.music.constants.LyricsAnimationStyle
 import com.metrolist.music.constants.LyricsAnimationStyleKey
 import com.metrolist.music.constants.LyricsTextSizeKey
@@ -202,7 +201,6 @@ fun Lyrics(
     val romanizeMacedonianLyrics by rememberPreference(LyricsRomanizeMacedonianKey, true)
     val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
     val romanizeChineseLyrics by rememberPreference(LyricsRomanizeChineseKey, true)
-    val lyricsGlowEffect by rememberPreference(LyricsGlowEffectKey, false)
     val lyricsAnimationStyle by rememberEnumPreference(LyricsAnimationStyleKey, LyricsAnimationStyle.APPLE)
     val lyricsTextSize by rememberPreference(LyricsTextSizeKey, 24f)
     val lyricsLineSpacing by rememberPreference(LyricsLineSpacingKey, 1.3f)
@@ -1067,91 +1065,8 @@ fun Lyrics(
                                 }
                             }
                             Text(text = styledText, fontSize = lyricsTextSize.sp, textAlign = alignment, lineHeight = (lyricsTextSize * lyricsLineSpacing).sp)
-                        } else if (isActiveLine && lyricsGlowEffect) {
-                            // Initial animation for glow fill from left to right
-                            val fillProgress = remember { Animatable(0f) }
-                            // Continuous pulsing animation for the glow
-                            val pulseProgress = remember { Animatable(0f) }
-                            
-                            LaunchedEffect(index) {
-                                fillProgress.snapTo(0f)
-                                fillProgress.animateTo(
-                                    targetValue = 1f,
-                                    animationSpec = tween(
-                                        durationMillis = 1200,
-                                        easing = FastOutSlowInEasing
-                                    )
-                                )
-                            }
-                            
-                            // Continuous slow pulsing animation
-                            LaunchedEffect(Unit) {
-                                while (true) {
-                                    pulseProgress.animateTo(
-                                        targetValue = 1f,
-                                        animationSpec = tween(
-                                            durationMillis = 3000,
-                                            easing = LinearEasing
-                                        )
-                                    )
-                                    pulseProgress.snapTo(0f)
-                                }
-                            }
-                            
-                            val fill = fillProgress.value
-                            val pulse = pulseProgress.value
-                            
-                            // Combine fill animation with subtle pulse
-                            val pulseEffect = (kotlin.math.sin(pulse * Math.PI.toFloat()) * 0.15f).coerceIn(0f, 0.15f)
-                            val glowIntensity = (fill + pulseEffect).coerceIn(0f, 1.2f)
-                            
-                            // Create left-to-right gradient fill with glow
-                            val glowBrush = Brush.horizontalGradient(
-                                0.0f to expressiveAccent.copy(alpha = 0.3f),
-                                (fill * 0.7f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.9f),
-                                fill to expressiveAccent,
-                                (fill + 0.1f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.7f),
-                                1.0f to expressiveAccent.copy(alpha = if (fill >= 1f) 1f else 0.3f)
-                            )
-                            
-                            val styledText = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        shadow = Shadow(
-                                            color = expressiveAccent.copy(alpha = 0.8f * glowIntensity),
-                                            offset = Offset(0f, 0f),
-                                            blurRadius = 28f * (1f + pulseEffect)
-                                        ),
-                                        brush = glowBrush
-                                    )
-                                ) {
-                                    append(item.text)
-                                }
-                            }
-                            
-                            // Single smooth bounce animation
-                            val bounceScale = if (fill < 0.3f) {
-                                // Gentler rise during fill
-                                1f + (kotlin.math.sin(fill * 3.33f * Math.PI.toFloat()) * 0.03f)
-                            } else {
-                                // Hold at normal scale
-                                1f
-                            }
-                            
-                            Text(
-                                text = styledText,
-                                fontSize = lyricsTextSize.sp,
-                                textAlign = alignment,
-                                fontWeight = FontWeight.ExtraBold,
-                                lineHeight = (lyricsTextSize * lyricsLineSpacing).sp,
-                                modifier = Modifier
-                                    .graphicsLayer {
-                                        scaleX = bounceScale
-                                        scaleY = bounceScale
-                                    }
-                            )
-                        } else if (isActiveLine && !lyricsGlowEffect) {
-                            // Active line without glow effect - just bold text
+                        } else if (isActiveLine) {
+                            // Active line - bold text
                             Text(
                                 text = item.text,
                                 fontSize = lyricsTextSize.sp,

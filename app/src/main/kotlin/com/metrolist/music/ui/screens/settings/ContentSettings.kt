@@ -94,12 +94,12 @@ fun ContentSettings(
     val (proxyPassword, onProxyPasswordChange) = rememberPreference(key = ProxyPasswordKey, defaultValue = "password")
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
+    val (enableBetterLyrics, onEnableBetterLyricsChange) = rememberPreference(key = EnableBetterLyricsKey, defaultValue = true)
     val (preferredProvider, onPreferredProviderChange) =
         rememberEnumPreference(
             key = PreferredLyricsProviderKey,
             defaultValue = PreferredLyricsProvider.LRCLIB,
         )
-    val (lyricsGlowEffect, onLyricsGlowEffectChange) = rememberPreference(key = LyricsGlowEffectKey, defaultValue = false)
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
 
@@ -561,6 +561,27 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.enable_better_lyrics)) },
+                    description = { Text(stringResource(R.string.enable_better_lyrics_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = enableBetterLyrics,
+                            onCheckedChange = onEnableBetterLyricsChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (enableBetterLyrics) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onEnableBetterLyricsChange(!enableBetterLyrics) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
                     description = {
                         Text(
@@ -571,27 +592,6 @@ fun ContentSettings(
                         )
                     },
                     onClick = { showPreferredProviderDialog = true }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(R.drawable.lyrics),
-                    title = { Text(stringResource(R.string.lyrics_glow_effect)) },
-                    description = { Text(stringResource(R.string.lyrics_glow_effect_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = lyricsGlowEffect,
-                            onCheckedChange = onLyricsGlowEffectChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(
-                                        id = if (lyricsGlowEffect) R.drawable.check else R.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onLyricsGlowEffectChange(!lyricsGlowEffect) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.language_korean_latin),
