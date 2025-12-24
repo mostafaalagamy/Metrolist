@@ -1097,6 +1097,12 @@ class MainActivity : ComponentActivity() {
                 navController.navigate("artist/$artistId")
             }
 
+            "search" -> {
+                uri.getQueryParameter("q")?.let {
+                    navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
+                }
+            }
+
             else -> {
                 val videoId = when {
                     path == "watch" -> uri.getQueryParameter("v")
