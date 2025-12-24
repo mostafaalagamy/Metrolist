@@ -223,4 +223,18 @@
     <string name="swipe_song_to_remove">Плъзнете върху песента, за да я премахнете от плейлиста</string>
     <string name="default_lib_chips">Промяна на \'дефолтния\' чип на библиотеката</string>
     <string name="scrobble_min_track_duration">Песни от Scrobble, по-дълги от</string>
+    <string name="primary_color_style">Основен цвят</string>
+    <string name="tertiary_color_style">Третичен цвят</string>
+    <string name="lyrics_glow_effect">Активиране на ефект светещ текст на песента</string>
+    <string name="lyrics_glow_effect_desc">Добавете светеща анимация и ефект на отскачане към активните текстове на песни</string>
+    <string name="auto_scroll">Повторно синхронизиране</string>
+    <string name="lyrics_romanize_chinese">Романизиране на китайски текстове</string>
+    <string name="google_cast">Google Cast</string>
+    <string name="google_cast_description">Активиране на предаване на звук към Chromecast и други устройства поддържащи Cast</string>
+    <string name="last_fm_send_likes">Изпращане на харесвания/нехаресвания</string>
+    <string name="last_fm_send_likes_description">Добавяне/премахване на любимо в Last.fm, когато харесате/премахнете песен в Metrolist</string>
+    <string name="logging_in">Влизане…</string>
+    <string name="hide_video_songs">Скриване на видео</string>
+    <string name="details_desc">Преглед на информацията за песента</string>
+    <string name="edit_desc">Промяна на заглавието или изпълнителя</string>
 </resources>
