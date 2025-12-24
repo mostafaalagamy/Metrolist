@@ -319,6 +319,19 @@ val LyricsRomanizeCyrillicByLineKey = booleanPreferencesKey("lyricsRomanizeCyril
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")
 val LyricsGlowEffectKey = booleanPreferencesKey("lyricsGlowEffect")
 
+val LyricsAnimationStyleKey = stringPreferencesKey("lyricsAnimationStyle")
+enum class LyricsAnimationStyle {
+    NONE,
+    FADE,
+    GLOW,
+    SLIDE,
+    KARAOKE,
+    APPLE,
+}
+
+val LyricsTextSizeKey = floatPreferencesKey("lyricsTextSize")
+val LyricsLineSpacingKey = floatPreferencesKey("lyricsLineSpacing")
+
 val PlayerVolumeKey = floatPreferencesKey("playerVolume")
 val RepeatModeKey = intPreferencesKey("repeatMode")
 
