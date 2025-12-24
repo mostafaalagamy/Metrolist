@@ -104,8 +104,8 @@
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
-    <string name="lyrics_glow_effect">Enable glowing lyrics effect</string>
-    <string name="lyrics_glow_effect_desc">Add glowing animation and bounce effect to active lyrics</string>
+    <string name="enable_better_lyrics">Enable Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Use Better Lyrics provider for word-by-word synced lyrics</string>
     <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
@@ -299,4 +299,15 @@
     <string name="cache_size_warning_title">Hold on!</string>
     <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
     <string name="cache_size_warning_confirm">Continue</string>
+
+    <!-- Lyrics Animation Styles -->
+    <string name="lyrics_animation_style">Lyrics animation style</string>
+    <string name="none">None</string>
+    <string name="fade">Fade</string>
+    <string name="glow">Glow</string>
+    <string name="slide">Slide</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Lyrics text size</string>
+    <string name="lyrics_line_spacing">Lyrics line spacing</string>
 </resources>
