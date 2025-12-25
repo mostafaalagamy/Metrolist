@@ -1,4 +1,4 @@
-Cliente em Material 3 do YouTube Music para Android
+Cliente do YouTube Music em Material 3 para Android
 
 Recursos:
 
@@ -8,7 +8,7 @@ Recursos:
 - Gerenciamento da biblioteca
 - Download e cache de músicas para reprodução off-line
 - Pesquise por músicas, álbuns, artistas, vídeos e listas
-- Letra sincronizada
+- Letras de música sincronizadas
 - Suporte à login com a conta do YouTube Music
 - Sincronização de músicas, artistas, álbuns, e listas, de e para a sua conta
 - Pular silêncio
@@ -18,6 +18,6 @@ Recursos:
 - Gerenciamento de listas locais
 - Reordene as músicas em uma lista ou fila
 - Temas claro, escuro, preto, e dinâmico
-- Timer para dormir
+- Temporizador para dormir
 - Material 3
 - entre outros.
