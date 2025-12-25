@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.core.net.toUri
+import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.compose.ui.draw.shadow
@@ -524,12 +525,12 @@ private fun CachePlaylistHeader(
                     )
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
-                modifier = Modifier.size(72.dp)
+                modifier = Modifier.size(80.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.play),
                     contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(48.dp)
                 )
             }
 
@@ -538,6 +539,7 @@ private fun CachePlaylistHeader(
                 onClick = {
                     menuState.show {
                         CachePlaylistMenu(
+                            downloadState = Download.STATE_STOPPED,
                             onQueue = {
                                 playerConnection.addToQueue(
                                     songs.map { it.item.toMediaItem() }
