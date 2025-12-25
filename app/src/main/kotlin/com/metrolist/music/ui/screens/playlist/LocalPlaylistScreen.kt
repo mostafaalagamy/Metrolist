@@ -39,7 +39,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Button
 import com.metrolist.music.ui.component.ActionPromptDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -1374,7 +1373,7 @@ fun LocalPlaylistHeader(
             }
 
             // Play Button - Larger primary circular button
-            Button(
+            Surface(
                 onClick = {
                     playerConnection.playQueue(
                         ListQueue(
@@ -1383,14 +1382,21 @@ fun LocalPlaylistHeader(
                         ),
                     )
                 },
+                color = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(48.dp)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
 
             // Menu Button - Smaller secondary button

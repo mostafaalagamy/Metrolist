@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -34,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -643,7 +643,7 @@ private fun AutoPlaylistHeader(
             }
 
             // Play Button - Larger primary circular button
-            Button(
+            Surface(
                 onClick = {
                     playerConnection.playQueue(
                         ListQueue(
@@ -652,18 +652,25 @@ private fun AutoPlaylistHeader(
                         ),
                     )
                 },
+                color = MaterialTheme.colorScheme.primary,
                 shape = androidx.compose.foundation.shape.CircleShape,
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(48.dp)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
 
             // Menu Button - Smaller secondary button
-            androidx.compose.material3.Surface(
+            Surface(
                 onClick = {
                     menuState.show {
                         AutoPlaylistMenu(

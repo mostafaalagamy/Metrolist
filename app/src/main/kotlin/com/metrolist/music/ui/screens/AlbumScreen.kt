@@ -31,7 +31,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -317,21 +316,28 @@ fun AlbumScreen(
                         }
 
                         // Play Button - Larger primary circular button
-                        Button(
+                        Surface(
                             onClick = {
                                 playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
                                     LocalAlbumRadio(albumWithSongs),
                                 )
                             },
+                            color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
                             modifier = Modifier.size(72.dp)
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.play),
-                                contentDescription = stringResource(R.string.play),
-                                modifier = Modifier.size(48.dp)
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.play),
+                                    contentDescription = stringResource(R.string.play),
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(48.dp)
+                                )
+                            }
                         }
 
                         // Menu Button - Smaller secondary button

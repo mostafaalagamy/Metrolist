@@ -451,20 +451,27 @@ private fun OnlinePlaylistHeader(
             }
 
             // Play Button - Larger primary circular button
-            Button(
+            Surface(
                 onClick = {
                     if (songs.isNotEmpty()) {
                         playerConnection.playQueue(ListQueue(playlist.title, songs.map { it.toMediaItem() }))
                     }
                 },
+                color = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(48.dp)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
 
             // Menu Button - Smaller secondary button
