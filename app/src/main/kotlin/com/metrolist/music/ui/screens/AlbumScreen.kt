@@ -311,7 +311,7 @@ fun AlbumScreen(
                                         MaterialTheme.colorScheme.error
                                     else
                                         MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
@@ -357,7 +357,7 @@ fun AlbumScreen(
                             },
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(24.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),

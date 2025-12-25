@@ -1367,7 +1367,7 @@ fun LocalPlaylistHeader(
                     Icon(
                         painter = painterResource(R.drawable.shuffle),
                         contentDescription = stringResource(R.string.shuffle),
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -1485,7 +1485,7 @@ fun LocalPlaylistHeader(
                     Icon(
                         painter = painterResource(R.drawable.more_vert),
                         contentDescription = null,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
