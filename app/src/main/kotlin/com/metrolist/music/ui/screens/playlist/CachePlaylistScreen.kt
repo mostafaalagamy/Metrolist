@@ -607,7 +607,7 @@ private fun CachePlaylistMenu(
 ) {
     Column {
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.queue_play_next)) },
+            text = { Text(stringResource(R.string.add_to_queue)) },
             onClick = {
                 onQueue()
                 onDismiss()
@@ -620,7 +620,7 @@ private fun CachePlaylistMenu(
             }
         )
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.download)) },
+            text = { Text(stringResource(R.string.action_download)) },
             onClick = {
                 onDownload()
                 onDismiss()
