@@ -335,7 +335,7 @@ fun AlbumScreen(
                                     painter = painterResource(R.drawable.play),
                                     contentDescription = stringResource(R.string.play),
                                     tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(48.dp)
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
