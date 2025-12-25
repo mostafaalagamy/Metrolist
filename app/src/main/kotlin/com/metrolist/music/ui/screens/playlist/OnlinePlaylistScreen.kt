@@ -447,26 +447,33 @@ private fun OnlinePlaylistHeader(
                             MaterialTheme.colorScheme.error
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
 
             // Play Button - Larger primary circular button
-            Button(
+            Surface(
                 onClick = {
                     if (songs.isNotEmpty()) {
                         playerConnection.playQueue(ListQueue(playlist.title, songs.map { it.toMediaItem() }))
                     }
                 },
+                color = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(56.dp)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             }
 
             // Menu Button - Smaller secondary button
@@ -492,7 +499,7 @@ private fun OnlinePlaylistHeader(
                     Icon(
                         painter = painterResource(R.drawable.more_vert),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
