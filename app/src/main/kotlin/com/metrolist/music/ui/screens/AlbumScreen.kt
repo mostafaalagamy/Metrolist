@@ -310,7 +310,7 @@ fun AlbumScreen(
                                         MaterialTheme.colorScheme.error
                                     else
                                         MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
                         }
@@ -335,7 +335,7 @@ fun AlbumScreen(
                                     painter = painterResource(R.drawable.play),
                                     contentDescription = stringResource(R.string.play),
                                     tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
                         }
@@ -365,7 +365,7 @@ fun AlbumScreen(
                                 Icon(
                                     painter = painterResource(R.drawable.more_vert),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
                         }

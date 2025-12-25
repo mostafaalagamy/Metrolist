@@ -445,7 +445,7 @@ private fun OnlinePlaylistHeader(
                             MaterialTheme.colorScheme.error
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
@@ -469,7 +469,7 @@ private fun OnlinePlaylistHeader(
                         painter = painterResource(R.drawable.play),
                         contentDescription = stringResource(R.string.play),
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
@@ -497,7 +497,7 @@ private fun OnlinePlaylistHeader(
                     Icon(
                         painter = painterResource(R.drawable.more_vert),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
