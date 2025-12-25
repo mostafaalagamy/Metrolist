@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -97,6 +99,7 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
+import com.metrolist.music.ui.menu.TopPlaylistMenu
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
@@ -254,6 +257,7 @@ fun TopPlaylistScreen(
                                 likeLength = likeLength,
                                 downloadState = downloadState,
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
+                                menuState = menuState,
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -494,6 +498,7 @@ private fun TopPlaylistHeader(
     likeLength: Int,
     downloadState: Int,
     onShowRemoveDownloadDialog: () -> Unit,
+    menuState: com.metrolist.music.ui.component.MenuState,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -539,30 +544,20 @@ private fun TopPlaylistHeader(
             modifier = Modifier.padding(horizontal = 32.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Metadata Row - Song Count, Duration
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 48.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Song Count
-            MetadataChip(
-                icon = R.drawable.music_note,
-                text = pluralStringResource(R.plurals.n_song, songs.size, songs.size)
-            )
-
-            // Duration
-            if (likeLength > 0) {
-                MetadataChip(
-                    icon = R.drawable.history,
-                    text = makeTimeString(likeLength * 1000L)
-                )
-            }
-        }
+        // Metadata - Song Count • Duration
+        Text(
+            text = buildString {
+                append(pluralStringResource(R.plurals.n_song, songs.size, songs.size))
+                if (likeLength > 0) {
+                    append(" • ")
+                    append(makeTimeString(likeLength * 1000L))
+                }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -571,14 +566,17 @@ private fun TopPlaylistHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Queue Button
+            // Shuffle Button - Smaller secondary button
             androidx.compose.material3.Surface(
                 onClick = {
-                    playerConnection.addToQueue(
-                        songs.map { it.toMediaItem() }
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = name,
+                            items = songs.shuffled().map { it.toMediaItem() },
+                        ),
                     )
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
@@ -590,14 +588,14 @@ private fun TopPlaylistHeader(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
-                        contentDescription = null,
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = stringResource(R.string.shuffle),
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            // Play Button
+            // Play Button - Larger primary circular button
             Button(
                 onClick = {
                     playerConnection.playQueue(
@@ -607,72 +605,58 @@ private fun TopPlaylistHeader(
                         ),
                     )
                 },
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
+                shape = androidx.compose.foundation.shape.CircleShape,
+                modifier = Modifier.size(72.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.play),
                     contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
 
-            // Shuffle Button
-            Button(
-                onClick = {
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = name,
-                            items = songs.shuffled().map { it.toMediaItem() },
-                        ),
-                    )
-                },
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.shuffle),
-                    contentDescription = stringResource(R.string.shuffle),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Download Button
+            // Menu Button - Smaller secondary button
             androidx.compose.material3.Surface(
                 onClick = {
-                    when (downloadState) {
-                        Download.STATE_COMPLETED -> {
-                            onShowRemoveDownloadDialog()
-                        }
-                        Download.STATE_DOWNLOADING -> {
-                            songs.forEach { song ->
-                                DownloadService.sendRemoveDownload(
-                                    context,
-                                    ExoDownloadService::class.java,
-                                    song.id,
-                                    false,
+                    menuState.show {
+                        TopPlaylistMenu(
+                            onQueue = {
+                                playerConnection.addToQueue(
+                                    songs.map { it.toMediaItem() }
                                 )
-                            }
-                        }
-                        else -> {
-                            songs.forEach { song ->
-                                val downloadRequest = DownloadRequest
-                                    .Builder(song.id, song.id.toUri())
-                                    .setCustomCacheKey(song.id)
-                                    .setData(song.title.toByteArray())
-                                    .build()
-                                DownloadService.sendAddDownload(
-                                    context,
-                                    ExoDownloadService::class.java,
-                                    downloadRequest,
-                                    false,
-                                )
-                            }
-                        }
+                            },
+                            onDownload = {
+                                when (downloadState) {
+                                    Download.STATE_COMPLETED -> onShowRemoveDownloadDialog()
+                                    Download.STATE_DOWNLOADING -> {
+                                        songs.forEach { song ->
+                                            DownloadService.sendRemoveDownload(
+                                                context,
+                                                ExoDownloadService::class.java,
+                                                song.id,
+                                                false,
+                                            )
+                                        }
+                                    }
+                                    else -> {
+                                        songs.forEach { song ->
+                                            val downloadRequest = DownloadRequest
+                                                .Builder(song.id, song.id.toUri())
+                                                .setCustomCacheKey(song.id)
+                                                .setData(song.title.toByteArray())
+                                                .build()
+                                            DownloadService.sendAddDownload(
+                                                context,
+                                                ExoDownloadService::class.java,
+                                                downloadRequest,
+                                                false,
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                            onDismiss = { menuState.dismiss() }
+                        )
                     }
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
@@ -683,61 +667,13 @@ private fun TopPlaylistHeader(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    when (downloadState) {
-                        Download.STATE_COMPLETED -> {
-                            Icon(
-                                painter = painterResource(R.drawable.offline),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        Download.STATE_DOWNLOADING -> {
-                            CircularProgressIndicator(
-                                strokeWidth = 2.dp,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
-                        else -> {
-                            Icon(
-                                painter = painterResource(R.drawable.download),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
+                    Icon(
+                        painter = painterResource(R.drawable.more_vert),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun MetadataChip(
-    icon: Int,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    androidx.compose.material3.Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
