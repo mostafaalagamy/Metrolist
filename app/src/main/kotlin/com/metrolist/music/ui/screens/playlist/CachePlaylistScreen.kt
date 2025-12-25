@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -196,6 +198,7 @@ fun CachePlaylistScreen(
                         CachePlaylistHeader(
                             songs = filteredSongs,
                             context = context,
+                            menuState = menuState,
                             modifier = Modifier.animateItem()
                         )
                     }
@@ -419,6 +422,7 @@ fun CachePlaylistScreen(
 private fun CachePlaylistHeader(
     songs: List<ItemWrapper<Song>>,
     context: android.content.Context,
+    menuState: MenuState,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -571,7 +575,7 @@ private fun CachePlaylistHeader(
                                     )
                                 }
                             },
-                            onDismiss = menuState::dismiss
+                            onDismiss = { menuState.dismiss() }
                         )
                     }
                 },
