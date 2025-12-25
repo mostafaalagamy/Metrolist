@@ -33,8 +33,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -107,7 +108,7 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AlbumViewModel
 import com.metrolist.music.utils.makeTimeString
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AlbumScreen(
     navController: NavController,
@@ -330,7 +331,7 @@ fun AlbumScreen(
                             Icon(
                                 painter = painterResource(R.drawable.play),
                                 contentDescription = stringResource(R.string.play),
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(56.dp)
                             )
                         }
 
@@ -481,7 +482,7 @@ fun AlbumScreen(
                         .padding(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    ContainedLoadingIndicator()
                 }
             }
         }
