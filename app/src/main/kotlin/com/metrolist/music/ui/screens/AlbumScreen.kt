@@ -330,7 +330,7 @@ fun AlbumScreen(
                             Icon(
                                 painter = painterResource(R.drawable.play),
                                 contentDescription = stringResource(R.string.play),
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier.size(48.dp)
                             )
                         }
 

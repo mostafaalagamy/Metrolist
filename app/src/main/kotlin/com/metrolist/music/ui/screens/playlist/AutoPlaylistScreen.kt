@@ -653,7 +653,7 @@ private fun AutoPlaylistHeader(
                     )
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(72.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.play),
