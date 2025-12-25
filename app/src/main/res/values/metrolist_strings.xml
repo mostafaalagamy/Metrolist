@@ -50,7 +50,6 @@
     <string name="remove_from_cache">Remove from cache</string>
     
     <!-- Menu descriptions -->
-    <string name="start_radio_desc">Play similar songs based on this playlist</string>
     <string name="play_next_desc">Add to the front of the queue</string>
     <string name="add_to_queue_desc">Add to the end of the queue</string>
     <string name="download_playlist_desc">Download all songs for offline playback</string>
