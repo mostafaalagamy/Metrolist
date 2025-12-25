@@ -465,19 +465,26 @@ private fun CachePlaylistHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Metadata Row - Song Count
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 48.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        // Metadata
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             // Song Count
-            MetadataChip(
-                icon = R.drawable.music_note,
-                text = pluralStringResource(R.plurals.n_song, songs.size, songs.size)
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.music_note),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -490,25 +497,28 @@ private fun CachePlaylistHeader(
             horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Queue Button (Left)
+            // Shuffle Button
             androidx.compose.material3.Surface(
                 onClick = {
-                    playerConnection.addToQueue(
-                        songs.map { it.item.toMediaItem() }
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Cache Songs",
+                            items = songs.shuffled().map { it.item.toMediaItem() },
+                        )
                     )
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
                 color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(56.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = stringResource(R.string.shuffle),
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
@@ -523,70 +533,60 @@ private fun CachePlaylistHeader(
                         )
                     )
                 },
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(28.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp)
+                    .height(56.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.play),
                     contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(28.dp)
                 )
             }
 
-            // Shuffle Button
-            Button(
-                onClick = {
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = "Cache Songs",
-                            items = songs.shuffled().map { it.item.toMediaItem() },
-                        )
-                    )
-                },
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.shuffle),
-                    contentDescription = stringResource(R.string.shuffle),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Download Button (Right)
+            // Menu Button
             androidx.compose.material3.Surface(
                 onClick = {
-                    // Download all cached songs
-                    songs.forEach { song ->
-                        val downloadRequest = DownloadRequest
-                            .Builder(song.item.song.id, song.item.song.id.toUri())
-                            .setCustomCacheKey(song.item.song.id)
-                            .setData(song.item.song.title.toByteArray())
-                            .build()
-                        DownloadService.sendAddDownload(
-                            context,
-                            ExoDownloadService::class.java,
-                            downloadRequest,
-                            false,
+                    menuState.show {
+                        CachePlaylistMenu(
+                            onQueue = {
+                                playerConnection.addToQueue(
+                                    songs.map { it.item.toMediaItem() }
+                                )
+                            },
+                            onDownload = {
+                                // Download all cached songs
+                                songs.forEach { song ->
+                                    val downloadRequest = DownloadRequest
+                                        .Builder(song.item.song.id, song.item.song.id.toUri())
+                                        .setCustomCacheKey(song.item.song.id)
+                                        .setData(song.item.song.title.toByteArray())
+                                        .build()
+                                    DownloadService.sendAddDownload(
+                                        context,
+                                        ExoDownloadService::class.java,
+                                        downloadRequest,
+                                        false,
+                                    )
+                                }
+                            },
+                            onDismiss = menuState::dismiss
                         )
                     }
                 },
                 shape = androidx.compose.foundation.shape.CircleShape,
                 color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(56.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.download),
+                        painter = painterResource(R.drawable.more_vert),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
@@ -594,33 +594,39 @@ private fun CachePlaylistHeader(
     }
 }
 
+
 @Composable
-private fun MetadataChip(
-    icon: Int,
-    text: String,
-    modifier: Modifier = Modifier
+private fun CachePlaylistMenu(
+    onQueue: () -> Unit,
+    onDownload: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    androidx.compose.material3.Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+    Column {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.queue_play_next)) },
+            onClick = {
+                onQueue()
+                onDismiss()
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music),
+                    contentDescription = null
+                )
+            }
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.download)) },
+            onClick = {
+                onDownload()
+                onDismiss()
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.download),
+                    contentDescription = null
+                )
+            }
+        )
     }
 }

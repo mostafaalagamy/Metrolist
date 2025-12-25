@@ -244,35 +244,66 @@ fun AlbumScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Metadata Row - Song Count, Duration, Year
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 48.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                    // Metadata
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         // Song Count
-                        MetadataChip(
-                            icon = R.drawable.music_note,
-                            text = pluralStringResource(R.plurals.n_song, albumWithSongs.songs.size, albumWithSongs.songs.size)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(R.drawable.music_note),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = pluralStringResource(
+                                    R.plurals.n_song,
+                                    albumWithSongs.songs.size,
+                                    albumWithSongs.songs.size
+                                ),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            )
+                        }
 
                         // Duration
                         val totalDuration = albumWithSongs.songs.sumOf { it.song.duration }
                         if (totalDuration > 0) {
-                            MetadataChip(
-                                icon = R.drawable.history,
-                                text = makeTimeString(totalDuration * 1000L)
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(R.drawable.history),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = makeTimeString(totalDuration * 1000L),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                )
+                            }
                         }
 
                         // Year
                         if (albumWithSongs.album.year != null) {
-                            MetadataChip(
-                                icon = R.drawable.update,
-                                text = albumWithSongs.album.year.toString()
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(R.drawable.update),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = albumWithSongs.album.year.toString(),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                )
+                            }
                         }
                     }
 
@@ -295,7 +326,7 @@ fun AlbumScreen(
                             },
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(56.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -310,7 +341,7 @@ fun AlbumScreen(
                                         MaterialTheme.colorScheme.error
                                     else
                                         MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(28.dp)
                                 )
                             }
                         }
@@ -323,109 +354,45 @@ fun AlbumScreen(
                                     LocalAlbumRadio(albumWithSongs),
                                 )
                             },
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(28.dp),
                             modifier = Modifier
                                 .weight(1f)
-                                .height(48.dp)
+                                .height(56.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.play),
                                 contentDescription = stringResource(R.string.play),
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(28.dp)
                             )
                         }
 
-                        // Shuffle Button
-                        Button(
-                            onClick = {
-                                playerConnection.service.getAutomix(playlistId)
-                                playerConnection.playQueue(
-                                    LocalAlbumRadio(albumWithSongs.copy(songs = albumWithSongs.songs.shuffled())),
-                                )
-                            },
-                            shape = RoundedCornerShape(24.dp),
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.shuffle),
-                                contentDescription = stringResource(R.string.shuffle),
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-
-                        // Download Button
+                        // Menu Button
                         Surface(
                             onClick = {
-                                when (downloadState) {
-                                    Download.STATE_COMPLETED -> {
-                                        albumWithSongs.songs.forEach { song ->
-                                            DownloadService.sendRemoveDownload(
-                                                context,
-                                                ExoDownloadService::class.java,
-                                                song.id,
-                                                false,
-                                            )
-                                        }
-                                    }
-                                    Download.STATE_DOWNLOADING -> {
-                                        albumWithSongs.songs.forEach { song ->
-                                            DownloadService.sendRemoveDownload(
-                                                context,
-                                                ExoDownloadService::class.java,
-                                                song.id,
-                                                false,
-                                            )
-                                        }
-                                    }
-                                    else -> {
-                                        albumWithSongs.songs.forEach { song ->
-                                            val downloadRequest = DownloadRequest
-                                                .Builder(song.id, song.id.toUri())
-                                                .setCustomCacheKey(song.id)
-                                                .setData(song.song.title.toByteArray())
-                                                .build()
-                                            DownloadService.sendAddDownload(
-                                                context,
-                                                ExoDownloadService::class.java,
-                                                downloadRequest,
-                                                false,
-                                            )
-                                        }
-                                    }
+                                menuState.show {
+                                    AlbumMenu(
+                                        originalAlbum = Album(
+                                            albumWithSongs.album,
+                                            albumWithSongs.artists
+                                        ),
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
                                 }
                             },
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(56.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
                             ) {
-                                when (downloadState) {
-                                    Download.STATE_COMPLETED -> {
-                                        Icon(
-                                            painter = painterResource(R.drawable.offline),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                    Download.STATE_DOWNLOADING -> {
-                                        CircularProgressIndicator(
-                                            strokeWidth = 2.dp,
-                                            modifier = Modifier.size(24.dp),
-                                        )
-                                    }
-                                    else -> {
-                                        Icon(
-                                            painter = painterResource(R.drawable.download),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                }
+                                Icon(
+                                    painter = painterResource(R.drawable.more_vert),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(28.dp)
+                                )
                             }
                         }
                     }
@@ -657,34 +624,3 @@ fun AlbumScreen(
     )
 }
 
-@Composable
-private fun MetadataChip(
-    icon: Int,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1
-            )
-        }
-    }
-}
