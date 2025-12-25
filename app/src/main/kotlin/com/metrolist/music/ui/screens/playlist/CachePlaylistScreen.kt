@@ -422,7 +422,7 @@ fun CachePlaylistScreen(
 private fun CachePlaylistHeader(
     songs: List<ItemWrapper<Song>>,
     context: android.content.Context,
-    menuState: MenuState,
+    menuState: com.metrolist.music.ui.component.MenuState,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return

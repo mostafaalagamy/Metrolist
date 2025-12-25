@@ -1551,7 +1551,7 @@ private fun LocalPlaylistMenu(
     onDismiss: () -> Unit
 ) {
     Column {
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.edit)) },
             onClick = {
                 onEdit()
@@ -1564,7 +1564,7 @@ private fun LocalPlaylistMenu(
                 )
             }
         )
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.sync)) },
             onClick = {
                 onSync()
@@ -1577,7 +1577,7 @@ private fun LocalPlaylistMenu(
                 )
             }
         )
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.delete)) },
             onClick = {
                 onDelete()
@@ -1590,7 +1590,7 @@ private fun LocalPlaylistMenu(
                 )
             }
         )
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.download)) },
             onClick = {
                 onDownload()
@@ -1603,7 +1603,7 @@ private fun LocalPlaylistMenu(
                 )
             }
         )
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.queue_play_next)) },
             onClick = {
                 onQueue()
@@ -1616,7 +1616,7 @@ private fun LocalPlaylistMenu(
                 )
             }
         )
-        DropdownMenuItem(
+        androidx.compose.material3.DropdownMenuItem(
             text = { Text(stringResource(R.string.share)) },
             onClick = {
                 val shareText = if (playlist.playlist.browseId != null) {
