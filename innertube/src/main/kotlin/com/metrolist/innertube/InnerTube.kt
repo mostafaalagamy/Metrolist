@@ -307,7 +307,7 @@ class InnerTube {
         )
     }
 
-        suspend fun unlikeVideo(
+    suspend fun unlikeVideo(
         client: YouTubeClient,
         videoId: String,
     ) = httpClient.post("like/removelike") {
@@ -316,27 +316,6 @@ class InnerTube {
             LikeBody(
                 context = client.toContext(locale, visitorData, dataSyncId),
                 target = LikeBody.Target.VideoTarget(videoId)
-            )
-        )
-    }
-
-    suspend fun removeVideoFromPlaylist(
-        client: YouTubeClient,
-        playlistId: String,
-        videoId: String,
-        setVideoId: String,
-    ) = httpClient.post("browse/edit_playlist") {
-        ytClient(client, setLogin = true)
-        setBody(
-            EditPlaylistBody(
-                context = client.toContext(locale, visitorData, dataSyncId),
-                playlistId = playlistId.removePrefix("VL"),
-                actions = listOf(
-                    Action.RemoveVideoAction(
-                        removedVideoId = videoId,
-                        setVideoId = setVideoId,
-                    )
-                )
             )
         )
     }
