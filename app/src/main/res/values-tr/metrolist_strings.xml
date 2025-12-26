@@ -252,7 +252,5 @@
     <string name="cache_size_warning_message">Uygulamanın şu an kullandığı boyuttan (%1$s) daha küçük bir önbellek sınırı seçtiniz. Devam ederseniz uygulama, yeni sınıra uymak için önbelleğe alınmış bazı %2$s içeriklerini silebilir. Yine de devam edilsin mi?</string>
     <string name="cache_size_warning_confirm">Devam etmek</string>
     <string name="tertiary_color_style">Üçüncül renk</string>
-    <string name="lyrics_glow_effect">Parlayan şarkı sözü efektini etkinleştir</string>
-    <string name="lyrics_glow_effect_desc">Aktif şarkı sözlerine parlayan animasyon ve zıplama efekti ekleyin</string>
     <string name="logging_in">Giriş yapılıyor…</string>
 </resources>

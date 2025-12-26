@@ -230,8 +230,6 @@
     <string name="last_fm_send_likes_description">Apreciază/dezapreciază melodiile în Last.fm atunci când sunt apreciate/dezapreciate în Metrolist</string>
     <string name="primary_color_style">Culoare principală</string>
     <string name="tertiary_color_style">Culoare terțiară</string>
-    <string name="lyrics_glow_effect">Activează efectul de strălucire al versurilor</string>
-    <string name="lyrics_glow_effect_desc">Adaugă o animație de strălucire și un efect de ricoșare la versurile active</string>
     <string name="auto_scroll">Resincronizare</string>
     <string name="lyrics_romanize_chinese">Romanizează versurile în chineză</string>
     <string name="google_cast">Google Cast</string>

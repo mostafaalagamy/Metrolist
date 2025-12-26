@@ -227,8 +227,6 @@
     <string name="primary_color_style">Kolor podstawowy</string>
     <string name="tertiary_color_style">Kolor trzeciorzędny</string>
     <string name="swipe_song_to_remove">Przesuń utwór, aby usunąć go z listy odtwarzania</string>
-    <string name="lyrics_glow_effect">Włącz efekt świecących tekstów</string>
-    <string name="lyrics_glow_effect_desc">Dodaj animację świecenia i efekt odbicia do aktywnych tekstów</string>
     <string name="auto_scroll">Ponowna synchronizacja</string>
     <string name="lyrics_romanize_chinese">Romanizuj chińskie teksty</string>
     <string name="update_channel_name">Aktualizacje aplikacji</string>

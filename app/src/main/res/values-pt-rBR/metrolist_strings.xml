@@ -228,8 +228,6 @@
     <string name="swipe_song_to_remove">Deslizar música para removê-la da lista</string>
     <string name="primary_color_style">Cor primária</string>
     <string name="tertiary_color_style">Cor terciária</string>
-    <string name="lyrics_glow_effect">Habilitar o efeito de letras brilhantes</string>
-    <string name="lyrics_glow_effect_desc">Adicionar animação brilhante e efeito elástico na letra de música ativa</string>
     <string name="auto_scroll">Ressincronizar</string>
     <string name="lyrics_romanize_chinese">Romanizar letras de música em Chinês</string>
     <string name="google_cast">Google Cast</string>
