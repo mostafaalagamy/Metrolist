@@ -153,7 +153,7 @@ fun AboutScreen(
             }
         }
 
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
 
         Text(
             text = "MO AGAMY",
@@ -166,7 +166,7 @@ fun AboutScreen(
         Row {
             IconButton(
                 onClick = {
-                    uriHandler.openUri("https://github.com/mostafaalagamy/metrolist")
+                    uriHandler.openUri("https://github.com/mostafaalagamy")
                 },
             ) {
                 Icon(
@@ -177,11 +177,11 @@ fun AboutScreen(
 
             IconButton(
                 onClick = {
-                    uriHandler.openUri("https://www.instagram.com/mostafaalagamy")
+                    uriHandler.openUri("https://buymeacoffee.com/mostafaalagamy")
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.instagram),
+                    painter = painterResource(R.drawable.buymeacoffee),
                     contentDescription = null
                 )
             }
@@ -216,6 +216,17 @@ fun AboutScreen(
             }
         )
 
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = "Adriel O'Connel",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.clickable {
+                uriHandler.openUri("https://github.com/adrielGGmotion")
+            }
+        )
+
         Spacer(Modifier.height(32.dp))
     }
 
@@ -234,3 +245,4 @@ fun AboutScreen(
         }
     )
 }
+
