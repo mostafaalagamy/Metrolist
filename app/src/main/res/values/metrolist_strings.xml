@@ -15,6 +15,8 @@
     <string name="album_cover_desc">Album cover</string>
     <string name="top_music_videos">Top music videos</string>
     <string name="trending">Trending</string>
+    <string name="top_result">Top result</string>
+    <string name="other_results">Other</string>
 
     <string name="weeks">Weeks</string>
     <string name="months">Months</string>
@@ -319,6 +321,3 @@
     <string name="lyrics_text_size">Lyrics text size</string>
     <string name="lyrics_line_spacing">Lyrics line spacing</string>
 </resources>
-
-    <string name="top_result">Top result</string>
-    <string name="other_results">Other</string>
