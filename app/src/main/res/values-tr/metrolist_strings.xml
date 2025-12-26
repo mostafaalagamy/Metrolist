@@ -250,7 +250,26 @@
     <string name="mini_player_outline">Mini oynatıcı taslağı</string>
     <string name="cache_size_warning_title">Bekle!</string>
     <string name="cache_size_warning_message">Uygulamanın şu an kullandığı boyuttan (%1$s) daha küçük bir önbellek sınırı seçtiniz. Devam ederseniz uygulama, yeni sınıra uymak için önbelleğe alınmış bazı %2$s içeriklerini silebilir. Yine de devam edilsin mi?</string>
-    <string name="cache_size_warning_confirm">Devam etmek</string>
+    <string name="cache_size_warning_confirm">Devam et</string>
     <string name="tertiary_color_style">Üçüncül renk</string>
     <string name="logging_in">Giriş yapılıyor…</string>
+    <string name="top_result">En iyi sonuç</string>
+    <string name="other_results">Diğer</string>
+    <string name="download_playlist_desc">Çevrimdışı dinlemek için tüm şarkıları indir</string>
+    <string name="remove_download_playlist_desc">İndirilen tüm şarkıları bu çalma listesinden kaldır</string>
+    <string name="download_in_progress_desc">İndirme işlemi devam ediyor</string>
+    <string name="share_playlist_desc">Bu çalma listesini başkalarıyla paylaş</string>
+    <string name="delete_playlist_desc">Bu çalma listesini kalıcı olarak sil</string>
+    <string name="sync_playlist_desc">Oynatma listesini YouTube Music ile senkronize et</string>
+    <string name="enable_better_lyrics">Better Lyrics\'i Etkinleştir</string>
+    <string name="enable_better_lyrics_desc">Kelime kelime senkronize edilmiş şarkı sözleri için Better Lyrics sağlayıcısını kullanın</string>
+    <string name="lyrics_animation_style">Şarkı sözü animasyon stili</string>
+    <string name="none">Hiçbiri</string>
+    <string name="fade">Soluklaşmış</string>
+    <string name="glow">Parıltılı</string>
+    <string name="slide">Kaydır</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Müzik</string>
+    <string name="lyrics_text_size">Şarkı sözü metin boyutu</string>
+    <string name="lyrics_line_spacing">Şarkı sözü satır aralığı</string>
 </resources>
