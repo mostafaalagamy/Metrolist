@@ -250,7 +250,7 @@
     <string name="delete_desc">Безвозвратно удалить этот элемент</string>
     <string name="advanced_desc">Изменить темп и высоту тона трека</string>
     <string name="equalizer_desc">Настроить эквалайзер</string>
-    <string name="enable_dynamic_icon">Включить динамическую иконку</string>
+    <string name="enable_dynamic_icon">Включить динамический значок</string>
     <string name="mini_player">Мини-плеер</string>
     <string name="pure_black_mini_player">Чисто чёрный мини-плеер</string>
     <string name="mini_player_outline">Контур мини-плеера</string>
@@ -259,4 +259,23 @@
     <string name="cache_size_warning_confirm">Продолжить</string>
     <string name="tertiary_color_style">Третичный цвет</string>
     <string name="logging_in">Выполняется вход…</string>
+    <string name="top_result">Лучший результат</string>
+    <string name="other_results">Остальные</string>
+    <string name="download_playlist_desc">Скачать все треки для офлайн-прослушивания</string>
+    <string name="remove_download_playlist_desc">Удалить все скачанные треки из этого плейлиста</string>
+    <string name="download_in_progress_desc">Идёт скачивание</string>
+    <string name="share_playlist_desc">Поделиться этим плейлистом с другими</string>
+    <string name="delete_playlist_desc">Удалить этот плейлист навсегда</string>
+    <string name="sync_playlist_desc">Синхронизировать плейлист с YouTube Music</string>
+    <string name="enable_better_lyrics">Включить Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Использовать Better Lyrics для построчной синхронизации текстов</string>
+    <string name="lyrics_animation_style">Стиль анимации текста</string>
+    <string name="none">Нет</string>
+    <string name="fade">Затухание</string>
+    <string name="glow">Свечение</string>
+    <string name="slide">Скольжение</string>
+    <string name="karaoke">Караоке</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Размер текста песни</string>
+    <string name="lyrics_line_spacing">Межстрочный интервал текста</string>
 </resources>
