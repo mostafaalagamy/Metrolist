@@ -860,6 +860,18 @@ object YouTube {
             innerTube.unlikeVideo(WEB_REMIX, videoId)
     }
 
+    suspend fun removeSongFromLibrary(
+        videoId: String,
+        setVideoId: String,
+    ) = runCatching {
+        innerTube.removeVideoFromPlaylist(
+            client = WEB_REMIX,
+            playlistId = "LM", // Liked Music playlist ID
+            videoId = videoId,
+            setVideoId = setVideoId
+        )
+    }
+
     suspend fun likePlaylist(playlistId: String, like: Boolean) = runCatching {
         if (like)
             innerTube.likePlaylist(WEB_REMIX, playlistId)
