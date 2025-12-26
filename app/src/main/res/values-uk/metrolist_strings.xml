@@ -259,4 +259,23 @@
     <string name="cache_size_warning_confirm">Продовжити</string>
     <string name="tertiary_color_style">Третинний колір</string>
     <string name="logging_in">Вхід до…</string>
+    <string name="top_result">Найкращий результат</string>
+    <string name="other_results">Інше</string>
+    <string name="download_playlist_desc">Завантажте всі пісні для відтворення офлайн</string>
+    <string name="remove_download_playlist_desc">Видалити всі завантажені пісні з цього списку відтворення</string>
+    <string name="download_in_progress_desc">Триває завантаження</string>
+    <string name="share_playlist_desc">Поділіться цим плейлистом з іншими</string>
+    <string name="delete_playlist_desc">Видалити цей плейлист назавжди</string>
+    <string name="sync_playlist_desc">Синхронізуйте плейлист з YouTube Music</string>
+    <string name="enable_better_lyrics">Увімкнути кращі тексти пісень</string>
+    <string name="enable_better_lyrics_desc">Використовуйте постачальника Better Lyrics для синхронізованих текстів пісень слово за словом</string>
+    <string name="lyrics_animation_style">Стиль анімації текстів пісень</string>
+    <string name="none">Жоден</string>
+    <string name="fade">Згасання</string>
+    <string name="glow">Сяйво</string>
+    <string name="slide">Слайд</string>
+    <string name="karaoke">Караоке</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Розмір тексту пісні</string>
+    <string name="lyrics_line_spacing">Міжрядковий інтервал тексту пісень</string>
 </resources>
