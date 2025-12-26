@@ -256,4 +256,5 @@
     <string name="cache_size_warning_confirm">Continua</string>
     <string name="tertiary_color_style">Colore terziario</string>
     <string name="logging_in">Connessione in corso…</string>
+    <string name="download_in_progress_desc">Lo scaricamento è in corso</string>
 </resources>
