@@ -319,3 +319,6 @@
     <string name="lyrics_text_size">Lyrics text size</string>
     <string name="lyrics_line_spacing">Lyrics line spacing</string>
 </resources>
+
+    <string name="top_result">Top result</string>
+    <string name="other_results">Other</string>
