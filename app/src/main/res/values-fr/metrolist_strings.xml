@@ -256,4 +256,23 @@
     <string name="cache_size_warning_confirm">Continuer</string>
     <string name="tertiary_color_style">Couleur tertiaire</string>
     <string name="logging_in">Connexion…</string>
+    <string name="top_result">Meilleurs résultats</string>
+    <string name="other_results">Autre</string>
+    <string name="download_playlist_desc">Télécharger tous les titres pour une écoute hors ligne</string>
+    <string name="remove_download_playlist_desc">Supprimer tous les titres téléchargés de cette playlist</string>
+    <string name="download_in_progress_desc">Le téléchargement est en cours</string>
+    <string name="share_playlist_desc">Partager cette playlist avec d\'autres personnes</string>
+    <string name="delete_playlist_desc">Supprimer définitivement cette playlist</string>
+    <string name="sync_playlist_desc">Synchroniser la playlist avec YouTube Music</string>
+    <string name="enable_better_lyrics">Activer de meilleures paroles</string>
+    <string name="enable_better_lyrics_desc">Utiliser le fournisseur Better Lyrics pour des paroles synchronisées mot à mot</string>
+    <string name="lyrics_animation_style">Style d\'animation des paroles</string>
+    <string name="none">Aucun</string>
+    <string name="fade">Disparition</string>
+    <string name="glow">Brillance</string>
+    <string name="slide">Glissement</string>
+    <string name="karaoke">Karaoké</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Taille du texte des paroles</string>
+    <string name="lyrics_line_spacing">Espacement des lignes des paroles</string>
 </resources>
