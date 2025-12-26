@@ -183,7 +183,7 @@ fun AlbumScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 12.dp),
+                        .padding(top = 8.dp, bottom = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Artist Names - Above the image
@@ -277,7 +277,7 @@ fun AlbumScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     // Action Buttons Row
                     Row(
