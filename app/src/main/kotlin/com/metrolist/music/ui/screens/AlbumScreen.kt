@@ -277,7 +277,7 @@ fun AlbumScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     // Action Buttons Row
                     Row(
