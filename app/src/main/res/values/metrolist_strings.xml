@@ -48,6 +48,14 @@
     <string name="added_to_play_next">Added to play next</string>
     <string name="added_to_queue">Added to the queue</string>
     <string name="remove_from_cache">Remove from cache</string>
+    
+    <!-- Menu descriptions -->
+    <string name="download_playlist_desc">Download all songs for offline playback</string>
+    <string name="remove_download_playlist_desc">Remove all downloaded songs from this playlist</string>
+    <string name="download_in_progress_desc">Download is in progress</string>
+    <string name="share_playlist_desc">Share this playlist with others</string>
+    <string name="delete_playlist_desc">Remove this playlist permanently</string>
+    <string name="sync_playlist_desc">Sync playlist with YouTube Music</string>
     <string name="copy_link">Copy link</string>
     <string name="select">Select all</string>
     <string name="like_all">Like all</string>

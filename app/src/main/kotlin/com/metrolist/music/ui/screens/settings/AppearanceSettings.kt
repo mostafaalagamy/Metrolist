@@ -169,7 +169,7 @@ fun AppearanceSettings(
     )
     val (playerButtonsStyle, onPlayerButtonsStyleChange) = rememberEnumPreference(
         PlayerButtonsStyleKey,
-        defaultValue = PlayerButtonsStyle.PRIMARY
+        defaultValue = PlayerButtonsStyle.DEFAULT
     )
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(
         LyricsTextPositionKey,
