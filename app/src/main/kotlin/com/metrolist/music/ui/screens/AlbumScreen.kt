@@ -357,7 +357,7 @@ fun AlbumScreen(
                             },
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(48.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -366,7 +366,7 @@ fun AlbumScreen(
                                 Icon(
                                     painter = painterResource(R.drawable.more_vert),
                                     contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
