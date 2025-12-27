@@ -265,4 +265,23 @@
     <string name="cache_size_warning_confirm">متابعة</string>
     <string name="tertiary_color_style">اللون الثانوي</string>
     <string name="logging_in">جارٍ تسجيل الدخول…</string>
+    <string name="top_result">أفضل النتائج</string>
+    <string name="other_results">آخري</string>
+    <string name="download_playlist_desc">وصف القائمة</string>
+    <string name="remove_download_playlist_desc">قم بإزالة جميع الأغاني التي تم تنزيلها من قائمة التشغيل هذه</string>
+    <string name="download_in_progress_desc">عملية التنزيل جارية</string>
+    <string name="share_playlist_desc">شارك قائمة التشغيل هذه مع الآخرين</string>
+    <string name="delete_playlist_desc">قم بإزالة قائمة التشغيل هذه نهائياً</string>
+    <string name="sync_playlist_desc">مزامنة قائمة التشغيل مع YT Music</string>
+    <string name="enable_better_lyrics">تفعيل كلمات الأغاني الأفضل</string>
+    <string name="enable_better_lyrics_desc">استخدم مزود Better Lyrics للحصول على كلمات متزامنة كلمة بكلمة</string>
+    <string name="lyrics_animation_style">أسلوب الرسوم المتحركة للكلمات</string>
+    <string name="none">لا تأثير</string>
+    <string name="fade">تلاشي</string>
+    <string name="glow">الاشعاع</string>
+    <string name="slide">انزلاق</string>
+    <string name="karaoke">كاريوكي</string>
+    <string name="apple_music_style">أبل ميوزك</string>
+    <string name="lyrics_text_size">حجم نص كلمات الأغنية</string>
+    <string name="lyrics_line_spacing">تباعد أسطر الكلمات</string>
 </resources>
