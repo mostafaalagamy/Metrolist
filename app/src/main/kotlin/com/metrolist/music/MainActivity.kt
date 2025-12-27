@@ -335,7 +335,7 @@ class MainActivity : ComponentActivity() {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
 
                                     val flags = PendingIntent.FLAG_UPDATE_CURRENT or
-                                        (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                            (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
                                     val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
 
                                     val notif = NotificationCompat.Builder(this@MainActivity, "updates")
@@ -370,7 +370,7 @@ class MainActivity : ComponentActivity() {
 
             val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
             val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
-                pureBlackEnabled && useDarkTheme 
+                pureBlackEnabled && useDarkTheme
             }
 
             var themeColor by rememberSaveable(stateSaver = ColorSaver) {
@@ -418,11 +418,11 @@ class MainActivity : ComponentActivity() {
             ) {
                 BoxWithConstraints(
                     modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface
-                        )
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface
+                            )
                 ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
@@ -486,10 +486,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     val shouldShowNavigationBar = remember(navBackStackEntry) {
-                    val currentRoute = navBackStackEntry?.destination?.route
+                        val currentRoute = navBackStackEntry?.destination?.route
                         currentRoute == null ||
-                            navigationItems.fastAny { it.route == currentRoute } ||
-                            currentRoute.startsWith("search/")
+                                navigationItems.fastAny { it.route == currentRoute } ||
+                                currentRoute.startsWith("search/")
                     }
 
                     val isLandscape = remember(configuration) {
@@ -517,9 +517,9 @@ class MainActivity : ComponentActivity() {
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
                             collapsedBound = bottomInset +
-                                (if (!showRail && shouldShowNavigationBar) getNavPadding() else 0.dp) +
-                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
-                                MiniPlayerHeight,
+                                    (if (!showRail && shouldShowNavigationBar) getNavPadding() else 0.dp) +
+                                    (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
+                                    MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
 
@@ -1112,9 +1112,9 @@ class MainActivity : ComponentActivity() {
 
                 val playlistId = uri.getQueryParameter("list")
 
-                videoId?.let {
+                if (videoId != null) {
                     coroutineScope.launch(Dispatchers.IO) {
-                        YouTube.queue(listOf(it), playlistId).onSuccess { queue ->
+                        YouTube.queue(listOf(videoId), playlistId).onSuccess { queue ->
                             withContext(Dispatchers.Main) {
                                 playerConnection?.playQueue(
                                     YouTubeQueue(
@@ -1126,6 +1126,20 @@ class MainActivity : ComponentActivity() {
                         }.onFailure {
                             reportException(it)
                         }
+                    }
+                } else if (playlistId != null) {
+                    if (playlistId.startsWith("OLAK5uy_")) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            YouTube.albumSongs(playlistId).onSuccess { songs ->
+                                songs.firstOrNull()?.album?.id?.let { browseId ->
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate("album/$browseId")
+                                    }
+                                }
+                            }.onFailure { reportException(it) }
+                        }
+                    } else {
+                        navController.navigate("online_playlist/$playlistId")
                     }
                 }
             }
