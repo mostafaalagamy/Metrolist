@@ -2,15 +2,19 @@ package com.metrolist.music.ui.screens.settings.integrations
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -108,13 +114,20 @@ fun LastFMSettings(
     )
 
     var showLoginDialog by rememberSaveable { mutableStateOf(false) }
+    var isLoggingIn by rememberSaveable { mutableStateOf(false) }
+    var loginError by rememberSaveable { mutableStateOf<String?>(null) }
 
     if (showLoginDialog) {
         var tempUsername by rememberSaveable { mutableStateOf("") }
         var tempPassword by rememberSaveable { mutableStateOf("") }
 
         AlertDialog(
-            onDismissRequest = { showLoginDialog = false },
+            onDismissRequest = { 
+                if (!isLoggingIn) {
+                    showLoginDialog = false
+                    loginError = null
+                }
+            },
             title = { Text(stringResource(R.string.login)) },
             text = {
                 Column(
@@ -125,41 +138,129 @@ fun LastFMSettings(
                 ) {
                     OutlinedTextField(
                         value = tempUsername,
-                        onValueChange = { tempUsername = it },
+                        onValueChange = { 
+                            tempUsername = it
+                            loginError = null
+                        },
                         label = { Text(stringResource(R.string.username)) },
+                        singleLine = true,
+                        enabled = !isLoggingIn,
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = tempPassword,
-                        onValueChange = { tempPassword = it },
+                        onValueChange = { 
+                            tempPassword = it
+                            loginError = null
+                        },
                         label = { Text(stringResource(R.string.password)) },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        enabled = !isLoggingIn,
                         modifier = Modifier.fillMaxWidth()
                     )
+                    
+                    // Show error message if login failed
+                    loginError?.let { error ->
+                        Text(
+                            text = error,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                    
+                    // Show loading indicator
+                    if (isLoggingIn) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text(
+                                text = stringResource(R.string.logging_in),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
                 }
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        coroutineScope.launch(Dispatchers.IO) {
-                            LastFM.getMobileSession(tempUsername, tempPassword)
-                                .onSuccess {
-                                    lastfmUsername = it.session.name
-                                    lastfmSession = it.session.key
-                                }
-                                .onFailure {
-                                    reportException(it)
-                                }
+                        if (tempUsername.isBlank() || tempPassword.isBlank()) {
+                            loginError = "Please enter both username and password"
+                            return@TextButton
                         }
-                        showLoginDialog = false
-                    }
+                        
+                        isLoggingIn = true
+                        loginError = null
+                        
+                        coroutineScope.launch(Dispatchers.IO) {
+                            try {
+                                LastFM.getMobileSession(tempUsername, tempPassword)
+                                    .onSuccess { auth ->
+                                        lastfmUsername = auth.session.name
+                                        lastfmSession = auth.session.key
+                                        LastFM.sessionKey = auth.session.key
+                                        
+                                        // Switch back to main thread to update UI
+                                        coroutineScope.launch(Dispatchers.Main) {
+                                            isLoggingIn = false
+                                            showLoginDialog = false
+                                            loginError = null
+                                        }
+                                    }
+                                    .onFailure { exception ->
+                                        coroutineScope.launch(Dispatchers.Main) {
+                                            isLoggingIn = false
+                                            loginError = when (exception) {
+                                                is com.metrolist.lastfm.LastFM.LastFmException -> {
+                                                    when (exception.code) {
+                                                        4 -> "Invalid username or password"
+                                                        6 -> "Invalid parameters"
+                                                        9 -> "Invalid session key"
+                                                        10 -> "Invalid API key"
+                                                        13 -> "Invalid method signature"
+                                                        14 -> "Unauthorized token"
+                                                        15 -> "Service temporarily unavailable"
+                                                        else -> "Login failed: ${exception.message}"
+                                                    }
+                                                }
+                                                else -> "Network error. Please check your connection."
+                                            }
+                                        }
+                                        reportException(exception)
+                                    }
+                            } catch (e: Exception) {
+                                coroutineScope.launch(Dispatchers.Main) {
+                                    isLoggingIn = false
+                                    loginError = "Unexpected error occurred"
+                                }
+                                reportException(e)
+                            }
+                        }
+                    },
+                    enabled = !isLoggingIn
                 ) {
                     Text(stringResource(R.string.login))
                 }
             },
             dismissButton = {
-                TextButton(onClick = {
-                    showLoginDialog = false
-                }) {
+                TextButton(
+                    onClick = {
+                        if (!isLoggingIn) {
+                            showLoginDialog = false
+                            loginError = null
+                        }
+                    },
+                    enabled = !isLoggingIn
+                ) {
                     Text(stringResource(R.string.cancel))
                 }
             }

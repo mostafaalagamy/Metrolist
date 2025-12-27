@@ -1176,7 +1176,7 @@ fun BottomSheetPlayer(
                             val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
 
                             val playPauseWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 2.1f else 1.5f,
+                                targetValue = if (isPlayPausePressed) 1.9f else 1.3f,
                                 animationSpec = spring(),
                                 label = "playPauseWeight"
                             )
@@ -1196,7 +1196,7 @@ fun BottomSheetPlayer(
                                     contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(68.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(backInteractionSource)
                             ) {
@@ -1231,7 +1231,7 @@ fun BottomSheetPlayer(
                                     contentColor = iconButtonColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(68.dp)
                                     .weight(playPauseWeight)
                             ) {
                                 Row(
@@ -1265,7 +1265,7 @@ fun BottomSheetPlayer(
                                     contentColor = sideButtonContentColor,
                                 ),
                                 modifier = Modifier
-                                    .height(64.dp)
+                                    .height(68.dp)
                                     .weight(sideButtonWeight)
                                     .bouncy(nextInteractionSource)
                             ) {

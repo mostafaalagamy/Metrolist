@@ -15,6 +15,8 @@
     <string name="album_cover_desc">Album cover</string>
     <string name="top_music_videos">Top music videos</string>
     <string name="trending">Trending</string>
+    <string name="top_result">Top result</string>
+    <string name="other_results">Other</string>
 
     <string name="weeks">Weeks</string>
     <string name="months">Months</string>
@@ -48,6 +50,14 @@
     <string name="added_to_play_next">Added to play next</string>
     <string name="added_to_queue">Added to the queue</string>
     <string name="remove_from_cache">Remove from cache</string>
+    
+    <!-- Menu descriptions -->
+    <string name="download_playlist_desc">Download all songs for offline playback</string>
+    <string name="remove_download_playlist_desc">Remove all downloaded songs from this playlist</string>
+    <string name="download_in_progress_desc">Download is in progress</string>
+    <string name="share_playlist_desc">Share this playlist with others</string>
+    <string name="delete_playlist_desc">Remove this playlist permanently</string>
+    <string name="sync_playlist_desc">Sync playlist with YouTube Music</string>
     <string name="copy_link">Copy link</string>
     <string name="select">Select all</string>
     <string name="like_all">Like all</string>
@@ -104,8 +114,8 @@
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
-    <string name="lyrics_glow_effect">Enable glowing lyrics effect</string>
-    <string name="lyrics_glow_effect_desc">Add glowing animation and bounce effect to active lyrics</string>
+    <string name="enable_better_lyrics">Enable Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Use Better Lyrics provider for word-by-word synced lyrics</string>
     <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
@@ -271,6 +281,7 @@
     <string name="lastfm_now_playing">Send Now Playing</string>
     <string name="last_fm_send_likes">Send Likes/Unlikes</string>
     <string name="last_fm_send_likes_description">Love/Unlove songs in Last.fm when they are Liked/Unliked in Metrolist</string>
+    <string name="logging_in">Logging in…</string>
 
     <string name="scrobbling_configuration">Scrobbling Configuration</string>
     <string name="scrobble_min_track_duration">Scrobble songs longer than</string>
@@ -298,4 +309,15 @@
     <string name="cache_size_warning_title">Hold on!</string>
     <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
     <string name="cache_size_warning_confirm">Continue</string>
+
+    <!-- Lyrics Animation Styles -->
+    <string name="lyrics_animation_style">Lyrics animation style</string>
+    <string name="none">None</string>
+    <string name="fade">Fade</string>
+    <string name="glow">Glow</string>
+    <string name="slide">Slide</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Lyrics text size</string>
+    <string name="lyrics_line_spacing">Lyrics line spacing</string>
 </resources>

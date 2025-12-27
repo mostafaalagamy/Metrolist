@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
+import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,39 +63,7 @@ import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
 import java.time.LocalDateTime
 
-@Composable
-private fun MetadataChip(
-    icon: Int,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OnlinePlaylistScreen(
     navController: NavController,
@@ -165,7 +135,7 @@ fun OnlinePlaylistScreen(
                                 .padding(32.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            ContainedLoadingIndicator()
                         }
                     }
                 }
@@ -239,7 +209,7 @@ fun OnlinePlaylistScreen(
                                     .padding(16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator()
+                                ContainedLoadingIndicator()
                             }
                         }
                     }
@@ -417,28 +387,21 @@ private fun OnlinePlaylistHeader(
             modifier = Modifier.padding(horizontal = 32.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 48.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            MetadataChip(
-                icon = R.drawable.music_note,
-                text = pluralStringResource(R.plurals.n_song, songs.size, songs.size)
-            )
-
-            val totalDuration = songs.sumOf { it.duration ?: 0 }
-            if (totalDuration > 0) {
-                MetadataChip(
-                    icon = R.drawable.history,
-                    text = makeTimeString(totalDuration * 1000L)
-                )
-            }
-        }
+        // Metadata - Song Count • Duration
+        val totalDuration = songs.sumOf { it.duration ?: 0 }
+        Text(
+            text = buildString {
+                append(pluralStringResource(R.plurals.n_song, songs.size, songs.size))
+                if (totalDuration > 0) {
+                    append(" • ")
+                    append(makeTimeString(totalDuration * 1000L))
+                }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -446,9 +409,10 @@ private fun OnlinePlaylistHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Like Button - Smaller secondary button
             Surface(
                 onClick = {
                     database.query {
@@ -488,42 +452,31 @@ private fun OnlinePlaylistHeader(
                 }
             }
 
-            Button(
+            // Play Button - Larger primary circular button
+            Surface(
                 onClick = {
                     if (songs.isNotEmpty()) {
                         playerConnection.playQueue(ListQueue(playlist.title, songs.map { it.toMediaItem() }))
                     }
                 },
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape,
+                modifier = Modifier.size(72.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = stringResource(R.string.play),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Button(
-                onClick = {
-                    playerConnection.playQueue(
-                        ListQueue(playlist.title, songs.map { it.toMediaItem() }.shuffled())
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(32.dp)
                     )
-                },
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.shuffle),
-                    contentDescription = stringResource(R.string.shuffle),
-                    modifier = Modifier.size(24.dp)
-                )
+                }
             }
 
+            // Menu Button - Smaller secondary button
             Surface(
                 onClick = {
                     menuState.show {
@@ -553,3 +506,4 @@ private fun OnlinePlaylistHeader(
         }
     }
 }
+
