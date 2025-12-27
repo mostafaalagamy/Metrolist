@@ -79,8 +79,10 @@ fun LocalPlaylistMenu(
         )
     }
 
-    Material3MenuGroup(
-        items = listOf(
+    val isYouTubePlaylist = playlist.playlist.browseId != null
+
+    val menuItems = buildList {
+        add(
             Material3MenuItemData(
                 title = { Text(stringResource(R.string.edit)) },
                 description = { Text(stringResource(R.string.edit_playlist)) },
@@ -94,21 +96,30 @@ fun LocalPlaylistMenu(
                     onEdit()
                     onDismiss()
                 }
-            ),
-            Material3MenuItemData(
-                title = { Text(stringResource(R.string.action_sync)) },
-                description = { Text(stringResource(R.string.sync_playlist_desc)) },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.sync),
-                        contentDescription = null
-                    )
-                },
-                onClick = {
-                    onSync()
-                    onDismiss()
-                }
-            ),
+            )
+        )
+
+        // Show sync button only for YouTube playlists
+        if (isYouTubePlaylist) {
+            add(
+                Material3MenuItemData(
+                    title = { Text(stringResource(R.string.action_sync)) },
+                    description = { Text(stringResource(R.string.sync_playlist_desc)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.sync),
+                            contentDescription = null
+                        )
+                    },
+                    onClick = {
+                        onSync()
+                        onDismiss()
+                    }
+                )
+            )
+        }
+
+        add(
             Material3MenuItemData(
                 title = { Text(stringResource(R.string.add_to_queue)) },
                 description = { Text(stringResource(R.string.add_to_queue_desc)) },
@@ -122,8 +133,12 @@ fun LocalPlaylistMenu(
                     onQueue()
                     onDismiss()
                 }
-            ),
-            downloadMenuItem,
+            )
+        )
+
+        add(downloadMenuItem)
+
+        add(
             Material3MenuItemData(
                 title = { Text(stringResource(R.string.share)) },
                 description = { Text(stringResource(R.string.share_playlist_desc)) },
@@ -134,7 +149,7 @@ fun LocalPlaylistMenu(
                     )
                 },
                 onClick = {
-                    val shareText = if (playlist.playlist.browseId != null) {
+                    val shareText = if (isYouTubePlaylist) {
                         "https://music.youtube.com/playlist?list=${playlist.playlist.browseId}"
                     } else {
                         songs.joinToString("\n") { it.song.song.title }
@@ -148,7 +163,10 @@ fun LocalPlaylistMenu(
                     context.startActivity(shareIntent)
                     onDismiss()
                 }
-            ),
+            )
+        )
+
+        add(
             Material3MenuItemData(
                 title = { Text(stringResource(R.string.delete)) },
                 description = { Text(stringResource(R.string.delete_playlist_desc)) },
@@ -164,7 +182,9 @@ fun LocalPlaylistMenu(
                 }
             )
         )
-    )
+    }
+
+    Material3MenuGroup(items = menuItems)
 }
 
 /**
