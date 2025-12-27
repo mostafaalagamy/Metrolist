@@ -1310,8 +1310,7 @@ fun BottomSheetPlayer(
                                     color = TextBackgroundColor,
                                     modifier =
                                     Modifier
-                                        .width(32.dp)
-                                        .height(36.dp)
+                                        .size(32.dp)
                                         .align(Alignment.Center),
                                     onClick = playerConnection::seekToPrevious,
                                 )
@@ -1322,8 +1321,7 @@ fun BottomSheetPlayer(
                             Box(
                                 modifier =
                                 Modifier
-                                    .width(64.dp)
-                                    .height(76.dp)
+                                    .size(72.dp)
                                     .clip(RoundedCornerShape(playPauseRoundness))
                                     .background(textButtonColor)
                                     .clickable {
@@ -1372,8 +1370,7 @@ fun BottomSheetPlayer(
                                     color = TextBackgroundColor,
                                     modifier =
                                     Modifier
-                                        .width(32.dp)
-                                        .height(36.dp)
+                                        .size(32.dp)
                                         .align(Alignment.Center),
                                     onClick = playerConnection::seekToNext,
                                 )
