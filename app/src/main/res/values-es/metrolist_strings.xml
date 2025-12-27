@@ -256,4 +256,17 @@
     <string name="cache_size_warning_confirm">Continuar</string>
     <string name="lyrics_romanize_chinese">Romanizar letras chinas</string>
     <string name="logging_in">Iniciando sesión…</string>
+    <string name="top_result">Mejor resultado</string>
+    <string name="other_results">Otro</string>
+    <string name="download_playlist_desc">Descargar todas las canciones para reproducirlas sin conexión</string>
+    <string name="remove_download_playlist_desc">Eliminar todas las canciones descargadas de esta lista de reproducción</string>
+    <string name="download_in_progress_desc">La descarga está en progreso</string>
+    <string name="share_playlist_desc">Compartir esta lista de reproducción con otros</string>
+    <string name="delete_playlist_desc">Eliminar esta lista de reproducción de forma permanente</string>
+    <string name="sync_playlist_desc">Sincronizar lista de reproducción con YouTube Music</string>
+    <string name="enable_better_lyrics">Habilitar Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Usar el proveedor Better Lyrics para obtener letras sincronizadas palabra por palabra</string>
+    <string name="lyrics_animation_style">Estilo de animación de letras</string>
+    <string name="none">Ninguno</string>
+    <string name="lyrics_text_size">Tamaño del texto de la letra</string>
 </resources>
