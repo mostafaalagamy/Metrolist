@@ -301,15 +301,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(syncCoroutine) {
-            try {
-                context.dataStore.data
-                    .map { it[InnerTubeCookieKey] }
-                    .distinctUntilChanged()
-                    .first()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
             load()
 
             try {
@@ -322,7 +313,8 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch(syncCoroutine) {
+        // Listen for cookie changes to update account info
+        viewModelScope.launch(Dispatchers.IO) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
@@ -338,14 +330,6 @@ class HomeViewModel @Inject constructor(
                                 reportException(it)
                                 accountName.value = "Guest"
                                 accountImageUrl.value = null
-                            }
-
-                            YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                                accountPlaylists.value = it.items
-                                    .filterIsInstance<PlaylistItem>()
-                                    .filterNot { it.id == "SE" }
-                            }.onFailure {
-                                reportException(it)
                             }
                         } else {
                             accountName.value = "Guest"
