@@ -1136,23 +1136,32 @@ class MusicService :
                         database.format(currentMediaId).first()
                     }
 
-                    val loudnessDb = format?.loudnessDb
+                    Log.d(TAG, "Audio normalization enabled: $normalizeAudio")
+                    Log.d(TAG, "Format loudnessDb: ${format?.loudnessDb}, perceptualLoudnessDb: ${format?.perceptualLoudnessDb}")
+
+                    // Use loudnessDb if available, otherwise fall back to perceptualLoudnessDb
+                    val loudness = format?.loudnessDb ?: format?.perceptualLoudnessDb
 
                     withContext(Dispatchers.Main) {
-                        if (loudnessDb != null) {
+                        if (loudness != null) {
+                            val loudnessDb = loudness.toFloat()
                             val targetGain = (-loudnessDb * 100).toInt() + 400
                             val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
+                            
+                            Log.d(TAG, "Calculated raw normalization gain: $targetGain mB (from loudness: $loudnessDb)")
+                            
                             try {
                                 loudnessEnhancer?.setTargetGain(clampedGain)
                                 loudnessEnhancer?.enabled = true
-                                Log.d(TAG, "LoudnessEnhancer gain applied: $clampedGain mB")
+                                Log.i(TAG, "LoudnessEnhancer gain applied: $clampedGain mB")
                             } catch (e: Exception) {
+                                Log.e(TAG, "Failed to apply loudness enhancement", e)
                                 reportException(e)
                                 releaseLoudnessEnhancer()
                             }
                         } else {
                             loudnessEnhancer?.enabled = false
-                            Log.w(TAG, "setupLoudnessEnhancer: loudnessDb is null, enhancer disabled")
+                            Log.w(TAG, "Normalization enabled but no loudness data available - no normalization applied")
                         }
                     }
                 } else {
@@ -1518,6 +1527,13 @@ class MusicService :
             }
             run {
                 val format = nonNullPlayback.format
+                val loudnessDb = nonNullPlayback.audioConfig?.loudnessDb
+                val perceptualLoudnessDb = nonNullPlayback.audioConfig?.perceptualLoudnessDb
+
+                Log.d(TAG, "Storing format for $mediaId with loudnessDb: $loudnessDb, perceptualLoudnessDb: $perceptualLoudnessDb")
+                if (loudnessDb == null && perceptualLoudnessDb == null) {
+                    Log.w(TAG, "No loudness data available from YouTube for video: $mediaId")
+                }
 
                 database.query {
                     upsert(
@@ -1529,7 +1545,8 @@ class MusicService :
                             bitrate = format.bitrate,
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
-                            loudnessDb = nonNullPlayback.audioConfig?.loudnessDb,
+                            loudnessDb = loudnessDb,
+                            perceptualLoudnessDb = perceptualLoudnessDb,
                             playbackUrl = nonNullPlayback.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                         )
                     )
