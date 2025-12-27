@@ -370,7 +370,7 @@ class MainActivity : ComponentActivity() {
 
             val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
             val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
-                pureBlackEnabled && useDarkTheme 
+                pureBlackEnabled && useDarkTheme
             }
 
             var themeColor by rememberSaveable(stateSaver = ColorSaver) {
@@ -1112,9 +1112,9 @@ class MainActivity : ComponentActivity() {
 
                 val playlistId = uri.getQueryParameter("list")
 
-                videoId?.let {
+                if (videoId != null) {
                     coroutineScope.launch(Dispatchers.IO) {
-                        YouTube.queue(listOf(it), playlistId).onSuccess { queue ->
+                        YouTube.queue(listOf(videoId), playlistId).onSuccess { queue ->
                             withContext(Dispatchers.Main) {
                                 playerConnection?.playQueue(
                                     YouTubeQueue(
@@ -1126,6 +1126,20 @@ class MainActivity : ComponentActivity() {
                         }.onFailure {
                             reportException(it)
                         }
+                    }
+                } else if (playlistId != null) {
+                    if (playlistId.startsWith("OLAK5uy_")) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            YouTube.albumSongs(playlistId).onSuccess { songs ->
+                                songs.firstOrNull()?.album?.id?.let { browseId ->
+                                    withContext(Dispatchers.Main) {
+                                        navController.navigate("album/$browseId")
+                                    }
+                                }
+                            }.onFailure { reportException(it) }
+                        }
+                    } else {
+                        navController.navigate("online_playlist/$playlistId")
                     }
                 }
             }
