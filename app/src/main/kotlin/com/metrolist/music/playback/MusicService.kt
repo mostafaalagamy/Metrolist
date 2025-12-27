@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2026 Metrolist Project
+ *
+ * SPDX-License-Identifier: GPL-3.0
+ *
+ * For any other attributions, refer to the git commit history
+ */
+
 @file:Suppress("DEPRECATION")
 
 package com.metrolist.music.playback
