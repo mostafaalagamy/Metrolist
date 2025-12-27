@@ -44,6 +44,7 @@ import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -93,15 +94,15 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun syncLikedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncLikedSongs() }
     }
 
     fun syncLibrarySongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncLibrarySongs() }
     }
 
     fun syncUploadedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncUploadedSongs() }
     }
 }
 
@@ -130,7 +131,7 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncArtistsSubscriptions() }
     }
 
     init {
@@ -185,7 +186,7 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncLikedAlbums() }
     }
 
     init {
@@ -234,7 +235,7 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+        viewModelScope.launch(syncCoroutine) { syncUtils.syncSavedPlaylists() }
     }
 
     val topValue =
@@ -281,7 +282,7 @@ constructor(
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
     val syncAllLibrary = {
-         viewModelScope.launch(Dispatchers.IO) {
+         viewModelScope.launch(syncCoroutine) {
              syncUtils.syncLikedSongs()
              syncUtils.syncLibrarySongs()
              syncUtils.syncArtistsSubscriptions()

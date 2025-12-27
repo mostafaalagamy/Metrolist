@@ -18,7 +18,7 @@ import com.metrolist.music.extensions.collectLatest
 import com.metrolist.music.models.toMediaMetadata
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +38,7 @@ class SyncUtils @Inject constructor(
     @ApplicationContext context: Context,
     private val database: MusicDatabase,
 ) {
-    private val syncScope = CoroutineScope(Dispatchers.IO)
+    private val syncScope = CoroutineScope(syncCoroutine)
 
     private val _isSyncingLikedSongs = MutableStateFlow(false)
     private val _isSyncingLibrarySongs = MutableStateFlow(false)

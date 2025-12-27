@@ -28,6 +28,7 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
+import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -286,7 +287,7 @@ class HomeViewModel @Inject constructor(
     fun refresh() {
         if (isRefreshing.value) return
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(syncCoroutine) {
             isRefreshing.value = true
             try {
                 load()
@@ -299,7 +300,7 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(syncCoroutine) {
             try {
                 context.dataStore.data
                     .map { it[InnerTubeCookieKey] }
@@ -321,7 +322,7 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(syncCoroutine) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
