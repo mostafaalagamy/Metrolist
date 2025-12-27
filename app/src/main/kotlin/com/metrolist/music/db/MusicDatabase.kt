@@ -130,7 +130,8 @@ abstract class InternalDatabase : RoomDatabase() {
                     .addMigrations(
                         MIGRATION_1_2,
                         MIGRATION_21_24,
-                        MIGRATION_22_24
+                        MIGRATION_22_24,
+                        MIGRATION_24_25
                     )
                     .fallbackToDestructiveMigration()
                     .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
