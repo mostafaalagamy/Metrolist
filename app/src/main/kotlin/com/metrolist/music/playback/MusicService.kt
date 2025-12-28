@@ -111,6 +111,7 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.db.MusicDatabase
@@ -254,8 +255,12 @@ class MusicService :
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
+    // Tracks the original queue size to distinguish original items from auto-added ones
+    private var originalQueueSize: Int = 0
+
     private var consecutivePlaybackErr = 0
     private var retryJob: Job? = null
+    private var retryCount = 0
     
     // Google Cast support
     var castConnectionHandler: CastConnectionHandler? = null
@@ -689,17 +694,28 @@ class MusicService :
 
     private fun waitOnNetworkError() {
         if (waitingForNetworkConnection.value) return
+        
+        // Check if we've exceeded max retry attempts
+        if (retryCount >= MAX_RETRY_COUNT) {
+            Log.w(TAG, "Max retry count ($MAX_RETRY_COUNT) reached, stopping playback")
+            stopOnError()
+            retryCount = 0
+            return
+        }
+        
         waitingForNetworkConnection.value = true
         
-        // Start a retry timer to periodically check if we can resume playback
-        // even if the connectivity observer hasn't notified us of a change
+        // Start a retry timer with exponential backoff
         retryJob?.cancel()
         retryJob = scope.launch {
-            while (waitingForNetworkConnection.value) {
-                delay(3000) // Retry every 3 seconds
-                if (isNetworkConnected.value && waitingForNetworkConnection.value) {
-                    triggerRetry()
-                }
+            // Exponential backoff: 3s, 6s, 12s, 24s... max 30s
+            val delayMs = minOf(3000L * (1 shl retryCount), 30000L)
+            Log.d(TAG, "Waiting ${delayMs}ms before retry attempt ${retryCount + 1}/$MAX_RETRY_COUNT")
+            delay(delayMs)
+            
+            if (isNetworkConnected.value && waitingForNetworkConnection.value) {
+                retryCount++
+                triggerRetry()
             }
         }
     }
@@ -707,12 +723,18 @@ class MusicService :
     private fun triggerRetry() {
         waitingForNetworkConnection.value = false
         retryJob?.cancel()
-        if (player.currentMediaItem != null && player.playWhenReady) {
-            player.prepare()
-            // Don't start local playback if casting
-            if (castConnectionHandler?.isCasting?.value != true) {
-                player.play()
+        
+        if (player.currentMediaItem != null) {
+            // After 3+ failed retries, try to refresh the stream URL by seeking to current position
+            // This forces ExoPlayer to re-resolve the data source and get a fresh URL
+            if (retryCount > 3) {
+                Log.d(TAG, "Retry count > 3, attempting to refresh stream URL")
+                val currentPosition = player.currentPosition
+                player.seekTo(player.currentMediaItemIndex, currentPosition)
             }
+            player.prepare()
+            // Don't call play() here - let the player auto-resume via playWhenReady
+            // This avoids stealing audio focus during retry attempts
         }
     }
 
@@ -845,6 +867,8 @@ class MusicService :
         currentQueue = queue
         queueTitle = null
         player.shuffleModeEnabled = false
+        // Reset original queue size when starting a new queue
+        originalQueueSize = 0
         if (queue.preloadItem != null) {
             player.setMediaItem(queue.preloadItem!!.toMediaItem())
             player.prepare()
@@ -862,6 +886,8 @@ class MusicService :
                 queueTitle = initialStatus.title
             }
             if (initialStatus.items.isEmpty()) return@launch
+            // Track original queue size for shuffle playlist first feature
+            originalQueueSize = initialStatus.items.size
             if (queue.preloadItem != null) {
                 player.addMediaItems(
                     0,
@@ -1287,6 +1313,7 @@ class MusicService :
 
         if (playbackState == Player.STATE_READY) {
             consecutivePlaybackErr = 0
+            retryCount = 0
             waitingForNetworkConnection.value = false
             retryJob?.cancel()
         }
@@ -1365,13 +1392,47 @@ class MusicService :
             // If queue is empty, don't shuffle
             if (player.mediaItemCount == 0) return
 
-            // Always put current playing item at first
-            val shuffledIndices = IntArray(player.mediaItemCount) { it }
-            shuffledIndices.shuffle()
-            shuffledIndices[shuffledIndices.indexOf(player.currentMediaItemIndex)] =
-                shuffledIndices[0]
-            shuffledIndices[0] = player.currentMediaItemIndex
-            player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
+            val shufflePlaylistFirst = dataStore.get(ShufflePlaylistFirstKey, false)
+            val currentIndex = player.currentMediaItemIndex
+            val totalCount = player.mediaItemCount
+
+            if (shufflePlaylistFirst && originalQueueSize > 0 && originalQueueSize < totalCount) {
+                // Shuffle original items and added items separately
+                // Original items are shuffled first, then added items come after
+                
+                // Get indices for original songs (excluding current)
+                val originalIndices = (0 until originalQueueSize).filter { it != currentIndex }.toMutableList()
+                // Get indices for added songs (automix, auto-load, etc.)
+                val addedIndices = (originalQueueSize until totalCount).filter { it != currentIndex }.toMutableList()
+                
+                // Shuffle both groups separately
+                originalIndices.shuffle()
+                addedIndices.shuffle()
+                
+                // Build final order: current -> shuffled originals -> shuffled added
+                val shuffledIndices = IntArray(totalCount)
+                var pos = 0
+                shuffledIndices[pos++] = currentIndex
+                
+                // If current is from original queue, add remaining originals first
+                if (currentIndex < originalQueueSize) {
+                    originalIndices.forEach { shuffledIndices[pos++] = it }
+                    addedIndices.forEach { shuffledIndices[pos++] = it }
+                } else {
+                    // Current is from added songs, still put all originals first
+                    (0 until originalQueueSize).shuffled().forEach { shuffledIndices[pos++] = it }
+                    addedIndices.forEach { shuffledIndices[pos++] = it }
+                }
+                
+                player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
+            } else {
+                // Original behavior - shuffle everything together
+                val shuffledIndices = IntArray(totalCount) { it }
+                shuffledIndices.shuffle()
+                shuffledIndices[shuffledIndices.indexOf(currentIndex)] = shuffledIndices[0]
+                shuffledIndices[0] = currentIndex
+                player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
+            }
         }
 
         // Save state when shuffle mode changes
@@ -1897,6 +1958,7 @@ class MusicService :
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
         const val PERSISTENT_PLAYER_STATE_FILE = "persistent_player_state.data"
         const val MAX_CONSECUTIVE_ERR = 5
+        const val MAX_RETRY_COUNT = 10
         // Constants for audio normalization
         private const val MAX_GAIN_MB = 1000 // Maximum gain in millibels (8 dB)
         private const val MIN_GAIN_MB = -1000 // Minimum gain in millibels (-8 dB)
