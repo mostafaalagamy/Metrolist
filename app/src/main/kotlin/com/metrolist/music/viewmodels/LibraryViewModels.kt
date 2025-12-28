@@ -101,9 +101,10 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
 
-    fun syncLibrarySongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
-    }
+    // COMMENTED OUT: Library sync function - disabled to save resources
+    // fun syncLibrarySongs() {
+    //     viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+    // }
 
     fun syncUploadedSongs() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
@@ -288,7 +289,8 @@ constructor(
     val syncAllLibrary = {
          viewModelScope.launch(Dispatchers.IO) {
              syncUtils.syncLikedSongs()
-             syncUtils.syncLibrarySongs()
+             // COMMENTED OUT: Library sync
+             // syncUtils.syncLibrarySongs()
              syncUtils.syncArtistsSubscriptions()
              syncUtils.syncLikedAlbums()
              syncUtils.syncSavedPlaylists()

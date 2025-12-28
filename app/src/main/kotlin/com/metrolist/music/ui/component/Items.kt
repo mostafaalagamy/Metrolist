@@ -277,9 +277,10 @@ fun SongListItem(
         if (song.song.explicit) {
             Icon.Explicit()
         }
-        if (showInLibraryIcon && song.song.inLibrary != null) {
-            Icon.Library()
-        }
+        // COMMENTED OUT: Library icon
+        // if (showInLibraryIcon && song.song.inLibrary != null) {
+        //     Icon.Library()
+        // }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id)
                 .collectAsState(initial = null)
@@ -342,9 +343,10 @@ fun SongGridItem(
         if (showLikedIcon && song.song.liked) {
             Icon.Favorite()
         }
-        if (showInLibraryIcon && song.song.inLibrary != null) {
-            Icon.Library()
-        }
+        // COMMENTED OUT: Library icon
+        // if (showInLibraryIcon && song.song.inLibrary != null) {
+        //     Icon.Library()
+        // }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
             Icon.Download(download?.state)
