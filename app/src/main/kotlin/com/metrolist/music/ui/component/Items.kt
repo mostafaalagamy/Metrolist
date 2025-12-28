@@ -815,9 +815,9 @@ fun YouTubeListItem(
             Icon.Favorite()
         }
         if (item.explicit) Icon.Explicit()
-        if (item is SongItem && song?.song?.inLibrary != null) {
-            Icon.Library()
-        }
+        // if (item is SongItem && song?.song?.inLibrary != null) {
+        //     Icon.Library()
+        // }
         if (item is SongItem) {
             val download by LocalDownloadUtil.current.getDownload(item.id).collectAsState(null)
             Icon.Download(download?.state)
@@ -885,7 +885,7 @@ fun YouTubeGridItem(
             Icon.Favorite()
         }
         if (item.explicit) Icon.Explicit()
-        if (item is SongItem && song?.song?.inLibrary != null) Icon.Library()
+        // if (item is SongItem && song?.song?.inLibrary != null) Icon.Library()
         if (item is SongItem) {
             val download by LocalDownloadUtil.current.getDownload(item.id).collectAsState(null)
             Icon.Download(download?.state)
