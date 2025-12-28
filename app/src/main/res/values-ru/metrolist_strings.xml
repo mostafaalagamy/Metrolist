@@ -278,4 +278,6 @@
     <string name="apple_music_style">Apple Music</string>
     <string name="lyrics_text_size">Размер текста песни</string>
     <string name="lyrics_line_spacing">Межстрочный интервал текста</string>
+    <string name="shuffle_playlist_first">Перемешивать плейлист/альбом вначале</string>
+    <string name="shuffle_playlist_first_desc">Во время перемешивания сначала проигрывать все треки из исходного плейлиста/альбома, а затем похожие композиции</string>
 </resources>
