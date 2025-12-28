@@ -497,12 +497,14 @@ class MainActivity : ComponentActivity() {
                                 currentRoute.startsWith("search/")
                     }
 
-                    val isLandscape = remember(configuration) {
+                    val isLandscape = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
                         configuration.screenWidthDp > configuration.screenHeightDp
                     }
-                    val showRail = isLandscape && !inSearchScreen
+                    val showRail = remember(isLandscape, inSearchScreen) {
+                        isLandscape && !inSearchScreen
+                    }
 
-                    val getNavPadding: () -> Dp = remember {
+                    val getNavPadding: () -> Dp = remember(shouldShowNavigationBar, showRail, slimNav) {
                         {
                             if (shouldShowNavigationBar && !showRail) {
                                 if (slimNav) SlimNavBarHeight else NavigationBarHeight
@@ -894,14 +896,25 @@ class MainActivity : ComponentActivity() {
                         ) {
                             Row(Modifier.fillMaxSize()) {
                                 if (showRail) {
+                                    // Memoize NavigationRail to avoid unnecessary recompositions
+                                    val railContainerColor = remember(pureBlack) {
+                                        if (pureBlack) Color.Black else null
+                                    }
+                                    
                                     NavigationRail(
-                                        containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                                        containerColor = railContainerColor ?: MaterialTheme.colorScheme.surfaceContainer
                                     ) {
                                         Spacer(modifier = Modifier.weight(1f))
 
                                         navigationItems.fastForEach { screen ->
-                                            val isSelected =
+                                            val isSelected = remember(navBackStackEntry?.destination?.route, screen.route) {
                                                 navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
+                                            }
+                                            
+                                            val iconPainter = remember(isSelected, screen.iconIdActive, screen.iconIdInactive) {
+                                                if (isSelected) screen.iconIdActive else screen.iconIdInactive
+                                            }
+                                            
                                             NavigationRailItem(
                                                 selected = isSelected,
                                                 onClick = {
@@ -922,9 +935,7 @@ class MainActivity : ComponentActivity() {
                                                 },
                                                 icon = {
                                                     Icon(
-                                                        painter = painterResource(
-                                                            id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
-                                                        ),
+                                                        painter = painterResource(id = iconPainter),
                                                         contentDescription = null,
                                                     )
                                                 },
