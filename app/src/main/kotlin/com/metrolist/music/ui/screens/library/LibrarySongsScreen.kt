@@ -59,14 +59,12 @@ import com.metrolist.music.constants.CONTENT_TYPE_HEADER
 import com.metrolist.music.constants.CONTENT_TYPE_SONG
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.SongFilter
-import com.metrolist.music.constants.SongFilterKey
 import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.queues.ListQueue
-import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
@@ -102,16 +100,11 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
+    val filter = SongFilter.LIKED
 
     LaunchedEffect(Unit) {
         if (ytmSync) {
-            when (filter) {
-                SongFilter.LIKED -> viewModel.syncLikedSongs()
-                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
-                SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
-                else -> return@LaunchedEffect
-            }
+            viewModel.syncLikedSongs()
         }
     }
 
@@ -186,20 +179,6 @@ fun LibrarySongsScreen(
                                 contentDescription = ""
                             )
                         },
-                    )
-                    ChipsRow(
-                        chips =
-                        listOf(
-                            SongFilter.LIKED to stringResource(R.string.filter_liked),
-                            SongFilter.LIBRARY to stringResource(R.string.filter_library),
-                            SongFilter.UPLOADED to stringResource(R.string.filter_uploaded),
-                            SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
-                        ),
-                        currentValue = filter,
-                        onValueUpdate = {
-                            filter = it
-                        },
-                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -331,53 +310,54 @@ fun LibrarySongsScreen(
                 )
             },
         )
-    }
 
-    if (inSelectMode) {
-        TopAppBar(
-            title = {
-                Text(pluralStringResource(R.plurals.n_selected, selection.size, selection.size))
-            },
-            navigationIcon = {
-                IconButton(onClick = onExitSelectionMode) {
-                    Icon(
-                        painter = painterResource(R.drawable.close),
-                        contentDescription = null,
-                    )
-                }
-            },
-            actions = {
-                Checkbox(
-                    checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
-                    onCheckedChange = {
-                        if (selection.size == filteredSongs.size) {
-                            selection.clear()
-                        } else {
-                            selection.clear()
-                            selection.addAll(filteredSongs.map { it.id })
-                        }
+        if (inSelectMode) {
+            TopAppBar(
+                title = {
+                    Text(pluralStringResource(R.plurals.n_selected, selection.size, selection.size))
+                },
+                navigationIcon = {
+                    IconButton(onClick = onExitSelectionMode) {
+                        Icon(
+                            painter = painterResource(R.drawable.close),
+                            contentDescription = null,
+                        )
                     }
-                )
-                IconButton(
-                    enabled = selection.isNotEmpty(),
-                    onClick = {
-                        menuState.show {
-                            SelectionSongMenu(
-                                songSelection = selection.mapNotNull { songId ->
-                                    filteredSongs.find { it.id == songId }
-                                },
-                                onDismiss = menuState::dismiss,
-                                clearAction = onExitSelectionMode
-                            )
+                },
+                actions = {
+                    Checkbox(
+                        checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == filteredSongs.size) {
+                                selection.clear()
+                            } else {
+                                selection.clear()
+                                selection.addAll(filteredSongs.map { it.id })
+                            }
                         }
-                    }
-                ) {
-                    Icon(
-                        painterResource(R.drawable.more_vert),
-                        contentDescription = null
                     )
-                }
-            }
-        )
+                    IconButton(
+                        enabled = selection.isNotEmpty(),
+                        onClick = {
+                            menuState.show {
+                                SelectionSongMenu(
+                                    songSelection = selection.mapNotNull { songId ->
+                                        filteredSongs.find { it.id == songId }
+                                    },
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = onExitSelectionMode
+                                )
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
+                    }
+                },
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
+        }
     }
 }
