@@ -288,7 +288,8 @@ constructor(
     val syncAllLibrary = {
          viewModelScope.launch(Dispatchers.IO) {
              syncUtils.syncLikedSongs()
-             syncUtils.syncLibrarySongs()
+             // COMMENTED OUT: Library sync
+             // syncUtils.syncLibrarySongs()
              syncUtils.syncArtistsSubscriptions()
              syncUtils.syncLikedAlbums()
              syncUtils.syncSavedPlaylists()

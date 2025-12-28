@@ -64,7 +64,8 @@ class SyncUtils @Inject constructor(
     fun runAllSyncs() {
         syncScope.launch {
             syncLikedSongs()
-            syncLibrarySongs()
+            // COMMENTED OUT: Library sync
+            // syncLibrarySongs()
             syncUploadedSongs()
             syncLikedAlbums()
             syncUploadedAlbums()
