@@ -284,4 +284,6 @@
     <string name="apple_music_style">أبل ميوزك</string>
     <string name="lyrics_text_size">حجم نص كلمات الأغنية</string>
     <string name="lyrics_line_spacing">تباعد أسطر الكلمات</string>
+    <string name="shuffle_playlist_first">تشغيل قائمة التشغيل الألبوم عشوائيا</string>
+    <string name="shuffle_playlist_first_desc">عند تشغيل الأغاني عشوائياً، قم بتشغيل جميع الأغاني في قائمة التشغيل/الألبوم الأصلي أولاً، ثم المحتوى المشابه.</string>
 </resources>
