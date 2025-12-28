@@ -1,9 +1,6 @@
-/*
- * Copyright (C) 2026 Metrolist Project
- *
- * SPDX-License-Identifier: GPL-3.0
- *
- * For any other attributions, refer to the git commit history
+/**
+ * Metrolist Project (C) 2026
+ * Licensed under GPL-3.0 | See git history for contributors
  */
 
 package com.metrolist.music.db.entities
