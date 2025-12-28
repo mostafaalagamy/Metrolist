@@ -95,7 +95,8 @@ fun LibrarySongsScreen(
         if (ytmSync) {
             when (filter) {
                 SongFilter.LIKED -> viewModel.syncLikedSongs()
-                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
+                // COMMENTED OUT: Library sync
+                // SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
                 SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
                 else -> return@LaunchedEffect
             }
@@ -151,7 +152,8 @@ fun LibrarySongsScreen(
                         chips =
                         listOf(
                             SongFilter.LIKED to stringResource(R.string.filter_liked),
-                            SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                            // COMMENTED OUT: Library filter option
+                            // SongFilter.LIBRARY to stringResource(R.string.filter_library),
                             SongFilter.UPLOADED to stringResource(R.string.filter_uploaded),
                             SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                         ),
