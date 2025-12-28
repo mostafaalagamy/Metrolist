@@ -102,12 +102,15 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeGridItem
+import androidx.compose.material3.Checkbox
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.util.fastForEachReversed
 import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AlbumViewModel
 import com.metrolist.music.utils.makeTimeString
@@ -136,21 +139,34 @@ fun AlbumScreen(
     val otherVersions by viewModel.otherVersions.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
-    val wrappedSongs = remember(albumWithSongs, hideExplicit) {
-        val filteredSongs = if (hideExplicit) {
+    val filteredSongs = remember(albumWithSongs, hideExplicit) {
+        if (hideExplicit) {
             albumWithSongs?.songs?.filter { !it.song.explicit } ?: emptyList()
         } else {
             albumWithSongs?.songs ?: emptyList()
         }
-        filteredSongs.map { item -> ItemWrapper(item) }.toMutableStateList()
-    }
-    var selection by remember {
-        mutableStateOf(false)
     }
 
-    if (selection) {
-        BackHandler {
-            selection = false
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<String>, String>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = {
+        inSelectMode = false
+        selection.clear()
+    }
+    if (inSelectMode) {
+        BackHandler(onBack = onExitSelectionMode)
+    }
+
+    LaunchedEffect(filteredSongs) {
+        selection.fastForEachReversed { songId ->
+            if (filteredSongs.find { it.id == songId } == null) {
+                selection.remove(songId)
+            }
         }
     }
 
@@ -379,65 +395,73 @@ fun AlbumScreen(
                 }
             }
 
-            if (!wrappedSongs.isNullOrEmpty()) {
+            if (filteredSongs.isNotEmpty()) {
                 itemsIndexed(
-                    items = wrappedSongs,
-                    key = { _, song -> song.item.id },
-                ) { index, songWrapper ->
+                    items = filteredSongs,
+                    key = { _, song -> song.id },
+                ) { index, song ->
+                    val onCheckedChange: (Boolean) -> Unit = {
+                        if (it) {
+                            selection.add(song.id)
+                        } else {
+                            selection.remove(song.id)
+                        }
+                    }
+
                     SongListItem(
-                        song = songWrapper.item,
+                        song = song,
                         albumIndex = index + 1,
-                        isActive = songWrapper.item.id == mediaMetadata?.id,
+                        isActive = song.id == mediaMetadata?.id,
                         isPlaying = isPlaying,
                         showInLibraryIcon = true,
-
                         trailingContent = {
-                            IconButton(
-                                onClick = {
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = songWrapper.item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null,
+                            if (inSelectMode) {
+                                Checkbox(
+                                    checked = song.id in selection,
+                                    onCheckedChange = onCheckedChange
                                 )
+                            } else {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null,
+                                    )
+                                }
                             }
                         },
-                        isSelected = songWrapper.isSelected && selection,
                         modifier =
                         Modifier
                             .fillMaxWidth()
                             .animateItem()
                             .combinedClickable(
                                 onClick = {
-                                    if (!selection) {
-                                        if (songWrapper.item.id == mediaMetadata?.id) {
-                                            playerConnection.togglePlayPause()
-                                        } else {
-                                            playerConnection.service.getAutomix(playlistId)
-                                            playerConnection.playQueue(
-                                                LocalAlbumRadio(albumWithSongs, startIndex = index),
-                                            )
-                                        }
+                                    if (inSelectMode) {
+                                        onCheckedChange(song.id !in selection)
+                                    } else if (song.id == mediaMetadata?.id) {
+                                        playerConnection.togglePlayPause()
                                     } else {
-                                        songWrapper.isSelected = !songWrapper.isSelected
+                                        playerConnection.service.getAutomix(playlistId)
+                                        playerConnection.playQueue(
+                                            LocalAlbumRadio(albumWithSongs, startIndex = index),
+                                        )
                                     }
                                 },
                                 onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    if (!selection) {
-                                        selection = true
+                                    if (!inSelectMode) {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        inSelectMode = true
+                                        onCheckedChange(true)
                                     }
-                                    wrappedSongs.forEach {
-                                        it.isSelected = false
-                                    } // Clear previous selections
-                                    songWrapper.isSelected = true // Select the current item
                                 },
                             ),
                     )
@@ -501,12 +525,8 @@ fun AlbumScreen(
 
     TopAppBar(
         title = {
-            if (selection) {
-                val count = wrappedSongs?.count { it.isSelected } ?: 0
-                Text(
-                    text = pluralStringResource(R.plurals.n_song, count, count),
-                    style = MaterialTheme.typography.titleLarge
-                )
+            if (inSelectMode) {
+                Text(pluralStringResource(R.plurals.n_selected, selection.size, selection.size))
             } else {
                 Text(
                     text = albumWithSongs?.album?.title.orEmpty(),
@@ -517,59 +537,51 @@ fun AlbumScreen(
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    if (selection) {
-                        selection = false
-                    } else {
-                        navController.navigateUp()
-                    }
-                },
-                onLongClick = {
-                    if (!selection) {
-                        navController.backToMain()
-                    }
+            if (inSelectMode) {
+                IconButton(onClick = onExitSelectionMode) {
+                    Icon(
+                        painter = painterResource(R.drawable.close),
+                        contentDescription = null,
+                    )
                 }
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (selection) R.drawable.close else R.drawable.arrow_back
-                    ),
-                    contentDescription = null
-                )
-            }
-        },
-        actions = {
-            if (selection) {
-                val count = wrappedSongs?.count { it.isSelected } ?: 0
+            } else {
                 IconButton(
-                    onClick = {
-                        if (count == wrappedSongs?.size) {
-                            wrappedSongs.forEach { it.isSelected = false }
-                        } else {
-                            wrappedSongs?.forEach { it.isSelected = true }
-                        }
-                    },
+                    onClick = { navController.navigateUp() },
+                    onLongClick = { navController.backToMain() }
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all
-                        ),
+                        painter = painterResource(R.drawable.arrow_back),
                         contentDescription = null
                     )
                 }
-
+            }
+        },
+        actions = {
+            if (inSelectMode) {
+                Checkbox(
+                    checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                    onCheckedChange = {
+                        if (selection.size == filteredSongs.size) {
+                            selection.clear()
+                        } else {
+                            selection.clear()
+                            selection.addAll(filteredSongs.map { it.id })
+                        }
+                    }
+                )
                 IconButton(
+                    enabled = selection.isNotEmpty(),
                     onClick = {
                         menuState.show {
                             SelectionSongMenu(
-                                songSelection = wrappedSongs?.filter { it.isSelected }!!
-                                    .map { it.item },
+                                songSelection = selection.mapNotNull { songId ->
+                                    filteredSongs.find { it.id == songId }
+                                },
                                 onDismiss = menuState::dismiss,
-                                clearAction = { selection = false }
+                                clearAction = onExitSelectionMode
                             )
                         }
-                    },
+                    }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.more_vert),

@@ -157,12 +157,14 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.ui.util.fastForEachReversed
 import com.metrolist.music.ui.menu.CustomThumbnailMenu
 import com.metrolist.music.ui.menu.LocalPlaylistMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
-import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
@@ -237,23 +239,25 @@ fun LocalPlaylistScreen(
         }
     }
 
-    var selection by remember {
-        mutableStateOf(false)
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = {
+        inSelectMode = false
+        selection.clear()
     }
-
-    val wrappedSongs = remember(filteredSongs) {
-        filteredSongs.map { item -> ItemWrapper(item) }
-    }.toMutableStateList()
 
     if (isSearching) {
         BackHandler {
             isSearching = false
             query = TextFieldValue()
         }
-    } else if (selection) {
-        BackHandler {
-            selection = false
-        }
+    } else if (inSelectMode) {
+        BackHandler(onBack = onExitSelectionMode)
     }
 
     val downloadUtil = LocalDownloadUtil.current
@@ -263,10 +267,11 @@ fun LocalPlaylistScreen(
 
     val editable: Boolean = playlist?.playlist?.isEditable == true
 
-    // Auto-exit selection mode when no songs are selected
-    LaunchedEffect(selection, wrappedSongs.map { it.isSelected }) {
-        if (selection && wrappedSongs.none { it.isSelected }) {
-            selection = false
+    LaunchedEffect(songs) {
+        selection.fastForEachReversed { mapId ->
+            if (songs.find { it.map.id == mapId } == null) {
+                selection.remove(Integer.valueOf(mapId))
+            }
         }
     }
 
@@ -546,67 +551,79 @@ fun LocalPlaylistScreen(
                 }
             }
 
-            if (!selection) {
-                itemsIndexed(
-                    items = if (isSearching) filteredSongs else mutableSongs,
-                    key = { _, song -> song.map.id },
-                ) { index, song ->
-                    ReorderableItem(
-                        state = reorderableState,
-                        key = song.map.id
-                    ) {
-                        val currentItem by rememberUpdatedState(song)
+            itemsIndexed(
+                items = if (isSearching) filteredSongs else mutableSongs,
+                key = { _, song -> song.map.id },
+            ) { index, song ->
+                ReorderableItem(
+                    state = reorderableState,
+                    key = song.map.id,
+                ) {
+                    val currentItem by rememberUpdatedState(song)
 
-                        fun deleteFromPlaylist() {
-                            database.transaction {
-                                coroutineScope.launch {
-                                    playlist?.playlist?.browseId?.let { it1 ->
-                                        var setVideoId = getSetVideoId(currentItem.map.songId)
-                                        if (setVideoId?.setVideoId != null) {
-                                            YouTube.removeFromPlaylist(
-                                                it1, currentItem.map.songId, setVideoId.setVideoId!!
-                                            )
-                                        }
+                    fun deleteFromPlaylist() {
+                        database.transaction {
+                            coroutineScope.launch {
+                                playlist?.playlist?.browseId?.let { browseId ->
+                                    val setVideoId = getSetVideoId(currentItem.map.songId)
+                                    if (setVideoId?.setVideoId != null) {
+                                        YouTube.removeFromPlaylist(
+                                            browseId, currentItem.map.songId, setVideoId.setVideoId!!
+                                        )
                                     }
                                 }
-                                move(
-                                    currentItem.map.playlistId,
-                                    currentItem.map.position,
-                                    Int.MAX_VALUE
-                                )
-                                delete(currentItem.map.copy(position = Int.MAX_VALUE))
                             }
-                            // Song removed directly without undo option
-                        }
-
-                        val swipeRemoveEnabled by rememberPreference(SwipeToRemoveSongKey, defaultValue = false)
-                        val dismissBoxState =
-                            rememberSwipeToDismissBoxState(
-                                positionalThreshold = { totalDistance -> totalDistance }
+                            move(
+                                currentItem.map.playlistId,
+                                currentItem.map.position,
+                                Int.MAX_VALUE
                             )
-                        var processedDismiss by remember { mutableStateOf(false) }
-                        LaunchedEffect(dismissBoxState.currentValue) {
-                            val dv = dismissBoxState.currentValue
-                            if (swipeRemoveEnabled && !processedDismiss && (
-                                    dv == SwipeToDismissBoxValue.StartToEnd ||
-                                    dv == SwipeToDismissBoxValue.EndToStart
-                                )
-                            ) {
-                                processedDismiss = true
-                                deleteFromPlaylist()
-                            }
-                            if (dv == SwipeToDismissBoxValue.Settled) {
-                                processedDismiss = false
-                            }
+                            delete(currentItem.map.copy(position = Int.MAX_VALUE))
                         }
+                    }
 
-                        val content: @Composable () -> Unit = {
-                            SongListItem(
-                                song = song.song,
-                                isActive = song.song.id == mediaMetadata?.id,
-                                isPlaying = isPlaying,
-                                showInLibraryIcon = true,
-                                trailingContent = {
+                    val swipeRemoveEnabled by rememberPreference(SwipeToRemoveSongKey, defaultValue = false)
+                    val dismissBoxState =
+                        rememberSwipeToDismissBoxState(
+                            positionalThreshold = { totalDistance -> totalDistance }
+                        )
+                    var processedDismiss by remember { mutableStateOf(false) }
+                    LaunchedEffect(dismissBoxState.currentValue) {
+                        val dv = dismissBoxState.currentValue
+                        if (swipeRemoveEnabled && !processedDismiss && (
+                                dv == SwipeToDismissBoxValue.StartToEnd ||
+                                dv == SwipeToDismissBoxValue.EndToStart
+                            )
+                        ) {
+                            processedDismiss = true
+                            deleteFromPlaylist()
+                        }
+                        if (dv == SwipeToDismissBoxValue.Settled) {
+                            processedDismiss = false
+                        }
+                    }
+
+                    val onCheckedChange: (Boolean) -> Unit = {
+                        if (it) {
+                            selection.add(song.map.id)
+                        } else {
+                            selection.remove(Integer.valueOf(song.map.id))
+                        }
+                    }
+
+                    val content: @Composable () -> Unit = {
+                        SongListItem(
+                            song = song.song,
+                            isActive = song.song.id == mediaMetadata?.id,
+                            isPlaying = isPlaying,
+                            showInLibraryIcon = true,
+                            trailingContent = {
+                                if (inSelectMode) {
+                                    Checkbox(
+                                        checked = selection.contains(song.map.id),
+                                        onCheckedChange = onCheckedChange
+                                    )
+                                } else {
                                     IconButton(
                                         onClick = {
                                             menuState.show {
@@ -626,7 +643,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.draggableHandle(),
@@ -637,188 +654,49 @@ fun LocalPlaylistScreen(
                                             )
                                         }
                                     }
-                                },
-                                modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (song.song.id == mediaMetadata?.id) {
-                                                playerConnection.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = playlist!!.playlist.name,
-                                                        items = songs.map { it.song.toMediaItem() },
-                                                        startIndex = songs.indexOfFirst { it.map.id == song.map.id },
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
+                                }
+                            },
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (inSelectMode) {
+                                            onCheckedChange(!selection.contains(song.map.id))
+                                        } else if (song.song.id == mediaMetadata?.id) {
+                                            playerConnection.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = playlist!!.playlist.name,
+                                                    items = songs.map { it.song.toMediaItem() },
+                                                    startIndex = songs.indexOfFirst { it.map.id == song.map.id },
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        if (!inSelectMode) {
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            if (!selection) {
-                                                selection = true
-                                                // Only clear selection when entering selection mode
-                                                wrappedSongs.forEach { it.isSelected = false }
-                                                wrappedSongs.find { it.item.map.id == song.map.id }?.isSelected = true
-                                            } else {
-                                                // Toggle selection of the current song
-                                                wrappedSongs.find { it.item.map.id == song.map.id }?.let {
-                                                    it.isSelected = !it.isSelected
-                                                }
-                                            }
-                                        },
-                                    ),
-                            )
-                        }
-
-                        if (locked || selection || !swipeRemoveEnabled) {
-                            Box(modifier = Modifier.animateItem()) {
-                                content()
-                            }
-                        } else {
-                            SwipeToDismissBox(
-                                state = dismissBoxState,
-                                backgroundContent = {},
-                                modifier = Modifier.animateItem()
-                            ) {
-                                content()
-                            }
-                        }
+                                            inSelectMode = true
+                                            onCheckedChange(true)
+                                        }
+                                    },
+                                ),
+                        )
                     }
-                }
-            } else {
-                itemsIndexed(
-                    items = wrappedSongs,
-                    key = { _, song -> song.item.map.id },
-                ) { index, songWrapper ->
-                    ReorderableItem(
-                        state = reorderableState,
-                        key = songWrapper.item.map.id,
-                    ) {
-                        val currentItem by rememberUpdatedState(songWrapper.item)
 
-                        fun deleteFromPlaylist() {
-                            database.transaction {
-                                move(
-                                    currentItem.map.playlistId,
-                                    currentItem.map.position,
-                                    Int.MAX_VALUE
-                                )
-                                delete(currentItem.map.copy(position = Int.MAX_VALUE))
-                            }
-                            // Song removed directly without undo option
+                    if (locked || inSelectMode || !swipeRemoveEnabled) {
+                        Box(modifier = Modifier.animateItem()) {
+                            content()
                         }
-
-                        val swipeRemoveEnabled by rememberPreference(SwipeToRemoveSongKey, defaultValue = false)
-                        val dismissBoxState =
-                            rememberSwipeToDismissBoxState(
-                                positionalThreshold = { totalDistance -> totalDistance }
-                            )
-                        var processedDismiss2 by remember { mutableStateOf(false) }
-                        LaunchedEffect(dismissBoxState.currentValue) {
-                            val dv = dismissBoxState.currentValue
-                            if (swipeRemoveEnabled && !processedDismiss2 && (
-                                    dv == SwipeToDismissBoxValue.StartToEnd ||
-                                    dv == SwipeToDismissBoxValue.EndToStart
-                                )
-                            ) {
-                                processedDismiss2 = true
-                                deleteFromPlaylist()
-                            }
-                            if (dv == SwipeToDismissBoxValue.Settled) {
-                                processedDismiss2 = false
-                            }
-                        }
-
-                        val content: @Composable () -> Unit = {
-                            SongListItem(
-                                song = songWrapper.item.song,
-                                isActive = songWrapper.item.song.id == mediaMetadata?.id,
-                                isPlaying = isPlaying,
-                                showInLibraryIcon = true,
-
-                                trailingContent = {
-                                    IconButton(
-                                        onClick = {
-                                            menuState.show {
-                                                SongMenu(
-                                                    originalSong = songWrapper.item.song,
-                                                    playlistBrowseId = playlist?.playlist?.browseId,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.more_vert),
-                                            contentDescription = null,
-                                        )
-                                    }
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
-                                        IconButton(
-                                            onClick = { },
-                                            modifier = Modifier.draggableHandle(),
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.drag_handle),
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    }
-                                },
-                                isSelected = songWrapper.isSelected && selection,
-                                modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (!selection) {
-                                                if (songWrapper.item.song.id == mediaMetadata?.id) {
-                                                    playerConnection.togglePlayPause()
-                                                } else {
-                                                    playerConnection.playQueue(
-                                                        ListQueue(
-                                                            title = playlist!!.playlist.name,
-                                                            items = songs.map { it.song.toMediaItem() },
-                                                            startIndex = index,
-                                                        ),
-                                                    )
-                                                }
-                                            } else {
-                                                songWrapper.isSelected = !songWrapper.isSelected
-                                            }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            if (!selection) {
-                                                selection = true
-                                                // Only clear selection when entering selection mode
-                                                wrappedSongs.forEach { it.isSelected = false }
-                                                songWrapper.isSelected = true
-                                            } else {
-                                                // Toggle selection of the current song
-                                                songWrapper.isSelected = !songWrapper.isSelected
-                                            }
-                                        },
-                                    ),
-                            )
-                        }
-
-                        if (locked || !editable || !swipeRemoveEnabled) {
-                            Box(modifier = Modifier.animateItem()) {
-                                content()
-                            }
-                        } else {
-                            SwipeToDismissBox(
-                                state = dismissBoxState,
-                                backgroundContent = {},
-                                modifier = Modifier.animateItem()
-                            ) {
-                                content()
-                            }
+                    } else {
+                        SwipeToDismissBox(
+                            state = dismissBoxState,
+                            backgroundContent = {},
+                            modifier = Modifier.animateItem()
+                        ) {
+                            content()
                         }
                     }
                 }
@@ -838,12 +716,8 @@ fun LocalPlaylistScreen(
 
         TopAppBar(
             title = {
-                if (selection) {
-                    val count = wrappedSongs.count { it.isSelected }
-                    Text(
-                        text = pluralStringResource(R.plurals.n_song, count, count),
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                if (inSelectMode) {
+                    Text(pluralStringResource(R.plurals.n_selected, selection.size, selection.size))
                 } else if (isSearching) {
                     TextField(
                         value = query,
@@ -873,64 +747,62 @@ fun LocalPlaylistScreen(
                 }
             },
             navigationIcon = {
-                IconButton(
-                    onClick = {
-                        if (isSearching) {
-                            isSearching = false
-                            query = TextFieldValue()
-                        } else if (selection) {
-                            selection = false
-                        } else {
-                            navController.navigateUp()
-                        }
-                    },
-                    onLongClick = {
-                        if (!isSearching) {
-                            navController.backToMain()
-                        }
+                if (inSelectMode) {
+                    IconButton(onClick = onExitSelectionMode) {
+                        Icon(
+                            painter = painterResource(R.drawable.close),
+                            contentDescription = null,
+                        )
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
-                        ),
-                        contentDescription = null
-                    )
-                }
-            },
-            actions = {
-                if (selection) {
-                    val count = wrappedSongs.count { it.isSelected }
+                } else {
                     IconButton(
                         onClick = {
-                            if (count == wrappedSongs.size) {
-                                wrappedSongs.forEach { it.isSelected = false }
+                            if (isSearching) {
+                                isSearching = false
+                                query = TextFieldValue()
                             } else {
-                                wrappedSongs.forEach { it.isSelected = true }
+                                navController.navigateUp()
                             }
                         },
+                        onLongClick = {
+                            if (!isSearching) {
+                                navController.backToMain()
+                            }
+                        }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
-                            ),
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = null
                         )
                     }
-
+                }
+            },
+            actions = {
+                if (inSelectMode) {
+                    Checkbox(
+                        checked = selection.size == songs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == songs.size) {
+                                selection.clear()
+                            } else {
+                                selection.clear()
+                                selection.addAll(songs.map { it.map.id })
+                            }
+                        }
+                    )
                     IconButton(
+                        enabled = selection.isNotEmpty(),
                         onClick = {
                             menuState.show {
                                 SelectionSongMenu(
-                                    songSelection = wrappedSongs.filter { it.isSelected }
-                                        .map { it.item.song },
-                                    songPosition = wrappedSongs.filter { it.isSelected }
-                                        .map { it.item.map },
+                                    songSelection = selection.mapNotNull { mapId ->
+                                        songs.find { it.map.id == mapId }?.song
+                                    },
+                                    songPosition = selection.mapNotNull { mapId ->
+                                        songs.find { it.map.id == mapId }?.map
+                                    },
                                     onDismiss = menuState::dismiss,
-                                    clearAction = {
-                                        selection = false
-                                        wrappedSongs.clear()
-                                    }
+                                    clearAction = onExitSelectionMode
                                 )
                             }
                         }
