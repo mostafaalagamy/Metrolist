@@ -1134,17 +1134,19 @@ class MainActivity : ComponentActivity() {
                     }
                 } else if (playlistId != null) {
                     coroutineScope.launch(Dispatchers.IO) {
-                        YouTube.albumSongs(playlistId).onSuccess { songs ->
-                            val firstSong = songs.firstOrNull()
+                        YouTube.queue(null, playlistId).onSuccess { queue ->
+                            val firstItem = queue.firstOrNull()
                             withContext(Dispatchers.Main) {
                                 playerConnection?.playQueue(
                                     YouTubeQueue(
-                                        WatchEndpoint(videoId = firstSong?.id, playlistId = playlistId),
-                                        firstSong?.toMediaMetadata()
+                                        WatchEndpoint(videoId = firstItem?.id, playlistId = playlistId),
+                                        firstItem?.toMediaMetadata()
                                     )
                                 )
                             }
-                        }.onFailure { reportException(it) }
+                        }.onFailure {
+                            reportException(it)
+                        }
                     }
                 }
             }
