@@ -15,6 +15,7 @@ import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
@@ -73,23 +74,63 @@ class InnerTube {
             deflate(0.8F)
         }
 
-        proxy?.let {
-            engine {
-                proxy = this@InnerTube.proxy
-                proxyAuth?.let {
-                    config {
-                        proxyAuthenticator { _, response ->
-                            response.request.newBuilder()
-                                .header("Proxy-Authorization", proxyAuth!!)
-                                .build()
-                        }
+        // Enhanced network configuration for better performance
+        engine {
+            config {
+                // Connection pool settings for better connection reuse
+                connectionPool(
+                    okhttp3.ConnectionPool(
+                        10, // maxIdleConnections
+                        5, // keepAliveDuration
+                        java.util.concurrent.TimeUnit.MINUTES
+                    )
+                )
+                
+                // Timeout configurations
+                connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                
+                // Enable HTTP/2 for better performance
+                protocols(listOf(okhttp3.Protocol.HTTP_2, okhttp3.Protocol.HTTP_1_1))
+                
+                // Retry on connection failure
+                retryOnConnectionFailure(true)
+                
+                // Cache configuration for better performance
+                cache(
+                    okhttp3.Cache(
+                        directory = java.io.File(System.getProperty("java.io.tmpdir"), "http_cache"),
+                        maxSize = 50L * 1024L * 1024L // 50 MB
+                    )
+                )
+            }
+            
+            proxy?.let { proxy = this@InnerTube.proxy }
+            proxyAuth?.let {
+                config {
+                    proxyAuthenticator { _, response ->
+                        response.request.newBuilder()
+                            .header("Proxy-Authorization", proxyAuth!!)
+                            .build()
                     }
                 }
             }
         }
 
+        // Request timeout configuration
+        install(HttpTimeout) {
+            requestTimeoutMillis = 60000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 60000
+        }
+
         defaultRequest {
             url(YouTubeClient.API_URL_YOUTUBE_MUSIC)
+            // Add common headers for better compatibility
+            header("Accept", "application/json")
+            header("Accept-Language", "en-US,en;q=0.9")
+            header("Cache-Control", "no-cache")
         }
     }
 
