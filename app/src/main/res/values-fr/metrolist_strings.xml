@@ -275,4 +275,6 @@
     <string name="apple_music_style">Apple Music</string>
     <string name="lyrics_text_size">Taille du texte des paroles</string>
     <string name="lyrics_line_spacing">Espacement des lignes des paroles</string>
+    <string name="shuffle_playlist_first">Lecture aléatoire de la playlist/album principal</string>
+    <string name="shuffle_playlist_first_desc">En mode aléatoire, lisez d\'abord tous les titres de la playlist/album d\'origine, puis les titres similaires</string>
 </resources>
