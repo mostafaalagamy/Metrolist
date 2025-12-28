@@ -81,12 +81,10 @@ class ArtistViewModel @Inject constructor(
             YouTube.artist(artistId)
                 .onSuccess { page ->
                     val filteredSections = page.sections
-                        .filterNot { section ->
-                            section.moreEndpoint?.browseId?.startsWith("MPLAUC") == true
-                        }
                         .map { section ->
                             section.copy(items = section.items.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs))
                         }
+                        .filter { section -> section.items.isNotEmpty() }
 
                     artistPage = page.copy(sections = filteredSections)
                 }.onFailure {
