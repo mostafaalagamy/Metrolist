@@ -271,8 +271,6 @@
     <string name="enable_lrclib">Abilita il provider di testi LcrLib</string>
     <string name="grid_cell_size">Dimensione delle celle della griglia</string>
     <string name="auto_skip_next_on_error_desc">Garantisci la tua esperienza di riproduzione continua</string>
-    <string name="shuffle_playlist_first">Shuffle playlist/album prima</string>
-    <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
     <string name="stop_music_on_task_clear">Interrompi la musica quando l\'attività è interrotta</string>
     <string name="listen_history">Cronologia ascolti</string>
     <string name="search_history">Cronologia ricerche</string>
