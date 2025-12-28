@@ -514,26 +514,19 @@ fun AutoPlaylistScreen(
             },
             actions = {
                 if (inSelectMode) {
-                    val allSelected = filteredSongs.isNotEmpty() && filteredSongs.all { it.id in selection }
-                    IconButton(
-                        onClick = {
-                            if (allSelected) {
+                    Checkbox(
+                        checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == filteredSongs.size) {
                                 selection.clear()
                             } else {
                                 selection.clear()
                                 selection.addAll(filteredSongs.map { it.id })
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (allSelected) R.drawable.deselect else R.drawable.select_all
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
+                        }
+                    )
                     IconButton(
+                        enabled = selection.isNotEmpty(),
                         onClick = {
                             menuState.show {
                                 SelectionSongMenu(

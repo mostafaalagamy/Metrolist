@@ -411,32 +411,29 @@ fun CachePlaylistScreen(
             },
             actions = {
                 if (inSelectMode) {
-                    val allSelected = filteredSongs.isNotEmpty() && filteredSongs.all { it.id in selection }
-                    IconButton(onClick = {
-                        if (allSelected) {
-                            selection.clear()
-                        } else {
-                            selection.clear()
-                            selection.addAll(filteredSongs.map { it.id })
+                    Checkbox(
+                        checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == filteredSongs.size) {
+                                selection.clear()
+                            } else {
+                                selection.clear()
+                                selection.addAll(filteredSongs.map { it.id })
+                            }
                         }
-                    }) {
-                        Icon(
-                            painter = painterResource(
-                                if (allSelected) R.drawable.deselect else R.drawable.select_all
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
-                    IconButton(onClick = {
-                        menuState.show {
-                            SelectionSongMenu(
-                                songSelection = filteredSongs.filter { it.id in selection },
-                                onDismiss = menuState::dismiss,
-                                clearAction = onExitSelectionMode
-                            )
+                    )
+                    IconButton(
+                        enabled = selection.isNotEmpty(),
+                        onClick = {
+                            menuState.show {
+                                SelectionSongMenu(
+                                    songSelection = filteredSongs.filter { it.id in selection },
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = onExitSelectionMode
+                                )
+                            }
                         }
-                    }) {
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = null
