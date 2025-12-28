@@ -675,6 +675,7 @@ fun ArtistScreen(
                                             },
                                             isPlaying = isPlaying,
                                             coroutineScope = coroutineScope,
+                                            thumbnailRatio = 1f, // Use square thumbnails for all items in horizontal scroll
                                             modifier = Modifier
                                                 .combinedClickable(
                                                     onClick = {
