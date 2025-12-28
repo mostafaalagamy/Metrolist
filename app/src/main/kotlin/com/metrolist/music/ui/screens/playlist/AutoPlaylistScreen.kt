@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +54,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -76,6 +78,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.util.fastSumBy
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -111,7 +114,6 @@ import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.menu.AutoPlaylistMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
-import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
@@ -173,12 +175,16 @@ fun AutoPlaylistScreen(
         else -> PlaylistType.OTHER
     }
 
-    val wrappedSongs = remember(songs) {
-        songs?.map { item -> ItemWrapper(item) }?.toMutableStateList() ?: mutableStateListOf()
-    }
-
-    var selection by remember {
-        mutableStateOf(false)
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<String>, String>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = {
+        inSelectMode = false
+        selection.clear()
     }
 
     if (isSearching) {
@@ -186,10 +192,8 @@ fun AutoPlaylistScreen(
             isSearching = false
             query = TextFieldValue()
         }
-    } else if (selection) {
-        BackHandler {
-            selection = false
-        }
+    } else if (inSelectMode) {
+        BackHandler(onBack = onExitSelectionMode)
     }
 
     val (sortType, onSortTypeChange) = rememberEnumPreference(
@@ -275,12 +279,19 @@ fun AutoPlaylistScreen(
         )
     }
 
-    val filteredSongs = remember(wrappedSongs, query) {
-        if (query.text.isEmpty()) wrappedSongs
-        else wrappedSongs?.filter { wrapper ->
-            val song = wrapper.item
+    val filteredSongs = remember(songs, query) {
+        if (query.text.isEmpty()) songs ?: emptyList()
+        else songs?.filter { song ->
             song.song.title.contains(query.text, true) ||
                 song.artists.any { it.name.contains(query.text, true) }
+        } ?: emptyList()
+    }
+
+    LaunchedEffect(filteredSongs) {
+        selection.fastForEachReversed { songId ->
+            if (filteredSongs.find { it.id == songId } == null) {
+                selection.remove(songId)
+            }
         }
     }
 
@@ -340,62 +351,73 @@ fun AutoPlaylistScreen(
                     }
                 }
 
-                if (filteredSongs != null) {
+                if (filteredSongs.isNotEmpty()) {
                     itemsIndexed(
                         items = filteredSongs,
-                        key = { _, song -> song.item.id },
-                    ) { index, songWrapper ->
+                        key = { _, song -> song.id },
+                    ) { index, song ->
+                        val onCheckedChange: (Boolean) -> Unit = {
+                            if (it) {
+                                selection.add(song.id)
+                            } else {
+                                selection.remove(song.id)
+                            }
+                        }
+
                         SongListItem(
-                            song = songWrapper.item,
-                            isActive = songWrapper.item.song.id == mediaMetadata?.id,
+                            song = song,
+                            isActive = song.song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
                             showInLibraryIcon = true,
                             trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = songWrapper.item,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
+                                if (inSelectMode) {
+                                    Checkbox(
+                                        checked = song.id in selection,
+                                        onCheckedChange = onCheckedChange
                                     )
+                                } else {
+                                    IconButton(
+                                        onClick = {
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = song,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.more_vert),
+                                            contentDescription = null,
+                                        )
+                                    }
                                 }
                             },
-                            isSelected = songWrapper.isSelected && selection,
                             modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        if (!selection) {
-                                            if (songWrapper.item.song.id == mediaMetadata?.id) {
-                                                playerConnection.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = playlist,
-                                                        items = songs!!.map { it.toMediaItem() },
-                                                        startIndex = songs!!.indexOfFirst { it.id == songWrapper.item.id }
-                                                    ),
-                                                )
-                                            }
+                                        if (inSelectMode) {
+                                            onCheckedChange(song.id !in selection)
+                                        } else if (song.song.id == mediaMetadata?.id) {
+                                            playerConnection.togglePlayPause()
                                         } else {
-                                            songWrapper.isSelected = !songWrapper.isSelected
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = playlist,
+                                                    items = songs!!.map { it.toMediaItem() },
+                                                    startIndex = songs!!.indexOfFirst { it.id == song.id }
+                                                ),
+                                            )
                                         }
                                     },
                                     onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        if (!selection) {
-                                            selection = true
-                                            wrappedSongs?.forEach { it.isSelected = false }
-                                            songWrapper.isSelected = true
+                                        if (!inSelectMode) {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            inSelectMode = true
+                                            onCheckedChange(true)
                                         }
                                     },
                                 )
@@ -420,10 +442,9 @@ fun AutoPlaylistScreen(
         TopAppBar(
             title = {
                 when {
-                    selection -> {
-                        val count = wrappedSongs?.count { it.isSelected } ?: 0
+                    inSelectMode -> {
                         Text(
-                            text = pluralStringResource(R.plurals.n_song, count, count),
+                            text = pluralStringResource(R.plurals.n_song, selection.size, selection.size),
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
@@ -469,8 +490,8 @@ fun AutoPlaylistScreen(
                                 query = TextFieldValue()
                                 focusManager.clearFocus()
                             }
-                            selection -> {
-                                selection = false
+                            inSelectMode -> {
+                                onExitSelectionMode()
                             }
                             else -> {
                                 navController.navigateUp()
@@ -478,47 +499,40 @@ fun AutoPlaylistScreen(
                         }
                     },
                     onLongClick = {
-                        if (!isSearching && !selection) {
+                        if (!isSearching && !inSelectMode) {
                             navController.backToMain()
                         }
                     }
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
+                            if (inSelectMode) R.drawable.close else R.drawable.arrow_back
                         ),
                         contentDescription = null
                     )
                 }
             },
             actions = {
-                if (selection) {
-                    val count = wrappedSongs?.count { it.isSelected } ?: 0
-                    IconButton(
-                        onClick = {
-                            if (count == wrappedSongs?.size) {
-                                wrappedSongs.forEach { it.isSelected = false }
+                if (inSelectMode) {
+                    Checkbox(
+                        checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == filteredSongs.size) {
+                                selection.clear()
                             } else {
-                                wrappedSongs?.forEach { it.isSelected = true }
+                                selection.clear()
+                                selection.addAll(filteredSongs.map { it.id })
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
+                        }
+                    )
                     IconButton(
+                        enabled = selection.isNotEmpty(),
                         onClick = {
                             menuState.show {
                                 SelectionSongMenu(
-                                    songSelection = wrappedSongs?.filter { it.isSelected }!!
-                                        .map { it.item },
+                                    songSelection = filteredSongs.filter { it.id in selection },
                                     onDismiss = menuState::dismiss,
-                                    clearAction = { selection = false },
+                                    clearAction = onExitSelectionMode,
                                 )
                             }
                         },

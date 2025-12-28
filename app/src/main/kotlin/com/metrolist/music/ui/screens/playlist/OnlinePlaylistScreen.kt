@@ -42,6 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
+import androidx.compose.ui.util.fastForEachReversed
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -60,7 +62,6 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.menu.*
-import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.makeTimeString
@@ -91,7 +92,6 @@ fun OnlinePlaylistScreen(
     val isLoadingMore by viewModel.isLoadingMore.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    var selection by remember { mutableStateOf(false) }
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
@@ -108,22 +108,36 @@ fun OnlinePlaylistScreen(
         }
     }
 
-    val wrappedSongs = remember(filteredSongs) {
-        filteredSongs.map { ItemWrapper(it) }
-    }.toMutableStateList()
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<String>, String>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = {
+        inSelectMode = false
+        selection.clear()
+    }
 
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(isSearching) { if (isSearching) focusRequester.requestFocus() }
+
+    LaunchedEffect(filteredSongs) {
+        selection.fastForEachReversed { songId ->
+            if (filteredSongs.find { it.second.id == songId } == null) {
+                selection.remove(songId)
+            }
+        }
+    }
 
     if (isSearching) {
         BackHandler {
             isSearching = false
             query = TextFieldValue()
         }
-    } else if (selection) {
-        BackHandler {
-            selection = false
-        }
+    } else if (inSelectMode) {
+        BackHandler(onBack = onExitSelectionMode)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -159,48 +173,61 @@ fun OnlinePlaylistScreen(
                         }
                     }
 
-                    itemsIndexed(wrappedSongs) { index, song ->
+                    itemsIndexed(filteredSongs) { index, (_, songItem) ->
+                        val onCheckedChange: (Boolean) -> Unit = {
+                            if (it) {
+                                selection.add(songItem.id)
+                            } else {
+                                selection.remove(songItem.id)
+                            }
+                        }
+
                         YouTubeListItem(
-                            item = song.item.second,
-                            isActive = mediaMetadata?.id == song.item.second.id,
+                            item = songItem,
+                            isActive = mediaMetadata?.id == songItem.id,
                             isPlaying = isPlaying,
-                            isSelected = song.isSelected && selection,
+                            isSelected = inSelectMode && songItem.id in selection,
                             modifier = Modifier
                                 .combinedClickable(
-                                    enabled = !hideExplicit || !song.item.second.explicit,
+                                    enabled = !hideExplicit || !songItem.explicit,
                                     onClick = {
-                                        if (!selection) {
-                                            if (song.item.second.id == mediaMetadata?.id)
-                                                playerConnection.togglePlayPause()
-                                            else
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = playlist.title,
-                                                        items = filteredSongs.map { it.second.toMediaItem() },
-                                                        startIndex = index
-                                                    )
-                                                )
+                                        if (inSelectMode) {
+                                            onCheckedChange(songItem.id !in selection)
+                                        } else if (songItem.id == mediaMetadata?.id) {
+                                            playerConnection.togglePlayPause()
                                         } else {
-                                            song.isSelected = !song.isSelected
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = playlist.title,
+                                                    items = filteredSongs.map { it.second.toMediaItem() },
+                                                    startIndex = index
+                                                )
+                                            )
                                         }
                                     },
                                     onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        if (!selection) {
-                                            selection = true
+                                        if (!inSelectMode) {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            inSelectMode = true
+                                            onCheckedChange(true)
                                         }
-                                        wrappedSongs.forEach { it.isSelected = false }
-                                        song.isSelected = true
                                     }
                                 )
                                 .animateItem(),
                             trailingContent = {
-                                IconButton(onClick = {
-                                    menuState.show {
-                                        YouTubeSongMenu(song.item.second, navController, menuState::dismiss)
+                                if (inSelectMode) {
+                                    Checkbox(
+                                        checked = songItem.id in selection,
+                                        onCheckedChange = onCheckedChange
+                                    )
+                                } else {
+                                    IconButton(onClick = {
+                                        menuState.show {
+                                            YouTubeSongMenu(songItem, navController, menuState::dismiss)
+                                        }
+                                    }) {
+                                        Icon(painterResource(R.drawable.more_vert), null)
                                     }
-                                }) {
-                                    Icon(painterResource(R.drawable.more_vert), null)
                                 }
                             }
                         )
@@ -224,10 +251,9 @@ fun OnlinePlaylistScreen(
 
         TopAppBar(
             title = {
-                if (selection) {
-                    val count = wrappedSongs.count { it.isSelected }
+                if (inSelectMode) {
                     Text(
-                        text = pluralStringResource(R.plurals.n_song, count, count),
+                        text = pluralStringResource(R.plurals.n_song, selection.size, selection.size),
                         style = MaterialTheme.typography.titleLarge
                     )
                 } else if (isSearching) {
@@ -264,56 +290,48 @@ fun OnlinePlaylistScreen(
                         if (isSearching) {
                             isSearching = false
                             query = TextFieldValue()
-                        } else if (selection) {
-                            selection = false
+                        } else if (inSelectMode) {
+                            onExitSelectionMode()
                         } else {
                             navController.navigateUp()
                         }
                     },
                     onLongClick = {
-                        if (!isSearching) {
+                        if (!isSearching && !inSelectMode) {
                             navController.backToMain()
                         }
                     }
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
+                            if (inSelectMode) R.drawable.close else R.drawable.arrow_back
                         ),
                         contentDescription = null
                     )
                 }
             },
             actions = {
-                if (selection) {
-                    val count = wrappedSongs.count { it.isSelected }
-                    IconButton(
-                        onClick = {
-                            if (count == wrappedSongs.size) {
-                                wrappedSongs.forEach { it.isSelected = false }
+                if (inSelectMode) {
+                    Checkbox(
+                        checked = selection.size == filteredSongs.size && selection.isNotEmpty(),
+                        onCheckedChange = {
+                            if (selection.size == filteredSongs.size) {
+                                selection.clear()
                             } else {
-                                wrappedSongs.forEach { it.isSelected = true }
+                                selection.clear()
+                                selection.addAll(filteredSongs.map { it.second.id })
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
+                        }
+                    )
                     IconButton(
+                        enabled = selection.isNotEmpty(),
                         onClick = {
                             menuState.show {
                                 YouTubeSelectionSongMenu(
-                                    songSelection = wrappedSongs.filter { it.isSelected }
-                                        .map { it.item.second },
+                                    songSelection = filteredSongs.filter { it.second.id in selection }
+                                        .map { it.second },
                                     onDismiss = menuState::dismiss,
-                                    clearAction = {
-                                        selection = false
-                                    }
+                                    clearAction = onExitSelectionMode
                                 )
                             }
                         }
