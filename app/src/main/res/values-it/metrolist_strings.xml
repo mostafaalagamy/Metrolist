@@ -34,7 +34,7 @@
     <string name="dislike_all">Togli Mi piace a tutto</string>
     <string name="sort_by_last_updated">Data di aggiornamento</string>
     <string name="link_copied">Link copiato negli appunti</string>
-    <string name="lyrics">Testo</string>
+    <string name="lyrics">Testi</string>
     <string name="already_in_playlist">Già nella playlist:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
@@ -263,4 +263,18 @@
     <string name="remove_download_playlist_desc">Rimuovi tutti i brani scaricati da questa playlist</string>
     <string name="share_playlist_desc">Condividi questa playlist con altri</string>
     <string name="delete_playlist_desc">Rimuovi definitivamente questa playlist</string>
+    <string name="sync_playlist_desc">Sincronizza la playlist con YouTube Music</string>
+    <string name="enable_better_lyrics">Abilita Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Utilizza il provider Better Lyrics per testi sincronizzati parola per parola</string>
+    <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album prima</string>
+    <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
+    <string name="lyrics_animation_style">Stile di animazione dei testi</string>
+    <string name="none">Nessuno</string>
+    <string name="fade">Dissolvenza</string>
+    <string name="glow">Bagliore</string>
+    <string name="slide">Diapositiva</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Dimensioni dei testi</string>
+    <string name="lyrics_line_spacing">Interlinea dei testi</string>
 </resources>
