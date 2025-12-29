@@ -277,4 +277,14 @@
     <string name="apple_music_style">Apple Music</string>
     <string name="lyrics_text_size">Dimensioni dei testi</string>
     <string name="lyrics_line_spacing">Interlinea dei testi</string>
+    <string name="wrapped_top_5_albums_title">I tuoi migliori 5 album</string>
+    <string name="wrapped_album_listening_time">Hai ascoltato questo album per %d minuti</string>
+    <string name="wrapped_album_listening_time_minutes">%d minuti</string>
+    <string name="wrapped_no_data">Nessun dato</string>
+    <string name="wrapped_top_5_artists_title">I tuoi migliori artisti dell\'anno</string>
+    <string name="wrapped_artist_image_content_description">Immagine dell\'artista</string>
+    <string name="wrapped_artist_listening_time">%d minuti</string>
+    <string name="wrapped_top_5_songs_title">I tuoi migliori brani di quest\'anno</string>
+    <string name="wrapped_top_song_album_art_content_description">Copertina</string>
+    <string name="wrapped_top_artist_title">Il tuo migliore artista dell\'anno è</string>
 </resources>
