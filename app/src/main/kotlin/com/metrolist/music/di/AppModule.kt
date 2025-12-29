@@ -11,11 +11,16 @@ import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.metrolist.music.constants.MaxSongCacheSizeKey
 import com.metrolist.music.db.InternalDatabase
 import com.metrolist.music.db.MIGRATION_1_2
+import com.metrolist.music.db.MIGRATION_21_24
+import com.metrolist.music.db.MIGRATION_22_24
+import com.metrolist.music.db.MIGRATION_24_25
 import com.metrolist.music.db.MusicDatabase
-import androidx.room.Room
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import dagger.Module
@@ -41,16 +46,33 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDao(
-        database: InternalDatabase,
-    ) = database.dao
-
-    @Singleton
-    @Provides
     fun provideInternalDatabase(
         @ApplicationContext context: Context,
     ): InternalDatabase = Room
         .databaseBuilder(context, InternalDatabase::class.java, InternalDatabase.DB_NAME)
+        .addMigrations(
+            MIGRATION_1_2,
+            MIGRATION_21_24,
+            MIGRATION_22_24,
+            MIGRATION_24_25
+        )
+        .fallbackToDestructiveMigration()
+        .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
+        .setTransactionExecutor(java.util.concurrent.Executors.newFixedThreadPool(4))
+        .setQueryExecutor(java.util.concurrent.Executors.newFixedThreadPool(4))
+        .addCallback(object : RoomDatabase.Callback() {
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
+                try {
+                    db.query("PRAGMA busy_timeout = 60000").close()
+                    db.query("PRAGMA cache_size = -16000").close()
+                    db.query("PRAGMA wal_autocheckpoint = 1000").close()
+                    db.query("PRAGMA synchronous = NORMAL").close()
+                } catch (e: Exception) {
+                    android.util.Log.e("MusicDatabase", "Failed to set PRAGMA settings", e)
+                }
+            }
+        })
         .build()
 
     @Singleton
@@ -58,6 +80,12 @@ object AppModule {
     fun provideDatabase(
         internalDatabase: InternalDatabase,
     ): MusicDatabase = MusicDatabase(internalDatabase)
+
+    @Singleton
+    @Provides
+    fun provideDao(
+        database: InternalDatabase,
+    ) = database.dao
 
     @Singleton
     @Provides
