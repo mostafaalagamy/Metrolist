@@ -286,4 +286,10 @@
     <string name="lyrics_line_spacing">تباعد أسطر الكلمات</string>
     <string name="shuffle_playlist_first">تشغيل قائمة التشغيل الألبوم عشوائيا</string>
     <string name="shuffle_playlist_first_desc">عند تشغيل الأغاني عشوائياً، قم بتشغيل جميع الأغاني في قائمة التشغيل/الألبوم الأصلي أولاً، ثم المحتوى المشابه.</string>
+    <string name="show_wrapped_card">عرض البطاقة المغلفة</string>
+    <string name="album_art_for">غلاف ألبوم لـ %s</string>
+    <string name="wrapped_total_albums_title">لقد استمعت إلى</string>
+    <string name="wrapped_total_albums_subtitle">ألبومات فريدة</string>
+    <string name="wrapped_top_album_title">ألبومك المفضل هو</string>
+    <string name="wrapped_playlist_ready">قائمة التشغيل الشخصية الخاصة بك جاهزة</string>
 </resources>
