@@ -261,4 +261,18 @@
     <string name="enable_dynamic_icon">Dynamische Symbole aktivieren</string>
     <string name="mini_player">Mini-Player</string>
     <string name="pure_black_mini_player">Rein schwarzer Mini-Player</string>
+    <string name="mini_player_outline">Mini-Player-Übersicht</string>
+    <string name="cache_size_warning_title">Warte mal!</string>
+    <string name="cache_size_warning_message">Sie haben eine Cache-Größenbeschränkung gewählt, die kleiner ist als die derzeit von der App verwendete (%1$s). Wenn Sie fortfahren, entfernt die App möglicherweise einige zwischengespeicherte %2$s, um die neue Beschränkung einzuhalten. Möchten Sie trotzdem fortfahren?</string>
+    <string name="cache_size_warning_confirm">Weiter</string>
+    <string name="lyrics_animation_style">Wort-für-Wort-Animationsstil</string>
+    <string name="none">Keine</string>
+    <string name="fade">Ausblenden</string>
+    <string name="glow">Leuchten</string>
+    <string name="slide">Gleiten</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Textgröße der Liedtexte</string>
+    <string name="lyrics_line_spacing">Zeilenabstand im Liedtext</string>
+    <string name="album_art_for">Albumcover für %s</string>
 </resources>
