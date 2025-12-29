@@ -107,6 +107,7 @@ fun ContentSettings(
         )
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
+    val (showWrappedCard, onShowWrappedCardChange) = rememberPreference(key = ShowWrappedCardKey, defaultValue = false)
 
     var showProxyConfigurationDialog by rememberSaveable {
         mutableStateOf(false)
@@ -604,6 +605,34 @@ fun ContentSettings(
                     icon = painterResource(R.drawable.language_korean_latin),
                     title = { Text(stringResource(R.string.lyrics_romanization)) },
                     onClick = { navController.navigate("settings/content/romanization") }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        Material3SettingsGroup(
+            title = "Wrapped",
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.trending_up),
+                    title = { Text(stringResource(R.string.show_wrapped_card)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showWrappedCard,
+                            onCheckedChange = onShowWrappedCardChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showWrappedCard) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowWrappedCardChange(!showWrappedCard) }
                 )
             )
         )

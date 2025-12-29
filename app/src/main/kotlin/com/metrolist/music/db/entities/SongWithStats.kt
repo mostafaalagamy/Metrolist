@@ -11,6 +11,7 @@ import androidx.compose.runtime.Immutable
 data class SongWithStats(
     val id: String,
     val title: String,
+    val artistName: String?,
     val thumbnailUrl: String,
     val songCountListened: Int,
     val timeListened: Long?,
