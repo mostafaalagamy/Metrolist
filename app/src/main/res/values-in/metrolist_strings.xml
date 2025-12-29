@@ -219,7 +219,7 @@
     <string name="update_channel_desc">Notifikasi tentang versi terbaru</string>
     <string name="scrobble_delay_minutes">Menit penundaan Scrobble</string>
     <string name="scrobble_delay_percent">Persentase penundaan scrobble</string>
-    <string name="swipe_song_to_remove">Geser lagu untuk menghapusnya dari daftar putar</string>
+    <string name="swipe_song_to_remove">Geser untuk menghapusnya dari playlist</string>
     <string name="top_result">Hasil teratas</string>
     <string name="other_results">Lainnya</string>
     <string name="download_playlist_desc">Unduh semua lagu untuk diputar secara offline</string>
