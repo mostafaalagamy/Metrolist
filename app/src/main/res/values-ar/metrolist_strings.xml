@@ -332,6 +332,7 @@
     <string name="listening_to_metrolist">الاستماع إلى متروليست</string>
     <string name="listen_on_youtube_music">استمع عبر يوتيوب ميوزك</string>
     <string name="visit_metrolist">قم بزيارة Metrolist</string>
-    <string name="open">يفتح</string>
+    <string name="open">فتح</string>
     <string name="failed_to_create_image">فشل إنشاء الصورة: %s</string>
+    <string name="failed_to_parse_proxy">فشل تحليل عنوان URL للوكيل.</string>
 </resources>
