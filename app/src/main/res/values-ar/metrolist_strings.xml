@@ -314,9 +314,24 @@
     <string name="wrapped_end_playlist_saved">تم حفظ قائمة التشغيل</string>
     <string name="wrapped_logo_content_description">شعار متروليست</string>
     <string name="wrapped_year">2025</string>
-    <string name="wrapped_ready_title">ملفك جاهز!</string>
+    <string name="wrapped_ready_title">ملخصك السنوي جاهز!</string>
     <string name="wrapped_ready_subtitle">حان الوقت لمعرفة ما أحببته في هذا السنة.</string>
     <string name="wrapped_thank_you">شكرًا لاستماعكم</string>
     <string name="wrapped_special_thanks">شكر خاص لـ MO Agamy\nلإنشاء Metrolist</string>
-    <string name="wrapped_close">مغلف بإحكام</string>
+    <string name="wrapped_close">اغلاق ملخص السنة</string>
+    <string name="wrapped_top_artist_image_content_description">صورة الفنان الرئيسي</string>
+    <string name="wrapped_top_artist_listening_time">لقد استمعت إليهم لمدة %d دقيقة</string>
+    <string name="wrapped_top_song_title">أغنيتك الأكثر استماعاً هي</string>
+    <string name="wrapped_top_song_listening_time">لقد استمعت لمدة %d دقيقة</string>
+    <string name="wrapped_intro_title">METROLIST</string>
+    <string name="wrapped_playlist_title">ملخصك السنوي لـ %s</string>
+    <string name="wrapped_create_playlist">إنشاء قائمة تشغيل</string>
+    <string name="wrapped_playlist_saved">تم حفظ قائمة التشغيل</string>
+    <string name="casting_to">التحويل إلى %s</string>
+    <string name="progress_percent">التقدم %s%%</string>
+    <string name="listening_to_metrolist">الاستماع إلى متروليست</string>
+    <string name="listen_on_youtube_music">استمع عبر يوتيوب ميوزك</string>
+    <string name="visit_metrolist">قم بزيارة Metrolist</string>
+    <string name="open">يفتح</string>
+    <string name="failed_to_create_image">فشل إنشاء الصورة: %s</string>
 </resources>
