@@ -220,4 +220,10 @@
     <string name="scrobble_delay_minutes">Menit penundaan Scrobble</string>
     <string name="scrobble_delay_percent">Persentase penundaan scrobble</string>
     <string name="swipe_song_to_remove">Geser lagu untuk menghapusnya dari daftar putar</string>
+    <string name="top_result">Hasil teratas</string>
+    <string name="other_results">Lainnya</string>
+    <string name="download_playlist_desc">Unduh semua lagu untuk diputar secara offline</string>
+    <string name="remove_download_playlist_desc">Hapus semua lagu yang telah diunduh dari daftar putar ini</string>
+    <string name="download_in_progress_desc">Unduhan sedang berlangsung</string>
+    <string name="share_playlist_desc">Bagikan daftar putar ini dengan orang lain</string>
 </resources>
