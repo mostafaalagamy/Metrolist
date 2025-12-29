@@ -472,7 +472,7 @@ fun Queue(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Lyrics",
+                                text = stringResource(R.string.lyrics),
                                 color = TextBackgroundColor,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,

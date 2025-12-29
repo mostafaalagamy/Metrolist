@@ -477,7 +477,7 @@ fun HomeScreen(
                                         Button(onClick = {
                                             navController.navigate("wrapped")
                                         }) {
-                                            Text("Open")
+                                            Text(stringResource(R.string.open))
                                         }
                                     }
                                 } else {
