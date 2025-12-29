@@ -220,7 +220,7 @@ fun PlayerMenu(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Casting to ${castDeviceName}",
+                        text = stringResource(R.string.casting_to, castDeviceName ?: ""),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )

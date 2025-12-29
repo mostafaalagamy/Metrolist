@@ -1518,9 +1518,9 @@ fun Lyrics(
                                         putExtra(Intent.EXTRA_STREAM, uri)
                                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                     }
-                                    context.startActivity(Intent.createChooser(shareIntent, "Share Lyrics"))
+                                    context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_lyrics)))
                                 } catch (e: Exception) {
-                                    Toast.makeText(context, "Failed to create image: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.failed_to_create_image, e.message), Toast.LENGTH_SHORT).show()
                                 } finally {
                                     showProgressDialog = false
                                 }

@@ -323,7 +323,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Listening to Metrolist",
+                text = stringResource(R.string.listening_to_metrolist),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.ExtraBold,
@@ -438,7 +438,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Listen on YouTube Music")
+                Text(stringResource(R.string.listen_on_youtube_music))
             }
 
             OutlinedButton(
@@ -451,7 +451,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Visit Metrolist")
+                Text(stringResource(R.string.visit_metrolist))
             }
         }
     }

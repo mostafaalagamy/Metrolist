@@ -363,4 +363,17 @@
     <string name="wrapped_playlist_title">Your %s Wrapped</string>
     <string name="wrapped_create_playlist">Create playlist</string>
     <string name="wrapped_playlist_saved">Playlist saved</string>
+
+    <!-- Hardcoded strings -->
+    <string name="casting_to">Casting to %s</string>
+    <string name="progress_percent">Progress %s%%</string>
+    <string name="listening_to_metrolist">Listening to Metrolist</string>
+    <string name="listen_on_youtube_music">Listen on YouTube Music</string>
+    <string name="visit_metrolist">Visit Metrolist</string>
+    <string name="open">Open</string>
+    <string name="failed_to_create_image">Failed to create image: %s</string>
+    <string name="copied_title">Copied Title</string>
+    <string name="copied_artist">Copied Artist</string>
+    <string name="error_playing">Error playing</string>
+    <string name="failed_to_parse_proxy">Failed to parse proxy url.</string>
 </resources>
