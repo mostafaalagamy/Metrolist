@@ -788,16 +788,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             bottomBar = {
-                                val currentRoute = navBackStackEntry?.destination?.route
-                                if (!showRail && currentRoute != "wrapped") {
+                                if (!showRail) {
                                     Box {
-                                        if (currentRoute != "wrapped") {
-                                            BottomSheetPlayer(
-                                                state = playerBottomSheetState,
-                                                navController = navController,
-                                                pureBlack = pureBlack
-                                            )
-                                        }
+                                        BottomSheetPlayer(
+                                            state = playerBottomSheetState,
+                                            navController = navController,
+                                            pureBlack = pureBlack
+                                        )
                                         NavigationBar(
                                             modifier = Modifier
                                                 .align(Alignment.BottomCenter)
@@ -878,14 +875,11 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 } else {
-                                    val currentRoute = navBackStackEntry?.destination?.route
-                                    if (currentRoute != "wrapped") {
-                                        BottomSheetPlayer(
-                                            state = playerBottomSheetState,
-                                            navController = navController,
-                                            pureBlack = pureBlack
-                                        )
-                                    }
+                                    BottomSheetPlayer(
+                                        state = playerBottomSheetState,
+                                        navController = navController,
+                                        pureBlack = pureBlack
+                                    )
 
                                     Box(
                                         modifier = Modifier
@@ -901,8 +895,7 @@ class MainActivity : ComponentActivity() {
                                 .nestedScroll(searchBarScrollBehavior.nestedScrollConnection)
                         ) {
                             Row(Modifier.fillMaxSize()) {
-                                val currentRoute = navBackStackEntry?.destination?.route
-                                if (showRail && currentRoute != "wrapped") {
+                                if (showRail) {
                                     // Memoize NavigationRail to avoid unnecessary recompositions
                                     val railContainerColor = remember(pureBlack) {
                                         if (pureBlack) Color.Black else null
