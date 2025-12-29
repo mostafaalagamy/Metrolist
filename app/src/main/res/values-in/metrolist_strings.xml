@@ -67,7 +67,7 @@
     <string name="likes">Suka</string>
     <string name="dislikes">Tidak suka</string>
     <string name="clear_downloads_dialog">Apakah Anda yakin ingin menghapus semua unduhan?</string>
-    <string name="token_adv_login_description">Ini adalah metode login LANJUTAN. Sebagai alternatif portal web, Anda dapat langsung memasukkan atau memperbarui token login di sini. Misalnya, ini dapat mempercepat login di beberapa perangkat. Harap dicatat, format token yang tidak valid dan gagal dibaca oleh aplikasi tidak akan diterima</string>
+    <string name="token_adv_login_description">Ini adalah metode masuk LANJUTAN. Sebagai alternatif dari portal web, Anda dapat langsung memasukkan atau memperbarui token masuk di sini. Contohnya, ini dapat mempercepat proses masuk di berbagai perangkat. Harap diperhatikan bahwa format token tidak valid yang gagal dibaca oleh aplikasi tidak akan diterima</string>
     <string name="local_history">Riwayat lokal</string>
     <string name="sort_by_last_updated">Tanggal diperbarui</string>
     <string name="link_copied">Tautan disalin ke papan klip</string>
@@ -90,13 +90,13 @@
     <string name="login_settings">Pengaturan masuk</string>
     <string name="follow_theme">Ikuti tema</string>
     <string name="gradient">Gradasi</string>
-    <string name="new_player_design">Desain pemutar lagu baru</string>
+    <string name="new_player_design">Desain pemutar musik baru</string>
     <string name="player_background_blur">Kabur</string>
-    <string name="player_buttons_style">Warna tombol pemutar</string>
+    <string name="player_buttons_style">Warna tombol pemutar musik</string>
     <string name="default_style">Bawaan</string>
     <string name="secondary_color_style">Sekunder</string>
     <string name="enable_squiggly_slider">Aktifkan penggeser bergelombang</string>
-    <string name="enable_swipe_thumbnail">Aktifkan geser untuk mengganti lagu</string>
+    <string name="enable_swipe_thumbnail">Aktifkan gestur geser untuk mengganti lagu</string>
     <string name="swipe_song_to_add">Geser lagu ke kiri untuk menambahkannya ke antrean atau ke kanan untuk diputar berikutnya</string>
     <string name="lyrics_click_change">Ubah lirik saat diklik</string>
     <string name="lyrics_auto_scroll">Gulir lirik otomatis</string>
@@ -144,7 +144,7 @@
     <plurals name="seconds">
         <item quantity="other">%d detik</item>
     </plurals>
-    <string name="new_mini_player_design">Desain pemutar mini baru</string>
+    <string name="new_mini_player_design">Desain pemutar musik mini baru</string>
     <string name="close">Tutup</string>
     <string name="seek_backward">5 detik ke belakang</string>
     <string name="seek_forward">5 detik ke depan</string>
@@ -161,10 +161,10 @@
     <string name="maximum_volume">Volume maksimum</string>
     <string name="seek_seconds_addup">Loncatan progresif</string>
     <string name="seek_seconds_addup_description">Jika diaktifkan, durasi akan bertambah 5 detik secara bertahap pada setiap loncatan</string>
-    <string name="edit_playlist_cover">Ubah sampul daftar putar</string>
+    <string name="edit_playlist_cover">Edit sampul daftar putar</string>
     <string name="hide_player_thumbnail">Sembunyikan Thumbnail Pemutar Musik</string>
-    <string name="hide_player_thumbnail_desc">Ubah sampul album dengan logo aplikasi di pemutar musik</string>
-    <string name="edit_playlist_cover_note">Catatan: Akun Anda harus terhubung ke nomor telepon dan terverifikasi di YouTube Music untuk mengubah sampul daftar putar.</string>
+    <string name="hide_player_thumbnail_desc">Ubah sampul album di pemutar musik menjadi logo Metrolist</string>
+    <string name="edit_playlist_cover_note">Catatan: Akun Anda harus ditautkan ke nomor telepon dan diverifikasi di YouTube Music untuk mengubah sampul daftar putar.</string>
     <string name="enable_authentication">Aktifkan autentikasi</string>
     <string name="line_by_line_dialog_title">Apakah anda yakin?</string>
     <string name="line_by_line_dialog_desc">Fitur ini bersifat eksperimental dan tidak selalu berfungsi dengan sempurna.\n\nSecara bawaan, bahasa ditentukan dari seluruh lagu. Jika opsi ini diaktifkan, bahasa akan ditentukan per baris. Fitur ini memungkinkan lagu multibahasa berfungsi, tetapi bahasa yang terdeteksi mungkin tidak selalu tepat (misalnya, lirik Ukraina tanpa huruf atau ejaan khas Ukraina bisa dianggap lirik Rusia saat diubah menjadi latin).\n\nJika Anda tidak mengalami masalah, disarankan untuk menonaktifkan fitur ini.</string>
