@@ -6,9 +6,11 @@
 package com.metrolist.music.ui.component
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -477,6 +479,17 @@ fun Lyrics(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    // Keep screen on while lyrics are visible
+    DisposableEffect(showLyrics) {
+        val activity = context as? Activity
+        if (showLyrics) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+        onDispose {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
