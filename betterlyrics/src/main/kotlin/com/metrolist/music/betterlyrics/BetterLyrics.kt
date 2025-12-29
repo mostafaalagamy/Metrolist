@@ -31,7 +31,7 @@ object BetterLyrics {
             }
 
             defaultRequest {
-                url("https://lyrics-api-go-better-lyrics-api-pr-12.up.railway.app")
+                url("https://lyrics-api.boidu.dev")
             }
 
             expectSuccess = true
