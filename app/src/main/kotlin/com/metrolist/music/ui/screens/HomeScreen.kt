@@ -44,11 +44,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -64,8 +72,16 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.Font
+import java.time.LocalDate
+import com.metrolist.music.R
+import com.metrolist.music.constants.WrappedSeenKey
+import androidx.compose.material3.SnackbarHostState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.metrolist.music.constants.ShowWrappedCardKey
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
@@ -83,7 +99,6 @@ import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
@@ -133,10 +148,11 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.random.Random
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    snackbarHostState: SnackbarHostState,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
@@ -171,6 +187,11 @@ fun HomeScreen(
     val accountName by viewModel.accountName.collectAsState()
     val accountImageUrl by viewModel.accountImageUrl.collectAsState()
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+
+    val shouldShowWrappedCard by viewModel.showWrappedCard.collectAsState()
+    val wrappedState by viewModel.wrappedManager.state.collectAsState()
+    val isWrappedDataReady = wrappedState.isDataReady
+
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
@@ -181,6 +202,19 @@ fun HomeScreen(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val scrollToTop =
         backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    val wrappedDismissed by backStackEntry?.savedStateHandle?.getStateFlow("wrapped_seen", false)
+        ?.collectAsState() ?: remember { mutableStateOf(false) }
+
+    LaunchedEffect(wrappedDismissed) {
+        if (wrappedDismissed) {
+            viewModel.markWrappedAsSeen()
+            scope.launch {
+                snackbarHostState.showSnackbar("Found in Settings > Content")
+            }
+            backStackEntry?.savedStateHandle?.set("wrapped_seen", false) // Reset the value
+        }
+    }
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
@@ -399,6 +433,60 @@ fun HomeScreen(
             }
 
             if (selectedChip == null) {
+                item(key = "wrapped_card") {
+                    AnimatedVisibility(visible = shouldShowWrappedCard) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            ),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isWrappedDataReady) {
+                                    Column(
+                                        modifier = Modifier.padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                                    ) {
+                                        val bbhFont = try {
+                                            FontFamily(Font(R.font.bbh_bartle_regular))
+                                        } catch (e: Exception) {
+                                            FontFamily.Default
+                                        }
+                                        Text(
+                                            text = stringResource(R.string.wrapped_ready_title),
+                                            style = MaterialTheme.typography.headlineLarge.copy(
+                                                fontFamily = bbhFont,
+                                                textAlign = TextAlign.Center
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Text(
+                                            text = stringResource(R.string.wrapped_ready_subtitle),
+                                            style = MaterialTheme.typography.bodyLarge.copy(
+                                                textAlign = TextAlign.Center
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Button(onClick = {
+                                            navController.navigate("wrapped")
+                                        }) {
+                                            Text("Open")
+                                        }
+                                    }
+                                } else {
+                                    ContainedLoadingIndicator()
+                                }
+                            }
+                        }
+                    }
+                }
                 quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
                     item(key = "quick_picks_title") {
                         NavigationTitle(
