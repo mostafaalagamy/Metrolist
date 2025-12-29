@@ -244,7 +244,7 @@
     <string name="cache_size_warning_title">Tunggu dulu!</string>
     <string name="cache_size_warning_message">Anda telah memilih batas ukuran cache yang lebih kecil dari yang saat ini digunakan oleh aplikasi (%1$s). Jika Anda melanjutkan, aplikasi mungkin akan menghapus beberapa file cache %2$s untuk menyesuaikan dengan batas baru. Apakah Anda tetap ingin melanjutkan?</string>
     <string name="cache_size_warning_confirm">Lanjutkan</string>
-    <string name="lyrics_animation_style">Gaya animasi lirik</string>
+    <string name="lyrics_animation_style">Gaya animasi lirik kata per kata</string>
     <string name="none">Tidak ada</string>
     <string name="fade">Memudar</string>
     <string name="glow">Berkilau</string>
