@@ -34,7 +34,7 @@
     <string name="dislike_all">Togli Mi piace a tutto</string>
     <string name="sort_by_last_updated">Data di aggiornamento</string>
     <string name="link_copied">Link copiato negli appunti</string>
-    <string name="lyrics">Testo</string>
+    <string name="lyrics">Testi</string>
     <string name="already_in_playlist">Già nella playlist:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
@@ -234,7 +234,7 @@
     <string name="hide_video_songs">Nascondi brani video</string>
     <string name="primary_color_style">Colore primario</string>
     <string name="auto_scroll">Risincronizza</string>
-    <string name="details_desc">Guarda le informazioni del brano</string>
+    <string name="details_desc">Visualizza le informazioni del brano</string>
     <string name="edit_desc">Cambia il titolo o l\'artista</string>
     <string name="start_radio_desc">Crea una stazione in base a questo brano</string>
     <string name="play_next_desc">Aggiungi in cima alla coda</string>
@@ -254,4 +254,27 @@
     <string name="cache_size_warning_title">Aspetta!</string>
     <string name="cache_size_warning_message">Hai scelto un limite alla dimensione della cache più piccola di quella che l\'app sta usando attualmente (%1$s). Se continui, l\'app può rimuovere %2$s di cache per arrivare al nuovo limite. Procedere comunque?</string>
     <string name="cache_size_warning_confirm">Continua</string>
+    <string name="tertiary_color_style">Colore terziario</string>
+    <string name="logging_in">Connessione in corso…</string>
+    <string name="download_in_progress_desc">Lo scaricamento è in corso</string>
+    <string name="top_result">Migliori risultati</string>
+    <string name="other_results">Altro</string>
+    <string name="download_playlist_desc">Scarica tutti i brani per l\'ascolto offline</string>
+    <string name="remove_download_playlist_desc">Rimuovi tutti i brani scaricati da questa playlist</string>
+    <string name="share_playlist_desc">Condividi questa playlist con altri</string>
+    <string name="delete_playlist_desc">Rimuovi definitivamente questa playlist</string>
+    <string name="sync_playlist_desc">Sincronizza la playlist con YouTube Music</string>
+    <string name="enable_better_lyrics">Abilita Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Utilizza il provider Better Lyrics per testi sincronizzati parola per parola</string>
+    <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album prima</string>
+    <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
+    <string name="lyrics_animation_style">Stile di animazione dei testi</string>
+    <string name="none">Nessuno</string>
+    <string name="fade">Dissolvenza</string>
+    <string name="glow">Bagliore</string>
+    <string name="slide">Diapositiva</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Dimensioni dei testi</string>
+    <string name="lyrics_line_spacing">Interlinea dei testi</string>
 </resources>
