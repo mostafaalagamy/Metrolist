@@ -275,4 +275,7 @@
     <string name="lyrics_text_size">Textgröße der Liedtexte</string>
     <string name="lyrics_line_spacing">Zeilenabstand im Liedtext</string>
     <string name="album_art_for">Albumcover für %s</string>
+    <string name="lyrics_glow_effect">Leuchtenden Text-Effekt aktivieren</string>
+    <string name="lyrics_glow_effect_desc">Fügen Sie leuchtende Animationen und Sprungeffekte zu aktiven Liedtexten hinzu.</string>
+    <string name="wrapped_top_album_title">Dein Top-Album ist</string>
 </resources>
