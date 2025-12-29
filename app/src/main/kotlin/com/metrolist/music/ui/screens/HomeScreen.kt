@@ -460,7 +460,7 @@ fun HomeScreen(
                                             FontFamily.Default
                                         }
                                         Text(
-                                            text = "YOUR WRAPPED IS READY!",
+                                            text = stringResource(R.string.wrapped_ready_title),
                                             style = MaterialTheme.typography.headlineLarge.copy(
                                                 fontFamily = bbhFont,
                                                 textAlign = TextAlign.Center
@@ -468,7 +468,7 @@ fun HomeScreen(
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "Time to see what you loved this year.",
+                                            text = stringResource(R.string.wrapped_ready_subtitle),
                                             style = MaterialTheme.typography.bodyLarge.copy(
                                                 textAlign = TextAlign.Center
                                             )

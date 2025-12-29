@@ -355,4 +355,12 @@
     <string name="wrapped_end_playlist_saved">Playlist Saved</string>
     <string name="wrapped_logo_content_description">Metrolist Logo</string>
     <string name="wrapped_year">2025</string>
+    <string name="wrapped_ready_title">YOUR WRAPPED IS READY!</string>
+    <string name="wrapped_ready_subtitle">Time to see what you loved this year.</string>
+    <string name="wrapped_thank_you">Thank you for listening</string>
+    <string name="wrapped_special_thanks">Special thanks to MO Agamy for creating Metrolist</string>
+    <string name="wrapped_close">Close wrapped</string>
+    <string name="wrapped_playlist_title">Your %s Wrapped</string>
+    <string name="wrapped_create_playlist">Create playlist</string>
+    <string name="wrapped_playlist_saved">Playlist saved</string>
 </resources>

@@ -82,14 +82,14 @@ fun PlaylistPage() {
             Spacer(modifier = Modifier.height(32.dp))
             Image(
                 painter = painterResource(id = playlistImageRes),
-                contentDescription = "Playlist Cover",
+                contentDescription = stringResource(R.string.album_cover_desc),
                 modifier = Modifier
                     .size(256.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Your ${WrappedConstants.YEAR} Wrapped",
+                text = stringResource(R.string.wrapped_playlist_title, WrappedConstants.YEAR),
                 style = TextStyle(
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -109,7 +109,7 @@ fun PlaylistPage() {
             ) {
                 when (playlistCreationState) {
                     is PlaylistCreationState.Idle -> Text(
-                        text = "Create playlist",
+                        text = stringResource(R.string.wrapped_create_playlist),
                         style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold)
                     )
                     is PlaylistCreationState.Creating -> CircularProgressIndicator(
@@ -118,7 +118,7 @@ fun PlaylistPage() {
                         strokeWidth = 2.dp
                     )
                     is PlaylistCreationState.Success -> Text(
-                        text = "Playlist saved",
+                        text = stringResource(R.string.wrapped_playlist_saved),
                         style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold)
                     )
                 }

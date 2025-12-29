@@ -26,6 +26,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,13 +46,13 @@ fun ConclusionPage(onClose: () -> Unit) {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "App Icon",
+                contentDescription = stringResource(R.string.wrapped_logo_content_description),
                 modifier = Modifier.size(96.dp),
                 tint = Color.White
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Thank you for listening",
+                text = stringResource(R.string.wrapped_thank_you),
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
@@ -60,7 +61,7 @@ fun ConclusionPage(onClose: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-            text = "Special thanks to MO Agamy for creating Metrolist",
+                text = stringResource(R.string.wrapped_special_thanks),
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = Color.Gray
@@ -73,7 +74,7 @@ fun ConclusionPage(onClose: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
                 Text(
-                    text = "Close wrapped",
+                    text = stringResource(R.string.wrapped_close),
                     style = TextStyle(
                         color = Color.Black,
                         fontWeight = FontWeight.Bold
