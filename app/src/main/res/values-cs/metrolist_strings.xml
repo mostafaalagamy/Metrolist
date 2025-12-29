@@ -278,4 +278,5 @@
     <string name="apple_music_style">Apple Music</string>
     <string name="lyrics_text_size">Velikost textů</string>
     <string name="lyrics_line_spacing">Rozestupy řádků v textech</string>
+    <string name="shuffle_playlist_first">Zamíchat nejprve playlist/album</string>
 </resources>
