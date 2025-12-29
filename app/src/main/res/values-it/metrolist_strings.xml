@@ -257,4 +257,10 @@
     <string name="tertiary_color_style">Colore terziario</string>
     <string name="logging_in">Connessione in corso…</string>
     <string name="download_in_progress_desc">Lo scaricamento è in corso</string>
+    <string name="top_result">Migliori risultati</string>
+    <string name="other_results">Altro</string>
+    <string name="download_playlist_desc">Scarica tutti i brani per l\'ascolto offline</string>
+    <string name="remove_download_playlist_desc">Rimuovi tutti i brani scaricati da questa playlist</string>
+    <string name="share_playlist_desc">Condividi questa playlist con altri</string>
+    <string name="delete_playlist_desc">Rimuovi definitivamente questa playlist</string>
 </resources>
