@@ -335,4 +335,7 @@
     <string name="open">فتح</string>
     <string name="failed_to_create_image">فشل إنشاء الصورة: %s</string>
     <string name="failed_to_parse_proxy">فشل تحليل عنوان URL للوكيل.</string>
+    <string name="copied_title">العنوان منسوخ</string>
+    <string name="copied_artist">الفنان منسوخ</string>
+    <string name="error_playing">حدث خطأ أثناء التشغيل</string>
 </resources>
