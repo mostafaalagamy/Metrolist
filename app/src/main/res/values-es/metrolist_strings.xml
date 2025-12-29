@@ -312,4 +312,13 @@
     <string name="wrapped_playlist_saved">Lista de reproducción guardada</string>
     <string name="casting_to">Transmitiendo a %s</string>
     <string name="progress_percent">Progreso %s%%</string>
+    <string name="listening_to_metrolist">Escuchando Metrolist</string>
+    <string name="listen_on_youtube_music">Escuchar en YouTube Music</string>
+    <string name="visit_metrolist">Visita Metrolist</string>
+    <string name="open">Abrir</string>
+    <string name="failed_to_create_image">No se pudo crear la imagen: %s</string>
+    <string name="copied_title">Título copiado</string>
+    <string name="copied_artist">Artista copiado</string>
+    <string name="error_playing">Error al reproducir</string>
+    <string name="failed_to_parse_proxy">Error al analizar la URL del proxy.</string>
 </resources>
