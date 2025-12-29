@@ -76,7 +76,7 @@
     <string name="general_settings">Pengaturan umum</string>
     <string name="player_background_style">Gaya latar belakang pemutar musik</string>
     <string name="configure_supported_links">Konfigurasikan tautan yang didukung</string>
-    <string name="intent_supported_links_not_found">Tidak dapat menemukan pengaturan tautan yang didukung, harap konfigurasikan secara manual</string>
+    <string name="intent_supported_links_not_found">Tidak dapat menemukan setelan tautan yang didukung, harap konfigurasikan secara manual</string>
     <string name="set_first_lyrics_provider">Penyedia lirik pilihan</string>
     <string name="my_top">Teratas Saya</string>
     <string name="cached_playlist">Tersimpan sementara</string>
@@ -117,7 +117,7 @@
     <string name="set_quick_picks">Atur pilihan cepat</string>
     <string name="last_song_listened">Berdasarkan lagu terakhir yang diputar</string>
     <string name="configure_app_language">Atur bahasa aplikasi</string>
-    <string name="intent_app_language_not_found">Tidak dapat menemukan pengaturan bahasa aplikasi, harap konfigurasikan secara manual</string>
+    <string name="intent_app_language_not_found">Tidak dapat menemukan setelan bahasa aplikasi, harap konfigurasikan secara manual</string>
     <string name="audio_quality_max">Maksimum (uji coba)</string>
     <string name="enable_similar_content">Aktifkan konten serupa</string>
     <string name="similar_content_desc">Tambahkan lagu serupa secara otomatis saat antrean mencapai akhir</string>
@@ -172,8 +172,8 @@
     <string name="settings_section_storage">Penyimpanan &amp; Data</string>
     <string name="settings_section_system">Sistem &amp; Tentang Aplikasi</string>
     <string name="starting_radio">Memulai radio</string>
-    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sebentar agar sampul baru muncul di daftar putar Anda.</string>
-    <string name="config_proxy">Konfigurasikan proxy</string>
+    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sejenak hingga sampul baru muncul di daftar putar Anda.</string>
+    <string name="config_proxy">Konfigurasikan proksi</string>
     <string name="proxy_username">Nama pengguna proksi</string>
     <string name="proxy_password">Kata sandi proksi</string>
     <string name="lyrics_romanization">Latinisasi lirik</string>
