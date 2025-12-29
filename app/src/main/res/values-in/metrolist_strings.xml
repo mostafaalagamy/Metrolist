@@ -4,7 +4,7 @@
         <item quantity="other">%d kali</item>
     </plurals>
     <string name="similar_content">Konten serupa</string>
-    <string name="remote_history">Riwayat sinkronisasi</string>
+    <string name="remote_history">Riwayat Jarak Jauh</string>
     <string name="years">Tahun</string>
     <string name="months">Bulan</string>
     <string name="please_wait">Tunggu sebentar</string>
