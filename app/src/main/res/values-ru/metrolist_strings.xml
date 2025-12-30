@@ -286,7 +286,7 @@
     <string name="album_art_for">Обложка альбома для %s</string>
     <string name="wrapped_total_albums_title">Вы прослушали</string>
     <string name="wrapped_total_albums_subtitle">уникальных альбомов</string>
-    <string name="wrapped_top_album_title">Ваш самый прослушиваемый альбом —</string>
+    <string name="wrapped_top_album_title">Ваш самый прослушиваемый альбом</string>
     <string name="wrapped_playlist_ready">Ваш персональный плейлист готов</string>
     <string name="wrapped_top_5_albums_title">Ваши топ-5 альбомов</string>
     <string name="wrapped_album_listening_time">Вы слушали этот альбом %d минут</string>
@@ -297,10 +297,10 @@
     <string name="wrapped_artist_listening_time">%d минут</string>
     <string name="wrapped_top_5_songs_title">Ваши топ-треки года</string>
     <string name="wrapped_top_song_album_art_content_description">Обложка альбома</string>
-    <string name="wrapped_top_artist_title">Ваш главный исполнитель года —</string>
+    <string name="wrapped_top_artist_title">Ваш главный исполнитель года</string>
     <string name="wrapped_top_artist_image_content_description">Изображение главного исполнителя</string>
     <string name="wrapped_top_artist_listening_time">Вы слушали их %d минут</string>
-    <string name="wrapped_top_song_title">Ваш самый прослушиваемый трек —</string>
+    <string name="wrapped_top_song_title">Ваш самый прослушиваемый трек</string>
     <string name="wrapped_top_song_listening_time">Вы слушали %d минут</string>
     <string name="wrapped_total_artists_title">Вы слушали</string>
     <string name="wrapped_total_artists_subtitle">уникальных исполнителей</string>
