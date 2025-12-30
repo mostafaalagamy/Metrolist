@@ -158,3 +158,33 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
     .lyrics-content { flex-direction: column-reverse; }
     .footer-top, .footer-bottom { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
 }
+
+
+
+
+/* Style du sélecteur de langue */
+.lang-select {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Style de la case sécurité */
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    padding: 10px 20px;
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 25px;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
