@@ -5,7 +5,7 @@
     <string name="back_button_desc">Terug</string>
     <string name="no_title">Geen titel</string>
     <string name="unknown_artist">Artiest onbekend</string>
-    <string name="loading_charts">Hitlijsten laden...</string>
+    <string name="loading_charts">Hitlijsten laden…</string>
     <string name="retry_button">Opnieuw proberen</string>
     <string name="album_cover_desc">Albumhoes</string>
     <string name="trending">Trending</string>
@@ -70,4 +70,9 @@
     </plurals>
     <string name="local_history">Lokaal</string>
     <string name="remote_history">Afstandsbediening</string>
+    <string name="top_result">Topresultaat</string>
+    <string name="other_results">Andere</string>
+    <string name="uploaded_playlist">Geüpload</string>
+    <string name="added_to_play_next">Toegevoegd aan wachtlijst</string>
+    <string name="added_to_queue">Toegevoegd aan wachtlijst</string>
 </resources>
