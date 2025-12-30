@@ -323,4 +323,6 @@
     <string name="refetch_desc">Ambil metadata terbaru dari YouTube Music</string>
     <string name="lyrics_glow_effect">Aktifkan efek cahaya lirik</string>
     <string name="lyrics_glow_effect_desc">Tambahkan animasi bercahaya dan efek pantulan pada lirik aktif</string>
+    <string name="shuffle_playlist_first">Acak daftar putar/album dahulu</string>
+    <string name="shuffle_playlist_first_desc">Saat mengacak, mainkan semua lagu dari daftar putar/album utama dahulu, lalu konten serupa</string>
 </resources>
