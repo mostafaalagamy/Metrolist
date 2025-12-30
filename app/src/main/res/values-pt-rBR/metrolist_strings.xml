@@ -256,4 +256,8 @@
     <string name="cache_size_warning_title">Espere!</string>
     <string name="cache_size_warning_message">Você escolheu um limite do tamanho de cache menor do que o aplicativo está usando atualmente (%1$s). Se continuar, o aplicativo poderá remover parte do cache %2$s para corresponder ao novo limite. Continuar mesmo assim?</string>
     <string name="cache_size_warning_confirm">Continuar</string>
+    <string name="top_result">Melhor resultado</string>
+    <string name="other_results">Outro</string>
+    <string name="download_playlist_desc">Baixar todas as músicas para reprodução offline</string>
+    <string name="remove_download_playlist_desc">Remove todas as músicas baixadas desta playlist.</string>
 </resources>
