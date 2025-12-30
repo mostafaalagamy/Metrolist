@@ -172,7 +172,7 @@
     <string name="settings_section_storage">Penyimpanan &amp; Data</string>
     <string name="settings_section_system">Sistem &amp; Tentang Aplikasi</string>
     <string name="starting_radio">Memulai radio</string>
-    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sejenak hingga sampul baru muncul di daftar putar Anda.</string>
+    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sejenak hingga sampul yang baru muncul di daftar putar Anda.</string>
     <string name="config_proxy">Atur proksi</string>
     <string name="proxy_username">Nama pengguna proksi</string>
     <string name="proxy_password">Kata sandi proksi</string>
@@ -270,11 +270,11 @@
     <string name="wrapped_top_artist_title">Artis teratas Anda sepanjang tahun adalah</string>
     <string name="wrapped_top_artist_image_content_description">Gambar artis teratas</string>
     <string name="wrapped_top_artist_listening_time">Anda telah mendengarkan mereka selama %d menit</string>
-    <string name="wrapped_top_song_title">Lagu yang paling sering Anda putar adalah</string>
+    <string name="wrapped_top_song_title">Lagu yang paling sering Anda dengarkan adalah</string>
     <string name="wrapped_top_song_listening_time">Anda telah mendengarkan selama %d menit</string>
-    <string name="wrapped_total_artists_title">Anda mendengarkan</string>
+    <string name="wrapped_total_artists_title">Anda telah mendengarkan</string>
     <string name="wrapped_total_artists_subtitle">artis berbeda</string>
-    <string name="wrapped_total_songs_title">Anda mendengarkan</string>
+    <string name="wrapped_total_songs_title">Anda telah mendengarkan</string>
     <string name="wrapped_total_songs_subtitle">lagu berbeda</string>
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_intro_subtitle">saatnya melihat apa yang telah Anda dengarkan</string>
