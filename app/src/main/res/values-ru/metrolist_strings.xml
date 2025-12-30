@@ -151,9 +151,9 @@
     <string name="subscribe">Подписаться</string>
     <string name="subscribed">Вы подписаны</string>
     <string name="clear_image_cache_dialog">Вы уверены, что хотите очистить все закэшированные изображения?</string>
-    <string name="swipe_sensitivity">Чувствительность проведения по мини плееру</string>
+    <string name="swipe_sensitivity">Чувствительность свайпа мини-плеера</string>
     <string name="swipe_sensitivity_desc">Настроить чувствительность жестов для переключения песен</string>
-    <string name="new_mini_player_design">Новый дизайн мини проигрывателя</string>
+    <string name="new_mini_player_design">Новый дизайн мини‑плеера</string>
     <string name="playlist_not_found">Плейлист не найден</string>
     <string name="playlist_not_found_desc">Не удалось загрузить запрошенный плейлист</string>
     <string name="empty_playlist">Пустой плейлист</string>
