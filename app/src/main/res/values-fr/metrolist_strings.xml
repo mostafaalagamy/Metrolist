@@ -266,7 +266,7 @@
     <string name="sync_playlist_desc">Synchroniser la playlist avec YouTube Music</string>
     <string name="enable_better_lyrics">Activer de meilleures paroles</string>
     <string name="enable_better_lyrics_desc">Utiliser le fournisseur Better Lyrics pour des paroles synchronisées mot à mot</string>
-    <string name="lyrics_animation_style">Style d\'animation des paroles</string>
+    <string name="lyrics_animation_style">Style d\'animation mot à mot</string>
     <string name="none">Aucun</string>
     <string name="fade">Disparition</string>
     <string name="glow">Brillance</string>
@@ -275,8 +275,8 @@
     <string name="apple_music_style">Apple Music</string>
     <string name="lyrics_text_size">Taille du texte des paroles</string>
     <string name="lyrics_line_spacing">Espacement des lignes des paroles</string>
-    <string name="shuffle_playlist_first">Lecture aléatoire de la playlist/album principal</string>
-    <string name="shuffle_playlist_first_desc">En mode aléatoire, lisez d\'abord tous les titres de la playlist/album d\'origine, puis les titres similaires</string>
+    <string name="shuffle_playlist_first">Lecture aléatoire de la playlist/de l\'album en premier</string>
+    <string name="shuffle_playlist_first_desc">En mode aléatoire, lire d\'abord tous les titres de la playlist/album d\'origine, puis les titres similaires</string>
     <string name="show_wrapped_card">Montrer le résumé</string>
     <string name="album_art_for">Pochette d\'album pour %s</string>
     <string name="wrapped_total_albums_title">Vous avez écouté</string>
@@ -329,4 +329,6 @@
     <string name="copied_artist">Artiste copié</string>
     <string name="error_playing">Erreur de lecture</string>
     <string name="failed_to_parse_proxy">Impossible d\'analyser l\'URL du proxy.</string>
+    <string name="lyrics_glow_effect">Activer l\'effet de paroles lumineuses</string>
+    <string name="lyrics_glow_effect_desc">Ajouter une animation lumineuse et un effet de rebond aux paroles actives</string>
 </resources>
