@@ -114,6 +114,8 @@
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
+    <string name="lyrics_glow_effect">Enable glowing lyrics effect</string>
+    <string name="lyrics_glow_effect_desc">Add glowing animation and bounce effect to active lyrics</string>
     <string name="enable_better_lyrics">Enable Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Use Better Lyrics provider for word-by-word synced lyrics</string>
     <string name="auto_scroll">Re-sync</string>
@@ -125,8 +127,8 @@
     <string name="show_top_playlist">Show \"Top\" playlist</string>
     <string name="show_cached_playlist">Show \"Cached\" playlist</string>
     <string name="show_uploaded_playlist">Show \"Uploaded\" playlist</string>
-    <string name="shuffle_playlist_first">Shuffle playlist/album prima</string>
-    <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
+    <string name="shuffle_playlist_first">Shuffle playlist/album first</string>
+    <string name="shuffle_playlist_first_desc">When shuffling, play all songs from the original playlist/album first, then similar content</string>
     <string name="show_wrapped_card">Show Wrapped card</string>
 
     <string name="google">Google</string>
