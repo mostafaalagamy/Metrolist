@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Metrolist - The ultimate open-source YouTube Music client for Android.">
+    <meta name="description" content="Metrolist - The ultimate open-source YouTube Music client for Android. Ad-free, Material Design 3.">
     <title>Metrolist | YT Music Client</title>
     
     <link rel="icon" type="image/png" href="images/logo.png">
     
-    <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav class="navbar">
         <div class="container nav-container">
             <a href="#" class="logo">
-                <img src="images/logo.png" alt="Metrolist Logo">
+                <i class="fas fa-play-circle" style="color: var(--primary); margin-right: 10px; font-size: 1.5rem;"></i>
                 <span>Metrolist</span>
             </a>
             
@@ -28,17 +28,33 @@
                     <li><a href="#lyrics" data-i18n="nav_lyrics">Lyrics</a></li>
                     <li><a href="#community" data-i18n="nav_community">Community</a></li>
                     <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
-                    <li><a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
+                    <li class="desktop-only">
+                        <a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </li>
                 </ul>
 
-                <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
+                <div class="nav-controls">
+                    <div class="lang-dropdown">
+                        <select id="language-selector" aria-label="Select Language">
+                            <option value="en">🇺🇸 EN</option>
+                            <option value="fr">🇫🇷 FR</option>
+                            <option value="es">🇪🇸 ES</option>
+                            <option value="it">🇮🇹 IT</option>
+                            <option value="pt">🇵🇹 PT</option>
+                        </select>
+                    </div>
 
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
+                    <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+
+                    <div class="menu-toggle" id="mobile-menu">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,12 +63,21 @@
     <header class="hero">
         <div class="container hero-container">
             <div class="hero-content">
-                <span class="badge">v12.8.1 Stable</span>
-                <h1><span data-i18n="hero_title_1">Music Experience</span> <br><span class="gradient-text" data-i18n="hero_title_2">Redefined.</span></h1>
+                <span class="version-badge">v12.8.1 Stable</span>
+                <h1>
+                    <span data-i18n="hero_title_1">Music Experience</span> <br>
+                    <span class="gradient-text" data-i18n="hero_title_2">Redefined.</span>
+                </h1>
                 <p data-i18n="hero_desc">Metrolist is a lightweight, open-source YouTube Music client. Experience ad-free listening, background playback, and Material Design 3 aesthetics.</p>
                 
+                <div class="trust-badges">
+                    <div class="badge-item"><i class="fas fa-shield-alt"></i> <span data-i18n="badge_safe">100% Safe</span></div>
+                    <div class="badge-item"><i class="fas fa-code"></i> <span data-i18n="badge_opensource">Open Source</span></div>
+                    <div class="badge-item"><i class="fas fa-balance-scale"></i> GPL-3.0</div>
+                </div>
+
                 <div class="hero-buttons">
-                    <a href="https://github.com/mostafaalagamy/Metrolist/releases" class="btn btn-primary btn-glow">
+                    <a href="https://github.com/mostafaalagamy/Metrolist/releases/latest" target="_blank" class="btn btn-primary btn-glow">
                         <i class="fas fa-download"></i> <span data-i18n="btn_download">Download APK</span>
                     </a>
                     <a href="#features" class="btn btn-secondary" data-i18n="btn_learn">Learn More</a>
@@ -60,7 +85,7 @@
             </div>
             
             <div class="hero-image">
-                <img src="images/hero-mockup.png" alt="Metrolist App Interface" class="app-mockup">
+                <img src="images/hero-mockup.png" alt="Metrolist App Interface" class="app-mockup" onerror="this.style.display='none'">
             </div>
         </div>
     </header>
@@ -118,44 +143,42 @@
                     </div>
 
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> <strong data-i18n="lyrics_check_1">Real-time Sync:</strong> <span data-i18n="lyrics_check_1_desc">Karaoke style word-by-word.</span></li>
-                        <li><i class="fas fa-check-circle"></i> <strong data-i18n="lyrics_check_2">Multi-Source:</strong> <span data-i18n="lyrics_check_2_desc">Fetches from multiple databases.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong data-i18n="lyrics_check_1">Real-time Sync:</strong> <span data-i18n="lyrics_check_1_desc">Karaoke style word-by-word.</span></span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong data-i18n="lyrics_check_2">Multi-Source:</strong> <span data-i18n="lyrics_check_2_desc">Fetches from multiple databases.</span></span></li>
                     </ul>
                 </div>
                 <div class="video-side">
-                    <video autoplay loop muted playsinline class="lyrics-video">
-                        <source src="images/preview.webm" type="video/webm">
-                        <source src="images/preview.mp4" type="video/mp4">
-                    </video>
+                    <div class="video-placeholder">
+                        <i class="fas fa-play"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="community" class="community">
-        <div class="container community-container">
-            <div class="community-box">
-                <i class="fas fa-language"></i>
-                <h3 data-i18n="comm_trans_title">Help Translate</h3>
-                <p data-i18n="comm_trans_desc">Metrolist is available in many languages thanks to volunteers. Join us on Weblate.</p>
-                <a href="https://hosted.weblate.org/projects/Metrolist/" target="_blank" class="btn btn-secondary" data-i18n="btn_weblate">Open Weblate</a>
-            </div>
-            <div class="community-box">
-                <i class="fab fa-github"></i>
-                <h3 data-i18n="comm_code_title">Contribute Code</h3>
-                <p data-i18n="comm_code_desc">Developers are welcome! Check out the Issues tab on GitHub to get started.</p>
-                <a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="btn btn-secondary" data-i18n="btn_repo">View Repository</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="screenshots" class="screenshots">
         <div class="container">
-            <h2 class="section-title" data-i18n="gallery_title">Interface Gallery</h2>
-            <div class="gallery-wrapper">
-                <img src="images/screenshot-1.jpg" alt="Home Screen">
-                <img src="images/screenshot-2.jpg" alt="Player Screen">
-                <img src="images/screenshot-3.jpg" alt="Settings Screen">
+            <h2 class="section-title" data-i18n="nav_community">Community</h2>
+            <div class="community-grid">
+                
+                <div class="community-card">
+                    <div class="card-icon-large">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3 data-i18n="comm_trans_title">Help Translate</h3>
+                    <p data-i18n="comm_trans_desc">Metrolist is available in many languages thanks to volunteers. Join us on Weblate.</p>
+                    <a href="https://hosted.weblate.org/projects/Metrolist/" target="_blank" class="btn btn-outline" data-i18n="btn_weblate">Open Weblate</a>
+                </div>
+
+                <div class="community-card">
+                    <div class="card-icon-large">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3 data-i18n="comm_code_title">Contribute Code</h3>
+                    <p data-i18n="comm_code_desc">Developers are welcome! Check out the Issues tab on GitHub to get started.</p>
+                    <a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="btn btn-outline" data-i18n="btn_repo">View Code</a>
+                </div>
+
             </div>
         </div>
     </section>
@@ -165,19 +188,28 @@
             <h2 class="section-title" data-i18n="faq_title">FAQ</h2>
             <div class="accordion">
                 <div class="accordion-item">
-                    <button class="accordion-header" data-i18n="faq_1_q">Is it safe to use?</button>
+                    <button class="accordion-header">
+                        <span data-i18n="faq_1_q">Is it safe to use?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="accordion-content">
                         <p data-i18n="faq_1_a">Yes. Metrolist is open-source (GPL-3.0), meaning the code is public and auditable.</p>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <button class="accordion-header" data-i18n="faq_2_q">Why isn't it on the Play Store?</button>
+                    <button class="accordion-header">
+                        <span data-i18n="faq_2_q">Why isn't it on the Play Store?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="accordion-content">
                         <p data-i18n="faq_2_a">Google does not allow third-party YouTube clients on the Play Store. You can safely download updates from GitHub.</p>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <button class="accordion-header" data-i18n="faq_3_q">How to update?</button>
+                    <button class="accordion-header">
+                        <span data-i18n="faq_3_q">How to update?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                     <div class="accordion-content">
                         <p data-i18n="faq_3_a">Download the latest APK from Releases and install it over the old version.</p>
                     </div>
@@ -201,23 +233,23 @@
             </div>
             
             <div class="footer-legal">
-                <h4>Disclaimer / Mentions Légales</h4>
+                <h4>Legal Disclaimer / Mentions Légales</h4>
                 <p>
-                    Metrolist is an <strong>open-source project</strong> licensed under GPL-3.0. 
+                    Metrolist is an <strong>open-source project</strong> licensed under <a href="https://github.com/mostafaalagamy/Metrolist/blob/master/LICENSE" target="_blank">GPL-3.0</a>. 
                     This application is <strong>strictly for educational purposes</strong>.
                 </p>
                 <p>
                     Metrolist is <strong>not affiliated with, authorized, maintained, sponsored or endorsed by Google LLC or any of its affiliates or subsidiaries.</strong> 
-                    The name "YouTube" and "YouTube Music" are registered trademarks of Google LLC.
+                    The names "YouTube" and "YouTube Music" are registered trademarks of Google LLC.
                 </p>
                 <p>
-                    The developers do not support piracy. This app is a third-party client using public APIs.
+                    The developers do not support piracy. This app is a third-party client using public APIs (InnerTune, NewPipe Extractor).
                 </p>
             </div>
 
             <div class="footer-bottom">
                 <p>&copy; 2025 Metrolist Project. Made with ❤️ by Mo Agamy.</p>
-                <p class="creator-credit">Website by <a href="https://sanobld.github.io/Web/" target="_blank">Sano Bld</a></p>
+                <p class="creator-credit">Website Redesign by <a href="#">Sano Bld</a></p>
             </div>
         </div>
     </footer>
