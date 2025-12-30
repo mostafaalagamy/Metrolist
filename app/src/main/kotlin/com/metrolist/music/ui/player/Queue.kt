@@ -1199,7 +1199,6 @@ private fun PlayerQueueButton(
                             Color.White
                         PlayerBackgroundStyle.DEFAULT -> 
                             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     }
                 }
             )

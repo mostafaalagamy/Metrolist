@@ -210,13 +210,17 @@ class WrappedManager(
                 totalPlayTimeMsDeferred
             )
 
+            @Suppress("UNCHECKED_CAST")
             val topSongsResult = results[1] as List<SongWithStats>
+            @Suppress("UNCHECKED_CAST")
             val topAlbumsResult = results[3] as List<com.metrolist.music.db.entities.Album>
+            @Suppress("UNCHECKED_CAST")
+            val topArtistsResult = results[2] as List<Artist>
             _state.update {
                 it.copy(
                     accountInfo = results[0] as AccountInfo?,
                     topSongs = topSongsResult,
-                    topArtists = results[2] as List<Artist>,
+                    topArtists = topArtistsResult,
                     top5Albums = topAlbumsResult,
                     topAlbum = topAlbumsResult.firstOrNull(),
                     uniqueSongCount = results[4] as Int,
