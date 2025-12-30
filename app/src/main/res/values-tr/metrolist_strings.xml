@@ -326,4 +326,6 @@
     <string name="copied_artist">Sanatçı kopyalandı</string>
     <string name="error_playing">Oynatma hatası</string>
     <string name="failed_to_parse_proxy">Proxy URL\'si ayrıştırılamadı.</string>
+    <string name="lyrics_glow_effect">Parıltılı şarkı sözü efektini aktif et</string>
+    <string name="lyrics_glow_effect_desc">Aktif şarkı sözlerine parlama animasyonu ve zıplama efekti ekle</string>
 </resources>
