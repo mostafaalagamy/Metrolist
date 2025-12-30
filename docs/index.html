@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Metrolist - A lightweight, open-source YouTube Music client for Android with Material Design.">
+    <meta name="description" content="Metrolist - The ultimate open-source YouTube Music client for Android.">
     <title>Metrolist | YT Music Client</title>
     
     <link rel="stylesheet" href="style.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,17 +20,24 @@
                 <span>Metrolist</span>
             </a>
             
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#lyrics">Live Lyrics</a></li> <li><a href="#screenshots">Gallery</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
-            </ul>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#lyrics">Lyrics</a></li>
+                    <li><a href="#screenshots">Gallery</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
 
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -40,10 +47,12 @@
             <div class="hero-content">
                 <span class="badge">Latest: v12.8.1</span>
                 <h1>Music Experience <br><span class="gradient-text">Redefined.</span></h1>
-                <p>Metrolist is a lightweight, open-source YouTube Music client for Android. Enjoy background playback, ad-free listening, and Material Design 3 aesthetics without the bloat.</p>
+                <p>Metrolist is a lightweight, open-source YouTube Music client. Experience ad-free listening, background playback, and Material Design 3 aesthetics.</p>
                 
                 <div class="hero-buttons">
-                    <a href="https://github.com/mostafaalagamy/Metrolist/releases" class="btn btn-primary"><i class="fas fa-download"></i> Download APK</a>
+                    <a href="https://github.com/mostafaalagamy/Metrolist/releases" class="btn btn-primary btn-glow">
+                        <i class="fas fa-download"></i> Download APK
+                    </a>
                     <a href="#features" class="btn btn-secondary">Learn More</a>
                 </div>
             </div>
@@ -59,44 +68,34 @@
             <h2 class="section-title">Why Metrolist?</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <i class="fas fa-ban"></i>
-                    <h3>Ad-Free Experience</h3>
-                    <p>Listen to songs and videos without interruptions. Pure music, zero ads.</p>
+                    <div class="icon-box"><i class="fas fa-ban"></i></div>
+                    <h3>Ad-Free</h3>
+                    <p>Enjoy your music without interruptions. No video ads, no audio ads.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-headphones"></i>
+                    <div class="icon-box"><i class="fas fa-headphones"></i></div>
                     <h3>Background Play</h3>
-                    <p>Keep the music playing even when your screen is off or while using other apps.</p>
+                    <p>Keep listening while using other apps or when your screen is locked.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-palette"></i>
-                    <h3>Dynamic Themes</h3>
-                    <p>Light, Dark, Black, and Dynamic colors based on your album art or system wallpaper.</p>
+                    <div class="icon-box"><i class="fas fa-palette"></i></div>
+                    <h3>Adaptive Themes</h3>
+                    <p>Dynamic colors based on album art (Material You) or pure black mode.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-download"></i>
+                    <div class="icon-box"><i class="fas fa-wifi"></i></div>
                     <h3>Offline Mode</h3>
-                    <p>Download and cache songs for offline playback to save data on the go.</p>
+                    <p>Download songs and playlists to cache them for offline listening.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fab fa-discord"></i>
+                    <div class="icon-box"><i class="fab fa-discord"></i></div>
                     <h3>Discord RPC</h3>
-                    <p>Show what you are listening to on your Discord profile automatically (powered by Kizzy).</p>
+                    <p>Show your friends what you're listening to automatically via Discord.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-sliders"></i>
+                    <div class="icon-box"><i class="fas fa-sliders-h"></i></div>
                     <h3>Audio Tools</h3>
-                    <p>Includes Silence Skipper, Audio Normalization, and Pitch/Tempo adjustments.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-moon"></i>
-                    <h3>Sleep Timer</h3>
-                    <p>Fall asleep to your favorite tunes. The app stops playing automatically.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Privacy Focused</h3>
-                    <p>No trackers. Open Source (GPL-3.0). You are in control of your data.</p>
+                    <p>Pitch control, tempo adjustment, silence skipper, and normalization.</p>
                 </div>
             </div>
         </div>
@@ -107,8 +106,13 @@
             <div class="lyrics-content">
                 <div class="text-side">
                     <span class="badge-small">Powered by Better Lyrics</span>
-                    <h2>Sing Along with <br> <span class="gradient-text">Synced Lyrics</span></h2>
-                    <p>Experience word-by-word synchronized lyrics directly from YouTube Music. A beautiful, immersive karaoke interface right in your pocket.</p>
+                    <h2>Multiple Lyrics <br> <span class="gradient-text">Formats</span></h2>
+                    <p>Metrolist adapts to your needs. Choose between:</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> <strong>Synced Lyrics:</strong> Word-by-word karaoke style.</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Plain Text:</strong> Standard scrollable lyrics.</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Translations:</strong> Understand songs in any language.</li>
+                    </ul>
                 </div>
                 <div class="video-side">
                     <video autoplay loop muted playsinline class="lyrics-video">
@@ -128,56 +132,30 @@
                 <img src="images/screenshot-1.jpg" alt="Home Screen">
                 <img src="images/screenshot-2.jpg" alt="Player Screen">
                 <img src="images/screenshot-3.jpg" alt="Settings Screen">
-				<img src="images/screenshot-4.jpg" alt="Settings Screen">
-				<img src="images/screenshot-5.jpg" alt="Settings Screen">
-				<img src="images/screenshot-6.jpg" alt="Settings Screen">
-                </div>
-        </div>
-    </section>
-
-    <section id="community" class="community">
-        <div class="container community-container">
-            <div class="community-box">
-                <i class="fas fa-language"></i>
-                <h3>Help Translate Metrolist</h3>
-                <p>We use Weblate to make Metrolist accessible worldwide. Join our community of translators!</p>
-                <a href="https://hosted.weblate.org/projects/Metrolist/" target="_blank" class="btn btn-secondary">Translate on Weblate</a>
-            </div>
-            <div class="community-box">
-                <i class="fab fa-github"></i>
-                <h3>Contribute to Code</h3>
-                <p>Developers are welcome! Check out the Issues tab on GitHub to get started.</p>
-                <a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="btn btn-secondary">View Repo</a>
             </div>
         </div>
     </section>
 
     <section id="faq" class="faq">
         <div class="container">
-            <h2 class="section-title">FAQ</h2>
+            <h2 class="section-title">Frequently Asked Questions</h2>
             <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header">Is it safe to use?</button>
+                    <div class="accordion-content">
+                        <p>Yes. Metrolist is open-source (GPL-3.0), meaning the code is public and auditable. We respect your privacy.</p>
+                    </div>
+                </div>
                 <div class="accordion-item">
                     <button class="accordion-header">Why isn't it on the Play Store?</button>
                     <div class="accordion-content">
-                        <p>Google does not allow third-party clients that modify YouTube's functionality on the Play Store. You can download it safely from GitHub.</p>
+                        <p>Google does not allow third-party YouTube clients on the Play Store. You can safely download updates from GitHub.</p>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <button class="accordion-header">Does it support Android Auto?</button>
+                    <button class="accordion-header">How to update?</button>
                     <div class="accordion-content">
-                        <p>Yes, experimentally. You must enable "Unknown Sources" in Android Auto developer settings (tap version number multiple times in AA settings).</p>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">How do I scrobble to LastFM?</button>
-                    <div class="accordion-content">
-                        <p>Metrolist supports LastFM integration natively, or you can use an external app like Pano Scrobbler for LibreFM/ListenBrainz.</p>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">Can I import my YouTube playlists?</button>
-                    <div class="accordion-content">
-                        <p>Yes! Login is supported, allowing you to sync your library, likes, and playlists.</p>
+                        <p>Download the latest APK from Releases and install it over the old version. Your data will be kept.</p>
                     </div>
                 </div>
             </div>
@@ -186,20 +164,24 @@
 
     <footer>
         <div class="container footer-container">
-            <div class="footer-brand">
-                <h3>Metrolist</h3>
-                <p>Open Source YouTube Music Client</p>
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <h3>Metrolist</h3>
+                    <p>Open Source Music Client</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://hosted.weblate.org/projects/Metrolist/" target="_blank">Translations</a>
+                    <a href="https://github.com/mostafaalagamy/Metrolist/issues" target="_blank">Report Issue</a>
+                </div>
             </div>
             
             <div class="footer-legal">
-                <h4>Legal Disclaimer</h4>
-                <p>Metrolist is an open-source project licensed under GPL-3.0. This project and its contents are <strong>not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, or any of its subsidiaries.</strong></p>
-                <p>"YouTube" and "YouTube Music" are registered trademarks of Google LLC. This application is for educational purposes only.</p>
-                <p>Credits: InnerTune, OuterTune, Kizzy, Better Lyrics.</p>
+                <p>Disclaimer: This project is not affiliated with Google LLC or YouTube. "YouTube Music" is a trademark of Google LLC.</p>
             </div>
 
             <div class="footer-bottom">
                 <p>&copy; 2025 Metrolist Project. Made with ❤️ by Mo Agamy.</p>
+                <p class="creator-credit">Website by <a href="https://sanobld.github.io/Web/" target="_blank">Sano Bld</a></p>
             </div>
         </div>
     </footer>
