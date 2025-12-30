@@ -178,4 +178,14 @@
     <string name="swipe_song_to_remove">Húzd el a zeneszámot a lejátszási listából való eltávolításhoz</string>
     <string name="show_uploaded_playlist">\"Feltöltött\" lejátszási lista mutatása</string>
     <string name="edit_playlist_cover">Lejátszási lista borítóképének szerkesztése</string>
+    <string name="top_result">Legjobb találat</string>
+    <string name="other_results">Továbbiak</string>
+    <string name="download_playlist_desc">Összes szám letöltése offline lejátszáshoz</string>
+    <string name="remove_download_playlist_desc">Az összes letöltött szám törlése ebből a listából</string>
+    <string name="download_in_progress_desc">Letöltés folyamatban</string>
+    <string name="share_playlist_desc">Lejátszási lista megosztása</string>
+    <string name="delete_playlist_desc">Lejátszási lista végleges törlése</string>
+    <string name="sync_playlist_desc">Lejátszási lista szinkronizálása a YouTube Music-kal</string>
+    <string name="primary_color_style">Elsődleges szín</string>
+    <string name="tertiary_color_style">Harmadlagos szín</string>
 </resources>
