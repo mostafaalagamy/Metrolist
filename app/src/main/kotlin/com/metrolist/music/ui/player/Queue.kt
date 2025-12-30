@@ -718,7 +718,7 @@ fun Queue(
                             ) {
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
-                                    isSelected = inSelectMode && window.mediaItem.mediaId in selection,
+                                    isSelected = false,
                                     isActive = index == currentWindowIndex,
                                     isPlaying = isPlaying,
                                     trailingContent = {
