@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Metrolist - A lightweight, open-source YouTube Music client for Android.">
+    <title>Metrolist | YT Music Client</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="images/logo.png" alt="Metrolist Logo">
+                <span>Metrolist</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#screenshots">Screenshots</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="badge">v12.8.0 Stable</span>
+                <h1>Music Experience <br><span class="gradient-text">Redefined.</span></h1>
+                <p>Metrolist is a lightweight, open-source YouTube Music client for Android. Enjoy background playback, ad-free listening, and Material Design aesthetics without the bloat.</p>
+                <div class="hero-buttons">
+                    <a href="https://github.com/mostafaalagamy/Metrolist/releases" class="btn btn-primary"><i class="fas fa-download"></i> Download APK</a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/hero-mockup.png" alt="Metrolist App Interface">
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Metrolist?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-ban"></i>
+                    <h3>Ad-Free</h3>
+                    <p>Listen to your favorite tracks without any interruptions. Pure music, zero ads.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headphones"></i>
+                    <h3>Background Play</h3>
+                    <p>Keep the music playing even when your screen is off or you are using other apps.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-palette"></i>
+                    <h3>Material Design</h3>
+                    <p>A beautiful interface that follows modern Android design guidelines (Material 3).</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-download"></i>
+                    <h3>Offline Mode</h3>
+                    <p>Download and cache songs for offline playback to save your data.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-microphone-lines"></i>
+                    <h3>Live Lyrics</h3>
+                    <p>Sing along with synchronized lyrics support directly in the player.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Open Source</h3>
+                    <p>Transparent development. Licensed under GPL-3.0. No hidden trackers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2 class="section-title">Interface</h2>
+            <div class="screenshot-gallery">
+                <img src="images/screenshot-1.jpg" alt="Home Screen">
+                <img src="images/screenshot-2.jpg" alt="Player Screen">
+                <img src="images/screenshot-3.jpg" alt="Settings Screen">
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header">Is it safe to use?</button>
+                    <div class="accordion-content">
+                        <p>Yes, Metrolist is open-source. You can inspect the code on GitHub. We do not collect personal user data.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Do I need a Premium account?</button>
+                    <div class="accordion-content">
+                        <p>No, Metrolist unlocks core features like background playback and ad-blocking without a Premium subscription.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Why isn't it on the Play Store?</button>
+                    <div class="accordion-content">
+                        <p>Google does not allow third-party clients that modify YouTube's functionality on the Play Store. You can download it safely from GitHub.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <h3>Metrolist</h3>
+                <p>Made with ❤️ by Mo Agamy & Contributors.</p>
+            </div>
+            <div class="footer-legal">
+                <h4>Disclaimer</h4>
+                <p>Metrolist is an open-source project and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Google LLC, YouTube, or any of its subsidiaries. "YouTube" and "YouTube Music" are registered trademarks of Google LLC.</p>
+                <p>This project is for educational purposes only. The developers do not support piracy.</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Metrolist. Licensed under GPL-3.0.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
