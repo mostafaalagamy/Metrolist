@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
@@ -62,10 +61,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -108,7 +103,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
-import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
@@ -168,6 +162,8 @@ import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AccountSettingsDialog
+import com.metrolist.music.ui.component.AppNavigationBar
+import com.metrolist.music.ui.component.AppNavigationRail
 import com.metrolist.music.ui.component.BottomSheetMenu
 import com.metrolist.music.ui.component.BottomSheetPage
 import com.metrolist.music.ui.component.IconButton
@@ -789,16 +785,41 @@ class MainActivity : ComponentActivity() {
                             },
                             bottomBar = {
                                 val currentRoute = navBackStackEntry?.destination?.route
+                                
+                                // Memoize navigation click handler to avoid lambda recreation
+                                val onNavItemClick = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                    { screen: Screens, isSelected: Boolean ->
+                                        if (isSelected) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                            }
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
+                                        }
+                                    }
+                                }
+                                
                                 if (!showRail && currentRoute != "wrapped") {
                                     Box {
-                                        if (currentRoute != "wrapped") {
-                                            BottomSheetPlayer(
-                                                state = playerBottomSheetState,
-                                                navController = navController,
-                                                pureBlack = pureBlack
-                                            )
-                                        }
-                                        NavigationBar(
+                                        BottomSheetPlayer(
+                                            state = playerBottomSheetState,
+                                            navController = navController,
+                                            pureBlack = pureBlack
+                                        )
+                                        
+                                        AppNavigationBar(
+                                            navigationItems = navigationItems,
+                                            currentRoute = currentRoute,
+                                            onItemClick = onNavItemClick,
+                                            pureBlack = pureBlack,
+                                            slimNav = slimNav,
                                             modifier = Modifier
                                                 .align(Alignment.BottomCenter)
                                                 .height(bottomInset + getNavPadding())
@@ -811,10 +832,7 @@ class MainActivity : ComponentActivity() {
                                                     } else {
                                                         val slideOffset =
                                                             (bottomInset + NavigationBarHeight) *
-                                                                    playerBottomSheetState.progress.coerceIn(
-                                                                        0f,
-                                                                        1f,
-                                                                    )
+                                                                    playerBottomSheetState.progress.coerceIn(0f, 1f)
                                                         val hideOffset =
                                                             (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
                                                         IntOffset(
@@ -822,52 +840,8 @@ class MainActivity : ComponentActivity() {
                                                             y = (slideOffset + hideOffset).roundToPx(),
                                                         )
                                                     }
-                                                },
-                                            containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
-                                            contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                                        ) {
-                                            navigationItems.fastForEach { screen ->
-                                                val isSelected =
-                                                    navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
-
-                                                NavigationBarItem(
-                                                    selected = isSelected,
-                                                    icon = {
-                                                        Icon(
-                                                            painter = painterResource(
-                                                                id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
-                                                            ),
-                                                            contentDescription = null,
-                                                        )
-                                                    },
-                                                    label = {
-                                                        if (!slimNav) {
-                                                            Text(
-                                                                text = stringResource(screen.titleId),
-                                                                maxLines = 1,
-                                                                overflow = TextOverflow.Ellipsis
-                                                            )
-                                                        }
-                                                    },
-                                                    onClick = {
-                                                        if (isSelected) {
-                                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                            coroutineScope.launch {
-                                                                searchBarScrollBehavior.state.resetHeightOffset()
-                                                            }
-                                                        } else {
-                                                            navController.navigate(screen.route) {
-                                                                popUpTo(navController.graph.startDestinationId) {
-                                                                    saveState = true
-                                                                }
-                                                                launchSingleTop = true
-                                                                restoreState = true
-                                                            }
-                                                        }
-                                                    },
-                                                )
-                                            }
-                                        }
+                                                }
+                                        )
 
                                         Box(
                                             modifier = Modifier
@@ -878,7 +852,6 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 } else {
-                                    val currentRoute = navBackStackEntry?.destination?.route
                                     if (currentRoute != "wrapped") {
                                         BottomSheetPlayer(
                                             state = playerBottomSheetState,
@@ -902,55 +875,34 @@ class MainActivity : ComponentActivity() {
                         ) {
                             Row(Modifier.fillMaxSize()) {
                                 val currentRoute = navBackStackEntry?.destination?.route
-                                if (showRail && currentRoute != "wrapped") {
-                                    // Memoize NavigationRail to avoid unnecessary recompositions
-                                    val railContainerColor = remember(pureBlack) {
-                                        if (pureBlack) Color.Black else null
-                                    }
-                                    
-                                    NavigationRail(
-                                        containerColor = railContainerColor ?: MaterialTheme.colorScheme.surfaceContainer
-                                    ) {
-                                        Spacer(modifier = Modifier.weight(1f))
-
-                                        navigationItems.fastForEach { screen ->
-                                            val isSelected = remember(navBackStackEntry?.destination?.route, screen.route) {
-                                                navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
+                                
+                                // Memoize navigation click handler for rail
+                                val onRailItemClick = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                    { screen: Screens, isSelected: Boolean ->
+                                        if (isSelected) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                            
-                                            val iconPainter = remember(isSelected, screen.iconIdActive, screen.iconIdInactive) {
-                                                if (isSelected) screen.iconIdActive else screen.iconIdInactive
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
-                                            
-                                            NavigationRailItem(
-                                                selected = isSelected,
-                                                onClick = {
-                                                    if (isSelected) {
-                                                        navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                        coroutineScope.launch {
-                                                            searchBarScrollBehavior.state.resetHeightOffset()
-                                                        }
-                                                    } else {
-                                                        navController.navigate(screen.route) {
-                                                            popUpTo(navController.graph.startDestinationId) {
-                                                                inclusive = false
-                                                            }
-                                                            launchSingleTop = true
-                                                            restoreState = false
-                                                        }
-                                                    }
-                                                },
-                                                icon = {
-                                                    Icon(
-                                                        painter = painterResource(id = iconPainter),
-                                                        contentDescription = null,
-                                                    )
-                                                },
-                                            )
                                         }
-
-                                        Spacer(modifier = Modifier.weight(1f))
                                     }
+                                }
+                                
+                                if (showRail && currentRoute != "wrapped") {
+                                    AppNavigationRail(
+                                        navigationItems = navigationItems,
+                                        currentRoute = currentRoute,
+                                        onItemClick = onRailItemClick,
+                                        pureBlack = pureBlack
+                                    )
                                 }
                                 Box(Modifier.weight(1f)) {
                                     // NavHost with animations
