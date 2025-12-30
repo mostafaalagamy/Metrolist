@@ -787,7 +787,7 @@ class MainActivity : ComponentActivity() {
                                 val currentRoute = navBackStackEntry?.destination?.route
                                 
                                 // Memoize navigation click handler to avoid lambda recreation
-                                val onNavItemClick = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior) {
                                     { screen: Screens, isSelected: Boolean ->
                                         if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
@@ -877,7 +877,7 @@ class MainActivity : ComponentActivity() {
                                 val currentRoute = navBackStackEntry?.destination?.route
                                 
                                 // Memoize navigation click handler for rail
-                                val onRailItemClick = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior) {
                                     { screen: Screens, isSelected: Boolean ->
                                         if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
