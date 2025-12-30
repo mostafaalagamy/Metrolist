@@ -28,6 +28,19 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 </div>
 
 <div align="center">
+<h1>Table of Contents</h1>
+</div>
+
+- [Features](#features)
+- [Download Now](#download-now)
+- [FAQ](#faq)
+- [Development Setup](#development-setup)
+- [Translations](#translations)
+- [Support Me](#support-me)
+- [Join our community](#join-our-community)
+- [Contributors](#thanks-to-all-contributors) 
+
+<div align="center">
 <h1>Features</h1>
 </div>
 
