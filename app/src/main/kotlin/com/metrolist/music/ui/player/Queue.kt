@@ -53,6 +53,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -83,6 +84,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -179,14 +181,19 @@ fun Queue(
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
 
-    val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
-    val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
-    var selection by remember { mutableStateOf(false) }
-
-    if (selection) {
-        BackHandler {
-            selection = false
-        }
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<String>, String>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = {
+        inSelectMode = false
+        selection.clear()
+    }
+    if (inSelectMode) {
+        BackHandler(onBack = onExitSelectionMode)
     }
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
@@ -644,7 +651,7 @@ fun Queue(
                         modifier =
                         Modifier
                             .animateContentSize()
-                            .height(if (selection) 48.dp else 0.dp),
+                            .height(if (inSelectMode) 48.dp else 0.dp),
                     )
                 }
 
@@ -696,6 +703,14 @@ fun Queue(
                             }
                         }
 
+                        val onCheckedChange: (Boolean) -> Unit = {
+                            if (it) {
+                                selection.add(window.mediaItem.mediaId)
+                            } else {
+                                selection.remove(window.mediaItem.mediaId)
+                            }
+                        }
+
                         val content: @Composable () -> Unit = {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -703,44 +718,51 @@ fun Queue(
                             ) {
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
-                                    isSelected = selection && window.mediaItem.metadata!! in selectedSongs,
+                                    isSelected = false,
                                     isActive = index == currentWindowIndex,
                                     isPlaying = isPlaying,
                                     trailingContent = {
-                                        IconButton(
-                                            onClick = {
-                                                menuState.show {
-                                                    PlayerMenu(
-                                                        mediaMetadata = window.mediaItem.metadata!!,
-                                                        navController = navController,
-                                                        playerBottomSheetState = playerBottomSheetState,
-                                                        isQueueTrigger = true,
-                                                        onShowDetailsDialog = {
-                                                            window.mediaItem.mediaId.let {
-                                                                bottomSheetPageState.show {
-                                                                    ShowMediaInfo(it)
-                                                                }
-                                                            }
-                                                        },
-                                                        onDismiss = menuState::dismiss,
-                                                    )
-                                                }
-                                            },
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.more_vert),
-                                                contentDescription = null,
+                                        if (inSelectMode) {
+                                            Checkbox(
+                                                checked = window.mediaItem.mediaId in selection,
+                                                onCheckedChange = onCheckedChange
                                             )
-                                        }
-                                        if (!locked) {
+                                        } else {
                                             IconButton(
-                                                onClick = { },
-                                                modifier = Modifier.draggableHandle()
+                                                onClick = {
+                                                    menuState.show {
+                                                        PlayerMenu(
+                                                            mediaMetadata = window.mediaItem.metadata!!,
+                                                            navController = navController,
+                                                            playerBottomSheetState = playerBottomSheetState,
+                                                            isQueueTrigger = true,
+                                                            onShowDetailsDialog = {
+                                                                window.mediaItem.mediaId.let {
+                                                                    bottomSheetPageState.show {
+                                                                        ShowMediaInfo(it)
+                                                                    }
+                                                                }
+                                                            },
+                                                            onDismiss = menuState::dismiss,
+                                                        )
+                                                    }
+                                                },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.drag_handle),
+                                                    painter = painterResource(R.drawable.more_vert),
                                                     contentDescription = null,
                                                 )
+                                            }
+                                            if (!locked) {
+                                                IconButton(
+                                                    onClick = { },
+                                                    modifier = Modifier.draggableHandle()
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.drag_handle),
+                                                        contentDescription = null,
+                                                    )
+                                                }
                                             }
                                         }
                                     },
@@ -750,17 +772,10 @@ fun Queue(
                                         .background(background)
                                         .combinedClickable(
                                             onClick = {
-                                                if (selection) {
-                                                    if (window.mediaItem.metadata!! in selectedSongs) {
-                                                        selectedSongs.remove(window.mediaItem.metadata!!)
-                                                        selectedItems.remove(currentItem)
-                                                    } else {
-                                                        selectedSongs.add(window.mediaItem.metadata!!)
-                                                        selectedItems.add(currentItem)
-                                                    }
+                                                if (inSelectMode) {
+                                                    onCheckedChange(window.mediaItem.mediaId !in selection)
                                                 } else {
                                                     if (index == currentWindowIndex) {
-                                                        // Toggle play/pause for current song
                                                         if (isCasting) {
                                                             if (castIsPlaying) {
                                                                 castHandler?.pause()
@@ -771,13 +786,10 @@ fun Queue(
                                                             playerConnection.togglePlayPause()
                                                         }
                                                     } else {
-                                                        // Switch to different song
                                                         if (isCasting) {
-                                                            // Navigate within Cast queue or load new song
                                                             val mediaId = window.mediaItem.mediaId
                                                             val navigated = castHandler?.navigateToMediaIfInQueue(mediaId) ?: false
                                                             if (!navigated) {
-                                                                // Not in Cast queue, need to load it
                                                                 playerConnection.player.seekToDefaultPosition(window.firstPeriodIndex)
                                                             }
                                                         } else {
@@ -790,12 +802,11 @@ fun Queue(
                                                 }
                                             },
                                             onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                if (!selection) {
-                                                    selection = true
+                                                if (!inSelectMode) {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    inSelectMode = true
+                                                    onCheckedChange(true)
                                                 }
-                                                selectedSongs.clear() // Clear all selections
-                                                selectedSongs.add(window.mediaItem.metadata!!) // Select current item
                                             },
                                         ),
                                 )
@@ -933,7 +944,7 @@ fun Queue(
                 )
 
                 AnimatedVisibility(
-                    visible = !selection,
+                    visible = !inSelectMode,
                     enter = fadeIn() + slideInVertically { it },
                     exit = fadeOut() + slideOutVertically { it },
                 ) {
@@ -971,21 +982,26 @@ fun Queue(
             }
 
             AnimatedVisibility(
-                visible = selection,
+                visible = inSelectMode,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically(),
             ) {
+                val selectedSongs = remember(selection.toList(), mutableQueueWindows) {
+                    mutableQueueWindows.filter { it.mediaItem.mediaId in selection }
+                        .mapNotNull { it.mediaItem.metadata }
+                }
+                val selectedItems = remember(selection.toList(), mutableQueueWindows) {
+                    mutableQueueWindows.filter { it.mediaItem.mediaId in selection }
+                }
+                val count = selection.size
                 Row(
                     modifier =
                     Modifier
                         .height(48.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val count = selectedSongs.size
                     IconButton(
-                        onClick = {
-                            selection = false
-                        },
+                        onClick = onExitSelectionMode,
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.close),
@@ -993,47 +1009,30 @@ fun Queue(
                         )
                     }
                     Text(
-                        text = stringResource(R.string.elements_selected, count),
+                        text = pluralStringResource(R.plurals.n_selected, count, count),
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(
-                        onClick = {
+                    Checkbox(
+                        checked = count == mutableQueueWindows.size && count > 0,
+                        onCheckedChange = {
                             if (count == mutableQueueWindows.size) {
-                                selectedSongs.clear()
-                                selectedItems.clear()
+                                selection.clear()
                             } else {
-                                queueWindows
-                                    .filter { it.mediaItem.metadata!! !in selectedSongs }
-                                    .forEach {
-                                        selectedSongs.add(it.mediaItem.metadata!!)
-                                        selectedItems.add(it)
-                                    }
+                                selection.clear()
+                                mutableQueueWindows.forEach {
+                                    selection.add(it.mediaItem.mediaId)
+                                }
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
-                                } else {
-                                    R.drawable.select_all
-                                },
-                            ),
-                            contentDescription = null,
-                        )
-                    }
-
+                        }
+                    )
                     IconButton(
+                        enabled = count > 0,
                         onClick = {
                             menuState.show {
                                 SelectionMediaMetadataMenu(
                                     songSelection = selectedSongs,
                                     onDismiss = menuState::dismiss,
-                                    clearAction = {
-                                        selectedSongs.clear()
-                                        selectedItems.clear()
-                                    },
+                                    clearAction = onExitSelectionMode,
                                     currentItems = selectedItems,
                                 )
                             }
