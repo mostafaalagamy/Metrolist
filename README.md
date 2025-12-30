@@ -8,20 +8,6 @@
 If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
 </div>
 
----
-
-## 📌 Table of Contents
-* [Features](#features)
-* [Screenshots](#screenshots)
-* [Download Now](#download-now)
-* [FAQ](#faq)
-* [Development Setup](#development-setup)
-* [Translations](#translations)
-* [Support Me](#support-me)
-* [Join our community](#join-our-community)
-
----
-
 <h1>Screenshots</h1>
 
 <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
@@ -40,6 +26,19 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 </div>
+
+<div align="center">
+<h1>Table of Contents</h1>
+</div>
+
+- [Features](#features)
+- [Download Now](#download-now)
+- [FAQ](#faq)
+- [Development Setup](#development-setup)
+- [Translations](#translations)
+- [Support Me](#support-me)
+- [Join our community](#join-our-community)
+- [Contributors](#thanks-to-all-contributors) 
 
 <div align="center">
 <h1>Features</h1>
