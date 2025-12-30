@@ -175,7 +175,10 @@ fun Queue(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
-    
+
+    val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
+    val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
+
     // Cast state
     val castHandler = playerConnection.service.castConnectionHandler
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
@@ -569,6 +572,12 @@ fun Queue(
         val lazyListState = rememberLazyListState()
         var dragInfo by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
+        val currentPlayingUid = remember(currentWindowIndex, queueWindows) {
+            if (currentWindowIndex in queueWindows.indices) {
+                queueWindows[currentWindowIndex].uid
+            } else null
+        }
+
         val reorderableState = rememberReorderableLazyListState(
             lazyListState = lazyListState,
             scrollThresholdPadding = WindowInsets.systemBars.add(
@@ -664,6 +673,7 @@ fun Queue(
                         key = window.uid.hashCode(),
                     ) {
                         val currentItem by rememberUpdatedState(window)
+                        val isActive = window.uid == currentPlayingUid
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance -> totalDistance }
@@ -719,8 +729,8 @@ fun Queue(
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
                                     isSelected = false,
-                                    isActive = index == currentWindowIndex,
-                                    isPlaying = isPlaying,
+                                    isActive = isActive,
+                                    isPlaying = isPlaying && isActive,
                                     trailingContent = {
                                         if (inSelectMode) {
                                             Checkbox(
