@@ -275,7 +275,7 @@
     <string name="sync_playlist_desc">مزامنة قائمة التشغيل مع YT Music</string>
     <string name="enable_better_lyrics">تفعيل كلمات الأغاني الأفضل</string>
     <string name="enable_better_lyrics_desc">استخدم مزود Better Lyrics للحصول على كلمات متزامنة كلمة بكلمة</string>
-    <string name="lyrics_animation_style">أسلوب الرسوم المتحركة للكلمات</string>
+    <string name="lyrics_animation_style">أسلوب الرسوم المتحركة للكلمات كلمة بكلمة</string>
     <string name="none">لا تأثير</string>
     <string name="fade">تلاشي</string>
     <string name="glow">الاشعاع</string>
@@ -284,8 +284,8 @@
     <string name="apple_music_style">أبل ميوزك</string>
     <string name="lyrics_text_size">حجم نص كلمات الأغنية</string>
     <string name="lyrics_line_spacing">تباعد أسطر الكلمات</string>
-    <string name="shuffle_playlist_first">تشغيل قائمة التشغيل الألبوم عشوائيا</string>
-    <string name="shuffle_playlist_first_desc">عند تشغيل الأغاني عشوائياً، قم بتشغيل جميع الأغاني في قائمة التشغيل/الألبوم الأصلي أولاً، ثم المحتوى المشابه.</string>
+    <string name="shuffle_playlist_first">قم بتشغيل قائمة التشغيل/الألبوم عشوائياً أولاً</string>
+    <string name="shuffle_playlist_first_desc">عند تشغيل الأغاني عشوائياً، قم بتشغيل جميع الأغاني من قائمة التشغيل/الألبوم الأصلي أولاً، ثم المحتوى المشابه</string>
     <string name="show_wrapped_card">عرض البطاقة المغلفة</string>
     <string name="album_art_for">غلاف ألبوم لـ %s</string>
     <string name="wrapped_total_albums_title">لقد استمعت إلى</string>
@@ -338,4 +338,6 @@
     <string name="copied_title">العنوان منسوخ</string>
     <string name="copied_artist">الفنان منسوخ</string>
     <string name="error_playing">حدث خطأ أثناء التشغيل</string>
+    <string name="lyrics_glow_effect">تفعيل تأثير الكلمات المتوهجة</string>
+    <string name="lyrics_glow_effect_desc">أضف تأثيرات متحركة متوهجة وارتدادية إلى كلمات الأغاني المتحركه</string>
 </resources>

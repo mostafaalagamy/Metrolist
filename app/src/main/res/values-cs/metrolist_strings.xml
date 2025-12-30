@@ -279,4 +279,7 @@
     <string name="lyrics_text_size">Velikost textů</string>
     <string name="lyrics_line_spacing">Rozestupy řádků v textech</string>
     <string name="shuffle_playlist_first">Zamíchat nejprve playlist/album</string>
+    <string name="lyrics_glow_effect">Povolit efekt záře u textů</string>
+    <string name="lyrics_glow_effect_desc">Přidat animaci záře a efekt zvětšení k aktivním textům</string>
+    <string name="shuffle_playlist_first_desc">Při náhodném přehrávání přehrát nejprve všechny skladby z původního playlistu/alba a až poté podobný obsah</string>
 </resources>
