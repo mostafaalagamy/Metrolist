@@ -283,7 +283,7 @@
     <string name="wrapped_top_5_artists_title">Deine Top-Künstler des Jahres</string>
     <string name="wrapped_artist_listening_time">%d Minuten</string>
     <string name="wrapped_top_5_songs_title">Deine Top-Songs des Jahres</string>
-    <string name="wrapped_total_albums_title">Du hast gehört</string>
+    <string name="wrapped_total_albums_title">Du hast dir angehört</string>
     <string name="wrapped_total_albums_subtitle">einzigartige Alben</string>
     <string name="wrapped_playlist_ready">Deine persönliche Playlist ist fertig.</string>
     <string name="wrapped_top_5_albums_title">Deine Top 5 Alben</string>
