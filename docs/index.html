@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Metrolist - A lightweight, open-source YouTube Music client for Android.">
     <title>Metrolist | YT Music Client</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -17,12 +19,14 @@
                 <img src="images/logo.png" alt="Metrolist Logo">
                 <span>Metrolist</span>
             </a>
+            
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
-                <li><a href="#screenshots">Screenshots</a></li>
+                <li><a href="#screenshots">Gallery</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="https://github.com/mostafaalagamy/Metrolist" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
             </ul>
+
             <div class="menu-toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -33,17 +37,24 @@
 
     <header class="hero">
         <div class="container hero-container">
+            
             <div class="hero-content">
                 <span class="badge">v12.8.0 Stable</span>
                 <h1>Music Experience <br><span class="gradient-text">Redefined.</span></h1>
                 <p>Metrolist is a lightweight, open-source YouTube Music client for Android. Enjoy background playback, ad-free listening, and Material Design aesthetics without the bloat.</p>
+                
                 <div class="hero-buttons">
                     <a href="https://github.com/mostafaalagamy/Metrolist/releases" class="btn btn-primary"><i class="fas fa-download"></i> Download APK</a>
                     <a href="#features" class="btn btn-secondary">Learn More</a>
                 </div>
             </div>
+
             <div class="hero-image">
-                <img src="images/hero-mockup.png" alt="Metrolist App Interface">
+                <video autoplay loop muted playsinline class="app-preview">
+                    <source src="images/preview.webm" type="video/webm">
+                    <source src="images/preview.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
     </header>
@@ -89,18 +100,12 @@
     <section id="screenshots" class="screenshots">
         <div class="container">
             <h2 class="section-title">Interface</h2>
-            <div class="screenshot-gallery">
+            
+            <div class="gallery-wrapper">
                 <img src="images/screenshot-1.jpg" alt="Home Screen">
                 <img src="images/screenshot-2.jpg" alt="Player Screen">
                 <img src="images/screenshot-3.jpg" alt="Settings Screen">
-				<div class="hero-image">
-    <video autoplay loop muted playsinline class="app-preview">
-        <source src="images/preview.webm" type="video/webm">
-        Your browser does not support the video tag.
-    </video>
-</div>
-				
-            </div>
+                </div>
         </div>
     </section>
 
@@ -126,6 +131,24 @@
                         <p>Google does not allow third-party clients that modify YouTube's functionality on the Play Store. You can download it safely from GitHub.</p>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">How do I update the app?</button>
+                    <div class="accordion-content">
+                        <p>Simply download the latest APK from the GitHub Releases page and install it. It will update your existing version without losing data.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Can I import my YouTube playlists?</button>
+                    <div class="accordion-content">
+                        <p>Yes! Login is supported, so you can access all your saved playlists and liked songs directly in Metrolist.</p>
+                    </div>
+                </div>
+                 <div class="accordion-item">
+                    <button class="accordion-header">Does it support Android Auto?</button>
+                    <div class="accordion-content">
+                        <p>Experimental support is available. Make sure to enable "Unknown Sources" in your Android Auto developer settings.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -138,7 +161,7 @@
             </div>
             <div class="footer-legal">
                 <h4>Disclaimer</h4>
-                <p>Metrolist is an open-source project and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Google LLC, YouTube, or any of its subsidiaries. "YouTube" and "YouTube Music" are registered trademarks of Google LLC.</p>
+                <p>Metrolist is an open-source project and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Google LLC, YouTube, or any of its subsidiaries.</p>
                 <p>This project is for educational purposes only. The developers do not support piracy.</p>
             </div>
             <div class="footer-bottom">

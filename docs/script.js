@@ -1,28 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
+    
+    // --- Mobile Menu Toggle Logic ---
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
 
     if (mobileMenu) {
         mobileMenu.addEventListener('click', () => {
+            // Toggles the 'active' class to show/hide the menu
             navLinks.classList.toggle('active');
         });
     }
 
-    // FAQ Accordion
+    // --- FAQ Accordion Logic ---
     const accordionHeaders = document.querySelectorAll('.accordion-header');
 
     accordionHeaders.forEach(header => {
         header.addEventListener('click', () => {
             const content = header.nextElementSibling;
             
-            // Close other items (optional - remove if you want multiple open)
+            // Optional: Collapse other open items for cleaner UI
             document.querySelectorAll('.accordion-content').forEach(item => {
                 if (item !== content) {
                     item.style.maxHeight = null;
                 }
             });
 
+            // Toggle current item height
             if (content.style.maxHeight) {
                 content.style.maxHeight = null;
             } else {
@@ -31,15 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Smooth Scroll for anchor links
+    // --- Smooth Scroll for Anchor Links ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            navLinks.classList.remove('active'); // Close menu on click
             
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            // Close mobile menu if open when clicking a link
+            navLinks.classList.remove('active'); 
+            
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 });

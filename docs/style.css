@@ -1,14 +1,15 @@
 :root {
+    /* Color Palette */
     --bg-color: #0f0f0f;
     --card-bg: #1e1e1e;
     --text-main: #ffffff;
     --text-muted: #aaaaaa;
     --primary: #8a2be2; /* BlueViolet */
     --secondary: #4169e1; /* RoyalBlue */
-    --accent: #00d4ff;
     --gradient: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
+/* Global Reset */
 * {
     margin: 0;
     padding: 0;
@@ -20,6 +21,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
 .container {
@@ -28,7 +30,7 @@ body {
     padding: 0 20px;
 }
 
-/* Navbar */
+/* --- Navigation Bar --- */
 .navbar {
     background: rgba(15, 15, 15, 0.9);
     backdrop-filter: blur(10px);
@@ -84,7 +86,7 @@ body {
     color: var(--text-main) !important;
 }
 
-/* Hero Section */
+/* --- Hero Section --- */
 .hero {
     padding-top: 140px;
     padding-bottom: 80px;
@@ -92,10 +94,10 @@ body {
 
 .hero-container {
     display: flex;
-    align-items: center;
+    /* FIX: Center alignment prevents item stretching */
+    align-items: center; 
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
+    gap: 50px;
 }
 
 .hero-content {
@@ -135,6 +137,7 @@ body {
 .hero-buttons {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap; /* Allows buttons to stack on small screens */
 }
 
 .btn {
@@ -160,27 +163,26 @@ body {
     color: white;
 }
 
-.app-preview {
-    max-width: 100%;
-    height: auto;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
+/* --- Hero Image / Video Logic --- */
 .hero-image {
     flex: 1;
     display: flex;
     justify-content: center;
 }
 
-.hero-image img {
+/* FIX: Ensure video/image maintains aspect ratio */
+.app-preview {
     max-width: 100%;
-    max-height: 500px;
-    filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.3));
+    /* Limit width for large screens so it looks like a phone */
+    width: 320px; 
+    height: auto;
+    object-fit: contain;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(138, 43, 226, 0.2); /* Colored shadow */
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Features */
+/* --- Features Section --- */
 .features {
     padding: 80px 0;
     background: #141414;
@@ -194,7 +196,7 @@ body {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
 }
 
@@ -226,25 +228,45 @@ body {
     font-size: 0.9rem;
 }
 
-/* Screenshots */
+/* --- Screenshots Gallery (Scroll Snap) --- */
 .screenshots {
     padding: 80px 0;
 }
 
-.screenshot-gallery {
+.gallery-wrapper {
     display: flex;
-    justify-content: center;
+    overflow-x: auto; /* Enables horizontal scroll */
     gap: 20px;
-    flex-wrap: wrap;
+    padding: 20px 0;
+    scroll-snap-type: x mandatory; /* Snaps images into place */
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+    justify-content: flex-start; /* Aligns items to start for scrolling */
 }
 
-.screenshot-gallery img {
-    width: 250px;
+/* Hide scrollbar for cleaner look */
+.gallery-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+.gallery-wrapper::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.gallery-wrapper img {
+    height: 500px; /* Fixed height for consistency */
+    width: auto;
     border-radius: 15px;
-    border: 4px solid #333;
+    border: 2px solid #333;
+    scroll-snap-align: center; /* Image snaps to center */
+    flex-shrink: 0; /* Prevents images from shrinking */
+    transition: transform 0.3s;
 }
 
-/* FAQ */
+.gallery-wrapper img:hover {
+    transform: scale(1.02);
+}
+
+/* --- FAQ Section --- */
 .faq {
     padding: 80px 0;
     background: #141414;
@@ -284,7 +306,7 @@ body {
     color: var(--text-muted);
 }
 
-/* Footer */
+/* --- Footer --- */
 footer {
     padding: 60px 0 20px;
     border-top: 1px solid rgba(255,255,255,0.1);
@@ -307,23 +329,28 @@ footer {
     font-size: 0.8rem;
 }
 
-/* Mobile Responsive */
+/* --- Mobile Responsive Design --- */
 .menu-toggle {
     display: none;
 }
 
-@media (max-width: 768px) {
+/* Tablet & Mobile Breakpoint */
+@media (max-width: 860px) {
+    /* Navbar Burger Logic */
     .menu-toggle {
         display: block;
         cursor: pointer;
     }
+    
     .bar {
         display: block;
         width: 25px;
         height: 3px;
         margin: 5px auto;
         background-color: white;
+        transition: 0.3s;
     }
+
     .nav-links {
         display: none;
         width: 100%;
@@ -332,26 +359,36 @@ footer {
         left: 0;
         background: #0f0f0f;
         flex-direction: column;
-        padding: 20px;
+        padding: 30px;
         border-bottom: 1px solid #333;
+        text-align: center;
     }
+
     .nav-links.active {
         display: flex;
     }
+
+    /* Hero Section Mobile */
+    .hero-container {
+        flex-direction: column-reverse; /* Puts image below text, or use 'column' to put image on top */
+        text-align: center;
+        gap: 40px;
+    }
+
     .hero h1 {
         font-size: 2.5rem;
     }
-    .hero-container {
-        flex-direction: column;
-        text-align: center;
-    }
-    .hero-content {
-        order: 1;
-    }
-    .hero-image {
-        order: 2;
-    }
+
     .hero-buttons {
         justify-content: center;
+    }
+
+    .app-preview {
+        max-width: 260px; /* Smaller phone size on mobile */
+    }
+
+    /* Gallery Mobile Adjustment */
+    .gallery-wrapper img {
+        height: 400px;
     }
 }
