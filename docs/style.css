@@ -1,15 +1,32 @@
+/* --- Color Variables (Adaptive) --- */
 :root {
-    /* Color Palette */
+    /* Default Dark Mode */
     --bg-color: #0f0f0f;
     --card-bg: #1e1e1e;
+    --section-alt: #141414;
     --text-main: #ffffff;
     --text-muted: #aaaaaa;
+    --border-color: rgba(255,255,255,0.1);
+    
+    /* Brand Colors */
     --primary: #8a2be2; /* BlueViolet */
     --secondary: #4169e1; /* RoyalBlue */
     --gradient: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
-/* Global Reset */
+/* Light Mode Override (Automatic Detection) */
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --section-alt: #e9ecef;
+        --text-main: #121212;
+        --text-muted: #555555;
+        --border-color: rgba(0,0,0,0.1);
+    }
+}
+
+/* --- Global Reset --- */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +38,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     line-height: 1.6;
-    overflow-x: hidden; /* Prevent horizontal scroll on body */
+    overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -30,16 +48,19 @@ body {
     padding: 0 20px;
 }
 
-/* --- Navigation Bar --- */
+/* --- Navbar --- */
 .navbar {
-    background: rgba(15, 15, 15, 0.9);
+    background: rgba(var(--bg-color), 0.9); /* Dynamic opacity base */
     backdrop-filter: blur(10px);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--border-color);
 }
+/* Little hack for backdrop color in light/dark mode */
+@media (prefers-color-scheme: dark) { .navbar { background: rgba(15, 15, 15, 0.9); } }
+@media (prefers-color-scheme: light) { .navbar { background: rgba(255, 255, 255, 0.9); } }
 
 .nav-container {
     display: flex;
@@ -80,7 +101,7 @@ body {
 }
 
 .github-link {
-    background: rgba(255,255,255,0.1);
+    background: var(--border-color);
     padding: 8px 16px;
     border-radius: 20px;
     color: var(--text-main) !important;
@@ -94,25 +115,22 @@ body {
 
 .hero-container {
     display: flex;
-    /* FIX: Center alignment prevents item stretching */
-    align-items: center; 
+    align-items: center;
     justify-content: space-between;
-    gap: 50px;
+    gap: 40px;
 }
 
 .hero-content {
     flex: 1;
-    min-width: 300px;
 }
 
 .badge {
     background: rgba(138, 43, 226, 0.2);
-    color: #bb86fc;
+    color: var(--primary);
     padding: 5px 12px;
     border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 600;
-    text-transform: uppercase;
 }
 
 .hero h1 {
@@ -137,7 +155,7 @@ body {
 .hero-buttons {
     display: flex;
     gap: 15px;
-    flex-wrap: wrap; /* Allows buttons to stack on small screens */
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -149,43 +167,29 @@ body {
     transition: transform 0.2s;
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-}
+.btn:hover { transform: translateY(-2px); }
 
-.btn-primary {
-    background: var(--gradient);
-    color: white;
-}
+.btn-primary { background: var(--gradient); color: white; }
+.btn-secondary { background: var(--border-color); color: var(--text-main); }
 
-.btn-secondary {
-    background: rgba(255,255,255,0.1);
-    color: white;
-}
-
-/* --- Hero Image / Video Logic --- */
+/* Hero Image (Static Mockup) */
 .hero-image {
     flex: 1;
     display: flex;
     justify-content: center;
 }
 
-/* FIX: Ensure video/image maintains aspect ratio */
-.app-preview {
-    max-width: 100%;
-    /* Limit width for large screens so it looks like a phone */
-    width: 320px; 
+.app-mockup {
+    max-width: 300px;
+    width: 100%;
     height: auto;
-    object-fit: contain;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(138, 43, 226, 0.2); /* Colored shadow */
-    border: 1px solid rgba(255,255,255,0.1);
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
 }
 
-/* --- Features Section --- */
+/* --- Features Grid --- */
 .features {
     padding: 80px 0;
-    background: #141414;
+    background: var(--section-alt);
 }
 
 .section-title {
@@ -196,7 +200,7 @@ body {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 30px;
 }
 
@@ -204,8 +208,9 @@ body {
     background: var(--card-bg);
     padding: 30px;
     border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
     transition: 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
 .feature-card:hover {
@@ -219,68 +224,102 @@ body {
     margin-bottom: 20px;
 }
 
-.feature-card h3 {
-    margin-bottom: 10px;
+.feature-card h3 { margin-bottom: 10px; font-size: 1.2rem;}
+.feature-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* --- NEW: Dedicated Lyrics Section --- */
+.lyrics-showcase {
+    padding: 100px 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.feature-card p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
+.lyrics-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
 }
 
-/* --- Screenshots Gallery (Scroll Snap) --- */
-.screenshots {
-    padding: 80px 0;
+.text-side { flex: 1; }
+.text-side h2 { font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; }
+.text-side p { color: var(--text-muted); font-size: 1.1rem; }
+.badge-small { 
+    color: var(--secondary); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    font-size: 0.8rem; 
+    margin-bottom: 10px; 
+    display: block; 
 }
+
+.video-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.lyrics-video {
+    max-width: 100%;
+    width: 320px; /* Looks like a phone */
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(138, 43, 226, 0.25);
+    border: 2px solid var(--border-color);
+}
+
+/* --- Gallery (Scroll Snap) --- */
+.screenshots { padding: 80px 0; }
 
 .gallery-wrapper {
     display: flex;
-    overflow-x: auto; /* Enables horizontal scroll */
+    overflow-x: auto;
     gap: 20px;
     padding: 20px 0;
-    scroll-snap-type: x mandatory; /* Snaps images into place */
-    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-    justify-content: flex-start; /* Aligns items to start for scrolling */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Hide scrollbar for cleaner look */
-.gallery-wrapper::-webkit-scrollbar {
-    height: 8px;
-}
-.gallery-wrapper::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 4px;
-}
+.gallery-wrapper::-webkit-scrollbar { height: 8px; }
+.gallery-wrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
 .gallery-wrapper img {
-    height: 500px; /* Fixed height for consistency */
+    height: 500px;
     width: auto;
     border-radius: 15px;
-    border: 2px solid #333;
-    scroll-snap-align: center; /* Image snaps to center */
-    flex-shrink: 0; /* Prevents images from shrinking */
-    transition: transform 0.3s;
+    border: 2px solid var(--border-color);
+    scroll-snap-align: center;
+    flex-shrink: 0;
 }
 
-.gallery-wrapper img:hover {
-    transform: scale(1.02);
+/* --- Community & Translations --- */
+.community {
+    padding: 60px 0;
+    background: var(--section-alt);
 }
 
-/* --- FAQ Section --- */
-.faq {
-    padding: 80px 0;
-    background: #141414;
+.community-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
 }
 
-.accordion {
-    max-width: 800px;
-    margin: 0 auto;
+.community-box {
+    flex: 1;
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    min-width: 300px;
 }
 
-.accordion-item {
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
+.community-box i { font-size: 3rem; color: var(--secondary); margin-bottom: 20px; }
+.community-box h3 { margin-bottom: 15px; }
+.community-box p { color: var(--text-muted); margin-bottom: 25px; }
 
+/* --- FAQ --- */
+.faq { padding: 80px 0; }
+.accordion-item { border-bottom: 1px solid var(--border-color); }
 .accordion-header {
     width: 100%;
     background: none;
@@ -291,104 +330,49 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
 }
-
 .accordion-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
-
-.accordion-content p {
-    padding-bottom: 20px;
-    color: var(--text-muted);
-}
+.accordion-content p { padding-bottom: 20px; color: var(--text-muted); }
 
 /* --- Footer --- */
 footer {
     padding: 60px 0 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    background: var(--section-alt);
+    border-top: 1px solid var(--border-color);
 }
+.footer-container { text-align: center; }
+.footer-legal { margin: 30px auto; max-width: 800px; font-size: 0.8rem; color: var(--text-muted); }
+.footer-legal strong { color: var(--text-main); }
+.footer-bottom { margin-top: 20px; color: var(--text-muted); font-size: 0.8rem; }
 
-.footer-container {
-    text-align: center;
-}
+/* --- Mobile Responsive --- */
+.menu-toggle { display: none; }
 
-.footer-legal {
-    margin: 30px auto;
-    max-width: 800px;
-    font-size: 0.8rem;
-    color: #666;
-}
-
-.footer-bottom {
-    margin-top: 20px;
-    color: #444;
-    font-size: 0.8rem;
-}
-
-/* --- Mobile Responsive Design --- */
-.menu-toggle {
-    display: none;
-}
-
-/* Tablet & Mobile Breakpoint */
 @media (max-width: 860px) {
-    /* Navbar Burger Logic */
-    .menu-toggle {
-        display: block;
-        cursor: pointer;
-    }
-    
+    .menu-toggle { display: block; cursor: pointer; }
     .bar {
-        display: block;
-        width: 25px;
-        height: 3px;
-        margin: 5px auto;
-        background-color: white;
+        display: block; width: 25px; height: 3px; margin: 5px auto;
+        background-color: var(--text-main);
         transition: 0.3s;
     }
-
+    
     .nav-links {
-        display: none;
-        width: 100%;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        background: #0f0f0f;
-        flex-direction: column;
-        padding: 30px;
-        border-bottom: 1px solid #333;
-        text-align: center;
+        display: none; width: 100%; position: absolute; top: 70px; left: 0;
+        background: var(--bg-color); flex-direction: column; padding: 30px;
+        border-bottom: 1px solid var(--border-color); text-align: center;
     }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    /* Hero Section Mobile */
-    .hero-container {
-        flex-direction: column-reverse; /* Puts image below text, or use 'column' to put image on top */
-        text-align: center;
-        gap: 40px;
-    }
-
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-
-    .hero-buttons {
-        justify-content: center;
-    }
-
-    .app-preview {
-        max-width: 260px; /* Smaller phone size on mobile */
-    }
-
-    /* Gallery Mobile Adjustment */
-    .gallery-wrapper img {
-        height: 400px;
-    }
+    .nav-links.active { display: flex; }
+    
+    .hero-container, .lyrics-content { flex-direction: column; text-align: center; }
+    
+    .hero h1 { font-size: 2.5rem; }
+    .hero-buttons { justify-content: center; }
+    
+    .lyrics-content { flex-direction: column-reverse; } /* Video on top or bottom preference */
+    
+    .gallery-wrapper img { height: 400px; }
 }
