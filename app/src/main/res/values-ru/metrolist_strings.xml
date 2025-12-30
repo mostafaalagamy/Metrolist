@@ -102,7 +102,7 @@
         <item quantity="other">%d раз</item>
     </plurals>
     <string name="login_settings">Настройки логина</string>
-    <string name="new_player_design">Новый дизайн проигрывателя</string>
+    <string name="new_player_design">Новый дизайн плеера</string>
     <string name="default_style">По умолчанию</string>
     <string name="secondary_color_style">Вторичный</string>
     <string name="lyrics_click_change">Изменение текста песни по клику</string>
@@ -119,7 +119,7 @@
     <string name="more_content">Доп. контент</string>
     <string name="general">Общие</string>
     <string name="default_lib_chips">Изменение чипа библиотеки (по умолчанию)</string>
-    <string name="set_quick_picks">Установите быстрый выбор</string>
+    <string name="set_quick_picks">Установить быстрый выбор</string>
     <string name="intent_app_language_not_found">Не удалось найти языковые настройки приложения, пожалуйста, настройте их вручную</string>
     <string name="intent_supported_links_not_found">Не удалось найти поддерживаемые параметры ссылок, пожалуйста, настройте их вручную</string>
     <string name="set_first_lyrics_provider">Предпочитаемый поставщик текстов песен</string>
@@ -269,7 +269,7 @@
     <string name="sync_playlist_desc">Синхронизировать плейлист с YouTube Music</string>
     <string name="enable_better_lyrics">Включить Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Использовать Better Lyrics для построчной синхронизации текстов</string>
-    <string name="lyrics_animation_style">Пословный стиль анимации</string>
+    <string name="lyrics_animation_style">Построчный стиль анимации</string>
     <string name="none">Нет</string>
     <string name="fade">Затухание</string>
     <string name="glow">Свечение</string>
