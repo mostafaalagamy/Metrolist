@@ -913,7 +913,7 @@ class MainActivity : ComponentActivity() {
                                             NavigationTab.LIBRARY -> Screens.Library
                                             else -> Screens.Home
                                         }.route,
-                                        // Enter Transition
+                                        // Enter Transition - smoother with smaller offset and longer duration
                                         enterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -923,11 +923,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
-                                                slideInHorizontally { it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                             else
-                                                slideInHorizontally { -it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Exit Transition
+                                        // Exit Transition - smoother with smaller offset and longer duration
                                         exitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
@@ -937,11 +937,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
-                                                slideOutHorizontally { -it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                             else
-                                                slideOutHorizontally { it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
-                                        // Pop Enter Transition
+                                        // Pop Enter Transition - smoother with smaller offset and longer duration
                                         popEnterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -951,11 +951,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                                slideInHorizontally { it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                             else
-                                                slideInHorizontally { -it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Pop Exit Transition
+                                        // Pop Exit Transition - smoother with smaller offset and longer duration
                                         popExitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
@@ -965,9 +965,9 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                                slideOutHorizontally { -it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                             else
-                                                slideOutHorizontally { it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
                                         modifier = Modifier.nestedScroll(
                                             if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
