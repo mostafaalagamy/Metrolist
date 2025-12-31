@@ -46,9 +46,9 @@ fun Song.toMediaItem(): MediaItem {
                 .setAlbumTitle(song.albumName)
                 .setMediaType(MEDIA_TYPE_MUSIC)
                 .apply {
-                    // Add duration if available
+                    // Add duration if available (convert Int to Long)
                     if (song.duration > 0) {
-                        setDurationMs(song.duration)
+                        setDurationMs(song.duration.toLong())
                     }
                 }
                 .build()
@@ -84,11 +84,6 @@ fun SongItem.toMediaItem(): MediaItem {
                     duration?.let { durationSeconds ->
                         setDurationMs((durationSeconds * 1000).toLong())
                     }
-                    
-                    // Add explicit content flag if available
-                    if (explicit == true) {
-                        setIsExplicit(true)
-                    }
                 }
                 .build()
         )
@@ -121,7 +116,7 @@ fun MediaMetadata.toMediaItem(): MediaItem {
                 .setAlbumTitle(album?.title)
                 .setMediaType(MEDIA_TYPE_MUSIC)
                 .apply {
-                    // Add duration
+                    // Add duration (already Long)
                     duration?.let { durationMs ->
                         setDurationMs(durationMs)
                     }
