@@ -14,7 +14,6 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -49,7 +48,6 @@ fun AppNavigationRail(
     modifier: Modifier = Modifier,
     pureBlack: Boolean = false
 ) {
-    SideEffect { println("Recomposing: AppNavigationRail") }
     val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
     
     NavigationRail(
@@ -59,22 +57,19 @@ fun AppNavigationRail(
         Spacer(modifier = Modifier.weight(1f))
         
         navigationItems.forEach { screen ->
-            val itemState by remember(currentRoute, screen) {
-                derivedStateOf {
-                    val selected = isRouteSelected(currentRoute, screen.route, navigationItems)
-                    NavItemState(
-                        isSelected = selected,
-                        iconRes = if (selected) screen.iconIdActive else screen.iconIdInactive
-                    )
-                }
+            val isSelected = remember(currentRoute, screen.route) {
+                isRouteSelected(currentRoute, screen.route, navigationItems)
+            }
+            val iconRes = remember(isSelected, screen) {
+                if (isSelected) screen.iconIdActive else screen.iconIdInactive
             }
             
             NavigationRailItem(
-                selected = itemState.isSelected,
-                onClick = { onItemClick(screen, itemState.isSelected) },
+                selected = isSelected,
+                onClick = { onItemClick(screen, isSelected) },
                 icon = {
                     Icon(
-                        painter = painterResource(id = itemState.iconRes),
+                        painter = painterResource(id = iconRes),
                         contentDescription = stringResource(screen.titleId)
                     )
                 }
@@ -94,7 +89,6 @@ fun AppNavigationBar(
     pureBlack: Boolean = false,
     slimNav: Boolean = false
 ) {
-    SideEffect { println("Recomposing: AppNavigationBar") }
     val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
     val contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
     
@@ -104,22 +98,19 @@ fun AppNavigationBar(
         contentColor = contentColor
     ) {
         navigationItems.forEach { screen ->
-            val itemState by remember(currentRoute, screen) {
-                derivedStateOf {
-                    val selected = isRouteSelected(currentRoute, screen.route, navigationItems)
-                    NavItemState(
-                        isSelected = selected,
-                        iconRes = if (selected) screen.iconIdActive else screen.iconIdInactive
-                    )
-                }
+            val isSelected = remember(currentRoute, screen.route) {
+                isRouteSelected(currentRoute, screen.route, navigationItems)
+            }
+            val iconRes = remember(isSelected, screen) {
+                if (isSelected) screen.iconIdActive else screen.iconIdInactive
             }
             
             NavigationBarItem(
-                selected = itemState.isSelected,
-                onClick = { onItemClick(screen, itemState.isSelected) },
+                selected = isSelected,
+                onClick = { onItemClick(screen, isSelected) },
                 icon = {
                     Icon(
-                        painter = painterResource(id = itemState.iconRes),
+                        painter = painterResource(id = iconRes),
                         contentDescription = stringResource(screen.titleId)
                     )
                 },

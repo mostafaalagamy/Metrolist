@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -70,7 +69,6 @@ fun BottomSheet(
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    SideEffect { println("Recomposing: BottomSheet, state.progress: ${state.progress}") }
     Box(
         modifier = modifier
             .graphicsLayer {
@@ -108,12 +106,11 @@ fun BottomSheet(
                     }
                 )
             }
-            .clip(
-                RoundedCornerShape(
-                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
-                    topEnd = if (!state.isExpanded) 16.dp else 0.dp
-                )
-            )
+            .graphicsLayer {
+                val cornerRadius = if (!state.isExpanded) 16.dp.toPx() else 0f
+                shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
+                clip = true
+            }
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
