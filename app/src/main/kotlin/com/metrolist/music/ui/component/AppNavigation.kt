@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -48,6 +49,7 @@ fun AppNavigationRail(
     modifier: Modifier = Modifier,
     pureBlack: Boolean = false
 ) {
+    SideEffect { println("Recomposing: AppNavigationRail") }
     val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
     
     NavigationRail(
@@ -92,6 +94,7 @@ fun AppNavigationBar(
     pureBlack: Boolean = false,
     slimNav: Boolean = false
 ) {
+    SideEffect { println("Recomposing: AppNavigationBar") }
     val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
     val contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
     
