@@ -198,9 +198,6 @@
     <string name="discord_use_details">Usar detalhes em vez de estado</string>
     <string name="discord_use_details_description">Mostrar titulo da música proeminentemente em vez de nome do artista</string>
     <string name="lyrics_romanization_cyrillic">Cirílica</string>
-    <string name="lyrics_romanize_title"></string>
-    <string name="lyrics_romanization"></string>
-    <string name="romanization"></string>
     <string name="line_by_line_option_title">EXPERIMENTAL: Detetar língua linha por linha</string>
     <string name="line_by_line_dialog_title">Tens a certeza?</string>
     <string name="line_by_line_dialog_enable">Habilitar</string>
