@@ -45,12 +45,6 @@ fun Song.toMediaItem(): MediaItem {
                 }
                 .setAlbumTitle(song.albumName)
                 .setMediaType(MEDIA_TYPE_MUSIC)
-                .apply {
-                    // Add duration if available (convert Int to Long)
-                    if (song.duration > 0) {
-                        setDurationMs(song.duration.toLong())
-                    }
-                }
                 .build()
         )
         .build()
@@ -79,12 +73,6 @@ fun SongItem.toMediaItem(): MediaItem {
                 }
                 .setAlbumTitle(album?.name)
                 .setMediaType(MEDIA_TYPE_MUSIC)
-                .apply {
-                    // Add duration if available from API
-                    duration?.let { durationSeconds ->
-                        setDurationMs((durationSeconds * 1000).toLong())
-                    }
-                }
                 .build()
         )
         .build()
@@ -115,17 +103,6 @@ fun MediaMetadata.toMediaItem(): MediaItem {
                 }
                 .setAlbumTitle(album?.title)
                 .setMediaType(MEDIA_TYPE_MUSIC)
-                .apply {
-                    // Add duration (already Long)
-                    duration?.let { durationMs ->
-                        setDurationMs(durationMs)
-                    }
-                    
-                    // Add album artist if available
-                    album?.id?.let {
-                        setAlbumArtist(artists.firstOrNull()?.name)
-                    }
-                }
                 .build()
         )
         .build()
