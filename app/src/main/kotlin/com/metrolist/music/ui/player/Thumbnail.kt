@@ -184,7 +184,7 @@ private fun getTextColor(playerBackground: PlayerBackgroundStyle): Color {
 fun Thumbnail(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
-    isPlayerExpandedProvider: () -> Boolean = { true },
+    isPlayerExpanded: () -> Boolean = { true },
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -326,7 +326,7 @@ fun Thumbnail(
                         state = thumbnailLazyGridState,
                         rows = GridCells.Fixed(1),
                         flingBehavior = rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
-                        userScrollEnabled = swipeThumbnail && isPlayerExpandedProvider(),
+                        userScrollEnabled = swipeThumbnail && isPlayerExpanded(),
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(
