@@ -33,6 +33,7 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
+import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.metrolist.music.constants.ShowWrappedCardKey
@@ -267,20 +268,12 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        // Load home data first
-        viewModelScope.launch(Dispatchers.IO) {
-            context.dataStore.data
-                .map { it[InnerTubeCookieKey] }
-                .distinctUntilChanged()
-                .first()
-
-            load()
-            
-            // Run sync after home data is loaded to avoid blocking UI
-            val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
-            if (isSyncEnabled) {
-                syncUtils.runAllSyncs()
-            }
+        // Load home data
+        refresh()
+        
+        // Run sync in separate coroutine with cooldown to avoid blocking UI
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
         }
 
         // Prepare wrapped data in background
