@@ -260,4 +260,12 @@
     <string name="other_results">Outro</string>
     <string name="download_playlist_desc">Baixar todas as músicas para reprodução offline</string>
     <string name="remove_download_playlist_desc">Remove todas as músicas baixadas desta playlist.</string>
+    <string name="download_in_progress_desc">Transferência está em andamento</string>
+    <string name="share_playlist_desc">Compartilhe esta lista de reprodução com outras pessoas</string>
+    <string name="delete_playlist_desc">Remover esta lista de reprodução permanentemente</string>
+    <string name="sync_playlist_desc">Sincronizar lista de reprodução com YouTube Music</string>
+    <string name="lyrics_glow_effect">Ativar o efeito de letras brilhantes</string>
+    <string name="lyrics_glow_effect_desc">Adicionar animação brilhante e efeito de salto para letras ativas</string>
+    <string name="enable_better_lyrics">Ativar Melhores Letras</string>
+    <string name="enable_better_lyrics_desc">Usar o provedor de Melhores Letras para letras sincronizadas palavra por palavra</string>
 </resources>
