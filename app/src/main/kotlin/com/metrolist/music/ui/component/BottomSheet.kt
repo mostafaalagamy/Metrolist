@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -49,7 +48,6 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.constants.BottomSheetAnimationSpec
@@ -89,11 +87,12 @@ fun BottomSheet(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .offset {
+            // Use graphicsLayer for offset to ensure hardware acceleration and 120Hz support
+            .graphicsLayer {
                 val y = (state.expandedBound - state.value)
-                    .roundToPx()
-                    .coerceAtLeast(0)
-                IntOffset(x = 0, y = y)
+                    .toPx()
+                    .coerceAtLeast(0f)
+                translationY = y
             }
             .pointerInput(state) {
                 val velocityTracker = VelocityTracker()
