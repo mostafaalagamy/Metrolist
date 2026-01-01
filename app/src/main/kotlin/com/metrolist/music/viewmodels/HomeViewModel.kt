@@ -267,33 +267,33 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
+        // Load home data first
         viewModelScope.launch(Dispatchers.IO) {
-            context.dataStore.data
-                .map { it[InnerTubeCookieKey] }
-                .distinctUntilChanged()
-                .first()
-            
             load()
-
+        }
+        
+        // Run sync in a separate coroutine with cooldown to avoid blocking UI
+        viewModelScope.launch(Dispatchers.IO) {
             val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
             if (isSyncEnabled) {
-                syncUtils.runAllSyncs()
+                syncUtils.syncAll()
             }
+        }
 
+        // Prepare wrapped data in background
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (showWrappedCard.first()) {
-                    android.util.Log.d("HomeViewModel", "Preparing Wrapped data")
                     wrappedManager.prepare()
-                    val state = wrappedManager.state.first() // Correctly get the state object
+                    val state = wrappedManager.state.first()
                     val trackMap = state.trackMap
                     if (trackMap.isNotEmpty()) {
                         val firstTrackId = trackMap.entries.first().value
                         wrappedAudioService.prepareTrack(firstTrackId)
                     }
-                    android.util.Log.d("HomeViewModel", "Wrapped data prepared")
                 }
             } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Error preparing Wrapped data", e)
+                reportException(e)
             }
         }
 
