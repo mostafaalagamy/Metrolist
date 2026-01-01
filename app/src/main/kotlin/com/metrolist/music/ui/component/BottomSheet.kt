@@ -114,12 +114,11 @@ fun BottomSheet(
                     }
                 )
             }
-            .clip(
-                RoundedCornerShape(
-                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
-                    topEnd = if (!state.isExpanded) 16.dp else 0.dp
-                )
-            )
+            .graphicsLayer {
+                val cornerRadius = if (!state.isExpanded) 16.dp.toPx() else 0f
+                shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
+                clip = true
+            }
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)

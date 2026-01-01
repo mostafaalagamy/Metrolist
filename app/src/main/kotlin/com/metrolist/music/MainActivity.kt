@@ -913,7 +913,7 @@ class MainActivity : ComponentActivity() {
                                             NavigationTab.LIBRARY -> Screens.Library
                                             else -> Screens.Home
                                         }.route,
-                                        // Enter Transition - smoother with longer duration
+                                        // Enter Transition - smoother with smaller offset and longer duration
                                         enterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -927,7 +927,7 @@ class MainActivity : ComponentActivity() {
                                             else
                                                 slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Exit Transition
+                                        // Exit Transition - smoother with smaller offset and longer duration
                                         exitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
@@ -941,7 +941,7 @@ class MainActivity : ComponentActivity() {
                                             else
                                                 slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
-                                        // Pop Enter Transition
+                                        // Pop Enter Transition - smoother with smaller offset and longer duration
                                         popEnterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -955,7 +955,7 @@ class MainActivity : ComponentActivity() {
                                             else
                                                 slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Pop Exit Transition
+                                        // Pop Exit Transition - smoother with smaller offset and longer duration
                                         popExitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
