@@ -269,6 +269,11 @@ class HomeViewModel @Inject constructor(
     init {
         // Load home data first
         viewModelScope.launch(Dispatchers.IO) {
+			context.dataStore.data
+                .map { it[InnerTubeCookieKey] }
+                .distinctUntilChanged()
+                .first()
+
             load()
         }
         
