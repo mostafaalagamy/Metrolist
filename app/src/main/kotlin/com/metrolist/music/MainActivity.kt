@@ -294,6 +294,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        // Force high refresh rate (120Hz) for smooth animations
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val display = display ?: windowManager.defaultDisplay
+            val supportedModes = display.supportedModes
+            val highRefreshRateMode = supportedModes.maxByOrNull { it.refreshRate }
+            highRefreshRateMode?.let { mode ->
+                window.attributes = window.attributes.also { params ->
+                    params.preferredDisplayModeId = mode.modeId
+                }
+            }
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             val locale = dataStore[AppLanguageKey]
