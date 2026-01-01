@@ -49,6 +49,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -275,7 +277,13 @@ fun Thumbnail(
     var showSeekEffect by remember { mutableStateOf(false) }
     var seekDirection by remember { mutableStateOf("") }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier
+            .graphicsLayer {
+                // Use hardware layer for entire Thumbnail to ensure smooth 120Hz animations
+                compositingStrategy = CompositingStrategy.Offscreen
+            }
+    ) {
         // Error view
         AnimatedVisibility(
             visible = error != null,
@@ -454,6 +462,10 @@ private fun ThumbnailItem(
             .width(dimensions.itemWidth)
             .fillMaxSize()
             .padding(horizontal = PlayerHorizontalPadding)
+            .graphicsLayer {
+                // Render entire thumbnail item on separate hardware layer for smooth animations
+                compositingStrategy = CompositingStrategy.Offscreen
+            }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onDoubleTap = { offset ->
@@ -523,7 +535,7 @@ private fun HiddenThumbnailPlaceholder(
 }
 
 /**
- * Actual thumbnail image with caching.
+ * Actual thumbnail image with caching and hardware layer rendering.
  */
 @Composable
 private fun ThumbnailImage(
@@ -533,19 +545,24 @@ private fun ThumbnailImage(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .graphicsLayer {
+                // Use offscreen compositing for hardware acceleration during animations
+                compositingStrategy = CompositingStrategy.Offscreen
+            }
             .background(MaterialTheme.colorScheme.surfaceVariant)
-    )
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(artworkUri)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .networkCachePolicy(CachePolicy.ENABLED)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Fit,
-        modifier = Modifier.fillMaxSize()
-    )
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artworkUri)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .networkCachePolicy(CachePolicy.ENABLED)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 /**
