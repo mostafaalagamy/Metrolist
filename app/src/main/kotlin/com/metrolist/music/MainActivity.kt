@@ -705,7 +705,7 @@ class MainActivity : ComponentActivity() {
                     var showAccountDialog by remember { mutableStateOf(false) }
 
                     val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-                    val insetBg = if (playerBottomSheetState.progress > 0f || !shouldShowNavigationBar) Color.Transparent else baseBg
+                    val insetBg = if (playerBottomSheetState.progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) Color.Transparent else baseBg
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
