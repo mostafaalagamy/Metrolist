@@ -265,11 +265,22 @@ class HomeViewModel @Inject constructor(
             load()
             isRefreshing.value = false
         }
+        // Run sync when user manually refreshes
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
+        }
     }
 
     init {
         // Load home data
-        refresh()
+        viewModelScope.launch(Dispatchers.IO) {
+            context.dataStore.data
+                .map { it[InnerTubeCookieKey] }
+                .distinctUntilChanged()
+                .first()
+
+            load()
+        }
         
         // Run sync in separate coroutine with cooldown to avoid blocking UI
         viewModelScope.launch(syncCoroutine) {
