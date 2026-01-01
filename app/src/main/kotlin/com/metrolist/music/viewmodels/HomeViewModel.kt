@@ -269,19 +269,17 @@ class HomeViewModel @Inject constructor(
     init {
         // Load home data first
         viewModelScope.launch(Dispatchers.IO) {
-			context.dataStore.data
+            context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
                 .first()
 
             load()
-        }
-        
-        // Run sync in a separate coroutine with cooldown to avoid blocking UI
-        viewModelScope.launch(Dispatchers.IO) {
+            
+            // Run sync after home data is loaded to avoid blocking UI
             val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
             if (isSyncEnabled) {
-                syncUtils.syncAll()
+                syncUtils.runAllSyncs()
             }
         }
 

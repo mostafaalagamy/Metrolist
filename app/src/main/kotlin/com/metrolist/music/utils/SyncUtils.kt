@@ -6,7 +6,6 @@
 package com.metrolist.music.utils
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
@@ -14,12 +13,7 @@ import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
 import com.metrolist.lastfm.LastFM
-import com.metrolist.music.constants.LastAlbumSyncKey
-import com.metrolist.music.constants.LastArtistSyncKey
 import com.metrolist.music.constants.LastFMUseSendLikes
-import com.metrolist.music.constants.LastLibSongSyncKey
-import com.metrolist.music.constants.LastLikeSongSyncKey
-import com.metrolist.music.constants.LastPlaylistSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.PlaylistEntity
@@ -30,6 +24,7 @@ import com.metrolist.music.models.toMediaMetadata
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -37,20 +32,18 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Sync cooldown in seconds (30 minutes)
-private const val SYNC_COOLDOWN = 30 * 60L
 
 @Singleton
 class SyncUtils @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
     private val database: MusicDatabase,
 ) {
-    private val syncScope = CoroutineScope(Dispatchers.IO.limitedParallelism(2))
+    private val syncScope = CoroutineScope(Dispatchers.IO.limitedParallelism(1))
 
     private val isSyncingLikedSongs = MutableStateFlow(false)
     private val isSyncingUploadedSongs = MutableStateFlow(false)
@@ -69,49 +62,25 @@ class SyncUtils @Inject constructor(
             }
     }
 
-    private fun isOnCooldown(lastSyncTime: Long): Boolean {
-        val currentTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-        return (currentTime - lastSyncTime) < SYNC_COOLDOWN
-    }
-
     fun runAllSyncs() {
         syncScope.launch {
+            // Add small delays between sync operations to prevent UI blocking
             syncLikedSongs()
+            yield()
+            delay(100)
             syncUploadedSongs()
+            yield()
+            delay(100)
             syncLikedAlbums()
+            yield()
+            delay(100)
             syncUploadedAlbums()
+            yield()
+            delay(100)
             syncArtistsSubscriptions()
+            yield()
+            delay(100)
             syncSavedPlaylists()
-        }
-    }
-
-    suspend fun syncAll() {
-        val lastLikeSyncTime = context.dataStore.get(LastLikeSongSyncKey, 0L)
-        val lastLibSyncTime = context.dataStore.get(LastLibSongSyncKey, 0L)
-        val lastAlbumSyncTime = context.dataStore.get(LastAlbumSyncKey, 0L)
-        val lastArtistSyncTime = context.dataStore.get(LastArtistSyncKey, 0L)
-        val lastPlaylistSyncTime = context.dataStore.get(LastPlaylistSyncKey, 0L)
-
-        if (!isOnCooldown(lastLikeSyncTime)) {
-            syncLikedSongs()
-            context.dataStore.edit { it[LastLikeSongSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) }
-        }
-        if (!isOnCooldown(lastLibSyncTime)) {
-            syncUploadedSongs()
-            context.dataStore.edit { it[LastLibSongSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) }
-        }
-        if (!isOnCooldown(lastAlbumSyncTime)) {
-            syncLikedAlbums()
-            syncUploadedAlbums()
-            context.dataStore.edit { it[LastAlbumSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) }
-        }
-        if (!isOnCooldown(lastArtistSyncTime)) {
-            syncArtistsSubscriptions()
-            context.dataStore.edit { it[LastArtistSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) }
-        }
-        if (!isOnCooldown(lastPlaylistSyncTime)) {
-            syncSavedPlaylists()
-            context.dataStore.edit { it[LastPlaylistSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) }
         }
     }
 
