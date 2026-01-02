@@ -43,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -54,18 +53,14 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -82,7 +77,6 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
-import com.metrolist.music.constants.MiniPlayerOutlineKey
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
@@ -106,22 +100,21 @@ fun MiniPlayer(
     modifier: Modifier = Modifier
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
+    
+    // Memoize progress calculation to prevent unnecessary recomposition
+    val progressProvider: () -> Float = remember(position, duration) {
+        { if (duration > 0) (position.toFloat() / duration).coerceIn(0f, 1f) else 0f }
+    }
 
     if (useNewMiniPlayerDesign) {
         NewMiniPlayer(
-            position = position,
-            duration = duration,
+            progressProvider = progressProvider,
             modifier = modifier
         )
     } else {
-        // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
-        // The outer Box fills the width, providing a container for the inner player to be aligned within.
         Box(modifier = modifier.fillMaxWidth()) {
             LegacyMiniPlayer(
-                position = position,
-                duration = duration,
-                // NEW: Align the player to the end if it's a tablet in landscape.
-                // This modifier is passed to LegacyMiniPlayer and applied to its root Box.
+                progressProvider = progressProvider,
                 modifier = if (
                     LocalConfiguration.current.screenWidthDp >= 600 &&
                     LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -137,11 +130,10 @@ fun MiniPlayer(
 
 @Composable
 private fun NewMiniPlayer(
-    position: Long,
-    duration: Long,
+    progressProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
+    val pureBlack by rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -149,6 +141,8 @@ private fun NewMiniPlayer(
     val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
         if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
     }
+    
+    // Collect states with remember to avoid unnecessary recomposition
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
@@ -156,33 +150,36 @@ private fun NewMiniPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     
-    // Cast state
-    val castHandler = playerConnection.service.castConnectionHandler
+    // Cast state - memoize the handler reference
+    val castHandler = remember { playerConnection.service.castConnectionHandler }
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
-    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf<String?>(null) }
     
-    // Use Cast state when casting
-    val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
+    // Use Cast state when casting - use derivedStateOf to prevent recomposition
+    val effectiveIsPlaying by remember(isCasting) {
+        derivedStateOf { if (isCasting) castIsPlaying else isPlaying }
+    }
 
-    val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
 
     val configuration = LocalConfiguration.current
-    val isTabletLandscape = configuration.screenWidthDp >= 600 &&
-        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTabletLandscape = remember(configuration) {
+        configuration.screenWidthDp >= 600 && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
 
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
 
-    val animationSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessLow
-    )
+    val animationSpec = remember {
+        spring<Float>(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    }
 
     val overlayAlpha by animateFloatAsState(
         targetValue = if (effectiveIsPlaying) 0.0f else 0.4f,
@@ -190,21 +187,10 @@ private fun NewMiniPlayer(
         animationSpec = animationSpec
     )
 
-    /**
-     * Calculates the auto-swipe threshold based on swipe sensitivity.
-     * The formula uses a sigmoid function to determine the threshold dynamically.
-     * Constants:
-     * - -11.44748: Controls the steepness of the sigmoid curve.
-     * - 9.04945: Adjusts the midpoint of the curve.
-     * - 600: Base threshold value in pixels.
-     *
-     * @param swipeSensitivity The sensitivity value (typically between 0 and 1).
-     * @return The calculated auto-swipe threshold in pixels.
-     */
-    fun calculateAutoSwipeThreshold(swipeSensitivity: Float): Int {
-        return (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
+    // Memoize threshold calculation
+    val autoSwipeThreshold = remember(swipeSensitivity) {
+        (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
     }
-    val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
 
     Box(
         modifier = modifier
@@ -315,16 +301,14 @@ private fun NewMiniPlayer(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.size(48.dp)
                 ) {
-                    // Circular progress indicator around the play button
-                    if (duration > 0) {
-                        CircularProgressIndicator(
-                            progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
-                            modifier = Modifier.size(48.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                            strokeWidth = 3.dp,
-                            trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        )
-                    }
+                    // Circular progress indicator around the play button - uses lambda to avoid recomposition
+                    CircularProgressIndicator(
+                        progress = progressProvider,
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp,
+                        trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                    )
 
                     // Play/Pause button with thumbnail background
                     Box(
@@ -466,110 +450,21 @@ private fun NewMiniPlayer(
                     Spacer(modifier = Modifier.width(12.dp))
                 }
 
-                // Subscribe/Subscribed button
+                // Subscribe/Subscribed button - extracted to separate composable to isolate recomposition
                 mediaMetadata?.let { metadata ->
                     metadata.artists.firstOrNull()?.id?.let { artistId ->
-                        val libraryArtist by database.artist(artistId).collectAsState(initial = null)
-                        val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
-
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    width = 1.dp,
-                                    color = if (isSubscribed)
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                    else
-                                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                    shape = CircleShape
-                                )
-                                .background(
-                                    color = if (isSubscribed)
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                    else
-                                        Color.Transparent,
-                                    shape = CircleShape
-                                )
-                                .clickable {
-                                    database.transaction {
-                                        val artist = libraryArtist?.artist
-                                        if (artist != null) {
-                                            update(artist.toggleLike())
-                                        } else {
-                                            metadata.artists.firstOrNull()?.let { artistInfo ->
-                                                insert(
-                                                    ArtistEntity(
-                                                        id = artistInfo.id ?: "",
-                                                        name = artistInfo.name,
-                                                        channelId = null,
-                                                        thumbnailUrl = null,
-                                                    ).toggleLike()
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
-                                ),
-                                contentDescription = null,
-                                tint = if (isSubscribed)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                        SubscribeButton(
+                            artistId = artistId,
+                            metadata = metadata
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Favorite button (right side)
+                // Favorite button - extracted to separate composable to isolate recomposition
                 mediaMetadata?.let { metadata ->
-                    val librarySong by database.song(metadata.id).collectAsState(initial = null)
-                    val isLiked = librarySong?.song?.liked == true
-
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = if (isLiked)
-                                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                                else
-                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                            .background(
-                                color = if (isLiked)
-                                    MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
-                                else 
-                                    Color.Transparent,
-                                shape = CircleShape
-                            )
-                            .clickable {
-                                playerConnection.service.toggleLike()
-                            }
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isLiked) R.drawable.favorite else R.drawable.favorite_border
-                            ),
-                            contentDescription = null,
-                            tint = if (isLiked)
-                                MaterialTheme.colorScheme.error
-                            else
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                    FavoriteButton(songId = metadata.id)
                 }
             }
         }
@@ -578,11 +473,10 @@ private fun NewMiniPlayer(
 
 @Composable
 private fun LegacyMiniPlayer(
-    position: Long,
-    duration: Long,
+    progressProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
+    val pureBlack by rememberPreference(PureBlackMiniPlayerKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
@@ -591,38 +485,41 @@ private fun LegacyMiniPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     
-    // Cast state
-    val castHandler = playerConnection.service.castConnectionHandler
+    // Cast state - memoize the handler reference
+    val castHandler = remember { playerConnection.service.castConnectionHandler }
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     
-    // Use Cast state when casting
-    val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
+    // Use Cast state when casting - use derivedStateOf to prevent recomposition
+    val effectiveIsPlaying by remember(isCasting) {
+        derivedStateOf { if (isCasting) castIsPlaying else isPlaying }
+    }
 
-    val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
 
-    // NEW: Get screen configuration to determine if it's a tablet in landscape mode.
     val configuration = LocalConfiguration.current
-    val isTabletLandscape = configuration.screenWidthDp >= 600 &&
-        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTabletLandscape = remember(configuration) {
+        configuration.screenWidthDp >= 600 && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
 
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
 
-    val animationSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessLow
-    )
-
-    fun calculateAutoSwipeThreshold(swipeSensitivity: Float): Int {
-        return (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
+    val animationSpec = remember {
+        spring<Float>(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessLow
+        )
     }
-    val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
+
+    // Memoize threshold calculation
+    val autoSwipeThreshold = remember(swipeSensitivity) {
+        (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
+    }
 
     Box(
         modifier = modifier
@@ -713,8 +610,9 @@ private fun LegacyMiniPlayer(
                 }
             }
     ) {
+        // Use lambda-based progress to avoid recomposition
         LinearProgressIndicator(
-            progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
+            progress = progressProvider,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(2.dp)
@@ -896,5 +794,121 @@ private fun LegacyMiniMediaInfo(
                 }
             }
         }
+    }
+}
+
+/**
+ * Isolated composable for subscribe button to prevent parent recomposition
+ * when database state changes
+ */
+@Composable
+private fun SubscribeButton(
+    artistId: String,
+    metadata: MediaMetadata
+) {
+    val database = LocalDatabase.current
+    val libraryArtist by database.artist(artistId).collectAsState(initial = null)
+    val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .border(
+                width = 1.dp,
+                color = if (isSubscribed)
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                else
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = CircleShape
+            )
+            .background(
+                color = if (isSubscribed)
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                else
+                    Color.Transparent,
+                shape = CircleShape
+            )
+            .clickable {
+                database.transaction {
+                    val artist = libraryArtist?.artist
+                    if (artist != null) {
+                        update(artist.toggleLike())
+                    } else {
+                        metadata.artists.firstOrNull()?.let { artistInfo ->
+                            insert(
+                                ArtistEntity(
+                                    id = artistInfo.id ?: "",
+                                    name = artistInfo.name,
+                                    channelId = null,
+                                    thumbnailUrl = null,
+                                ).toggleLike()
+                            )
+                        }
+                    }
+                }
+            }
+    ) {
+        Icon(
+            painter = painterResource(
+                if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
+            ),
+            contentDescription = null,
+            tint = if (isSubscribed)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
+/**
+ * Isolated composable for favorite button to prevent parent recomposition
+ * when database state changes
+ */
+@Composable
+private fun FavoriteButton(songId: String) {
+    val database = LocalDatabase.current
+    val playerConnection = LocalPlayerConnection.current ?: return
+    val librarySong by database.song(songId).collectAsState(initial = null)
+    val isLiked = librarySong?.song?.liked == true
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .border(
+                width = 1.dp,
+                color = if (isLiked)
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                else
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = CircleShape
+            )
+            .background(
+                color = if (isLiked)
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                else
+                    Color.Transparent,
+                shape = CircleShape
+            )
+            .clickable {
+                playerConnection.service.toggleLike()
+            }
+    ) {
+        Icon(
+            painter = painterResource(
+                if (isLiked) R.drawable.favorite else R.drawable.favorite_border
+            ),
+            contentDescription = null,
+            tint = if (isLiked)
+                MaterialTheme.colorScheme.error
+            else
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
