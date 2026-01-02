@@ -630,7 +630,34 @@ fun PlaylistListItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     autoPlaylist: Boolean = false,
-    badges: @Composable RowScope.() -> Unit = {},
+    badges: @Composable RowScope.() -> Unit = {
+        val downloadUtil = LocalDownloadUtil.current
+        val database = LocalDatabase.current
+
+        val songs by produceState<List<Song>>(initialValue = emptyList(), playlist.id) {
+            withContext(Dispatchers.IO) {
+                value = database.playlistSongs(playlist.id).first().map { it.song }
+            }
+        }
+
+        val allDownloads by downloadUtil.downloads.collectAsState()
+
+        val downloadState by remember(songs, allDownloads) {
+            mutableStateOf(
+                if (songs.isEmpty()) {
+                    Download.STATE_STOPPED
+                } else {
+                    when {
+                        songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                        songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        else -> Download.STATE_STOPPED
+                    }
+                }
+            )
+        }
+
+        Icon.Download(downloadState)
+    },
     trailingContent: @Composable RowScope.() -> Unit = {}
 ) = ListItem(
     title = playlist.playlist.name,
@@ -684,7 +711,34 @@ fun PlaylistGridItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     autoPlaylist: Boolean = false,
-    badges: @Composable RowScope.() -> Unit = {},
+    badges: @Composable RowScope.() -> Unit = {
+        val downloadUtil = LocalDownloadUtil.current
+        val database = LocalDatabase.current
+
+        val songs by produceState<List<Song>>(initialValue = emptyList(), playlist.id) {
+            withContext(Dispatchers.IO) {
+                value = database.playlistSongs(playlist.id).first().map { it.song }
+            }
+        }
+
+        val allDownloads by downloadUtil.downloads.collectAsState()
+
+        val downloadState by remember(songs, allDownloads) {
+            mutableStateOf(
+                if (songs.isEmpty()) {
+                    Download.STATE_STOPPED
+                } else {
+                    when {
+                        songs.all { allDownloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                        songs.any { allDownloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
+                        else -> Download.STATE_STOPPED
+                    }
+                }
+            )
+        }
+
+        Icon.Download(downloadState)
+    },
     fillMaxWidth: Boolean = false,
 ) = GridItem(
     title = {
