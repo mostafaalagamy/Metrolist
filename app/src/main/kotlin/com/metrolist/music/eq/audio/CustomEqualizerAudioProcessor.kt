@@ -141,7 +141,17 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
     override fun queueInput(inputBuffer: ByteBuffer) {
         if (!equalizerEnabled || filters.isEmpty()) {
             // Passthrough mode - directly use input as output
-            outputBuffer = inputBuffer
+            val remaining = inputBuffer.remaining()
+            if (remaining == 0) return
+
+            // Ensure output buffer is large enough
+            if (outputBuffer.capacity() < remaining) {
+                outputBuffer = ByteBuffer.allocateDirect(remaining).order(ByteOrder.nativeOrder())
+            } else {
+                outputBuffer.clear()
+            }
+            outputBuffer.put(inputBuffer)
+            outputBuffer.flip()
             return
         }
 
@@ -151,6 +161,7 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
         }
 
         // Ensure we have our own output buffer (reuse if possible to avoid allocations)
+        // Note: We MUST NOT use inputBuffer as outputBuffer if we modify it
         if (outputBuffer === EMPTY_BUFFER || outputBuffer === inputBuffer) {
             // Need new buffer - was empty or same as input
             outputBuffer = ByteBuffer.allocateDirect(inputSize).order(ByteOrder.nativeOrder())
@@ -162,11 +173,11 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
             outputBuffer.clear()
         }
 
-        outputBuffer.limit(inputSize)
-
         // Process audio samples
         when (encoding) {
             C.ENCODING_PCM_16BIT -> {
+                // Ensure the output buffer is ready to receive data
+                // We don't set limit() here because putShort will advance position
                 processAudioBuffer16Bit(inputBuffer, outputBuffer)
             }
             else -> {
@@ -176,13 +187,17 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
         }
 
         outputBuffer.flip()
-        inputBuffer.position(inputBuffer.limit())
+        // inputBuffer position is already updated by processAudioBuffer16Bit/put
     }
 
     /**
      * Process 16-bit PCM audio through all biquad filters
      */
     private fun processAudioBuffer16Bit(input: ByteBuffer, output: ByteBuffer) {
+        // Ensure we are reading from the current position
+        // Input is ready to be read from position() to limit()
+        // Output is ready to be written to from position()
+
         val sampleCount = input.remaining() / 2 // 2 bytes per 16-bit sample
 
         repeat(sampleCount / channelCount) {
@@ -241,7 +256,10 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
     }
 
     override fun getOutput(): ByteBuffer {
-        return outputBuffer
+        // Return output buffer ready for reading (already flipped in queueInput)
+        val buffer = outputBuffer
+        outputBuffer = EMPTY_BUFFER
+        return buffer
     }
 
     override fun isEnded(): Boolean {
