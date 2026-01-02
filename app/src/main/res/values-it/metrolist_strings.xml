@@ -7,8 +7,8 @@
     <string name="back_button_desc">Indietro</string>
     <string name="no_title">Nessun titolo</string>
     <string name="unknown_artist">Artista sconosciuto</string>
-    <string name="unknown_item_type">Tipo dell\'elemento sconosciuto</string>
-    <string name="loading_charts">Caricamento delle statistiche…</string>
+    <string name="unknown_item_type">Tipo di elemento sconosciuto</string>
+    <string name="loading_charts">Caricamento delle classifiche…</string>
     <string name="retry_button">Riprova</string>
     <string name="album_cover_desc">Cover dell\'album</string>
     <string name="top_music_videos">I migliori video musicali</string>
@@ -34,7 +34,7 @@
     <string name="dislike_all">Togli Mi piace a tutto</string>
     <string name="sort_by_last_updated">Data di aggiornamento</string>
     <string name="link_copied">Link copiato negli appunti</string>
-    <string name="lyrics">Testi</string>
+    <string name="lyrics">Testo della canzone</string>
     <string name="already_in_playlist">Già nella playlist:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
@@ -58,8 +58,8 @@
     <string name="secondary_color_style">Secondari</string>
     <string name="enable_squiggly_slider">Abilita cursore ondulato</string>
     <string name="enable_swipe_thumbnail">Attiva la possibilità di cambiare brano scorrendo sulla copertina</string>
-    <string name="swipe_song_to_add">Scorri il brano verso sinistra aggiungerlo alla coda o verso destra per riprodurlo come successivo</string>
-    <string name="lyrics_click_change">Cambia testi con il tocco</string>
+    <string name="swipe_song_to_add">Scorri il brano verso sinistra per aggiungerlo alla coda o verso destra per riprodurlo come successivo</string>
+    <string name="lyrics_click_change">Cambia i testi con il tocco</string>
     <string name="slim">Sottile</string>
     <string name="slim_navbar">Barra inferiore di navigazione sottile</string>
     <string name="auto_playlists">Playlist automatiche</string>
@@ -120,7 +120,7 @@
         <item quantity="other">%d secondi</item>
     </plurals>
     <string name="generating_image">Generazione dell\'immagine</string>
-    <string name="please_wait">Si prega di attendere</string>
+    <string name="please_wait">Prego attendere</string>
     <string name="cancel">Annulla</string>
     <string name="share_lyrics">Condividi testo</string>
     <string name="share_as_text">Condividi come testo</string>
@@ -134,7 +134,7 @@
     <string name="background_color">Colore dello sfondo</string>
     <string name="auto_download_on_like">Scarica automaticamente quando si mette Mi piace</string>
     <string name="auto_download_on_like_desc">Scarica automaticamente i brani quando si mette Mi piace</string>
-    <string name="lyrics_auto_scroll">Scorri testo automaticamente</string>
+    <string name="lyrics_auto_scroll">Scorri il testo automaticamente</string>
     <string name="import_csv">Importa una playlist in formato \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Nota: non è supportata l\'importazione di brani locali in una playlist sincronizzata o remota. Qualsiasi altra combinazione è valida</string>
     <string name="import_online">Importa una playlist in formato \"m3u\"</string>
@@ -157,7 +157,7 @@
     <string name="empty_playlist">Playlist vuota</string>
     <string name="now_playing">In riproduzione</string>
     <string name="seek_forward">5 secondi in avanti</string>
-    <string name="seek_forward_dynamic">%1$d secondi in avanti</string>
+    <string name="seek_forward_dynamic">%1$d secondi avanti</string>
     <string name="seek_backward_dynamic">%1$d secondi indietro</string>
     <string name="seek_seconds_addup">Ricerca progressiva</string>
     <string name="seek_seconds_addup_description">Se attivato, aggiunge 5 secondi in più per ogni salto</string>
@@ -196,8 +196,8 @@
     <string name="line_by_line_dialog_enable">Attiva</string>
     <string name="romanize_current_track">Romanizza attuale brano</string>
     <string name="line_by_line_dialog_desc">Questa è una funzione sperimentale.\n\nPer impostazione predefinita, la lingua è determinata dall\'intera canzone ma con questa opzione attiva, sarà invece determinata linea per riga. Questo permetterà a canzoni multilingua di essere romanizzate MA la lingua potrebbe non essere sempre corretta (ad esempio se c\'è un testo in ucraino che non contiene alcuna lettera specifica ucraina, potrebbe essere romanizzato come russo).\n\nSe non ne avete necessità, si consiglia di mantenere questa opzione disattivata.</string>
-    <string name="edit_playlist_cover">Modifica immagine della playlist</string>
-    <string name="edit_playlist_cover_note">Nota: il tuo account deve essere collegato a un numero di telefono ed essere verificato su YouTube Music per modificare l\'immagine della playlist.</string>
+    <string name="edit_playlist_cover">Modifica la copertina della playlist</string>
+    <string name="edit_playlist_cover_note">Nota: il tuo account deve essere collegato a un numero di telefono ed essere verificato su YouTube Music per modificare la copertina della playlist.</string>
     <string name="edit_playlist_cover_note_wait">Dopo aver selezionato un\'immagine, si deve attendere un momento affinché compaia la nuova immagine della tua playlist.</string>
     <string name="choose_from_library">Scegli dalla galleria</string>
     <string name="remove_custom_image">Rimuovi immagine personalizzata</string>
@@ -266,8 +266,8 @@
     <string name="sync_playlist_desc">Sincronizza la playlist con YouTube Music</string>
     <string name="enable_better_lyrics">Abilita Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Utilizza il provider Better Lyrics per testi sincronizzati parola per parola</string>
-    <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album prima</string>
-    <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
+    <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album all\'inizio</string>
+    <string name="shuffle_playlist_first_desc">Durante la riproduzione casuale, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
     <string name="lyrics_animation_style">Stile di animazione parola per parola</string>
     <string name="none">Nessuno</string>
     <string name="fade">Dissolvenza</string>
@@ -287,9 +287,9 @@
     <string name="wrapped_top_5_songs_title">I tuoi migliori brani di quest\'anno</string>
     <string name="wrapped_top_song_album_art_content_description">Copertina</string>
     <string name="wrapped_top_artist_title">Il tuo migliore artista dell\'anno è</string>
-    <string name="show_wrapped_card">Mostra la scheda Wrapped</string>
+    <string name="show_wrapped_card">Mostra la schermata Wrapped</string>
     <string name="album_art_for">Copertina dell\'album di %s</string>
-    <string name="wrapped_total_albums_title">Hai ascoltato</string>
+    <string name="wrapped_total_albums_title">L\'hai ascoltato per</string>
     <string name="wrapped_total_albums_subtitle">album diversi</string>
     <string name="wrapped_top_album_title">Il tuo album preferito è</string>
     <string name="wrapped_playlist_ready">La tua playlist personale è pronta</string>
@@ -305,7 +305,7 @@
     <string name="wrapped_intro_subtitle">è l\'ora di vedere cosa hai ascoltato</string>
     <string name="wrapped_intro_button">cominciamo!</string>
     <string name="wrapped_end_thanks">Grazie per aver ascoltato con Metrolist!</string>
-    <string name="wrapped_end_create_playlist">Crea la tua Playlist Wrapped</string>
+    <string name="wrapped_end_create_playlist">Crea la tua playlist del Wrapped</string>
     <string name="wrapped_end_creating_playlist">Creazione...</string>
     <string name="wrapped_end_playlist_saved">Playlist Salvata</string>
     <string name="wrapped_logo_content_description">Logo di Metrolist</string>
@@ -329,6 +329,6 @@
     <string name="copied_artist">Artista Copiato</string>
     <string name="error_playing">Errore di riproduzione</string>
     <string name="failed_to_parse_proxy">Impossibile eseguire il parsing dell\'url proxy.</string>
-    <string name="lyrics_glow_effect">Abilita bagliore per i testi</string>
+    <string name="lyrics_glow_effect">Abilita l\'effetto luminoso per i testi</string>
     <string name="lyrics_glow_effect_desc">Aggiungi un\'animazione luminosa e un effetto di rimbalzo ai testi attivi</string>
 </resources>
