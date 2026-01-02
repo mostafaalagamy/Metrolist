@@ -163,7 +163,7 @@ fun NewActionGrid(
                     NewActionButton(
                         icon = action.icon,
                         text = action.text,
-                        onClick = action.onClick,
+                        onClick = action.onClick as () -> Unit,
                         modifier = Modifier.weight(1f),
                         enabled = action.enabled,
                         backgroundColor = if (action.backgroundColor != Color.Unspecified) action.backgroundColor else MaterialTheme.colorScheme.surfaceVariant,
@@ -184,7 +184,7 @@ fun NewActionGrid(
 data class NewAction(
     val icon: @Composable () -> Unit,
     val text: String,
-    val onClick: () -> Unit,
+    val onClick: @Composable () -> Unit,
     val enabled: Boolean = true,
     val backgroundColor: Color = Color.Unspecified,
     val contentColor: Color = Color.Unspecified

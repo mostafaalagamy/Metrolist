@@ -54,6 +54,7 @@ import com.metrolist.music.ui.screens.artist.ArtistAlbumsScreen
 import com.metrolist.music.ui.screens.artist.ArtistItemsScreen
 import com.metrolist.music.ui.screens.artist.ArtistScreen
 import com.metrolist.music.ui.screens.artist.ArtistSongsScreen
+import com.metrolist.music.ui.screens.equalizer.EqScreen
 import com.metrolist.music.ui.screens.library.LibraryScreen
 import com.metrolist.music.ui.screens.playlist.AutoPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.LocalPlaylistScreen
@@ -359,5 +360,8 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("wrapped") {
         WrappedScreen(navController)
+    }
+    composable("equalizer") {
+        EqScreen()
     }
 }
