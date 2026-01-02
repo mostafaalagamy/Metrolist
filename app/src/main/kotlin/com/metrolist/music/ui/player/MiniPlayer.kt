@@ -83,6 +83,7 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -336,10 +337,13 @@ private fun NewMiniPlayer(
                                 }
                             }
                     ) {
-                        // Thumbnail background
+                        // Thumbnail background - use small size for MiniPlayer (40dp = ~120px at 3x density)
                         mediaMetadata?.let { metadata ->
+                            val thumbnailUrl = remember(metadata.thumbnailUrl) {
+                                metadata.thumbnailUrl?.resize(120, 120)
+                            }
                             AsyncImage(
-                                model = metadata.thumbnailUrl,
+                                model = thumbnailUrl,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -724,9 +728,12 @@ private fun LegacyMiniMediaInfo(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             )
 
-            // Main thumbnail
+            // Main thumbnail - use small size for MiniPlayer (48dp = ~144px at 3x density)
+            val thumbnailUrl = remember(mediaMetadata.thumbnailUrl) {
+                mediaMetadata.thumbnailUrl?.resize(144, 144)
+            }
             AsyncImage(
-                model = mediaMetadata.thumbnailUrl,
+                model = thumbnailUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
