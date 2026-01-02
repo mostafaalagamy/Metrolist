@@ -1,6 +1,8 @@
 /**
  * Metrolist Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
+ * 
+ * Optimized for minimal recomposition during navigation
  */
 
 package com.metrolist.music.ui.component
@@ -49,7 +51,9 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
@@ -65,6 +69,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -130,6 +135,7 @@ import kotlin.math.roundToInt
 
 const val ActiveBoxAlpha = 0.6f
 
+// Basic list item - optimized with inline to reduce recomposition
 @Composable
 inline fun ListItem(
     modifier: Modifier = Modifier,
@@ -137,27 +143,86 @@ inline fun ListItem(
     noinline subtitle: (@Composable RowScope.() -> Unit)? = null,
     thumbnailContent: @Composable () -> Unit,
     trailingContent: @Composable RowScope.() -> Unit = {},
-    isActive: Boolean = false
+    isSelected: Boolean? = false,
+    isActive: Boolean = false,
+    isAvailable: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .height(ListItemHeight)
-            .padding(horizontal = 8.dp)
-            .then(if (isActive) Modifier.clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.secondaryContainer) else Modifier)
-    ) {
-        Box(Modifier.padding(6.dp), contentAlignment = Alignment.Center) { thumbnailContent() }
-        Column(Modifier.weight(1f).padding(horizontal = 6.dp)) {
-            Text(
-                text = title, fontSize = 14.sp, fontWeight = FontWeight.Bold,
-                maxLines = 1, overflow = TextOverflow.Ellipsis
-            )
-            if (subtitle != null) Row(verticalAlignment = Alignment.CenterVertically) { subtitle() }
+        modifier = if (isActive) {
+            modifier // playing highlight
+                .height(ListItemHeight)
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(
+                    color = // selected active
+                        if (isSelected == true) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                        else MaterialTheme.colorScheme.secondaryContainer
+                )
+        } else if (isSelected == true) {
+            modifier // inactive selected
+                .height(ListItemHeight)
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.4f))
+        } else {
+            modifier // default
+                .height(ListItemHeight)
+                .padding(horizontal = 8.dp)
         }
+    ) {
+        Box(
+            modifier = Modifier.padding(6.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            thumbnailContent()
+            if (!isAvailable) {
+                Box(
+                    modifier = Modifier
+                        .size(ListThumbnailSize)
+                        .align(Alignment.Center)
+                        .background(
+                            Color.Black.copy(alpha = 0.25f),
+                            RoundedCornerShape(ThumbnailCornerRadius)
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.offline),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(ListThumbnailSize / 2)
+                            .align(Alignment.Center)
+                            .graphicsLayer { alpha = 1f }
+                    )
+                }
+            }
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 6.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            if (subtitle != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    subtitle()
+                }
+            }
+        }
+
         trailingContent()
     }
 }
 
+// merge badges and subtitle text and pass to basic list item
 @Composable
 fun ListItem(
     modifier: Modifier = Modifier,
@@ -166,19 +231,28 @@ fun ListItem(
     badges: @Composable RowScope.() -> Unit = {},
     thumbnailContent: @Composable () -> Unit,
     trailingContent: @Composable RowScope.() -> Unit = {},
-    isActive: Boolean = false
+    isSelected: Boolean? = false,
+    isActive: Boolean = false,
 ) = ListItem(
     title = title,
-    modifier = modifier,
-    isActive = isActive,
     subtitle = {
         badges()
+
         if (!subtitle.isNullOrEmpty()) {
-            Text(text = subtitle, color = MaterialTheme.colorScheme.secondary, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                text = subtitle,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     },
     thumbnailContent = thumbnailContent,
-    trailingContent = trailingContent
+    trailingContent = trailingContent,
+    modifier = modifier,
+    isSelected = isSelected,
+    isActive = isActive
 )
 
 @Composable
@@ -316,6 +390,7 @@ fun SongListItem(
             },
             trailingContent = trailingContent,
             modifier = modifier,
+            isSelected = isSelected,
             isActive = isActive
         )
     }
