@@ -33,6 +33,7 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
+import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.metrolist.music.constants.ShowWrappedCardKey
@@ -264,36 +265,42 @@ class HomeViewModel @Inject constructor(
             load()
             isRefreshing.value = false
         }
+        // Run sync when user manually refreshes
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
+        }
     }
 
     init {
+        // Load home data
         viewModelScope.launch(Dispatchers.IO) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
                 .first()
-            
+
             load()
+        }
+        
+        // Run sync in separate coroutine with cooldown to avoid blocking UI
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
+        }
 
-            val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
-            if (isSyncEnabled) {
-                syncUtils.runAllSyncs()
-            }
-
+        // Prepare wrapped data in background
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (showWrappedCard.first()) {
-                    android.util.Log.d("HomeViewModel", "Preparing Wrapped data")
                     wrappedManager.prepare()
-                    val state = wrappedManager.state.first() // Correctly get the state object
+                    val state = wrappedManager.state.first()
                     val trackMap = state.trackMap
                     if (trackMap.isNotEmpty()) {
                         val firstTrackId = trackMap.entries.first().value
                         wrappedAudioService.prepareTrack(firstTrackId)
                     }
-                    android.util.Log.d("HomeViewModel", "Wrapped data prepared")
                 }
             } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Error preparing Wrapped data", e)
+                reportException(e)
             }
         }
 

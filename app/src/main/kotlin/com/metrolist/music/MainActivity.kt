@@ -294,6 +294,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        // Force high refresh rate (120Hz) for smooth animations
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val display = display ?: windowManager.defaultDisplay
+            val supportedModes = display.supportedModes
+            val highRefreshRateMode = supportedModes.maxByOrNull { it.refreshRate }
+            highRefreshRateMode?.let { mode ->
+                window.attributes = window.attributes.also { params ->
+                    params.preferredDisplayModeId = mode.modeId
+                }
+            }
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             val locale = dataStore[AppLanguageKey]
@@ -693,7 +705,7 @@ class MainActivity : ComponentActivity() {
                     var showAccountDialog by remember { mutableStateOf(false) }
 
                     val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
+                    val insetBg = if (playerBottomSheetState.progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) Color.Transparent else baseBg
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
@@ -787,8 +799,12 @@ class MainActivity : ComponentActivity() {
                                 val currentRoute = navBackStackEntry?.destination?.route
                                 
                                 // Memoize navigation click handler to avoid lambda recreation
-                                val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->
+                                        if (playerBottomSheetState.isExpanded) {
+                                            playerBottomSheetState.collapseSoft()
+                                        }
+                                        
                                         if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                             coroutineScope.launch {
@@ -877,8 +893,12 @@ class MainActivity : ComponentActivity() {
                                 val currentRoute = navBackStackEntry?.destination?.route
                                 
                                 // Memoize navigation click handler for rail
-                                val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior) {
+                                val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->
+                                        if (playerBottomSheetState.isExpanded) {
+                                            playerBottomSheetState.collapseSoft()
+                                        }
+                                        
                                         if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                             coroutineScope.launch {
@@ -905,7 +925,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 Box(Modifier.weight(1f)) {
-                                    // NavHost with animations
+                                    // NavHost with animations (Material 3 Expressive style)
                                     NavHost(
                                         navController = navController,
                                         startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
@@ -913,7 +933,7 @@ class MainActivity : ComponentActivity() {
                                             NavigationTab.LIBRARY -> Screens.Library
                                             else -> Screens.Home
                                         }.route,
-                                        // Enter Transition
+                                        // Enter Transition - smoother with smaller offset and longer duration
                                         enterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -923,11 +943,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
-                                                slideInHorizontally { it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                             else
-                                                slideInHorizontally { -it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Exit Transition
+                                        // Exit Transition - smoother with smaller offset and longer duration
                                         exitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
@@ -937,11 +957,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
-                                                slideOutHorizontally { -it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                             else
-                                                slideOutHorizontally { it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
-                                        // Pop Enter Transition
+                                        // Pop Enter Transition - smoother with smaller offset and longer duration
                                         popEnterTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == targetState.destination.route
@@ -951,11 +971,11 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                                slideInHorizontally { it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                             else
-                                                slideInHorizontally { -it / 4 } + fadeIn(tween(150))
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
-                                        // Pop Exit Transition
+                                        // Pop Exit Transition - smoother with smaller offset and longer duration
                                         popExitTransition = {
                                             val currentRouteIndex = navigationItems.indexOfFirst {
                                                 it.route == initialState.destination.route
@@ -965,9 +985,9 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                                slideOutHorizontally { -it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                             else
-                                                slideOutHorizontally { it / 4 } + fadeOut(tween(100))
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
                                         modifier = Modifier.nestedScroll(
                                             if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
