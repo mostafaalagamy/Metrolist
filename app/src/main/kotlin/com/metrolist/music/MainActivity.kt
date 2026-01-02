@@ -561,22 +561,23 @@ class MainActivity : ComponentActivity() {
                             expandedBound = maxHeight,
                         )
 
-                    // Use derivedStateOf for playerAwareWindowInsets to minimize recalculations
-                    val playerIsDismissed by remember {
-                        derivedStateOf { playerBottomSheetState.isDismissed }
-                    }
-                    
-                    val playerAwareWindowInsets by remember {
-                        derivedStateOf {
-                            var bottom = bottomInset
-                            if (shouldShowNavigationBar && !showRail) {
-                                bottom += NavigationBarHeight
-                            }
-                            if (!playerIsDismissed) bottom += MiniPlayerHeight
-                            windowsInsets
-                                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                                .add(WindowInsets(top = AppBarHeight, bottom = bottom))
+                    // Keep using remember with keys for playerAwareWindowInsets
+                    // because it depends on non-State values (bottomInset, windowsInsets)
+                    // derivedStateOf only tracks State objects, not regular values
+                    val playerAwareWindowInsets = remember(
+                        bottomInset,
+                        shouldShowNavigationBar,
+                        playerBottomSheetState.isDismissed,
+                        showRail,
+                    ) {
+                        var bottom = bottomInset
+                        if (shouldShowNavigationBar && !showRail) {
+                            bottom += NavigationBarHeight
                         }
+                        if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
+                        windowsInsets
+                            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                            .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                     }
 
                     appBarScrollBehavior(
