@@ -82,7 +82,18 @@ android {
     }
 
     signingConfigs {
-        // Removed persistentDebug and release signing configs as they are not needed for local development
+        create("persistentDebug") {
+            storeFile = file("persistent-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+        create("release") {
+            storeFile = file("keystore/release.keystore")
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
         getByName("debug") {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
@@ -105,7 +116,11 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
-            // Use default debug signing config
+            signingConfig = if (System.getenv("GITHUB_EVENT_NAME") == "pull_request") {
+                signingConfigs.getByName("debug")
+            } else {
+                signingConfigs.getByName("persistentDebug")
+            }
         }
     }
 
