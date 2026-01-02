@@ -528,7 +528,10 @@ object LyricsUtils {
     suspend fun romanizeCyrillic(text: String): String? = withContext(Dispatchers.Default) {
         if (text.isEmpty()) return@withContext null
 
-        if (!text.any { it in '\u0400'..'\u04FF' }) {
+        val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
+
+        if (cyrillicChars.isEmpty() ||
+            (cyrillicChars.length == 1 && (cyrillicChars[0] == 'е' || cyrillicChars[0] == 'Е'))) {
             return@withContext null
         }
 
