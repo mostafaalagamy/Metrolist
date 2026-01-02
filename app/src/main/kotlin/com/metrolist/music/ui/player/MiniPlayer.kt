@@ -234,9 +234,14 @@ private fun NewMiniPlayer(
                                     if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
                                 val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
                                 val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
-                                val allowLeft = adjustedDragAmount < 0 && canSkipNext
-                                val allowRight = adjustedDragAmount > 0 && canSkipPrevious
-                                if (allowLeft || allowRight) {
+                                val tryingToSwipeRight = adjustedDragAmount > 0
+                                val tryingToSwipeLeft = adjustedDragAmount < 0
+                                val allowLeft = tryingToSwipeLeft && canSkipNext
+                                val allowRight = tryingToSwipeRight && canSkipPrevious
+                                val canReturnToCenter =
+                                    (tryingToSwipeRight && !canSkipPrevious && offsetXAnimatable.value < 0) ||
+                                            (tryingToSwipeLeft && !canSkipNext && offsetXAnimatable.value > 0)
+                                if (allowLeft || allowRight || canReturnToCenter) {
                                     totalDragDistance += kotlin.math.abs(adjustedDragAmount)
                                     coroutineScope.launch {
                                         offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
