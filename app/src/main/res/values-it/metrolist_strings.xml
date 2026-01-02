@@ -268,7 +268,7 @@
     <string name="enable_better_lyrics_desc">Utilizza il provider Better Lyrics per testi sincronizzati parola per parola</string>
     <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album prima</string>
     <string name="shuffle_playlist_first_desc">Durante lo shuffle, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
-    <string name="lyrics_animation_style">Stile di animazione dei testi</string>
+    <string name="lyrics_animation_style">Stile di animazione parola per parola</string>
     <string name="none">Nessuno</string>
     <string name="fade">Dissolvenza</string>
     <string name="glow">Bagliore</string>
@@ -287,7 +287,7 @@
     <string name="wrapped_top_5_songs_title">I tuoi migliori brani di quest\'anno</string>
     <string name="wrapped_top_song_album_art_content_description">Copertina</string>
     <string name="wrapped_top_artist_title">Il tuo migliore artista dell\'anno è</string>
-    <string name="show_wrapped_card">Mostra schermata Wrapped</string>
+    <string name="show_wrapped_card">Mostra la scheda Wrapped</string>
     <string name="album_art_for">Copertina dell\'album di %s</string>
     <string name="wrapped_total_albums_title">Hai ascoltato</string>
     <string name="wrapped_total_albums_subtitle">album diversi</string>
@@ -329,4 +329,6 @@
     <string name="copied_artist">Artista Copiato</string>
     <string name="error_playing">Errore di riproduzione</string>
     <string name="failed_to_parse_proxy">Impossibile eseguire il parsing dell\'url proxy.</string>
+    <string name="lyrics_glow_effect">Abilita bagliore per i testi</string>
+    <string name="lyrics_glow_effect_desc">Aggiungi un\'animazione luminosa e un effetto di rimbalzo ai testi attivi</string>
 </resources>
