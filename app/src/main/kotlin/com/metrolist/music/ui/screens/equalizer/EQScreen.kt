@@ -26,7 +26,7 @@ import com.metrolist.music.ui.theme.MetrolistTheme
  * EQ Screen - Manage and select EQ profiles
  */
 @Composable
-fun EqScreen(
+fun EQScreen(
     viewModel: EQViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
