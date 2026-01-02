@@ -56,7 +56,6 @@ class EQProfileRepository @Inject constructor(
     companion object {
         private const val KEY_PROFILES = "eq_profiles"
         private const val KEY_ACTIVE_PROFILE_ID = "active_profile_id"
-        private const val KEY_WIZARD_COMPLETED = "wizard_completed"
     }
 
     init {
@@ -102,27 +101,6 @@ class EQProfileRepository @Inject constructor(
         }
 
         // Save to SharedPreferences
-        val profilesJson = json.encodeToString<List<SavedEQProfile>>(currentProfiles)
-        prefs.edit { putString(KEY_PROFILES, profilesJson) }
-
-        _profiles.value = currentProfiles
-    }
-
-    /**
-     * Save multiple profiles at once (useful for wizard)
-     */
-    suspend fun saveProfiles(profiles: List<SavedEQProfile>) = withContext(Dispatchers.IO) {
-        val currentProfiles = _profiles.value.toMutableList()
-
-        profiles.forEach { newProfile ->
-            val existingIndex = currentProfiles.indexOfFirst { it.id == newProfile.id }
-            if (existingIndex >= 0) {
-                currentProfiles[existingIndex] = newProfile
-            } else {
-                currentProfiles.add(newProfile)
-            }
-        }
-
         val profilesJson = json.encodeToString<List<SavedEQProfile>>(currentProfiles)
         prefs.edit { putString(KEY_PROFILES, profilesJson) }
 
@@ -181,29 +159,6 @@ class EQProfileRepository @Inject constructor(
     }
 
     /**
-     * Check if wizard has been completed
-     */
-    fun isWizardCompleted(): Boolean {
-        return prefs.getBoolean(KEY_WIZARD_COMPLETED, false)
-    }
-
-    /**
-     * Mark wizard as completed
-     */
-    suspend fun markWizardCompleted() = withContext(Dispatchers.IO) {
-        prefs.edit { putBoolean(KEY_WIZARD_COMPLETED, true) }
-    }
-
-    /**
-     * Clear all profiles and reset wizard state (for testing/debugging)
-     */
-    suspend fun clearAll() = withContext(Dispatchers.IO) {
-        prefs.edit { clear() }
-        _profiles.value = emptyList()
-        _activeProfile.value = null
-    }
-
-    /**
      * Import a custom EQ profile from ParametricEQ data
      */
     suspend fun importCustomProfile(
@@ -219,7 +174,6 @@ class EQProfileRepository @Inject constructor(
             deviceModel = name,
             bands = parametricEQ.bands,  // Already ParametricEQBand
             preamp = parametricEQ.preamp,
-            isCustom = true,
             isActive = false
         )
 

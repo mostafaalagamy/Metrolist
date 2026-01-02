@@ -6,6 +6,7 @@ import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
 import com.metrolist.music.eq.data.ParametricEQ
 import com.metrolist.music.eq.data.ParametricEQBand
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.pow
@@ -43,7 +44,8 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
     fun applyProfile(parametricEQ: ParametricEQ) {
         if (sampleRate == 0) {
             // Audio processor not configured yet, store as pending
-            Log.d(TAG, "Audio processor not configured yet. Storing profile as pending with ${parametricEQ.bands.size} bands")
+            Timber.tag(TAG)
+                .d("Audio processor not configured yet. Storing profile as pending with ${parametricEQ.bands.size} bands")
             pendingProfile = parametricEQ
             return
         }
@@ -57,7 +59,8 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
         // Reset filter states to ensure clean transition
         filters.forEach { it.reset() }
 
-        Log.d(TAG, "Applied EQ profile with ${filters.size} bands and ${parametricEQ.preamp} dB preamp")
+        Timber.tag(TAG)
+            .d("Applied EQ profile with ${filters.size} bands and ${parametricEQ.preamp} dB preamp")
     }
 
     /**
@@ -69,7 +72,7 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
         filters = emptyList()
         preampGain = 1.0
         pendingProfile = null
-        Log.d(TAG, "Equalizer disabled")
+        Timber.tag(TAG).d("Equalizer disabled")
     }
 
     /**
@@ -84,7 +87,7 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
      */
     private fun createFilters(bands: List<ParametricEQBand>) {
         if (sampleRate == 0) {
-            Log.w(TAG, "Cannot create filters: sample rate not set")
+            Timber.tag(TAG).w("Cannot create filters: sample rate not set")
             return
         }
 
@@ -101,7 +104,8 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
                 )
             }
 
-        Log.d(TAG, "Created ${filters.size} biquad filters from ${bands.size} bands (PK/LSC/HSC)")
+        Timber.tag(TAG)
+            .d("Created ${filters.size} biquad filters from ${bands.size} bands (PK/LSC/HSC)")
     }
 
     override fun configure(inputAudioFormat: AudioProcessor.AudioFormat): AudioProcessor.AudioFormat {
@@ -109,7 +113,8 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
         channelCount = inputAudioFormat.channelCount
         encoding = inputAudioFormat.encoding
 
-        Log.d(TAG, "Configured: sampleRate=$sampleRate, channels=$channelCount, encoding=$encoding")
+        Timber.tag(TAG)
+            .d("Configured: sampleRate=$sampleRate, channels=$channelCount, encoding=$encoding")
 
         // Apply pending profile if one exists
         pendingProfile?.let { profile ->
@@ -117,7 +122,8 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
             createFilters(profile.bands)
             equalizerEnabled = true
             pendingProfile = null
-            Log.d(TAG, "Applied pending profile with ${filters.size} bands and ${profile.preamp} dB preamp")
+            Timber.tag(TAG)
+                .d("Applied pending profile with ${filters.size} bands and ${profile.preamp} dB preamp")
         }
 
         // Only support 16-bit PCM stereo/mono

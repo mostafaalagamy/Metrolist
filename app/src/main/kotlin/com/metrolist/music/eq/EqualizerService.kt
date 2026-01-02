@@ -8,6 +8,7 @@ import androidx.media3.common.util.UnstableApi
 import com.metrolist.music.eq.data.SavedEQProfile
 import com.metrolist.music.eq.audio.CustomEqualizerAudioProcessor
 import com.metrolist.music.eq.data.ParametricEQ
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,18 +35,18 @@ class EqualizerService @Inject constructor() {
     @OptIn(UnstableApi::class)
     fun setAudioProcessor(processor: CustomEqualizerAudioProcessor) {
         this.audioProcessor = processor
-        Log.d(TAG, "Audio processor set")
+        Timber.tag(TAG).d("Audio processor set")
 
         // Apply pending profile if one was set before processor was available
         if (shouldDisable) {
             disable()
             shouldDisable = false
-            Log.d(TAG, "Applied pending disable request")
+            Timber.tag(TAG).d("Applied pending disable request")
         } else if (pendingProfile != null) {
             val profile = pendingProfile!!
             applyProfile(profile)
             pendingProfile = null
-            Log.d(TAG, "Applied pending profile: ${profile.name}")
+            Timber.tag(TAG).d("Applied pending profile: ${profile.name}")
         }
     }
 
@@ -57,7 +58,8 @@ class EqualizerService @Inject constructor() {
     fun applyProfile(profile: SavedEQProfile): Boolean {
         val processor = audioProcessor
         if (processor == null) {
-            Log.w(TAG, "Audio processor not set yet. Storing profile as pending: ${profile.name}")
+            Timber.tag(TAG)
+                .w("Audio processor not set yet. Storing profile as pending: ${profile.name}")
             pendingProfile = profile
             shouldDisable = false
             return true
@@ -75,13 +77,11 @@ class EqualizerService @Inject constructor() {
             )
 
             processor.applyProfile(parametricEQ)
-            Log.d(
-                TAG,
-                "Applied EQ profile: ${profile.name} with ${profile.bands.size} bands and ${profile.preamp} dB preamp"
-            )
+            Timber.tag(TAG)
+                .d("Applied EQ profile: ${profile.name} with ${profile.bands.size} bands and ${profile.preamp} dB preamp")
             return true
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to apply profile: ${e.message}")
+            Timber.tag(TAG).e("Failed to apply profile: ${e.message}")
             return false
         }
     }
@@ -94,7 +94,7 @@ class EqualizerService @Inject constructor() {
     fun disable() {
         val processor = audioProcessor
         if (processor == null) {
-            Log.w(TAG, "Audio processor not set yet. Storing disable as pending")
+            Timber.tag(TAG).w("Audio processor not set yet. Storing disable as pending")
             shouldDisable = true
             pendingProfile = null
             return
@@ -106,9 +106,9 @@ class EqualizerService @Inject constructor() {
             shouldDisable = false
 
             processor.disable()
-            Log.d(TAG, "Equalizer disabled")
+            Timber.tag(TAG).d("Equalizer disabled")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to disable equalizer: ${e.message}")
+            Timber.tag(TAG).e("Failed to disable equalizer: ${e.message}")
         }
     }
 
@@ -144,7 +144,7 @@ class EqualizerService @Inject constructor() {
     fun release() {
         // AudioProcessor is managed by ExoPlayer, we just clear our reference
         audioProcessor = null
-        Log.d(TAG, "Audio processor reference cleared (pending state preserved)")
+        Timber.tag(TAG).d("Audio processor reference cleared (pending state preserved)")
     }
 }
 
