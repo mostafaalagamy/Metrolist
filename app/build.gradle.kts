@@ -81,7 +81,15 @@ android {
         }
     }
 
-    // Removed manual signingConfigs configuration to rely on Android Gradle Plugin defaults for debug builds
+    signingConfigs {
+        // Removed persistentDebug and release signing configs as they are not needed for local development
+        getByName("debug") {
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storePassword = "android"
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+        }
+    }
 
     buildTypes {
         release {
@@ -97,7 +105,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
-            // Use default debug signing config provided by AGP
+            // Use default debug signing config
         }
     }
 
