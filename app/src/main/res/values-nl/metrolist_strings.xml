@@ -24,7 +24,7 @@
     <string name="generating_image">Afbeelding genereren</string>
     <string name="please_wait">Een ogenblik geduld</string>
     <string name="cancel">Annuleren</string>
-    <string name="share_lyrics">Liedtekst delen</string>
+    <string name="share_lyrics">Songtekst delen</string>
     <string name="share_as_text">Delen als tekst</string>
     <string name="share_as_image">Delen als afbeelding</string>
     <string name="max_selection_limit">Max. selectie limiet</string>
@@ -77,7 +77,7 @@
     <string name="added_to_queue">Toegevoegd aan wachtlijst</string>
     <string name="unknown_item_type">Onbekend voorwerp soort</string>
     <string name="filter_uploaded">Geüpload</string>
-    <string name="remove_from_cache">Verwijderd van de cache</string>
+    <string name="remove_from_cache">Verwijder van cache</string>
     <string name="copy_link">Kopieer link</string>
     <string name="starting_radio">Radio starten</string>
     <string name="close">Afsluiten</string>
@@ -91,9 +91,9 @@
     <string name="slim">Dun</string>
     <string name="slim_navbar">Compacte hoofdnavigatiebalk</string>
     <string name="auto_playlists">Automatische playlists</string>
-    <string name="show_liked_playlist">\"Geliket\" tonen</string>
+    <string name="show_liked_playlist">\"Nummers die je leuk vindt\" tonen</string>
     <string name="show_downloaded_playlist">\"Gedownload\" tonen</string>
-    <string name="show_top_playlist">\"Mijn meest geluisterd\" tonen</string>
+    <string name="show_top_playlist">\"Meest geluisterd\" tonen</string>
     <string name="show_cached_playlist">\"Gecached\" tonen</string>
     <string name="ytm_sync">Automatisch synchroniseren met je YouTube Music account</string>
     <string name="last_song_listened">Gebaseerd op laatst geluisterd nummer</string>
@@ -115,7 +115,7 @@
     <string name="past_week">Afgelopen week</string>
     <string name="past_month">Afgelopen maand</string>
     <string name="past_year">Afgelopen jaar</string>
-    <string name="top_length">Mijn meest geluisterd lengte</string>
+    <string name="top_length">Meest geluisterd lengte</string>
     <string name="history_duration">Geschiedenis duur</string>
     <string name="information">Informatie</string>
     <string name="description">Omschrijving</string>
