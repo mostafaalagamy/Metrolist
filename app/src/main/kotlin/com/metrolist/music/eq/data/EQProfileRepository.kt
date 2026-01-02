@@ -174,7 +174,8 @@ class EQProfileRepository @Inject constructor(
             deviceModel = name,
             bands = parametricEQ.bands,  // Already ParametricEQBand
             preamp = parametricEQ.preamp,
-            isActive = false
+            isActive = false,
+            isCustom = true // Ensure this flag is set!
         )
 
         saveProfile(customProfile)
@@ -185,16 +186,9 @@ class EQProfileRepository @Inject constructor(
      * Within each group, sort by timestamp (newest first)
      */
     fun getSortedProfiles(): List<SavedEQProfile> {
-        val allProfiles = _profiles.value.filter { !it.isCustom }
+        // Only custom profiles are supported now
+        return _profiles.value
+            .filter { it.isCustom }
             .sortedByDescending { it.addedTimestamp }
-
-
-
-        val customProfiles = allProfiles.filter { it.isCustom }
-            .sortedByDescending { it.addedTimestamp }
-
-        // Return AutoEQ profiles first, then custom profiles
-        // Return AutoEQ profiles first, then custom profiles
-        return customProfiles
     }
 }
