@@ -268,4 +268,22 @@
     <string name="lyrics_glow_effect_desc">Adicionar animação brilhante e efeito de salto para letras ativas</string>
     <string name="enable_better_lyrics">Ativar Melhores Letras</string>
     <string name="enable_better_lyrics_desc">Usar o provedor de Melhores Letras para letras sincronizadas palavra por palavra</string>
+    <string name="shuffle_playlist_first">Embaralhar lista/álbum primeiro</string>
+    <string name="shuffle_playlist_first_desc">Quando no aleatório, tocar todas as músicas da lista/álbum original primeiro, depois tocar conteúdo similar</string>
+    <string name="show_wrapped_card">Mostrar cartão do Wrapped</string>
+    <string name="lyrics_animation_style">Estilo de Animação das Letras</string>
+    <string name="none">Nenhum</string>
+    <string name="fade">Desvanecer</string>
+    <string name="glow">Brilhar</string>
+    <string name="slide">Deslizar</string>
+    <string name="karaoke">Karaoke</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">Tamanho do texto das letras</string>
+    <string name="lyrics_line_spacing">Espaçamento de linha das letras</string>
+    <string name="album_art_for">Arte de álbum para %s</string>
+    <string name="wrapped_total_albums_title">Você ouviu</string>
+    <string name="wrapped_total_albums_subtitle">álbuns únicos</string>
+    <string name="wrapped_top_album_title">Seu álbum preferido é</string>
+    <string name="wrapped_playlist_ready">Sua lista pessoal está pronta</string>
+    <string name="wrapped_top_5_albums_title">Seus 5 álbuns mais ouvidos</string>
 </resources>
