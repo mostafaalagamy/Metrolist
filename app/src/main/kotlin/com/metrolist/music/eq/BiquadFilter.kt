@@ -1,6 +1,5 @@
 package com.metrolist.music.eq
 
-//import com.denizen.nanosonic.ui.screens.wizard.databaseUtil.models.FilterType
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow

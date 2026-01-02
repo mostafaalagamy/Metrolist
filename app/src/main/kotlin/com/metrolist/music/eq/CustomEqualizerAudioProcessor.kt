@@ -4,8 +4,7 @@ import android.util.Log
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
-import com.denizen.nanosonic.ui.screens.wizard.databaseUtil.models.ParametricEQ
-import com.denizen.nanosonic.ui.screens.wizard.databaseUtil.models.ParametricEQBand
+import com.metrolist.music.eq.ParametricEQ
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.pow
