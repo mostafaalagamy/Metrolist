@@ -1,8 +1,7 @@
-package com.metrolist.music.eq
+package com.metrolist.music.eq.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.metrolist.music.eq.ParametricEQBand
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

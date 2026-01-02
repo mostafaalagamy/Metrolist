@@ -1,5 +1,6 @@
-package com.metrolist.music.eq
+package com.metrolist.music.eq.audio
 
+import com.metrolist.music.eq.data.FilterType
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow

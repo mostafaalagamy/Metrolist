@@ -5,9 +5,9 @@ package com.metrolist.music.eq
     import android.util.Log
     import androidx.annotation.OptIn
     import androidx.media3.common.util.UnstableApi
-    import com.metrolist.music.eq.SavedEQProfile
-    import com.metrolist.music.eq.CustomEqualizerAudioProcessor
-    import com.metrolist.music.eq.ParametricEQ
+    import com.metrolist.music.eq.data.SavedEQProfile
+    import com.metrolist.music.eq.audio.CustomEqualizerAudioProcessor
+    import com.metrolist.music.eq.data.ParametricEQ
     import javax.inject.Inject
     import javax.inject.Singleton
 
@@ -153,4 +153,3 @@ package com.metrolist.music.eq
         val maxBands: Int,
         val description: String
     )
-}

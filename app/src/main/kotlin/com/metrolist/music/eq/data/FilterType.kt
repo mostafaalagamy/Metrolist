@@ -1,4 +1,4 @@
-package com.metrolist.music.eq
+package com.metrolist.music.eq.data
 
 import kotlinx.serialization.Serializable
 
