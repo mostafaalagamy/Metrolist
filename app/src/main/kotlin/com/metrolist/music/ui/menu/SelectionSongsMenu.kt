@@ -267,22 +267,17 @@ fun SelectionSongMenu(
             Material3MenuGroup(
                 items = listOf(
                     Material3MenuItemData(
-                        title = { Text(text = stringResource(R.string.play)) },
+                        title = { Text(text = stringResource(R.string.play_next)) },
                         description = { Text(text = stringResource(R.string.play_next_desc)) },
                         icon = {
                             Icon(
-                                painter = painterResource(R.drawable.play),
+                                painter = painterResource(R.drawable.playlist_play),
                                 contentDescription = null,
                             )
                         },
                         onClick = {
                             onDismiss()
-                            playerConnection.playQueue(
-                                ListQueue(
-                                    title = "Selection",
-                                    items = songSelection.map { it.toMediaItem() },
-                                ),
-                            )
+                            playerConnection.playNext(songSelection.map { it.toMediaItem() })
                             clearAction()
                         }
                     ),
