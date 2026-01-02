@@ -733,7 +733,7 @@ private fun LegacyMiniMediaInfo(
                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),
             )
 
-            AnimatedVisibility(visible = error != null, enter = fadeIn(), exit = fadeOut()) {
+            androidx.compose.animation.AnimatedVisibility(visible = error != null, enter = fadeIn(), exit = fadeOut()) {
                 Box(
                     Modifier
                         .fillMaxSize()

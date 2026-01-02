@@ -273,16 +273,10 @@ fun BottomSheetPlayer(
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     // Use State objects for position/duration to pass to MiniPlayer without causing recomposition
-    val positionState = rememberSaveable(playbackState, stateSaver = androidx.compose.runtime.saveable.Saver(
-        save = { it.value },
-        restore = { mutableLongStateOf(it) }
-    )) {
+    val positionState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
     }
-    val durationState = rememberSaveable(playbackState, stateSaver = androidx.compose.runtime.saveable.Saver(
-        save = { it.value },
-        restore = { mutableLongStateOf(it) }
-    )) {
+    val durationState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.duration)
     }
     
