@@ -387,7 +387,7 @@ class MusicService :
 
         // 4. Watch for EQ profile changes
         scope.launch {
-            eqProfileRepository.activeProfile.distinctUntilChanged().collect { profile ->
+            eqProfileRepository.activeProfile.collect { profile ->
                 if (profile != null) {
                     val applied = equalizerService.applyProfile(profile)
                     if (applied && player.playbackState == Player.STATE_READY && player.isPlaying) {

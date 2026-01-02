@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.equalizer
 
+import android.media.session.PlaybackState
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,19 +16,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.metrolist.music.eq.data.SavedEQProfile
-import com.metrolist.music.ui.theme.MetrolistTheme
 
 /**
  * EQ Screen - Manage and select EQ profiles
  */
 @Composable
-fun EQScreen(
-    viewModel: EQViewModel = hiltViewModel()
+fun EqScreen(
+    viewModel: EQViewModel = hiltViewModel(),
+    playbackState: PlaybackState? = null
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -226,7 +226,7 @@ private fun EqScreenContent(
     }
 }
 
-// --- HELPER COMPOSABLES (Moved outside EqScreenContent) ---
+// --- HELPER COMPOSABLES ---
 
 @Composable
 private fun NoEqualizationItem(
@@ -265,7 +265,7 @@ private fun NoEqualizationItem(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "Select a different profile to apply equalization to your music. AutoEQ profiles are recommended and may be imported through the NanoSonic wizard.",
+                    text = "Select a different profile to apply equalization to your music.",
                     style = MaterialTheme.typography.bodySmall,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -308,7 +308,7 @@ private fun EQProfileItem(
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                // Device model name with custom badge
+                // Device model name (used as profile name for custom profiles)
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -317,30 +317,8 @@ private fun EQProfileItem(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                     )
-                    if (profile.isCustom) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Surface(
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            shape = MaterialTheme.shapes.small
-                        ) {
-//                            Text(
-//                                text = "CUSTOM",
-//                                style = MaterialTheme.typography.labelSmall,
-//                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-//                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-//                                fontWeight = FontWeight.Bold
-//                            )
-                        }
-                    }
                 }
-//                if (profile.source != "unknown" && profile.source != "Custom Import") {
-//                    Spacer(modifier = Modifier.height(2.dp))
-//                    Text(
-//                        text = "Source: ${profile.source} • Rig: ${profile.rig}",
-//                        style = MaterialTheme.typography.bodySmall,
-//                        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-//                    )
-//                }
+
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "${profile.bands.size} frequency bands",
@@ -379,20 +357,6 @@ private fun EQProfileItem(
                     Text("Cancel")
                 }
             }
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EqScreenPreview() {
-    MetrolistTheme() {
-        EqScreenContent(
-            profiles = emptyList(),
-            activeProfileId = null,
-            onProfileSelected = {},
-            onImportCustomEQ = {},
-            onDeleteProfile = {}
         )
     }
 }

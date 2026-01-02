@@ -27,7 +27,7 @@ import com.metrolist.music.ui.screens.artist.ArtistAlbumsScreen
 import com.metrolist.music.ui.screens.artist.ArtistItemsScreen
 import com.metrolist.music.ui.screens.artist.ArtistScreen
 import com.metrolist.music.ui.screens.artist.ArtistSongsScreen
-import com.metrolist.music.ui.screens.equalizer.EQScreen
+import com.metrolist.music.ui.screens.equalizer.EqScreen
 import com.metrolist.music.ui.screens.library.LibraryScreen
 import com.metrolist.music.ui.screens.playlist.AutoPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.LocalPlaylistScreen
@@ -55,6 +55,7 @@ import com.metrolist.music.ui.screens.wrapped.WrappedScreen
 import com.metrolist.music.utils.rememberPreference
 import android.app.Activity
 import androidx.compose.material3.SnackbarHostState
+import com.metrolist.music.eq.data.EQProfileRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.navigationBuilder(
@@ -332,6 +333,7 @@ fun NavGraphBuilder.navigationBuilder(
         WrappedScreen(navController)
     }
     composable("equalizer") {
-        EQScreen()
+        EqScreen(
+        )
     }
 }

@@ -187,17 +187,14 @@ class EQProfileRepository @Inject constructor(
     fun getSortedProfiles(): List<SavedEQProfile> {
         val allProfiles = _profiles.value.filter { !it.isCustom }
             .sortedByDescending { it.addedTimestamp }
-        return allProfiles
 
-        // Separate AutoEQ and custom profiles
-//        val autoEqProfiles = allProfiles.filter { !it.isCustom }
-//            .sortedByDescending { it.addedTimestamp }
-//
-//        val customProfiles = allProfiles.filter { it.isCustom }
-//            .sortedByDescending { it.addedTimestamp }
+
+
+        val customProfiles = allProfiles.filter { it.isCustom }
+            .sortedByDescending { it.addedTimestamp }
 
         // Return AutoEQ profiles first, then custom profiles
         // Return AutoEQ profiles first, then custom profiles
-//        return autoEqProfiles + customProfiles
+        return customProfiles
     }
 }
