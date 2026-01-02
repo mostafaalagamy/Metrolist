@@ -265,7 +265,7 @@ private fun NoEqualizationItem(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "Select a different profile to apply equalization to your music.",
+                    text = "Select or import an EQ profile to apply equalization to your music. Profiles must conform to the EqualizerAPO ParametricEq format.",
                     style = MaterialTheme.typography.bodySmall,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
                 )

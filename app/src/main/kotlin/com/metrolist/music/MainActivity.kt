@@ -358,7 +358,11 @@ class MainActivity : ComponentActivity() {
                                         .setContentIntent(pending)
                                         .setAutoCancel(true)
                                         .build()
-                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                    
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                                        ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                        NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                    }
                                 }
                             }
                         }
@@ -502,7 +506,8 @@ class MainActivity : ComponentActivity() {
                         val currentRoute = navBackStackEntry?.destination?.route
                         currentRoute == null ||
                                 navigationItems.fastAny { it.route == currentRoute } ||
-                                currentRoute.startsWith("search/")
+                                currentRoute.startsWith("search/") ||
+                                currentRoute == "equalizer"
                     }
 
                     val isLandscape = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
@@ -537,6 +542,13 @@ class MainActivity : ComponentActivity() {
                                     MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
+
+                    // Auto-close equalizer when player is expanded
+                    LaunchedEffect(playerBottomSheetState.isExpanded) {
+                        if (playerBottomSheetState.isExpanded && navController.currentDestination?.route == "equalizer") {
+                            navController.popBackStack()
+                        }
+                    }
 
                     val playerAwareWindowInsets = remember(
                         bottomInset,
@@ -805,7 +817,10 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (isSelected) {
+                                        if (navController.currentDestination?.route == "equalizer" &&
+                                            navController.previousBackStackEntry?.destination?.route == screen.route) {
+                                            navController.popBackStack()
+                                        } else if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                             coroutineScope.launch {
                                                 searchBarScrollBehavior.state.resetHeightOffset()
@@ -899,7 +914,10 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (isSelected) {
+                                        if (navController.currentDestination?.route == "equalizer" &&
+                                            navController.previousBackStackEntry?.destination?.route == screen.route) {
+                                            navController.popBackStack()
+                                        } else if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                             coroutineScope.launch {
                                                 searchBarScrollBehavior.state.resetHeightOffset()
