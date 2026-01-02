@@ -11,6 +11,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.RemoteViews
 import com.metrolist.music.R
 import com.metrolist.music.playback.MusicService
@@ -39,10 +40,16 @@ class HelloWidget : AppWidgetProvider() {
             val serviceIntent = Intent(context, MusicService::class.java).apply {
                 this.action = action
             }
-            // We use startService (or startForegroundService) to send the command directly
+            // Use startForegroundService on Android O+ with try-catch for background restrictions
             try {
-                context.startService(serviceIntent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent)
+                } else {
+                    context.startService(serviceIntent)
+                }
             } catch (e: Exception) {
+                // On Android 12+, this may fail if app is in background
+                // The service should already be running if music is playing
                 e.printStackTrace()
             }
         }

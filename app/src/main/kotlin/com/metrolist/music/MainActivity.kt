@@ -255,7 +255,10 @@ class MainActivity : ComponentActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1000)
             }
         }
-        startService(Intent(this, MusicService::class.java))
+        
+        // On Android 12+, we can't start foreground services from background
+        // Use BIND_AUTO_CREATE which will create the service if needed
+        // The service will call startForeground() in onCreate() when bound
         bindService(
             Intent(this, MusicService::class.java),
             serviceConnection,
