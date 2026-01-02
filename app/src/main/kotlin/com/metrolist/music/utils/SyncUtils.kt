@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
@@ -96,6 +95,8 @@ class SyncUtils @Inject constructor(
     fun runAllSyncs() {
         syncScope.launch {
             syncLikedSongs()
+            // COMMENTED OUT: Library sync
+            // syncLibrarySongs()
             syncUploadedSongs()
             syncLikedAlbums()
             syncUploadedAlbums()
@@ -384,15 +385,12 @@ class SyncUtils @Inject constructor(
 
                 database.transaction {
                     clearPlaylist(playlistId)
-                    val songEntities = songs.onEach { song ->
-                        if (runBlocking { database.song(song.id).firstOrNull() } == null) {
-                            insert(song)
-                        }
-                    }
-                    val playlistSongMaps = songEntities.mapIndexed { position, song ->
+                    // Insert songs directly - OnConflictStrategy.IGNORE handles duplicates
+                    songs.forEach { song -> insert(song) }
+                    // Create playlist song maps
+                    songs.mapIndexed { position, song ->
                         PlaylistSongMap(songId = song.id, playlistId = playlistId, position = position, setVideoId = song.setVideoId)
-                    }
-                    playlistSongMaps.forEach { insert(it) }
+                    }.forEach { insert(it) }
                 }
             }
         } catch (e: Exception) {
