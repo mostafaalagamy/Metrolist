@@ -817,21 +817,29 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (navController.currentDestination?.route == "equalizer" &&
-                                            navController.previousBackStackEntry?.destination?.route == screen.route) {
+                                        var handled = false
+                                        if (navController.currentDestination?.route == "equalizer") {
+                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
                                             navController.popBackStack()
-                                        } else if (isSelected) {
-                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                            coroutineScope.launch {
-                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                            if (previousRoute == screen.route) {
+                                                handled = true
                                             }
-                                        } else {
-                                            navController.navigate(screen.route) {
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
+                                        }
+                                        
+                                        if (!handled) {
+                                            if (isSelected) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                coroutineScope.launch {
+                                                    searchBarScrollBehavior.state.resetHeightOffset()
                                                 }
-                                                launchSingleTop = true
-                                                restoreState = true
+                                            } else {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.startDestinationId) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
                                             }
                                         }
                                     }
@@ -914,21 +922,29 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (navController.currentDestination?.route == "equalizer" &&
-                                            navController.previousBackStackEntry?.destination?.route == screen.route) {
+                                        var handled = false
+                                        if (navController.currentDestination?.route == "equalizer") {
+                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
                                             navController.popBackStack()
-                                        } else if (isSelected) {
-                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                            coroutineScope.launch {
-                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                            if (previousRoute == screen.route) {
+                                                handled = true
                                             }
-                                        } else {
-                                            navController.navigate(screen.route) {
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
+                                        }
+                                        
+                                        if (!handled) {
+                                            if (isSelected) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                coroutineScope.launch {
+                                                    searchBarScrollBehavior.state.resetHeightOffset()
                                                 }
-                                                launchSingleTop = true
-                                                restoreState = true
+                                            } else {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.startDestinationId) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
                                             }
                                         }
                                     }
