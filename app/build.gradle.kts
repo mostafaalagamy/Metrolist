@@ -256,4 +256,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
+
+    // Icons
+    implementation(libs.androidx.material.icons.extended)
 }

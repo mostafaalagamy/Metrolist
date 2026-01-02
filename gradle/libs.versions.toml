@@ -7,6 +7,7 @@ compose = "1.10.0"
 lifecycle = "2.10.0"
 material3 = "1.5.0-alpha09"
 appcompat = "1.7.1"
+materialIconsExtended = "1.7.8"
 media3 = "1.7.1"
 mediarouter = "1.8.1"
 castFramework = "22.2.0"
@@ -40,6 +41,7 @@ extractor = "2d2d9ed"
 tinypinyin = "2.0.3"
 
 [libraries]
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutinesGuava" }
