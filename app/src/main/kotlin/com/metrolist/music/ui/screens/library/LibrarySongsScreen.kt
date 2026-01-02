@@ -26,6 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -91,6 +94,9 @@ fun LibrarySongsScreen(
 
     var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
 
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val pullRefreshState = rememberPullToRefreshState()
+
     LaunchedEffect(Unit) {
         if (ytmSync) {
             when (filter) {
@@ -123,7 +129,13 @@ fun LibrarySongsScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .pullToRefresh(
+                state = pullRefreshState,
+                isRefreshing = isRefreshing,
+                onRefresh = { viewModel.refresh(filter) }
+            ),
     ) {
         LazyColumn(
             state = lazyListState,
@@ -158,8 +170,11 @@ fun LibrarySongsScreen(
                             SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                         ),
                         currentValue = filter,
-                        onValueUpdate = {
-                            filter = it
+                        onValueUpdate = { newFilter ->
+                            filter = newFilter
+                            if (ytmSync) {
+                                viewModel.refresh(newFilter)
+                            }
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -266,6 +281,14 @@ fun LibrarySongsScreen(
                     ),
                 )
             },
+        )
+
+        Indicator(
+            isRefreshing = isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
         )
     }
 }
