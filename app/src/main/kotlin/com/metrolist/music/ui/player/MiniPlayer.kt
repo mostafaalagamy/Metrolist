@@ -233,12 +233,20 @@ private fun NewMiniPlayer(
                                 }
                             },
                             onHorizontalDrag = { _, dragAmount ->
-                                val adjustedDragAmount = if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
-                                val canSkipPrev = playerConnection.player.previousMediaItemIndex != -1
-                                val canSkipNxt = playerConnection.player.nextMediaItemIndex != -1
-                                val allowLeft = adjustedDragAmount < 0 && canSkipNxt
-                                val allowRight = adjustedDragAmount > 0 && canSkipPrev
-                                if (allowLeft || allowRight) {
+                                val adjustedDragAmount =
+                                    if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                                val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
+                                val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
+                                val tryingToSwipeRight = adjustedDragAmount > 0
+                                val tryingToSwipeLeft = adjustedDragAmount < 0
+                                val allowLeft = tryingToSwipeLeft && canSkipNext
+                                val allowRight = tryingToSwipeRight && canSkipPrevious
+
+                                val canReturnToCenter =
+                                    (tryingToSwipeRight && !canSkipPrevious && offsetXAnimatable.value < 0) ||
+                                            (tryingToSwipeLeft && !canSkipNext && offsetXAnimatable.value > 0)
+
+                                if (allowLeft || allowRight || canReturnToCenter) {
                                     totalDragDistance += kotlin.math.abs(adjustedDragAmount)
                                     coroutineScope.launch {
                                         offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
@@ -560,14 +568,24 @@ private fun LegacyMiniPlayer(
                                 coroutineScope.launch { offsetXAnimatable.animateTo(0f, animationSpec) }
                             },
                             onHorizontalDrag = { _, dragAmount ->
-                                val adjustedDragAmount = if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
-                                val canSkipPrev = playerConnection.player.previousMediaItemIndex != -1
-                                val canSkipNxt = playerConnection.player.nextMediaItemIndex != -1
-                                val allowLeft = adjustedDragAmount < 0 && canSkipNxt
-                                val allowRight = adjustedDragAmount > 0 && canSkipPrev
-                                if (allowLeft || allowRight) {
+                                val adjustedDragAmount =
+                                    if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                                val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
+                                val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
+                                val tryingToSwipeRight = adjustedDragAmount > 0
+                                val tryingToSwipeLeft = adjustedDragAmount < 0
+                                val allowLeft = tryingToSwipeLeft && canSkipNext
+                                val allowRight = tryingToSwipeRight && canSkipPrevious
+
+                                val canReturnToCenter =
+                                    (tryingToSwipeRight && !canSkipPrevious && offsetXAnimatable.value < 0) ||
+                                            (tryingToSwipeLeft && !canSkipNext && offsetXAnimatable.value > 0)
+
+                                if (allowLeft || allowRight || canReturnToCenter) {
                                     totalDragDistance += kotlin.math.abs(adjustedDragAmount)
-                                    coroutineScope.launch { offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount) }
+                                    coroutineScope.launch {
+                                        offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
+                                    }
                                 }
                             },
                             onDragEnd = {
