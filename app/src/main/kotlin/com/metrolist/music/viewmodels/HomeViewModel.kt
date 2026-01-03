@@ -111,7 +111,18 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getQuickPicks() {
         when (quickPicksEnum.first()) {
-            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
+            QuickPicks.QUICK_PICKS -> {
+                val relatedSongs = database.quickPicks().first()
+                val forgotten = database.forgottenFavorites().first().take(8)
+                
+                // Combine sources and remove duplicates
+                val combined = (relatedSongs + forgotten)
+                    .distinctBy { it.id }
+                    .shuffled()
+                    .take(20)
+                
+                quickPicks.value = combined.ifEmpty { relatedSongs.shuffled().take(20) }
+            }
             QuickPicks.LAST_LISTEN -> {
                 val song = database.events().first().firstOrNull()?.song
                 if (song != null && database.hasRelatedSongs(song.id)) {
