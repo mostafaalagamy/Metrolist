@@ -325,7 +325,7 @@ interface DatabaseDao {
             SELECT songId FROM event
             WHERE timestamp > :now - 86400000 * 14
         )
-        ORDER BY song.dateAdded DESC
+        ORDER BY song.inLibrary DESC
         LIMIT 30
         """,
     )
