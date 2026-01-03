@@ -114,7 +114,6 @@ fun LibraryAlbumsScreen(
             isRefreshing = true
             when (filter) {
                 AlbumFilter.LIKED -> viewModel.syncLikedAlbums()
-                AlbumFilter.LIBRARY -> viewModel.syncLibraryAlbums()
                 AlbumFilter.UPLOADED -> viewModel.syncUploadedAlbums()
             }
             isRefreshing = false
@@ -138,7 +137,6 @@ fun LibraryAlbumsScreen(
                 chips =
                 listOf(
                     AlbumFilter.LIKED to stringResource(R.string.filter_liked),
-                    AlbumFilter.LIBRARY to stringResource(R.string.filter_library),
                     AlbumFilter.UPLOADED to stringResource(R.string.filter_uploaded)
                 ),
                 currentValue = filter,

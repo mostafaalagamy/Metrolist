@@ -142,11 +142,6 @@ constructor(
         syncUtils.syncArtistsSubscriptions()
     }
 
-    // Suspend function that waits for sync to complete - syncs library artists
-    suspend fun syncLibraryArtists() {
-        syncUtils.syncLibraryArtists()
-    }
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             allArtists.collect { artists ->
@@ -192,7 +187,6 @@ constructor(
             .flatMapLatest { (filterSort, hideExplicit) ->
                 val (filter, sortType, descending) = filterSort
                 when (filter) {
-                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                     AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                     AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                 }
@@ -201,11 +195,6 @@ constructor(
     // Suspend function that waits for sync to complete - syncs liked albums
     suspend fun syncLikedAlbums() {
         syncUtils.syncLikedAlbums()
-    }
-
-    // Suspend function that waits for sync to complete - syncs library albums
-    suspend fun syncLibraryAlbums() {
-        syncUtils.syncLibraryAlbums()
     }
 
     // Suspend function that waits for sync to complete - syncs uploaded albums
