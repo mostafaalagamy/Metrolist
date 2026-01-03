@@ -116,6 +116,3 @@
 -keep class com.metrolist.music.cast.** { *; }
 -keep class com.google.android.gms.cast.** { *; }
 -keep class androidx.mediarouter.** { *; }
-
-## JSoup re2j optional dependency
--dontwarn com.google.re2j.**
