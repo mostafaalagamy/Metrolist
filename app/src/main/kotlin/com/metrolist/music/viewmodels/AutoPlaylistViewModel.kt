@@ -70,11 +70,13 @@ constructor(
             }
             .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
 
-    fun syncLikedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+    // Suspend function that waits for sync to complete
+    suspend fun syncLikedSongs() {
+        syncUtils.syncLikedSongs()
     }
 
-    fun syncUploadedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
+    // Suspend function that waits for sync to complete
+    suspend fun syncUploadedSongs() {
+        syncUtils.syncUploadedSongs()
     }
 }
