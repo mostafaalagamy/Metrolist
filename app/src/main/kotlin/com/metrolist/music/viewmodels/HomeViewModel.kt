@@ -115,8 +115,26 @@ class HomeViewModel @Inject constructor(
                 val relatedSongs = database.quickPicks().first()
                 val forgotten = database.forgottenFavorites().first().take(8)
                 
-                // Combine sources and remove duplicates
-                val combined = (relatedSongs + forgotten)
+                // Get similar songs from YouTube based on recent listening
+                val recentSong = database.events().first().firstOrNull()?.song
+                val ytSimilarSongs = mutableListOf<Song>()
+                
+                if (recentSong != null) {
+                    val endpoint = YouTube.next(WatchEndpoint(videoId = recentSong.id)).getOrNull()?.relatedEndpoint
+                    if (endpoint != null) {
+                        YouTube.related(endpoint).onSuccess { page ->
+                            // Convert YouTube songs to local Song format if they exist in database
+                            page.songs.take(10).forEach { ytSong ->
+                                database.song(ytSong.id).first()?.let { localSong ->
+                                    ytSimilarSongs.add(localSong)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Combine all sources and remove duplicates
+                val combined = (relatedSongs + forgotten + ytSimilarSongs)
                     .distinctBy { it.id }
                     .shuffled()
                     .take(20)
