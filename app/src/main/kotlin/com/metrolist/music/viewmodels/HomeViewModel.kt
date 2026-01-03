@@ -289,18 +289,20 @@ class HomeViewModel @Inject constructor(
 
         // Prepare wrapped data in background
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                if (showWrappedCard.first()) {
-                    wrappedManager.prepare()
-                    val state = wrappedManager.state.first()
-                    val trackMap = state.trackMap
-                    if (trackMap.isNotEmpty()) {
-                        val firstTrackId = trackMap.entries.first().value
-                        wrappedAudioService.prepareTrack(firstTrackId)
+            showWrappedCard.collect { shouldShow ->
+                if (shouldShow && !wrappedManager.state.value.isDataReady) {
+                    try {
+                        wrappedManager.prepare()
+                        val state = wrappedManager.state.first { it.isDataReady }
+                        val trackMap = state.trackMap
+                        if (trackMap.isNotEmpty()) {
+                            val firstTrackId = trackMap.entries.first().value
+                            wrappedAudioService.prepareTrack(firstTrackId)
+                        }
+                    } catch (e: Exception) {
+                        reportException(e)
                     }
                 }
-            } catch (e: Exception) {
-                reportException(e)
             }
         }
 
