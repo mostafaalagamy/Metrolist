@@ -962,35 +962,72 @@ class MusicService :
         val currentMediaId = currentMediaMetadata.id
 
         scope.launch(SilentHandler) {
+            // Use radio playlist format for better compatibility
             val radioQueue = YouTubeQueue(
-                endpoint = WatchEndpoint(videoId = currentMediaId)
+                endpoint = WatchEndpoint(
+                    videoId = currentMediaId,
+                    playlistId = "RDAMVM$currentMediaId",
+                    params = "wAEB"
+                )
             )
-            val initialStatus = withContext(Dispatchers.IO) {
-                radioQueue.getInitialStatus()
-                    .filterExplicit(dataStore.get(HideExplicitKey, false))
-                    .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
-            }
-
-            if (initialStatus.title != null) {
-                queueTitle = initialStatus.title
-            }
-
-            // Filter radio items to exclude current media item
-            val radioItems = initialStatus.items.filter { item ->
-                item.mediaId != currentMediaId
-            }
-
-            if (radioItems.isNotEmpty()) {
-                val itemCount = player.mediaItemCount
-
-                if (itemCount > currentIndex + 1) {
-                    player.removeMediaItems(currentIndex + 1, itemCount)
+            
+            try {
+                val initialStatus = withContext(Dispatchers.IO) {
+                    radioQueue.getInitialStatus()
+                        .filterExplicit(dataStore.get(HideExplicitKey, false))
+                        .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
                 }
 
-                player.addMediaItems(currentIndex + 1, radioItems)
-            }
+                if (initialStatus.title != null) {
+                    queueTitle = initialStatus.title
+                }
 
-            currentQueue = radioQueue
+                // Filter radio items to exclude current media item
+                val radioItems = initialStatus.items.filter { item ->
+                    item.mediaId != currentMediaId
+                }
+
+                if (radioItems.isNotEmpty()) {
+                    val itemCount = player.mediaItemCount
+
+                    if (itemCount > currentIndex + 1) {
+                        player.removeMediaItems(currentIndex + 1, itemCount)
+                    }
+
+                    player.addMediaItems(currentIndex + 1, radioItems)
+                }
+
+                currentQueue = radioQueue
+            } catch (e: Exception) {
+                // Fallback: try with related endpoint
+                try {
+                    val nextResult = withContext(Dispatchers.IO) {
+                        YouTube.next(WatchEndpoint(videoId = currentMediaId)).getOrNull()
+                    }
+                    nextResult?.relatedEndpoint?.let { relatedEndpoint ->
+                        val relatedPage = withContext(Dispatchers.IO) {
+                            YouTube.related(relatedEndpoint).getOrNull()
+                        }
+                        relatedPage?.songs?.let { songs ->
+                            val radioItems = songs
+                                .filter { it.id != currentMediaId }
+                                .map { it.toMediaItem() }
+                                .filterExplicit(dataStore.get(HideExplicitKey, false))
+                                .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                            
+                            if (radioItems.isNotEmpty()) {
+                                val itemCount = player.mediaItemCount
+                                if (itemCount > currentIndex + 1) {
+                                    player.removeMediaItems(currentIndex + 1, itemCount)
+                                }
+                                player.addMediaItems(currentIndex + 1, radioItems)
+                            }
+                        }
+                    }
+                } catch (_: Exception) {
+                    // Silent fail
+                }
+            }
         }
     }
 
@@ -1008,18 +1045,58 @@ class MusicService :
         if (dataStore[SimilarContent] == true &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
-                YouTube
-                    .next(WatchEndpoint(playlistId = playlistId))
-                    .onSuccess {
-                        YouTube
-                            .next(WatchEndpoint(playlistId = it.endpoint.playlistId))
-                            .onSuccess {
-                                automixItems.value =
-                                    it.items.map { song ->
+                try {
+                    // Try primary method
+                    YouTube.next(WatchEndpoint(playlistId = playlistId))
+                        .onSuccess { firstResult ->
+                            YouTube.next(WatchEndpoint(playlistId = firstResult.endpoint.playlistId))
+                                .onSuccess { secondResult ->
+                                    automixItems.value = secondResult.items.map { song ->
                                         song.toMediaItem()
                                     }
+                                }
+                                .onFailure {
+                                    // Fallback: use first result items
+                                    if (firstResult.items.isNotEmpty()) {
+                                        automixItems.value = firstResult.items.map { song ->
+                                            song.toMediaItem()
+                                        }
+                                    }
+                                }
+                        }
+                        .onFailure {
+                            // Fallback: try with radio format
+                            val currentSong = player.currentMetadata
+                            if (currentSong != null) {
+                                YouTube.next(WatchEndpoint(
+                                    videoId = currentSong.id,
+                                    playlistId = "RDAMVM${currentSong.id}",
+                                    params = "wAEB"
+                                )).onSuccess { radioResult ->
+                                    val filteredItems = radioResult.items
+                                        .filter { it.id != currentSong.id }
+                                        .map { it.toMediaItem() }
+                                    if (filteredItems.isNotEmpty()) {
+                                        automixItems.value = filteredItems
+                                    }
+                                }.onFailure {
+                                    // Final fallback: try related endpoint
+                                    YouTube.next(WatchEndpoint(videoId = currentSong.id)).getOrNull()?.relatedEndpoint?.let { relatedEndpoint ->
+                                        YouTube.related(relatedEndpoint).onSuccess { relatedPage ->
+                                            val relatedItems = relatedPage.songs
+                                                .filter { it.id != currentSong.id }
+                                                .map { it.toMediaItem() }
+                                            if (relatedItems.isNotEmpty()) {
+                                                automixItems.value = relatedItems
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                    }
+                        }
+                } catch (_: Exception) {
+                    // Silent fail
+                }
             }
         }
     }
