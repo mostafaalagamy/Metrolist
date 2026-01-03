@@ -56,6 +56,8 @@ import javax.inject.Singleton
 private const val SYNC_OPERATION_DELAY_MS = 1000L
 // Larger batch delay to reduce database write frequency
 private const val SYNC_BATCH_DELAY_MS = 200L
+// Delay between processing individual items in a batch
+private const val SYNC_ITEM_DELAY_MS = 50L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 val syncCoroutine = Dispatchers.IO.limitedParallelism(1)

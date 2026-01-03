@@ -227,8 +227,6 @@ fun LibraryMixScreen(
                 }
         }.reversed(sortDescending)
 
-    val coroutineScope = rememberCoroutineScope()
-
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
     val backStackEntry by navController.currentBackStackEntryAsState()
