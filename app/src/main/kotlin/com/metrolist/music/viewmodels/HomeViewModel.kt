@@ -22,7 +22,6 @@ import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
-import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
@@ -112,45 +111,11 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getQuickPicks() {
         when (quickPicksEnum.first()) {
-            QuickPicks.QUICK_PICKS -> {
-                val combinedPicks = mutableListOf<Song>()
-                
-                // 1. Get songs from related_song_map (original algorithm)
-                val relatedSongs = database.quickPicks().first()
-                combinedPicks.addAll(relatedSongs.take(8))
-                
-                // 2. Get songs from favorite artists that weren't played recently
-                val artistSongs = database.quickPicksFromFavoriteArtists().first()
-                combinedPicks.addAll(artistSongs.take(6))
-                
-                // 3. Get liked songs not recently played
-                val likedSongs = database.likedSongsNotRecentlyPlayed().first()
-                combinedPicks.addAll(likedSongs.take(4))
-                
-                // 4. Get recently added songs not played
-                val recentlyAdded = database.recentlyAddedNotPlayed().first()
-                combinedPicks.addAll(recentlyAdded.take(4))
-                
-                // Remove duplicates, shuffle and take 20
-                quickPicks.value = combinedPicks
-                    .distinctBy { it.id }
-                    .shuffled()
-                    .take(20)
-                    .ifEmpty {
-                        // Fallback: if all sources are empty, try to get any songs from library
-                        database.songs(SongSortType.PLAY_TIME, descending = true).first().take(20)
-                    }
-            }
+            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
             QuickPicks.LAST_LISTEN -> {
                 val song = database.events().first().firstOrNull()?.song
                 if (song != null && database.hasRelatedSongs(song.id)) {
                     quickPicks.value = database.getRelatedSongs(song.id).first().shuffled().take(20)
-                } else {
-                    // Fallback to improved quick picks if no related songs
-                    val artistSongs = database.quickPicksFromFavoriteArtists().first()
-                    quickPicks.value = artistSongs.shuffled().take(20).ifEmpty {
-                        database.songs(SongSortType.PLAY_TIME, descending = true).first().take(20)
-                    }
                 }
             }
         }
