@@ -136,7 +136,7 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncAllArtists() }
     }
 
     init {
@@ -191,7 +191,7 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncAllAlbums() }
     }
 
     init {

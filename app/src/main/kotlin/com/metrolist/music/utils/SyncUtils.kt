@@ -3,8 +3,11 @@
  * O‌ute‌rTu‌ne Project Copyright (C) 2025
  * Licensed under GPL-3.0 | See git history for contributors
  * 
- * Performance optimized sync utilities - uses delays between operations
- * to prevent blocking the main thread and reduce battery usage
+ * Event-Driven Lazy Sync Strategy:
+ * - No automatic sync on library screen entry (prevents UI jank)
+ * - Sync only on: app startup (with cooldown), manual pull-to-refresh, explicit sync button
+ * - Batch database operations to reduce UI recomposition
+ * - Lower priority background processing
  */
 
 package com.metrolist.music.utils
@@ -36,6 +39,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -47,10 +52,10 @@ import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Delay between sync operations to prevent blocking
-private const val SYNC_OPERATION_DELAY_MS = 500L
-// Delay between processing items in batch operations
-private const val SYNC_ITEM_DELAY_MS = 50L
+// Increased delays for smoother UI - sync runs in true background
+private const val SYNC_OPERATION_DELAY_MS = 1000L
+// Larger batch delay to reduce database write frequency
+private const val SYNC_BATCH_DELAY_MS = 200L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 val syncCoroutine = Dispatchers.IO.limitedParallelism(1)
@@ -379,6 +384,25 @@ class SyncUtils @Inject constructor(
         } finally {
             isSyncingArtists.value = false
         }
+    }
+
+    /**
+     * Sync all albums - both liked and uploaded (library albums)
+     * Used by pull-to-refresh in LibraryAlbumsScreen
+     */
+    suspend fun syncAllAlbums() {
+        syncLikedAlbums()
+        delay(SYNC_OPERATION_DELAY_MS / 2)
+        yield()
+        syncUploadedAlbums()
+    }
+
+    /**
+     * Sync all artists - subscriptions from library
+     * Used by pull-to-refresh in LibraryArtistsScreen
+     */
+    suspend fun syncAllArtists() {
+        syncArtistsSubscriptions()
     }
 
     suspend fun syncSavedPlaylists() {
