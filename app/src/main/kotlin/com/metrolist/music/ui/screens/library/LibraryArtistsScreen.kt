@@ -104,7 +104,10 @@ fun LibraryArtistsScreen(
     val onRefresh: () -> Unit = {
         coroutineScope.launch(Dispatchers.IO) {
             isRefreshing = true
-            viewModel.sync()
+            when (filter) {
+                ArtistFilter.LIKED -> viewModel.syncLikedArtists()
+                ArtistFilter.LIBRARY -> viewModel.syncLibraryArtists()
+            }
             isRefreshing = false
         }
     }

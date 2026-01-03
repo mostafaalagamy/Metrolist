@@ -26,6 +26,7 @@ data class ArtistEntity(
     val channelId: String? = null,
     val lastUpdateTime: LocalDateTime = LocalDateTime.now(),
     val bookmarkedAt: LocalDateTime? = null,
+    val inLibrary: LocalDateTime? = null,
     @ColumnInfo(name = "isLocal", defaultValue = false.toString())
     val isLocal: Boolean = false
 ) {
@@ -37,6 +38,10 @@ data class ArtistEntity(
 
     fun localToggleLike() = copy(
         bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now(),
+    )
+
+    fun toggleLibrary() = copy(
+        inLibrary = if (inLibrary != null) null else LocalDateTime.now()
     )
 
     fun toggleLike() = localToggleLike().also {

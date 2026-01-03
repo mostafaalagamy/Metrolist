@@ -112,7 +112,11 @@ fun LibraryAlbumsScreen(
     val onRefresh: () -> Unit = {
         coroutineScope.launch(Dispatchers.IO) {
             isRefreshing = true
-            viewModel.sync()
+            when (filter) {
+                AlbumFilter.LIKED -> viewModel.syncLikedAlbums()
+                AlbumFilter.LIBRARY -> viewModel.syncLibraryAlbums()
+                AlbumFilter.UPLOADED -> viewModel.syncUploadedAlbums()
+            }
             isRefreshing = false
         }
     }

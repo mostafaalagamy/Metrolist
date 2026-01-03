@@ -97,17 +97,19 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun syncLikedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+    // Suspend function that waits for sync to complete
+    suspend fun syncLikedSongs() {
+        syncUtils.syncLikedSongs()
     }
 
     // COMMENTED OUT: Library sync function - disabled to save resources
-    // fun syncLibrarySongs() {
-    //     viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+    // suspend fun syncLibrarySongs() {
+    //     syncUtils.syncLibrarySongs()
     // }
 
-    fun syncUploadedSongs() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
+    // Suspend function that waits for sync to complete
+    suspend fun syncUploadedSongs() {
+        syncUtils.syncUploadedSongs()
     }
 }
 
@@ -135,8 +137,14 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncAllArtists() }
+    // Suspend function that waits for sync to complete
+    suspend fun syncLikedArtists() {
+        syncUtils.syncArtistsSubscriptions()
+    }
+
+    // Suspend function that waits for sync to complete - syncs library artists
+    suspend fun syncLibraryArtists() {
+        syncUtils.syncLibraryArtists()
     }
 
     init {
@@ -190,8 +198,19 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncAllAlbums() }
+    // Suspend function that waits for sync to complete - syncs liked albums
+    suspend fun syncLikedAlbums() {
+        syncUtils.syncLikedAlbums()
+    }
+
+    // Suspend function that waits for sync to complete - syncs library albums
+    suspend fun syncLibraryAlbums() {
+        syncUtils.syncLibraryAlbums()
+    }
+
+    // Suspend function that waits for sync to complete - syncs uploaded albums
+    suspend fun syncUploadedAlbums() {
+        syncUtils.syncUploadedAlbums()
     }
 
     init {
@@ -239,8 +258,9 @@ constructor(
                 database.playlists(sortType, descending)
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun sync() {
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+    // Suspend function that waits for sync to complete
+    suspend fun sync() {
+        syncUtils.syncSavedPlaylists()
     }
 
     val topValue =
@@ -286,15 +306,14 @@ constructor(
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
-    val syncAllLibrary = {
-         viewModelScope.launch(Dispatchers.IO) {
-             syncUtils.syncLikedSongs()
-             // COMMENTED OUT: Library sync
-             // syncUtils.syncLibrarySongs()
-             syncUtils.syncArtistsSubscriptions()
-             syncUtils.syncLikedAlbums()
-             syncUtils.syncSavedPlaylists()
-         }
+    // Suspend function that waits for all syncs to complete
+    suspend fun syncAllLibrary() {
+        syncUtils.syncLikedSongs()
+        // COMMENTED OUT: Library sync
+        // syncUtils.syncLibrarySongs()
+        syncUtils.syncArtistsSubscriptions()
+        syncUtils.syncLikedAlbums()
+        syncUtils.syncSavedPlaylists()
     }
     val topValue =
         context.dataStore.data

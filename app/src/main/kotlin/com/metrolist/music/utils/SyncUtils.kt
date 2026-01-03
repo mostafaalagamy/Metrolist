@@ -389,6 +389,93 @@ class SyncUtils @Inject constructor(
     }
 
     /**
+     * Sync library albums - albums added to library (not just liked)
+     * Uses FEmusic_library_corpus_albums browseId
+     */
+    suspend fun syncLibraryAlbums() {
+        if (isSyncingLikedAlbums.value) return
+        isSyncingLikedAlbums.value = true
+        try {
+            YouTube.library("FEmusic_library_corpus_albums").completed().onSuccess { page ->
+                val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
+                val remoteIds = remoteAlbums.map { it.id }.toSet()
+                val localAlbums = database.albumsByNameAsc().first()
+
+                // Remove albums not in remote library
+                localAlbums.filter { it.album.inLibrary != null }
+                    .filterNot { it.id in remoteIds }
+                    .forEach { database.update(it.album.toggleLibrary()) }
+
+                // Add/update albums from remote
+                remoteAlbums.forEach { album ->
+                    val dbAlbum = database.album(album.id).firstOrNull()
+                    YouTube.album(album.browseId).onSuccess { albumPage ->
+                        if (dbAlbum == null) {
+                            database.insert(albumPage)
+                            database.album(album.id).firstOrNull()?.let { newDbAlbum ->
+                                if (newDbAlbum.album.inLibrary == null) {
+                                    database.update(newDbAlbum.album.toggleLibrary())
+                                }
+                            }
+                        } else if (dbAlbum.album.inLibrary == null) {
+                            database.update(dbAlbum.album.toggleLibrary())
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingLikedAlbums.value = false
+        }
+    }
+
+    /**
+     * Sync library artists - artists added to library (not just subscribed)
+     * Uses FEmusic_library_corpus_track_artists browseId
+     */
+    suspend fun syncLibraryArtists() {
+        if (isSyncingArtists.value) return
+        isSyncingArtists.value = true
+        try {
+            YouTube.library("FEmusic_library_corpus_track_artists").completed().onSuccess { page ->
+                val remoteArtists = page.items.filterIsInstance<ArtistItem>()
+                val remoteIds = remoteArtists.map { it.id }.toSet()
+                val localArtists = database.artistsByNameAsc().first()
+
+                // Remove artists not in remote library
+                localArtists.filter { it.artist.inLibrary != null }
+                    .filterNot { it.id in remoteIds }
+                    .forEach { database.update(it.artist.toggleLibrary()) }
+
+                // Add/update artists from remote
+                remoteArtists.forEach { artist ->
+                    val dbArtist = database.artist(artist.id).firstOrNull()
+                    database.transaction {
+                        if (dbArtist == null) {
+                            insert(
+                                ArtistEntity(
+                                    id = artist.id,
+                                    name = artist.title,
+                                    thumbnailUrl = artist.thumbnail,
+                                    channelId = artist.channelId,
+                                    inLibrary = LocalDateTime.now()
+                                )
+                            )
+                        } else if (dbArtist.artist.inLibrary == null) {
+                            update(dbArtist.artist.toggleLibrary())
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingArtists.value = false
+        }
+    }
+
+    /**
      * Sync all albums - both liked and uploaded (library albums)
      * Used by pull-to-refresh in LibraryAlbumsScreen
      */
@@ -480,6 +567,8 @@ class SyncUtils @Inject constructor(
             val likedAlbums = database.albumsLikedByNameAsc().first()
             val subscribedArtists = database.artistsBookmarkedByNameAsc().first()
             val savedPlaylists = database.playlistsByNameAsc().first()
+            val uploadedSongs = database.uploadedSongsByNameAsc().first()
+            val uploadedAlbums = database.albumsUploadedByCreateDateAsc().first()
 
             likedSongs.forEach {
                 try { database.transaction { update(it.song.copy(liked = false, likedDate = null)) } } catch (e: Exception) { e.printStackTrace() }
@@ -499,6 +588,13 @@ class SyncUtils @Inject constructor(
                 if (it.playlist.browseId != null) {
                     try { database.transaction { delete(it.playlist) } } catch (e: Exception) { e.printStackTrace() }
                 }
+            }
+            // Clear uploaded content
+            uploadedSongs.forEach {
+                try { database.transaction { update(it.song.copy(isUploaded = false)) } } catch (e: Exception) { e.printStackTrace() }
+            }
+            uploadedAlbums.forEach {
+                try { database.transaction { update(it.album.copy(isUploaded = false)) } } catch (e: Exception) { e.printStackTrace() }
             }
         } catch (e: Exception) {
             e.printStackTrace()
