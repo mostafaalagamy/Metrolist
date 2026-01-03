@@ -213,19 +213,19 @@ class BottomSheetState(
     }
 
     private fun collapse() {
-        collapse(BottomSheetAnimationSpec)
+        collapse(SpringSpec())
     }
 
     private fun expand() {
-        expand(BottomSheetAnimationSpec)
+        expand(SpringSpec())
     }
 
     fun collapseSoft() {
-        collapse(BottomSheetSoftAnimationSpec)
+        collapse(spring(stiffness = Spring.StiffnessMediumLow))
     }
 
     fun expandSoft() {
-        expand(BottomSheetSoftAnimationSpec)
+        expand(spring(stiffness = Spring.StiffnessMediumLow))
     }
 
     fun dismiss() {
