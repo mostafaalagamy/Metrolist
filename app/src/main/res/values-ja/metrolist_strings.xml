@@ -220,4 +220,5 @@
     <string name="scrobble_min_track_duration">曲をScrobbleに使用する最短再生時間</string>
     <string name="scrobble_delay_percent">Scrobbleの遅延率</string>
     <string name="scrobble_delay_minutes">Scrobbleの遅延時間</string>
+    <string name="other_results">その他</string>
 </resources>

@@ -263,7 +263,7 @@
     <string name="sync_playlist_desc">Oynatma listesini YouTube Music ile senkronize et</string>
     <string name="enable_better_lyrics">Better Lyrics\'i Etkinleştir</string>
     <string name="enable_better_lyrics_desc">Kelime kelime senkronize edilmiş şarkı sözleri için Better Lyrics sağlayıcısını kullanın</string>
-    <string name="lyrics_animation_style">Şarkı sözü animasyon stili</string>
+    <string name="lyrics_animation_style">Kelime kelime animasyon stili</string>
     <string name="none">Hiçbiri</string>
     <string name="fade">Soluklaşmış</string>
     <string name="glow">Parıltılı</string>
@@ -272,8 +272,8 @@
     <string name="apple_music_style">Apple Müzik</string>
     <string name="lyrics_text_size">Şarkı sözü metin boyutu</string>
     <string name="lyrics_line_spacing">Şarkı sözü satır aralığı</string>
-    <string name="shuffle_playlist_first">Önce çalma listesini/albümü karıştır</string>
-    <string name="shuffle_playlist_first_desc">Karıştırma sırasında, önce orijinal çalma listesindeki/albümdeki tüm şarkıları, ardından benzer içerikleri oynat</string>
+    <string name="shuffle_playlist_first">Çalma listesini/albümü önce karıştır</string>
+    <string name="shuffle_playlist_first_desc">Şarkıları karıştırırken, önce orijinal çalma listesindeki/albümdeki tüm şarkıları, ardından benzer içerikteki şarkıları çalın</string>
     <string name="show_wrapped_card">Özet kartını göster</string>
     <string name="album_art_for">%s için albüm kapağı</string>
     <string name="wrapped_total_albums_title">Şunları dinledin</string>
