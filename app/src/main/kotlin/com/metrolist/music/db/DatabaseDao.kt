@@ -292,6 +292,63 @@ interface DatabaseDao {
     @Transaction
     @Query(
         """
+        SELECT DISTINCT song.* FROM song
+        JOIN song_artist_map sam ON song.id = sam.songId
+        WHERE sam.artistId IN (
+            SELECT artistId FROM song_artist_map
+            JOIN event ON song_artist_map.songId = event.songId
+            WHERE event.timestamp > :now - 86400000 * 30
+            GROUP BY artistId
+            ORDER BY SUM(event.playTime) DESC
+            LIMIT 10
+        )
+        AND song.id NOT IN (
+            SELECT songId FROM event
+            WHERE timestamp > :now - 86400000 * 7
+            GROUP BY songId
+            ORDER BY SUM(playTime) DESC
+            LIMIT 20
+        )
+        AND song.inLibrary IS NOT NULL
+        ORDER BY RANDOM()
+        LIMIT 50
+        """,
+    )
+    fun quickPicksFromFavoriteArtists(now: Long = System.currentTimeMillis()): Flow<List<Song>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT song.* FROM song
+        WHERE song.inLibrary IS NOT NULL
+        AND song.id NOT IN (
+            SELECT songId FROM event
+            WHERE timestamp > :now - 86400000 * 14
+        )
+        ORDER BY song.dateAdded DESC
+        LIMIT 30
+        """,
+    )
+    fun recentlyAddedNotPlayed(now: Long = System.currentTimeMillis()): Flow<List<Song>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT song.* FROM song
+        WHERE song.liked = 1
+        AND song.id NOT IN (
+            SELECT songId FROM event
+            WHERE timestamp > :now - 86400000 * 7
+        )
+        ORDER BY RANDOM()
+        LIMIT 20
+        """,
+    )
+    fun likedSongsNotRecentlyPlayed(now: Long = System.currentTimeMillis()): Flow<List<Song>>
+
+    @Transaction
+    @Query(
+        """
         SELECT
             song.*
         FROM
