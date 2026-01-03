@@ -77,6 +77,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -271,12 +272,18 @@ fun BottomSheetPlayer(
     // Use Cast state when casting, otherwise local player
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
-    var position by rememberSaveable(playbackState) {
+    // Use State objects for position/duration to pass to MiniPlayer without causing recomposition
+    val positionState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
     }
-    var duration by rememberSaveable(playbackState) {
+    val durationState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.duration)
     }
+    
+    // Convenience accessors for local use
+    var position by positionState
+    var duration by durationState
+    
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
@@ -663,8 +670,8 @@ fun BottomSheetPlayer(
         },
         collapsedContent = {
             MiniPlayer(
-                position = position,
-                duration = duration
+                positionState = positionState,
+                durationState = durationState
             )
         },
     ) {
