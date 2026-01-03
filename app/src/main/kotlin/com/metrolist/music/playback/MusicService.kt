@@ -52,6 +52,7 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
@@ -121,6 +122,9 @@ import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.RelatedSongMap
 import com.metrolist.music.di.DownloadCache
 import com.metrolist.music.di.PlayerCache
+import com.metrolist.music.eq.EqualizerService
+import com.metrolist.music.eq.audio.CustomEqualizerAudioProcessor
+import com.metrolist.music.eq.data.EQProfileRepository
 import com.metrolist.music.extensions.SilentHandler
 import com.metrolist.music.extensions.collect
 import com.metrolist.music.extensions.collectLatest
@@ -180,7 +184,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class, UnstableApi::class)
 @AndroidEntryPoint
 class MusicService :
     MediaLibraryService(),
@@ -197,6 +201,12 @@ class MusicService :
 
     @Inject
     lateinit var mediaLibrarySessionCallback: MediaLibrarySessionCallback
+
+    @Inject
+    lateinit var equalizerService: EqualizerService
+
+    @Inject
+    lateinit var eqProfileRepository: EQProfileRepository
 
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
@@ -244,6 +254,9 @@ class MusicService :
     lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaLibrarySession
 
+    // Custom Audio Processor
+    private val customEqualizerAudioProcessor = CustomEqualizerAudioProcessor()
+
     private var isAudioEffectSessionOpened = false
     private var loudnessEnhancer: LoudnessEnhancer? = null
 
@@ -268,6 +281,9 @@ class MusicService :
 
     override fun onCreate() {
         super.onCreate()
+
+        // 3. Connect the processor to the service
+        equalizerService.setAudioProcessor(customEqualizerAudioProcessor)
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -368,6 +384,28 @@ class MusicService :
 
         // Initialize Google Cast
         initializeCast()
+
+        // 4. Watch for EQ profile changes
+        scope.launch {
+            eqProfileRepository.activeProfile.collect { profile ->
+                if (profile != null) {
+                    val applied = equalizerService.applyProfile(profile)
+                    if (applied && player.playbackState == Player.STATE_READY && player.isPlaying) {
+                        // Instant update: flush buffers and seek slightly to re-process audio
+                        customEqualizerAudioProcessor.flush()
+                        // Small seek to force re-buffer through the new EQ settings
+                        // Seek to current position effectively resets the pipeline
+                        player.seekTo(player.currentPosition) 
+                    }
+                } else {
+                    equalizerService.disable()
+                    if (player.playbackState == Player.STATE_READY && player.isPlaying) {
+                        customEqualizerAudioProcessor.flush()
+                        player.seekTo(player.currentPosition)
+                    }
+                }
+            }
+        }
 
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
@@ -1648,7 +1686,8 @@ class MusicService :
                 .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
                 .setAudioProcessorChain(
                     DefaultAudioSink.DefaultAudioProcessorChain(
-                        emptyArray(),
+                        // 2. Inject processor into audio pipeline
+                        arrayOf(customEqualizerAudioProcessor),
                         SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
                         SonicAudioProcessor(),
                     ),

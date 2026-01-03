@@ -363,7 +363,11 @@ class MainActivity : ComponentActivity() {
                                         .setContentIntent(pending)
                                         .setAutoCancel(true)
                                         .build()
-                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                    
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                                        ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                        NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                    }
                                 }
                             }
                         }
@@ -518,7 +522,8 @@ class MainActivity : ComponentActivity() {
                             val route = currentRoute
                             route == null ||
                                     navigationItemRoutes.contains(route) ||
-                                    route.startsWith("search/")
+                                    route.startsWith("search/") ||
+                                    route == "equalizer"
                         }
                     }
 
@@ -564,9 +569,13 @@ class MainActivity : ComponentActivity() {
                             expandedBound = maxHeight,
                         )
 
-                    // Keep using remember with keys for playerAwareWindowInsets
-                    // because it depends on non-State values (bottomInset, windowsInsets)
-                    // derivedStateOf only tracks State objects, not regular values
+                    // Auto-close equalizer when player is expanded
+                    LaunchedEffect(playerBottomSheetState.isExpanded) {
+                        if (playerBottomSheetState.isExpanded && navController.currentDestination?.route == "equalizer") {
+                            navController.popBackStack()
+                        }
+                    }
+
                     val playerAwareWindowInsets = remember(
                         bottomInset,
                         shouldShowNavigationBar,
@@ -831,18 +840,29 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (isSelected) {
-                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                            coroutineScope.launch {
-                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                        var handled = false
+                                        if (navController.currentDestination?.route == "equalizer") {
+                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
+                                            navController.popBackStack()
+                                            if (previousRoute == screen.route) {
+                                                handled = true
                                             }
-                                        } else {
-                                            navController.navigate(screen.route) {
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
+                                        }
+                                        
+                                        if (!handled) {
+                                            if (isSelected) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                coroutineScope.launch {
+                                                    searchBarScrollBehavior.state.resetHeightOffset()
                                                 }
-                                                launchSingleTop = true
-                                                restoreState = true
+                                            } else {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.startDestinationId) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
                                             }
                                         }
                                     }
@@ -934,18 +954,29 @@ class MainActivity : ComponentActivity() {
                                             playerBottomSheetState.collapseSoft()
                                         }
                                         
-                                        if (isSelected) {
-                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                            coroutineScope.launch {
-                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                        var handled = false
+                                        if (navController.currentDestination?.route == "equalizer") {
+                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
+                                            navController.popBackStack()
+                                            if (previousRoute == screen.route) {
+                                                handled = true
                                             }
-                                        } else {
-                                            navController.navigate(screen.route) {
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
+                                        }
+                                        
+                                        if (!handled) {
+                                            if (isSelected) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                coroutineScope.launch {
+                                                    searchBarScrollBehavior.state.resetHeightOffset()
                                                 }
-                                                launchSingleTop = true
-                                                restoreState = true
+                                            } else {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.startDestinationId) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
                                             }
                                         }
                                     }
