@@ -207,30 +207,6 @@ fun AlbumScreen(
                         .padding(top = 8.dp, bottom = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Artist Names - Above the image
-                    Text(buildAnnotatedString {
-                        withStyle(
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Normal,
-                                color = MaterialTheme.colorScheme.onBackground
-                            ).toSpanStyle()
-                        ) {
-                            albumWithSongs.artists.fastForEachIndexed { index, artist ->
-                                val link = LinkAnnotation.Clickable(artist.id) {
-                                    navController.navigate("artist/${artist.id}")
-                                }
-                                withLink(link) {
-                                    append(artist.name)
-                                }
-                                if (index != albumWithSongs.artists.lastIndex) {
-                                    append(", ")
-                                }
-                            }
-                        }
-                    }, textAlign = TextAlign.Center)
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     // Album Thumbnail - Large centered with shadow
                     Surface(
                         modifier = Modifier
@@ -262,6 +238,30 @@ fun AlbumScreen(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Artist Names - Below the album name
+                    Text(buildAnnotatedString {
+                        withStyle(
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onBackground
+                            ).toSpanStyle()
+                        ) {
+                            albumWithSongs.artists.fastForEachIndexed { index, artist ->
+                                val link = LinkAnnotation.Clickable(artist.id) {
+                                    navController.navigate("artist/${artist.id}")
+                                }
+                                withLink(link) {
+                                    append(artist.name)
+                                }
+                                if (index != albumWithSongs.artists.lastIndex) {
+                                    append(", ")
+                                }
+                            }
+                        }
+                    }, textAlign = TextAlign.Center)
 
                     Spacer(modifier = Modifier.height(12.dp))
 
