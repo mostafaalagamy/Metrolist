@@ -2,6 +2,9 @@
  * Metrolist Project (C) 2026
  * O‌ute‌rTu‌ne Project Copyright (C) 2025
  * Licensed under GPL-3.0 | See git history for contributors
+ * 
+ * Performance optimized sync utilities - uses delays between operations
+ * to prevent blocking the main thread and reduce battery usage
  */
 
 package com.metrolist.music.utils
@@ -31,17 +34,23 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
+
+// Delay between sync operations to prevent blocking
+private const val SYNC_OPERATION_DELAY_MS = 500L
+// Delay between processing items in batch operations
+private const val SYNC_ITEM_DELAY_MS = 50L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 val syncCoroutine = Dispatchers.IO.limitedParallelism(1)
@@ -81,11 +90,27 @@ class SyncUtils @Inject constructor(
             return
         }
 
+        // Add delays between sync operations to prevent blocking UI
         syncLikedSongs()
+        delay(SYNC_OPERATION_DELAY_MS)
+        yield() // Allow other coroutines to run
+        
         syncUploadedSongs()
+        delay(SYNC_OPERATION_DELAY_MS)
+        yield()
+        
         syncLikedAlbums()
+        delay(SYNC_OPERATION_DELAY_MS)
+        yield()
+        
         syncUploadedAlbums()
+        delay(SYNC_OPERATION_DELAY_MS)
+        yield()
+        
         syncArtistsSubscriptions()
+        delay(SYNC_OPERATION_DELAY_MS)
+        yield()
+        
         syncSavedPlaylists()
 
         context.dataStore.edit { settings ->
@@ -96,10 +121,25 @@ class SyncUtils @Inject constructor(
     fun runAllSyncs() {
         syncScope.launch {
             syncLikedSongs()
+            delay(SYNC_OPERATION_DELAY_MS)
+            yield()
+            
             syncUploadedSongs()
+            delay(SYNC_OPERATION_DELAY_MS)
+            yield()
+            
             syncLikedAlbums()
+            delay(SYNC_OPERATION_DELAY_MS)
+            yield()
+            
             syncUploadedAlbums()
+            delay(SYNC_OPERATION_DELAY_MS)
+            yield()
+            
             syncArtistsSubscriptions()
+            delay(SYNC_OPERATION_DELAY_MS)
+            yield()
+            
             syncSavedPlaylists()
         }
     }
@@ -126,27 +166,37 @@ class SyncUtils @Inject constructor(
         try {
             YouTube.playlist("LM").completed().onSuccess { page ->
                 val remoteSongs = page.songs
-                val remoteIds = remoteSongs.map { it.id }
+                val remoteIds = remoteSongs.map { it.id }.toSet()
                 val localSongs = database.likedSongsByNameAsc().first()
 
-                localSongs.filterNot { it.id in remoteIds }.forEach {
-                    try {
-                        database.transaction { update(it.song.localToggleLike()) }
-                    } catch (e: Exception) { e.printStackTrace() }
+                // Process local songs not in remote - with batching
+                localSongs.filterNot { it.id in remoteIds }.chunked(10).forEach { batch ->
+                    batch.forEach {
+                        try {
+                            database.transaction { update(it.song.localToggleLike()) }
+                        } catch (e: Exception) { e.printStackTrace() }
+                    }
+                    delay(SYNC_ITEM_DELAY_MS)
+                    yield()
                 }
 
-                remoteSongs.forEachIndexed { index, song ->
-                    try {
-                        val dbSong = database.song(song.id).firstOrNull()
-                        val timestamp = LocalDateTime.now().minusSeconds(index.toLong())
-                        database.transaction {
-                            if (dbSong == null) {
-                                insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
-                            } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
-                                update(dbSong.song.copy(liked = true, likedDate = timestamp))
+                // Process remote songs - with batching
+                remoteSongs.chunked(10).forEachIndexed { batchIndex, batch ->
+                    batch.forEachIndexed { index, song ->
+                        try {
+                            val dbSong = database.song(song.id).firstOrNull()
+                            val timestamp = LocalDateTime.now().minusSeconds((batchIndex * 10 + index).toLong())
+                            database.transaction {
+                                if (dbSong == null) {
+                                    insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
+                                } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
+                                    update(dbSong.song.copy(liked = true, likedDate = timestamp))
+                                }
                             }
-                        }
-                    } catch (e: Exception) { e.printStackTrace() }
+                        } catch (e: Exception) { e.printStackTrace() }
+                    }
+                    delay(SYNC_ITEM_DELAY_MS)
+                    yield()
                 }
             }
         } catch (e: Exception) {
@@ -384,15 +434,12 @@ class SyncUtils @Inject constructor(
 
                 database.transaction {
                     clearPlaylist(playlistId)
-                    val songEntities = songs.onEach { song ->
-                        if (runBlocking { database.song(song.id).firstOrNull() } == null) {
-                            insert(song)
-                        }
-                    }
-                    val playlistSongMaps = songEntities.mapIndexed { position, song ->
+                    // Insert songs directly - OnConflictStrategy.IGNORE handles duplicates
+                    songs.forEach { song -> insert(song) }
+                    // Create playlist song maps
+                    songs.mapIndexed { position, song ->
                         PlaylistSongMap(songId = song.id, playlistId = playlistId, position = position, setVideoId = song.setVideoId)
-                    }
-                    playlistSongMaps.forEach { insert(it) }
+                    }.forEach { insert(it) }
                 }
             }
         } catch (e: Exception) {
