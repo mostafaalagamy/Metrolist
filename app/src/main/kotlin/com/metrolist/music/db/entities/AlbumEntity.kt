@@ -46,6 +46,10 @@ data class AlbumEntity(
         isUploaded = !isUploaded
     )
 
+    fun toggleLibrary() = copy(
+        inLibrary = if (inLibrary != null) null else LocalDateTime.now()
+    )
+
     fun toggleLike() = localToggleLike().also {
         CoroutineScope(Dispatchers.IO).launch {
             if (playlistId != null)
