@@ -287,20 +287,22 @@ class HomeViewModel @Inject constructor(
             syncUtils.tryAutoSync()
         }
 
-        // Prepare wrapped data in background
+        // Prepare wrapped data in background - observe changes to handle both initial load and re-enable from settings
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                if (showWrappedCard.first()) {
-                    wrappedManager.prepare()
-                    val state = wrappedManager.state.first()
-                    val trackMap = state.trackMap
-                    if (trackMap.isNotEmpty()) {
-                        val firstTrackId = trackMap.entries.first().value
-                        wrappedAudioService.prepareTrack(firstTrackId)
+            showWrappedCard.collect { shouldShow ->
+                if (shouldShow && !wrappedManager.state.value.isDataReady) {
+                    try {
+                        wrappedManager.prepare()
+                        val state = wrappedManager.state.first { it.isDataReady }
+                        val trackMap = state.trackMap
+                        if (trackMap.isNotEmpty()) {
+                            val firstTrackId = trackMap.entries.first().value
+                            wrappedAudioService.prepareTrack(firstTrackId)
+                        }
+                    } catch (e: Exception) {
+                        reportException(e)
                     }
                 }
-            } catch (e: Exception) {
-                reportException(e)
             }
         }
 
