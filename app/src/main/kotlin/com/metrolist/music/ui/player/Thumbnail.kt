@@ -456,11 +456,6 @@ private fun ThumbnailHeader(
                 )
             }
         }
-        
-        CastButton(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            tintColor = textColor
-        )
     }
 }
 
@@ -541,6 +536,14 @@ private fun ThumbnailItem(
             } else {
                 ThumbnailImage(artworkUri = item.mediaMetadata.artworkUri?.toString())
             }
+            
+            // Cast button at top-right corner of thumbnail
+            CastButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp),
+                tintColor = textBackgroundColor
+            )
         }
     }
 }
