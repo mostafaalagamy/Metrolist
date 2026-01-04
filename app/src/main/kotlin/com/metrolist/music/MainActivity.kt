@@ -72,6 +72,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -118,6 +119,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.coroutineScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -214,6 +216,11 @@ import kotlin.time.Duration.Companion.days
 @Suppress("DEPRECATION", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
+        private const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
+    }
+
     @Inject
     lateinit var database: MusicDatabase
 
@@ -337,103 +344,125 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
+            MetrolistApp(
+                latestVersionName = latestVersionName,
+                onLatestVersionNameChange = { latestVersionName = it },
+                playerConnection = playerConnection,
+                database = database,
+                downloadUtil = downloadUtil,
+                syncUtils = syncUtils,
+            )
+        }
+    }
 
-            LaunchedEffect(checkForUpdates) {
-                if (checkForUpdates) {
-                    withContext(Dispatchers.IO) {
-                        if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
-                            val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
-                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
-                            if (!updatesEnabled) return@withContext
-                            Updater.getLatestVersionName().onSuccess {
-                                latestVersionName = it
-                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
-                                    val downloadUrl = Updater.getLatestDownloadUrl()
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun MetrolistApp(
+        latestVersionName: String,
+        onLatestVersionNameChange: (String) -> Unit,
+        playerConnection: PlayerConnection?,
+        database: MusicDatabase,
+        downloadUtil: DownloadUtil,
+        syncUtils: SyncUtils,
+    ) {
+        val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
 
-                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or
-                                            (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-                                    val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+        LaunchedEffect(checkForUpdates) {
+            if (checkForUpdates) {
+                withContext(Dispatchers.IO) {
+                    if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                        val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
+                        val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
+                        if (!updatesEnabled) return@withContext
+                        Updater.getLatestVersionName().onSuccess {
+                            onLatestVersionNameChange(it)
+                            if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                                val downloadUrl = Updater.getLatestDownloadUrl()
+                                val intent = Intent(Intent.ACTION_VIEW, downloadUrl.toUri())
 
-                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
-                                        .setSmallIcon(R.drawable.update)
-                                        .setContentTitle(getString(R.string.update_available_title))
-                                        .setContentText(it)
-                                        .setContentIntent(pending)
-                                        .setAutoCancel(true)
-                                        .build()
-                                    
-                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                                        ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                        NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
-                                    }
+                                val flags = PendingIntent.FLAG_UPDATE_CURRENT or
+                                        (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+
+                                val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                    .setSmallIcon(R.drawable.update)
+                                    .setContentTitle(getString(R.string.update_available_title))
+                                    .setContentText(it)
+                                    .setContentIntent(pending)
+                                    .setAutoCancel(true)
+                                    .build()
+
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                                    ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
                                 }
                             }
                         }
                     }
-                } else {
-                    // when the user disables updates, reset to the current version
-                    // to trick the app into thinking it's on the latest version
-                    latestVersionName = BuildConfig.VERSION_NAME
                 }
+            } else {
+                // when the user disables updates, reset to the current version
+                // to trick the app into thinking it's on the latest version
+                onLatestVersionNameChange(BuildConfig.VERSION_NAME)
+            }
+        }
+
+        val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
+        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+            if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+        }
+
+        LaunchedEffect(useDarkTheme) {
+            setSystemBarAppearance(useDarkTheme)
+        }
+
+        val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
+        val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
+            pureBlackEnabled && useDarkTheme
+        }
+
+        var themeColor by rememberSaveable(stateSaver = ColorSaver) {
+            mutableStateOf(DefaultThemeColor)
+        }
+
+        LaunchedEffect(playerConnection, enableDynamicTheme) {
+            val playerConnection = playerConnection
+            if (!enableDynamicTheme || playerConnection == null) {
+                themeColor = DefaultThemeColor
+                return@LaunchedEffect
             }
 
-            val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
-            val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-            val isSystemInDarkTheme = isSystemInDarkTheme()
-            val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-                if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-            }
-
-            LaunchedEffect(useDarkTheme) {
-                setSystemBarAppearance(useDarkTheme)
-            }
-
-            val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
-            val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
-                pureBlackEnabled && useDarkTheme
-            }
-
-            var themeColor by rememberSaveable(stateSaver = ColorSaver) {
-                mutableStateOf(DefaultThemeColor)
-            }
-
-            LaunchedEffect(playerConnection, enableDynamicTheme) {
-                val playerConnection = playerConnection
-                if (!enableDynamicTheme || playerConnection == null) {
-                    themeColor = DefaultThemeColor
-                    return@LaunchedEffect
-                }
-
-                playerConnection.service.currentMediaMetadata.collectLatest { song ->
-                    if (song?.thumbnailUrl != null) {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                val result = imageLoader.execute(
-                                    ImageRequest.Builder(this@MainActivity)
-                                        .data(song.thumbnailUrl)
-                                        .allowHardware(false)
-                                        .memoryCachePolicy(CachePolicy.ENABLED)
-                                        .diskCachePolicy(CachePolicy.ENABLED)
-                                        .networkCachePolicy(CachePolicy.ENABLED)
-                                        .crossfade(false)
-                                        .build()
-                                )
-                                themeColor = result.image?.toBitmap()?.extractThemeColor()
-                                    ?: DefaultThemeColor
-                            } catch (e: Exception) {
-                                // Fallback to default on error
-                                themeColor = DefaultThemeColor
-                            }
+            playerConnection.service.currentMediaMetadata.collectLatest { song ->
+                if (song?.thumbnailUrl != null) {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            val result = imageLoader.execute(
+                                ImageRequest.Builder(this@MainActivity)
+                                    .data(song.thumbnailUrl)
+                                    .allowHardware(false)
+                                    .memoryCachePolicy(CachePolicy.ENABLED)
+                                    .diskCachePolicy(CachePolicy.ENABLED)
+                                    .networkCachePolicy(CachePolicy.ENABLED)
+                                    .crossfade(false)
+                                    .build()
+                            )
+                            themeColor = result.image?.toBitmap()?.extractThemeColor()
+                                ?: DefaultThemeColor
+                        } catch (e: Exception) {
+                            // Fallback to default on error
+                            themeColor = DefaultThemeColor
                         }
-                    } else {
-                        themeColor = DefaultThemeColor
                     }
+                } else {
+                    themeColor = DefaultThemeColor
                 }
             }
+        }
 
-            MetrolistTheme(
+        MetrolistTheme(
                 darkTheme = useDarkTheme,
                 pureBlack = pureBlack,
                 themeColor = themeColor,
@@ -468,8 +497,8 @@ class MainActivity : ComponentActivity() {
                     }
                     val tabOpenedFromShortcut = remember {
                         when (intent?.action) {
-                            ACTION_LIBRARY -> NavigationTab.LIBRARY
-                            ACTION_SEARCH -> NavigationTab.SEARCH
+                            ACTION_SEARCH -> NavigationTab.LIBRARY
+                            ACTION_LIBRARY -> NavigationTab.SEARCH
                             else -> null
                         }
                     }
@@ -1079,13 +1108,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
+
 
     private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
         val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
         intent.data = null
         intent.removeExtra(Intent.EXTRA_TEXT)
-        val coroutineScope = lifecycleScope
+        val coroutineScope = lifecycle.coroutineScope
 
         when (val path = uri.pathSegments.firstOrNull()) {
             "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
@@ -1177,11 +1206,6 @@ class MainActivity : ComponentActivity() {
             window.navigationBarColor =
                 (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
         }
-    }
-
-    companion object {
-        const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
-        const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
     }
 }
 
