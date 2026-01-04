@@ -251,3 +251,31 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
     background: var(--border-color);
     border-color: var(--text-main);
 }
+
+/* Apply theme gradient to the creator link text */
+.creator-credit a {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-weight: 700; /* Bold to make the gradient more visible */
+    text-decoration: none;
+}
+
+/* Optional: slightly increase brightness on hover without animation */
+.creator-credit a:hover {
+    filter: brightness(1.2);
+}
+
+/* Text selection highlight color */
+::selection {
+    background-color: var(--accent);
+    color: var(--bg-color);
+}
+
+/* For Firefox browser */
+::-moz-selection {
+    background-color: var(--accent);
+    color: var(--bg-color);
+}
