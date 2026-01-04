@@ -55,7 +55,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
@@ -1433,8 +1432,8 @@ fun BottomSheetPlayer(
                 // Calculate vertical padding like OuterTune
                 val density = LocalDensity.current
                 val vPadding = max(
-                    WindowInsets.safeDrawing.getTop(density),
-                    WindowInsets.safeDrawing.getBottom(density)
+                    WindowInsets.systemBars.getTop(density),
+                    WindowInsets.systemBars.getBottom(density)
                 )
                 val vPaddingDp = with(density) { vPadding.toDp() }
                 val verticalInsets = WindowInsets(left = 0.dp, top = vPaddingDp, right = 0.dp, bottom = vPaddingDp)
@@ -1442,7 +1441,7 @@ fun BottomSheetPlayer(
                 Row(
                     modifier = Modifier
                         .windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).add(verticalInsets)
+                            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).add(verticalInsets)
                         )
                         .padding(bottom = 8.dp)
                         .fillMaxSize()
