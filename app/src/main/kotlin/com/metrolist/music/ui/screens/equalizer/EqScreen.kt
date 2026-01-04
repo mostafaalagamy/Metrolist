@@ -96,15 +96,13 @@ fun EqScreen(
             kotlinx.coroutines.delay(2000)
             showSuccess = false
         }
-        Snackbar(
-            modifier = Modifier.padding(16.dp),
-            action = {
-                TextButton(onClick = { showSuccess = false }) {
-                    Text("Dismiss")
-                }
+        // Use a Surface for the Snackbar to make it visible above the dialog content if needed,
+        // or rely on standard positioning. Since we are in a Dialog, standard Snackbar host might be covered.
+        // A simple custom overlay is safer.
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Snackbar(modifier = Modifier.padding(16.dp)) {
+                Text("Custom EQ profile imported successfully")
             }
-        ) {
-            Text("Custom EQ profile imported successfully")
         }
     }
 
@@ -132,40 +130,48 @@ private fun EqScreenContent(
     onImportCustomEQ: () -> Unit,
     onDeleteProfile: (String) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("Equalizer")
-                        val customProfilesCount = profiles.count { it.isCustom }
-                        Text(
-                            text = "$customProfilesCount ${if (customProfilesCount == 1) "profile" else "profiles"}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onImportCustomEQ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Import Custom EQ"
-                        )
-                    }
+    Surface(
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tonalElevation = 6.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 600.dp)
+            .padding(vertical = 24.dp) // Optional extra padding if desired, but dialog handles it.
+    ) {
+        Column {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        text = "Equalizer",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    val customProfilesCount = profiles.count { it.isCustom }
+                    Text(
+                        text = "$customProfilesCount ${if (customProfilesCount == 1) "profile" else "profiles"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
+                IconButton(onClick = onImportCustomEQ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Import Custom EQ"
+                    )
+                }
+            }
+
             // Profile list
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(bottom = 16.dp)
             ) {
                 // "No Equalization" option (always first)
                 item {
@@ -209,7 +215,7 @@ private fun EqScreenContent(
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "No custom EQ profiles yet",
+                                    text = "No custom EQ profiles",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -233,45 +239,26 @@ private fun NoEqualizationItem(
     isSelected: Boolean,
     onSelected: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable(onClick = onSelected),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = "Equalizer Disabled",
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+            )
+        },
+        supportingContent = {
+            Text("Select a profile to apply")
+        },
+        leadingContent = {
             RadioButton(
                 selected = isSelected,
                 onClick = onSelected
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Equalizer Disabled",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "Select or import an EQ profile to apply equalization to your music. Profiles must conform to the EqualizerAPO ParametricEq format.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable(onClick = onSelected)
+            .padding(horizontal = 8.dp) // align with design
+    )
 }
 
 @Composable
@@ -283,58 +270,35 @@ private fun EQProfileItem(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable(onClick = onSelected),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = profile.deviceModel,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+            )
+        },
+        supportingContent = {
+            Text("${profile.bands.size} bands")
+        },
+        leadingContent = {
             RadioButton(
                 selected = isSelected,
                 onClick = onSelected
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                // Device model name (used as profile name for custom profiles)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = profile.deviceModel,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "${profile.bands.size} frequency bands",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+        },
+        trailingContent = {
             IconButton(onClick = { showDeleteDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete profile",
+                    contentDescription = "Delete",
                     tint = MaterialTheme.colorScheme.error
                 )
             }
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable(onClick = onSelected)
+            .padding(horizontal = 8.dp)
+    )
 
     // Delete confirmation dialog
     if (showDeleteDialog) {
