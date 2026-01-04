@@ -48,16 +48,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.platform.LocalDensity
+import kotlin.math.max
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -1426,24 +1430,28 @@ fun BottomSheetPlayer(
 
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                val bottomPadding by animateDpAsState(
-                    targetValue = if (isFullScreen) 0.dp else queueSheetState.collapsedBound + 48.dp,
-                    label = "bottomPadding"
+                // Calculate vertical padding like OuterTune
+                val density = LocalDensity.current
+                val vPadding = max(
+                    WindowInsets.safeDrawing.getTop(density),
+                    WindowInsets.safeDrawing.getBottom(density)
                 )
+                val vPaddingDp = with(density) { vPadding.toDp() }
+                val verticalInsets = WindowInsets(left = 0.dp, top = vPaddingDp, right = 0.dp, bottom = vPaddingDp)
+                
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier =
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .padding(bottom = bottomPadding)
-                        .animateContentSize(),
+                    modifier = Modifier
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).add(verticalInsets)
+                        )
+                        .fillMaxSize()
                 ) {
-                    Box(
+                    BoxWithConstraints(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .nestedScroll(state.preUpPostDownNestedScrollConnection)
                     ) {
-                        val screenWidth = LocalConfiguration.current.screenWidthDp
-                        val thumbnailSize = (screenWidth * 0.4).dp
                         // Remember lambdas to prevent unnecessary recomposition
                         val currentSliderPosition by rememberUpdatedState(sliderPosition)
                         val sliderPositionProvider = remember { { currentSliderPosition } }
@@ -1458,21 +1466,27 @@ fun BottomSheetPlayer(
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
-                                    modifier = Modifier.size(thumbnailSize),
+                                    modifier = Modifier.animateContentSize(),
                                     isPlayerExpanded = isExpandedProvider
                                 )
                             }
                         }
                     }
+
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 24.dp)
+                            .weight(if (showInlineLyrics) 0.65f else 1f, false)
+                            .animateContentSize()
+                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
                     ) {
+                        Spacer(Modifier.weight(1f))
+
                         mediaMetadata?.let {
                             controlsContent(it)
                         }
+
+                        Spacer(Modifier.weight(1f))
                     }
                 }
             }
