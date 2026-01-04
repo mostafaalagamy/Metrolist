@@ -1444,6 +1444,7 @@ fun BottomSheetPlayer(
                         .windowInsetsPadding(
                             WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).add(verticalInsets)
                         )
+                        .padding(bottom = 8.dp)
                         .fillMaxSize()
                 ) {
                     BoxWithConstraints(
