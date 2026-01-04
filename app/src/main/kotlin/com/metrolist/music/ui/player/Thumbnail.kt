@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -105,20 +106,28 @@ data class MediaItemsData(
 )
 
 /**
- * Calculate thumbnail dimensions once based on container width.
+ * Calculate thumbnail dimensions once based on container size.
  * This function is marked as @Stable to indicate it produces stable results.
+ * In landscape mode, uses the smaller dimension (height) to ensure square thumbnail fits.
  */
 @Stable
 private fun calculateThumbnailDimensions(
     containerWidth: Dp,
+    containerHeight: Dp = containerWidth,
     horizontalPadding: Dp = PlayerHorizontalPadding,
-    cornerRadius: Dp = ThumbnailCornerRadius
+    cornerRadius: Dp = ThumbnailCornerRadius,
+    isLandscape: Boolean = false
 ): ThumbnailDimensions {
-    val thumbnailSize = containerWidth - (horizontalPadding * 2)
+    // In landscape, use height as the constraining dimension for a square thumbnail
+    val effectiveSize = if (isLandscape) {
+        minOf(containerWidth, containerHeight) - (horizontalPadding * 2)
+    } else {
+        containerWidth - (horizontalPadding * 2)
+    }
     return ThumbnailDimensions(
         itemWidth = containerWidth,
         containerSize = containerWidth,
-        thumbnailSize = thumbnailSize,
+        thumbnailSize = effectiveSize,
         cornerRadius = cornerRadius * 2
     )
 }
@@ -188,6 +197,7 @@ fun Thumbnail(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
     isPlayerExpanded: () -> Boolean = { true },
+    isLandscape: Boolean = false,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -308,27 +318,38 @@ fun Thumbnail(
             exit = fadeOut(),
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .then(if (!isLandscape) Modifier.statusBarsPadding() else Modifier),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = if (isLandscape) Arrangement.Center else Arrangement.Top
             ) {
-                // Now Playing header
-                ThumbnailHeader(
-                    queueTitle = queueTitle,
-                    albumTitle = mediaMetadata?.album?.title,
-                    textColor = textBackgroundColor
-                )
+                // Now Playing header - hide in landscape mode
+                if (!isLandscape) {
+                    ThumbnailHeader(
+                        queueTitle = queueTitle,
+                        albumTitle = mediaMetadata?.album?.title,
+                        textColor = textBackgroundColor
+                    )
+                }
                 
                 // Thumbnail content
                 BoxWithConstraints(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = if (isLandscape) {
+                        Modifier.weight(1f, false)
+                    } else {
+                        Modifier.fillMaxSize()
+                    }
                 ) {
-                    // Calculate dimensions once per size change
-                    val dimensions = remember(maxWidth) {
-                        calculateThumbnailDimensions(maxWidth)
+                    // Calculate dimensions once per size change, considering landscape mode
+                    val dimensions = remember(maxWidth, maxHeight, isLandscape) {
+                        calculateThumbnailDimensions(
+                            containerWidth = maxWidth,
+                            containerHeight = maxHeight,
+                            isLandscape = isLandscape
+                        )
                     }
 
                     // Remember the onSeek callback to prevent recomposition
@@ -349,7 +370,11 @@ fun Thumbnail(
                         rows = GridCells.Fixed(1),
                         flingBehavior = rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
                         userScrollEnabled = isScrollEnabled,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = if (isLandscape) {
+                            Modifier.size(dimensions.thumbnailSize + (PlayerHorizontalPadding * 2))
+                        } else {
+                            Modifier.fillMaxSize()
+                        }
                     ) {
                         items(
                             items = mediaItems,
@@ -365,7 +390,8 @@ fun Thumbnail(
                                 layoutDirection = layoutDirection,
                                 onSeek = onSeekCallback,
                                 playerConnection = playerConnection,
-                                context = context
+                                context = context,
+                                isLandscape = isLandscape
                             )
                         }
                     }
@@ -451,7 +477,8 @@ private fun ThumbnailItem(
     onSeek: (String, Boolean) -> Unit,
     playerConnection: com.metrolist.music.playback.PlayerConnection,
     context: android.content.Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLandscape: Boolean = false
 ) {
     val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
     var skipMultiplier by remember { mutableIntStateOf(1) }
@@ -459,8 +486,15 @@ private fun ThumbnailItem(
 
     Box(
         modifier = modifier
-            .width(dimensions.itemWidth)
-            .fillMaxSize()
+            .then(
+                if (isLandscape) {
+                    Modifier.size(dimensions.thumbnailSize + (PlayerHorizontalPadding * 2))
+                } else {
+                    Modifier
+                        .width(dimensions.itemWidth)
+                        .fillMaxSize()
+                }
+            )
             .padding(horizontal = PlayerHorizontalPadding)
             .graphicsLayer {
                 // Render entire thumbnail item on separate hardware layer for smooth animations

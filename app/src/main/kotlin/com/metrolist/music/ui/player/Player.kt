@@ -1467,7 +1467,8 @@ fun BottomSheetPlayer(
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.animateContentSize(),
-                                    isPlayerExpanded = isExpandedProvider
+                                    isPlayerExpanded = isExpandedProvider,
+                                    isLandscape = true
                                 )
                             }
                         }
