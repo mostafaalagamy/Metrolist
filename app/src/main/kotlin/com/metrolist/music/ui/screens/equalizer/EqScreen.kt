@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.metrolist.music.eq.data.SavedEQProfile
+import timber.log.Timber
 
 /**
  * EQ Screen - Manage and select EQ profiles
@@ -33,7 +34,6 @@ fun EqScreen(
     val context = LocalContext.current
 
     var showError by remember { mutableStateOf<String?>(null) }
-    var showSuccess by remember { mutableStateOf(false) }
 
     // File picker for custom EQ import
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -64,9 +64,11 @@ fun EqScreen(
                         fileName = fileName,
                         inputStream = inputStream,
                         onSuccess = {
-                            showSuccess = true
+                            // CHANGED: Log silently instead of showing Snackbar
+                            Timber.d("Custom EQ profile imported successfully: $fileName")
                         },
                         onError = { error ->
+                            Timber.d("Error: Unable to import Custom EQ profile: $fileName")
                             showError = error
                         }
                     )
@@ -89,22 +91,6 @@ fun EqScreen(
         },
         onDeleteProfile = { viewModel.deleteProfile(it) }
     )
-
-    // Success Snackbar
-    if (showSuccess) {
-        LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(2000)
-            showSuccess = false
-        }
-        // Use a Surface for the Snackbar to make it visible above the dialog content if needed,
-        // or rely on standard positioning. Since we are in a Dialog, standard Snackbar host might be covered.
-        // A simple custom overlay is safer.
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Snackbar(modifier = Modifier.padding(16.dp)) {
-                Text("Custom EQ profile imported successfully")
-            }
-        }
-    }
 
     // Error dialog
     if (showError != null) {
@@ -135,7 +121,7 @@ private fun EqScreenContent(
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         tonalElevation = 6.dp,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .heightIn(max = 600.dp)
             .padding(vertical = 24.dp) // Optional extra padding if desired, but dialog handles it.
     ) {
@@ -215,7 +201,7 @@ private fun EqScreenContent(
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "No custom EQ profiles",
+                                    text = "No parametric EQ profiles",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -242,12 +228,9 @@ private fun NoEqualizationItem(
     ListItem(
         headlineContent = {
             Text(
-                text = "Equalizer Disabled",
+                text = "Disabled",
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
             )
-        },
-        supportingContent = {
-            Text("Select a profile to apply")
         },
         leadingContent = {
             RadioButton(
