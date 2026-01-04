@@ -157,10 +157,7 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
     .footer-top, .footer-bottom { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
 }
 
-
-/* ========================================= */
-/* --- AJOUTS SPECIFIQUES (New Features) --- */
-/* ========================================= */
+/* --- Custom Styles Added --- */
 
 /* 1. Navbar Controls (Langue + Theme + Mobile) */
 .nav-controls {
