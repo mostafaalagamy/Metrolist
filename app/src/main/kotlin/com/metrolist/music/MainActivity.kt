@@ -935,36 +935,24 @@ class MainActivity : ComponentActivity() {
                                 .nestedScroll(searchBarScrollBehavior.nestedScrollConnection)
                         ) {
                             Row(Modifier.fillMaxSize()) {
-                                // Memoize navigation click handler for rail
                                 val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->
                                         if (playerBottomSheetState.isExpanded) {
                                             playerBottomSheetState.collapseSoft()
                                         }
-                                        
-                                        var handled = false
-                                        if (navController.currentDestination?.route == "equalizer") {
-                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
-                                            navController.popBackStack()
-                                            if (previousRoute == screen.route) {
-                                                handled = true
+
+                                        if (isSelected) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                        }
-                                        
-                                        if (!handled) {
-                                            if (isSelected) {
-                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                coroutineScope.launch {
-                                                    searchBarScrollBehavior.state.resetHeightOffset()
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
                                                 }
-                                            } else {
-                                                navController.navigate(screen.route) {
-                                                    popUpTo(navController.graph.startDestinationId) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
                                         }
                                     }
