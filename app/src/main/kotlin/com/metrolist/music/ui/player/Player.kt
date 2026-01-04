@@ -1431,19 +1431,19 @@ fun BottomSheetPlayer(
             Configuration.ORIENTATION_LANDSCAPE -> {
                 // Calculate vertical padding like OuterTune
                 val density = LocalDensity.current
-                val vPadding = max(
+                val verticalPadding = max(
                     WindowInsets.systemBars.getTop(density),
                     WindowInsets.systemBars.getBottom(density)
                 )
-                val vPaddingDp = with(density) { vPadding.toDp() }
-                val verticalInsets = WindowInsets(left = 0.dp, top = vPaddingDp, right = 0.dp, bottom = vPaddingDp)
+                val verticalPaddingDp = with(density) { verticalPadding.toDp() }
+                val verticalWindowInsets = WindowInsets(left = 0.dp, top = verticalPaddingDp, right = 0.dp, bottom = verticalPaddingDp)
                 
                 Row(
                     modifier = Modifier
                         .windowInsetsPadding(
-                            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).add(verticalInsets)
+                            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).add(verticalWindowInsets)
                         )
-                        .padding(bottom = 8.dp)
+                        .padding(bottom = 24.dp)
                         .fillMaxSize()
                 ) {
                     BoxWithConstraints(
