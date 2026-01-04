@@ -40,7 +40,10 @@ import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.text.Collator
+import java.util.Locale
 
 @Composable
 fun AddToPlaylistDialog(
@@ -77,8 +80,12 @@ fun AddToPlaylistDialog(
     }
 
     LaunchedEffect(Unit) {
-        database.editablePlaylistsByCreateDateAsc().collect {
-            playlists = it.asReversed()
+        database.editablePlaylistsByNameAsc().map { playlists ->
+            val collator = Collator.getInstance(Locale.getDefault())
+            collator.strength = Collator.PRIMARY
+            playlists.sortedWith(compareBy(collator) { it.playlist.name })
+        }.collect {
+            playlists = it
         }
     }
 
