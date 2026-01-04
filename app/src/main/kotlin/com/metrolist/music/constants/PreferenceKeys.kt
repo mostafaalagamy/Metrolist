@@ -130,6 +130,10 @@ val LastLibSongSyncKey = longPreferencesKey("last_library_song_sync")
 val LastAlbumSyncKey = longPreferencesKey("last_album_sync")
 val LastArtistSyncKey = longPreferencesKey("last_artist_sync")
 val LastPlaylistSyncKey = longPreferencesKey("last_playlist_sync")
+val LastFullSyncKey = longPreferencesKey("last_full_sync")
+
+// Sync cooldown in seconds (30 minutes)
+const val SYNC_COOLDOWN = 30 * 60L
 
 val ArtistViewTypeKey = stringPreferencesKey("artistViewType")
 val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
@@ -168,12 +172,10 @@ enum class SongFilter {
 }
 
 enum class ArtistFilter {
-    LIBRARY,
     LIKED
 }
 
 enum class AlbumFilter {
-    LIBRARY,
     LIKED,
     UPLOADED
 }

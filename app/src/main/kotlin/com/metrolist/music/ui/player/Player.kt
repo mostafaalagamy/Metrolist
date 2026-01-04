@@ -77,6 +77,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -160,6 +161,7 @@ import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.lyrics.LyricsEntry
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.ui.theme.PlayerColorExtractor
@@ -270,12 +272,18 @@ fun BottomSheetPlayer(
     // Use Cast state when casting, otherwise local player
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
-    var position by rememberSaveable(playbackState) {
+    // Use State objects for position/duration to pass to MiniPlayer without causing recomposition
+    val positionState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
     }
-    var duration by rememberSaveable(playbackState) {
+    val durationState = remember(playbackState) {
         mutableLongStateOf(playerConnection.player.duration)
     }
+    
+    // Convenience accessors for local use
+    var position by positionState
+    var duration by durationState
+    
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
@@ -662,8 +670,8 @@ fun BottomSheetPlayer(
         },
         collapsedContent = {
             MiniPlayer(
-                position = position,
-                duration = duration
+                positionState = positionState,
+                durationState = durationState
             )
         },
     ) {
@@ -1178,17 +1186,36 @@ fun BottomSheetPlayer(
                             val backInteractionSource = remember { MutableInteractionSource() }
                             val nextInteractionSource = remember { MutableInteractionSource() }
                             val playPauseInteractionSource = remember { MutableInteractionSource() }
+
                             val isPlayPausePressed by playPauseInteractionSource.collectIsPressedAsState()
+                            val isBackPressed by backInteractionSource.collectIsPressedAsState()
+                            val isNextPressed by nextInteractionSource.collectIsPressedAsState()
 
                             val playPauseWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 1.9f else 1.3f,
-                                animationSpec = spring(),
+                                targetValue = if (isPlayPausePressed) 1.9f else if (isBackPressed || isNextPressed) 1.1f else 1.3f,
+                                animationSpec = spring(
+                                    dampingRatio = 0.6f,
+                                    stiffness = 500f
+                                ),
                                 label = "playPauseWeight"
                             )
-                            val sideButtonWeight by animateFloatAsState(
-                                targetValue = if (isPlayPausePressed) 0.35f else 0.45f,
-                                animationSpec = spring(),
-                                label = "sideButtonWeight"
+
+                            val backButtonWeight by animateFloatAsState(
+                                targetValue = if (isBackPressed) 0.65f else if (isPlayPausePressed) 0.35f else 0.45f,
+                                animationSpec = spring(
+                                    dampingRatio = 0.6f,
+                                    stiffness = 500f
+                                ),
+                                label = "backButtonWeight"
+                            )
+
+                            val nextButtonWeight by animateFloatAsState(
+                                targetValue = if (isNextPressed) 0.65f else if (isPlayPausePressed) 0.35f else 0.45f,
+                                animationSpec = spring(
+                                    dampingRatio = 0.6f,
+                                    stiffness = 500f
+                                ),
+                                label = "nextButtonWeight"
                             )
 
                             FilledIconButton(
@@ -1202,8 +1229,7 @@ fun BottomSheetPlayer(
                                 ),
                                 modifier = Modifier
                                     .height(68.dp)
-                                    .weight(sideButtonWeight)
-                                    .bouncy(backInteractionSource)
+                                    .weight(backButtonWeight)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.skip_previous),
@@ -1271,8 +1297,7 @@ fun BottomSheetPlayer(
                                 ),
                                 modifier = Modifier
                                     .height(68.dp)
-                                    .weight(sideButtonWeight)
-                                    .bouncy(nextInteractionSource)
+                                    .weight(nextButtonWeight)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.skip_next),
@@ -1419,6 +1444,10 @@ fun BottomSheetPlayer(
                     ) {
                         val screenWidth = LocalConfiguration.current.screenWidthDp
                         val thumbnailSize = (screenWidth * 0.4).dp
+                        // Remember lambdas to prevent unnecessary recomposition
+                        val currentSliderPosition by rememberUpdatedState(sliderPosition)
+                        val sliderPositionProvider = remember { { currentSliderPosition } }
+                        val isExpandedProvider = remember(state) { { state.isExpanded } }
                         AnimatedContent(
                             targetState = showInlineLyrics,
                             label = "Lyrics",
@@ -1428,9 +1457,9 @@ fun BottomSheetPlayer(
                                 InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
                             } else {
                                 Thumbnail(
-                                    sliderPositionProvider = { sliderPosition },
+                                    sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.size(thumbnailSize),
-                                    isPlayerExpanded = state.isExpanded
+                                    isPlayerExpanded = isExpandedProvider
                                 )
                             }
                         }
@@ -1465,6 +1494,10 @@ fun BottomSheetPlayer(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.weight(1f),
                     ) {
+                        // Remember lambdas to prevent unnecessary recomposition
+                        val currentSliderPosition by rememberUpdatedState(sliderPosition)
+                        val sliderPositionProvider = remember { { currentSliderPosition } }
+                        val isExpandedProvider = remember(state) { { state.isExpanded } }
                         AnimatedContent(
                             targetState = showInlineLyrics,
                             label = "Lyrics",
@@ -1474,9 +1507,9 @@ fun BottomSheetPlayer(
                                 InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
                             } else {
                                 Thumbnail(
-                                    sliderPositionProvider = { sliderPosition },
+                                    sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
-                                    isPlayerExpanded = state.isExpanded
+                                    isPlayerExpanded = isExpandedProvider
                                 )
                             }
                         }
@@ -1591,19 +1624,6 @@ fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
     }
 }
 
-private fun Modifier.bouncy(interactionSource: InteractionSource) = composed {
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.9f else 1f,
-        animationSpec = spring(),
-        label = "scale"
-    )
-
-    graphicsLayer {
-        scaleX = scale
-        scaleY = scale
-    }
-}
 
 @Composable
 fun MoreActionsButton(

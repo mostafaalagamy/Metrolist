@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -48,9 +48,12 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import com.metrolist.music.constants.BottomSheetAnimationSpec
+import com.metrolist.music.constants.BottomSheetSoftAnimationSpec
+import com.metrolist.music.constants.MinMiniPlayerHeight
+import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -67,8 +70,11 @@ fun BottomSheet(
     background: @Composable (BoxScope.() -> Unit) = { },
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
+    collapsedBackgroundColor: Color = Color.Transparent,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val density = LocalDensity.current
+    
     Box(
         modifier = modifier
             .graphicsLayer {
@@ -81,11 +87,12 @@ fun BottomSheet(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .offset {
+            // Use graphicsLayer for offset to ensure hardware acceleration and 120Hz support
+            .graphicsLayer {
                 val y = (state.expandedBound - state.value)
-                    .roundToPx()
-                    .coerceAtLeast(0)
-                IntOffset(x = 0, y = y)
+                    .toPx()
+                    .coerceAtLeast(0f)
+                translationY = y
             }
             .pointerInput(state) {
                 val velocityTracker = VelocityTracker()
@@ -106,41 +113,53 @@ fun BottomSheet(
                     }
                 )
             }
-            .clip(
-                RoundedCornerShape(
-                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
-                    topEnd = if (!state.isExpanded) 16.dp else 0.dp
-                )
-            )
+            .graphicsLayer {
+                val cornerRadius = if (!state.isExpanded) 16.dp.toPx() else 0f
+                shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
+                clip = true
+            }
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
         }
 
+        // main content
         if (!state.isCollapsed) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        alpha = ((state.progress - 0.25f) * 4).coerceIn(0f, 1f)
+                        alpha = ((state.progress - 0.15f) * 4).coerceIn(0f, 1f)
                     },
                 content = content
             )
         }
 
-        if (!state.isExpanded && (onDismiss == null || !state.isDismissed)) {
+        // collapsed content
+        if (!state.isExpanded) {
+            // startY must be < state.collapsedBound
+            val startY = with(density) { (MiniPlayerHeight + MinMiniPlayerHeight - 1.dp).toPx() }
+            val colors = mutableListOf(collapsedBackgroundColor, Color.Transparent)
+            // no visible gradient if no bottom content to hide it
+            if (MiniPlayerHeight + MinMiniPlayerHeight >= state.collapsedBound) {
+                colors[1] = collapsedBackgroundColor
+            }
             Box(
                 modifier = Modifier
                     .graphicsLayer {
                         alpha = 1f - (state.progress * 4).coerceAtMost(1f)
                     }
                     .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
                         onClick = state::expandSoft
                     )
                     .fillMaxWidth()
-                    .height(state.collapsedBound),
+                    .height(state.collapsedBound)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = colors,
+                            startY = startY,
+                        )
+                    ),
                 content = collapsedContent
             )
         }

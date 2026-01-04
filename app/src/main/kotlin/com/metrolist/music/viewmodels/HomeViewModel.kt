@@ -33,6 +33,7 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
+import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.metrolist.music.constants.ShowWrappedCardKey
@@ -110,7 +111,36 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getQuickPicks() {
         when (quickPicksEnum.first()) {
-            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
+            QuickPicks.QUICK_PICKS -> {
+                val relatedSongs = database.quickPicks().first()
+                val forgotten = database.forgottenFavorites().first().take(8)
+                
+                // Get similar songs from YouTube based on recent listening
+                val recentSong = database.events().first().firstOrNull()?.song
+                val ytSimilarSongs = mutableListOf<Song>()
+                
+                if (recentSong != null) {
+                    val endpoint = YouTube.next(WatchEndpoint(videoId = recentSong.id)).getOrNull()?.relatedEndpoint
+                    if (endpoint != null) {
+                        YouTube.related(endpoint).onSuccess { page ->
+                            // Convert YouTube songs to local Song format if they exist in database
+                            page.songs.take(10).forEach { ytSong ->
+                                database.song(ytSong.id).first()?.let { localSong ->
+                                    ytSimilarSongs.add(localSong)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Combine all sources and remove duplicates
+                val combined = (relatedSongs + forgotten + ytSimilarSongs)
+                    .distinctBy { it.id }
+                    .shuffled()
+                    .take(20)
+                
+                quickPicks.value = combined.ifEmpty { relatedSongs.shuffled().take(20) }
+            }
             QuickPicks.LAST_LISTEN -> {
                 val song = database.events().first().firstOrNull()?.song
                 if (song != null && database.hasRelatedSongs(song.id)) {
@@ -142,44 +172,80 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-        val artistRecommendations = database.mostPlayedArtists(fromTimeStamp, limit = 10).first()
+        // Get recommendations from most played artists (prioritize recent listening)
+        val artistRecommendations = database.mostPlayedArtists(fromTimeStamp, limit = 15).first()
             .filter { it.artist.isYouTubeArtist }
-            .shuffled().take(3)
+            .shuffled().take(4)
             .mapNotNull {
                 val items = mutableListOf<YTItem>()
                 YouTube.artist(it.id).onSuccess { page ->
-                    items += page.sections.getOrNull(page.sections.size - 2)?.items.orEmpty()
-                    items += page.sections.lastOrNull()?.items.orEmpty()
+                    // Get more sections for better variety
+                    page.sections.takeLast(3).forEach { section ->
+                        items += section.items
+                    }
                 }
                 SimilarRecommendation(
                     title = it,
                     items = items
+                        .distinctBy { item -> item.id }
                         .filterExplicit(hideExplicit)
                         .filterVideoSongs(hideVideoSongs)
                         .shuffled()
+                        .take(12)
                         .ifEmpty { return@mapNotNull null }
                 )
             }
 
-        val songRecommendations = database.mostPlayedSongs(fromTimeStamp, limit = 10).first()
+        // Get recommendations from most played songs
+        val songRecommendations = database.mostPlayedSongs(fromTimeStamp, limit = 15).first()
             .filter { it.album != null }
-            .shuffled().take(2)
+            .shuffled().take(3)
             .mapNotNull { song ->
                 val endpoint = YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint ?: return@mapNotNull null
                 val page = YouTube.related(endpoint).getOrNull() ?: return@mapNotNull null
                 SimilarRecommendation(
                     title = song,
-                    items = (page.songs.shuffled().take(8) +
-                            page.albums.shuffled().take(4) +
-                            page.artists.shuffled().take(4) +
-                            page.playlists.shuffled().take(4))
+                    items = (page.songs.shuffled().take(10) +
+                            page.albums.shuffled().take(5) +
+                            page.artists.shuffled().take(3) +
+                            page.playlists.shuffled().take(3))
+                        .distinctBy { it.id }
                         .filterExplicit(hideExplicit)
                         .filterVideoSongs(hideVideoSongs)
                         .shuffled()
                         .ifEmpty { return@mapNotNull null }
                 )
             }
-        similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
+        
+        // Get recommendations from most played albums
+        val albumRecommendations = database.mostPlayedAlbums(fromTimeStamp, limit = 10).first()
+            .filter { it.album.thumbnailUrl != null }
+            .shuffled().take(2)
+            .mapNotNull { album ->
+                val items = mutableListOf<YTItem>()
+                YouTube.album(album.id).onSuccess { page ->
+                    // Get related albums and artists
+                    page.otherVersions.let { items += it }
+                }
+                // Also get artist's other content
+                album.artists.firstOrNull()?.id?.let { artistId ->
+                    YouTube.artist(artistId).onSuccess { page ->
+                        page.sections.lastOrNull()?.items?.let { items += it }
+                    }
+                }
+                SimilarRecommendation(
+                    title = album,
+                    items = items
+                        .distinctBy { it.id }
+                        .filterExplicit(hideExplicit)
+                        .filterVideoSongs(hideVideoSongs)
+                        .shuffled()
+                        .take(10)
+                        .ifEmpty { return@mapNotNull null }
+                )
+            }
+        
+        similarRecommendations.value = (artistRecommendations + songRecommendations + albumRecommendations).shuffled()
 
         YouTube.home().onSuccess { page ->
             homePage.value = page.copy(
@@ -264,36 +330,44 @@ class HomeViewModel @Inject constructor(
             load()
             isRefreshing.value = false
         }
+        // Run sync when user manually refreshes
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
+        }
     }
 
     init {
+        // Load home data
         viewModelScope.launch(Dispatchers.IO) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
                 .first()
-            
+
             load()
+        }
+        
+        // Run sync in separate coroutine with cooldown to avoid blocking UI
+        viewModelScope.launch(syncCoroutine) {
+            syncUtils.tryAutoSync()
+        }
 
-            val isSyncEnabled = context.dataStore.get(YtmSyncKey, true)
-            if (isSyncEnabled) {
-                syncUtils.runAllSyncs()
-            }
-
-            try {
-                if (showWrappedCard.first()) {
-                    android.util.Log.d("HomeViewModel", "Preparing Wrapped data")
-                    wrappedManager.prepare()
-                    val state = wrappedManager.state.first() // Correctly get the state object
-                    val trackMap = state.trackMap
-                    if (trackMap.isNotEmpty()) {
-                        val firstTrackId = trackMap.entries.first().value
-                        wrappedAudioService.prepareTrack(firstTrackId)
+        // Prepare wrapped data in background
+        viewModelScope.launch(Dispatchers.IO) {
+            showWrappedCard.collect { shouldShow ->
+                if (shouldShow && !wrappedManager.state.value.isDataReady) {
+                    try {
+                        wrappedManager.prepare()
+                        val state = wrappedManager.state.first { it.isDataReady }
+                        val trackMap = state.trackMap
+                        if (trackMap.isNotEmpty()) {
+                            val firstTrackId = trackMap.entries.first().value
+                            wrappedAudioService.prepareTrack(firstTrackId)
+                        }
+                    } catch (e: Exception) {
+                        reportException(e)
                     }
-                    android.util.Log.d("HomeViewModel", "Wrapped data prepared")
                 }
-            } catch (e: Exception) {
-                android.util.Log.e("HomeViewModel", "Error preparing Wrapped data", e)
             }
         }
 
