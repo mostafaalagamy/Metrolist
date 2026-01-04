@@ -507,67 +507,44 @@ class MainActivity : ComponentActivity() {
                     val currentRoute by remember {
                         derivedStateOf { navBackStackEntry?.destination?.route }
                     }
-                    
+
                     val inSearchScreen by remember {
                         derivedStateOf { currentRoute?.startsWith("search/") == true }
                     }
-
-                    // Cache navigation item routes for faster lookup
                     val navigationItemRoutes = remember(navigationItems) {
                         navigationItems.map { it.route }.toSet()
                     }
-                    
-                    val shouldShowNavigationBar by remember {
-                        derivedStateOf {
-                            val route = currentRoute
-                            route == null ||
-                                    navigationItemRoutes.contains(route) ||
-                                    route.startsWith("search/") ||
-                                    route == "equalizer"
-                        }
+
+                    val shouldShowNavigationBar = remember(currentRoute, navigationItemRoutes) {
+                        currentRoute == null ||
+                                navigationItemRoutes.contains(currentRoute) ||
+                                currentRoute!!.startsWith("search/")
                     }
 
-                    val isLandscape by remember {
-                        derivedStateOf { configuration.screenWidthDp > configuration.screenHeightDp }
-                    }
-                    
-                    val showRail by remember {
-                        derivedStateOf { isLandscape && !inSearchScreen }
+                    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
+                    val showRail = isLandscape && !inSearchScreen
+
+                    val navPadding = if (shouldShowNavigationBar && !showRail) {
+                        if (slimNav) SlimNavBarHeight else NavigationBarHeight
+                    } else {
+                        0.dp
                     }
 
-                    // Calculate nav padding without lambda to avoid recreation
-                    val navPadding by remember {
-                        derivedStateOf {
-                            if (shouldShowNavigationBar && !showRail) {
-                                if (slimNav) SlimNavBarHeight else NavigationBarHeight
-                            } else {
-                                0.dp
-                            }
-                        }
-                    }
-
-                    // Use derivedStateOf for animation target to reduce recomposition triggers
-                    val navigationBarTargetHeight by remember {
-                        derivedStateOf {
-                            if (shouldShowNavigationBar && !showRail) NavigationBarHeight else 0.dp
-                        }
-                    }
-                    
                     val navigationBarHeight by animateDpAsState(
-                        targetValue = navigationBarTargetHeight,
+                        targetValue = if (shouldShowNavigationBar && !showRail) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
                         label = "navBarHeight",
                     )
 
-                    val playerBottomSheetState =
-                        rememberBottomSheetState(
-                            dismissedBound = 0.dp,
-                            collapsedBound = bottomInset +
-                                    (if (!showRail && shouldShowNavigationBar) navPadding else 0.dp) +
-                                    (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
-                                    MiniPlayerHeight,
-                            expandedBound = maxHeight,
-                        )
+                    val playerBottomSheetState = rememberBottomSheetState(
+                        dismissedBound = 0.dp,
+                        collapsedBound = bottomInset +
+                                (if (!showRail && shouldShowNavigationBar) navPadding else 0.dp) +
+                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
+                                MiniPlayerHeight,
+                        expandedBound = maxHeight,
+                    )
 
                     val playerAwareWindowInsets = remember(
                         bottomInset,
@@ -584,7 +561,6 @@ class MainActivity : ComponentActivity() {
                             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                             .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                     }
-
                     appBarScrollBehavior(
                         canScroll = {
                             !inSearchScreen &&
@@ -874,14 +850,19 @@ class MainActivity : ComponentActivity() {
                                                 .graphicsLayer {
                                                     val navBarHeightPx = navigationBarHeight.toPx()
                                                     val totalHeightPx = navBarTotalHeight.toPx()
-                                                    
+
                                                     translationY = if (navBarHeightPx == 0f) {
                                                         totalHeightPx
                                                     } else {
                                                         // Read progress only during draw phase
-                                                        val progress = playerBottomSheetState.progress.coerceIn(0f, 1f)
+                                                        val progress =
+                                                            playerBottomSheetState.progress.coerceIn(
+                                                                0f,
+                                                                1f
+                                                            )
                                                         val slideOffset = totalHeightPx * progress
-                                                        val hideOffset = totalHeightPx * (1 - navBarHeightPx / NavigationBarHeight.toPx())
+                                                        val hideOffset =
+                                                            totalHeightPx * (1 - navBarHeightPx / NavigationBarHeight.toPx())
                                                         slideOffset + hideOffset
                                                     }
                                                 }
@@ -895,7 +876,8 @@ class MainActivity : ComponentActivity() {
                                                 // Use graphicsLayer for background color changes
                                                 .graphicsLayer {
                                                     val progress = playerBottomSheetState.progress
-                                                    alpha = if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
+                                                    alpha =
+                                                        if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
                                                 }
                                                 .background(baseBg)
                                         )
@@ -917,7 +899,8 @@ class MainActivity : ComponentActivity() {
                                             // Use graphicsLayer for background color changes
                                             .graphicsLayer {
                                                 val progress = playerBottomSheetState.progress
-                                                alpha = if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
+                                                alpha =
+                                                    if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
                                             }
                                             .background(baseBg)
                                     )
