@@ -569,13 +569,6 @@ class MainActivity : ComponentActivity() {
                             expandedBound = maxHeight,
                         )
 
-                    // Auto-close equalizer when player is expanded
-                    LaunchedEffect(playerBottomSheetState.isExpanded) {
-                        if (playerBottomSheetState.isExpanded && navController.currentDestination?.route == "equalizer") {
-                            navController.popBackStack()
-                        }
-                    }
-
                     val playerAwareWindowInsets = remember(
                         bottomInset,
                         shouldShowNavigationBar,
