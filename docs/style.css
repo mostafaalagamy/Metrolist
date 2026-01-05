@@ -117,7 +117,7 @@ body {
 .community { padding: 80px 0; background: var(--section-alt); }
 .community-container { display: flex; gap: 30px; flex-wrap: wrap; }
 .community-box { flex: 1; background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center; min-width: 300px; }
-/* .community-box i -> Override plus bas pour le nouveau style */
+/* .community-box i */
 .community-box h3 { margin-bottom: 15px; }
 .community-box p { color: var(--text-muted); margin-bottom: 25px; }
 
@@ -159,7 +159,7 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
 
 /* --- Custom Styles Added --- */
 
-/* 1. Navbar Controls (Langue + Theme + Mobile) */
+/* 1. Navbar Controls (Language + Theme + Mobile) */
 .nav-controls {
     display: flex;
     align-items: center;
@@ -199,7 +199,7 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
     font-weight: 600;
     border: 1px solid transparent;
 }
-/* Couleurs Spécifiques pour les badges */
+/* Specific colors for badges */
 .security-badge.safe {
     background: rgba(46, 204, 113, 0.1);
     color: #2ecc71;
@@ -232,7 +232,7 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
 }
 .big-icon i {
     font-size: 4rem;
-    /* Gradient sur l'icone */
+/* Gradient on the icon */
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
