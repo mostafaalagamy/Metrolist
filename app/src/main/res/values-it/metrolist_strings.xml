@@ -331,4 +331,23 @@
     <string name="failed_to_parse_proxy">Impossibile eseguire il parsing dell\'url proxy.</string>
     <string name="lyrics_glow_effect">Abilita l\'effetto luminoso per i testi</string>
     <string name="lyrics_glow_effect_desc">Aggiungi un\'animazione luminosa e un effetto di rimbalzo ai testi attivi</string>
+    <plurals name="profiles_count">
+        <item quantity="one">Interfaccia Equalizzatore</item>
+        <item quantity="many">%d Profilo</item>
+        <item quantity="other">%d Profili</item>
+    </plurals>
+    <string name="equalizer_header">Equalizzatore</string>
+    <string name="no_profiles">Nessun profilo di equalizzazione</string>
+    <string name="import_profile">Importa Profilo</string>
+    <string name="eq_disabled">Disabilitato</string>
+    <plurals name="band_count">
+        <item quantity="one">%d banda</item>
+        <item quantity="many">%d bande</item>
+        <item quantity="other">%d bande</item>
+    </plurals>
+    <string name="delete_profile_desc">Elimina profilo</string>
+    <string name="delete_profile_confirmation">Sei sicuro di voler eliminare %1$s? Questa azione non può essere annullata.</string>
+    <string name="error_file_read">Impossibile leggere il file</string>
+    <string name="error_file_open">Impossibile aprire il file: %1$s</string>
+    <string name="import_error_title">Errore di importazione</string>
 </resources>
