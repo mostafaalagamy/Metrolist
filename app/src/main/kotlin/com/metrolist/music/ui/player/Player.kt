@@ -1103,10 +1103,7 @@ fun BottomSheetPlayer(
                         },
                         colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                        isPlaying = effectiveIsPlaying,
-                        strokeWidth = 4.dp,
-                        wavelength = 20.dp,
-                        thumbRadius = 8.dp
+                        isPlaying = effectiveIsPlaying
                     )
                 }
 

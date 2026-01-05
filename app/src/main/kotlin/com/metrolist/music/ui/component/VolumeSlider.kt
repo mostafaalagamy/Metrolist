@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -58,9 +57,9 @@ fun VolumeSlider(
     val colors = SliderDefaults.colors(
         thumbColor = accentColor,
         activeTrackColor = accentColor,
-        activeTickColor = accentColor.copy(alpha = 0.8f),
+        activeTickColor = MaterialTheme.colorScheme.onPrimary,
         inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-        inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+        inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
 
     Slider(
@@ -74,7 +73,7 @@ fun VolumeSlider(
         interactionSource = interactionSource,
         track = { sliderState ->
             val iconSize = DpSize(20.dp, 20.dp)
-            val iconPadding = 8.dp
+            val iconPadding = 10.dp
             val thumbTrackGapSize = 6.dp
             val activeIconColor = colors.activeTickColor
             val inactiveIconColor = colors.inactiveTickColor
@@ -86,7 +85,7 @@ fun VolumeSlider(
                     .drawWithContent {
                         drawContent()
                         val yOffset = size.height / 2 - iconSize.toSize().height / 2
-                        val fraction = (value - 0f) / (1f - 0f)
+                        val fraction = value.coerceIn(0f, 1f)
                         val activeTrackEnd = size.width * fraction - thumbTrackGapSize.toPx()
                         val inactiveTrackStart = activeTrackEnd + thumbTrackGapSize.toPx() * 2
                         val activeTrackWidth = activeTrackEnd
@@ -102,13 +101,13 @@ fun VolumeSlider(
                             inactiveTrackWidth = inactiveTrackWidth,
                             activeIconColor = activeIconColor,
                             inactiveIconColor = inactiveIconColor,
-                            volumeOffIcon = volumeOffIcon,
-                            currentValue = value
+                            volumeOffIcon = volumeOffIcon
                         )
                     },
                 colors = colors,
                 enabled = enabled,
                 thumbTrackGapSize = thumbTrackGapSize,
+                trackCornerSize = 12.dp,
                 drawStopIndicator = null
             )
         }
@@ -125,19 +124,22 @@ private fun DrawScope.drawVolumeIcon(
     inactiveTrackWidth: Float,
     activeIconColor: Color,
     inactiveIconColor: Color,
-    volumeOffIcon: VectorPainter,
-    currentValue: Float
+    volumeOffIcon: VectorPainter
 ) {
     val iconSizePx = iconSize.toSize()
     val iconPaddingPx = iconPadding.toPx()
+    val minSpaceForIcon = iconSizePx.width + iconPaddingPx * 2
 
-    if (iconSizePx.width < activeTrackWidth - iconPaddingPx * 2) {
+    // Draw icon on active track if there's enough space
+    if (activeTrackWidth >= minSpaceForIcon) {
         translate(iconPaddingPx, yOffset) {
             with(icon) {
                 draw(iconSizePx, colorFilter = ColorFilter.tint(activeIconColor))
             }
         }
-    } else if (currentValue <= 0.1f && iconSizePx.width < inactiveTrackWidth - iconPaddingPx * 2) {
+    }
+    // Otherwise draw icon on inactive track if there's enough space
+    else if (inactiveTrackWidth >= minSpaceForIcon) {
         translate(inactiveTrackStart + iconPaddingPx, yOffset) {
             with(volumeOffIcon) {
                 draw(iconSizePx, colorFilter = ColorFilter.tint(inactiveIconColor))
