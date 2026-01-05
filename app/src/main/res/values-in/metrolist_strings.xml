@@ -229,7 +229,7 @@
     <string name="sync_playlist_desc">Sinkronkan daftar putar dengan YouTube Music</string>
     <string name="primary_color_style">Warna primer</string>
     <string name="tertiary_color_style">Warna tersier</string>
-    <string name="enable_better_lyrics">Aktifkan Better Lyrics</string>
+    <string name="enable_better_lyrics">Aktifkan penyedia lirik Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Gunakan penyedia Better Lyrics untuk lirik tersinkron kata per kata</string>
     <string name="auto_scroll">Sinkron Ulang</string>
     <string name="share_desc">Bagikan tautan ke item ini</string>
