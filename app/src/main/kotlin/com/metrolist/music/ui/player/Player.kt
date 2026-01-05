@@ -179,7 +179,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.saket.squiggles.SquigglySlider
+import com.metrolist.music.ui.component.WavySlider
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1083,7 +1083,7 @@ fun BottomSheetPlayer(
                 }
 
                 SliderStyle.SQUIGGLY -> {
-                    SquigglySlider(
+                    WavySlider(
                         value = (sliderPosition ?: position).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
@@ -1103,12 +1103,10 @@ fun BottomSheetPlayer(
                         },
                         colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                        squigglesSpec =
-                        SquigglySlider.SquigglesSpec(
-                            amplitude = if (isPlaying) (4.dp).coerceAtLeast(2.dp) else 0.dp,
-                            strokeWidth = 3.dp,
-                            wavelength = 36.dp,
-                        ),
+                        isPlaying = effectiveIsPlaying,
+                        strokeWidth = 4.dp,
+                        wavelength = 20.dp,
+                        thumbRadius = 8.dp
                     )
                 }
 
