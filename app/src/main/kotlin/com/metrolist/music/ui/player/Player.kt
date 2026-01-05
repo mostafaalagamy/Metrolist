@@ -276,12 +276,9 @@ fun BottomSheetPlayer(
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     // Use State objects for position/duration to pass to MiniPlayer without causing recomposition
-    val positionState = remember(playbackState) {
-        mutableLongStateOf(playerConnection.player.currentPosition)
-    }
-    val durationState = remember(playbackState) {
-        mutableLongStateOf(playerConnection.player.duration)
-    }
+    // These states persist across playback state changes to ensure continuous progress updates
+    val positionState = remember { mutableLongStateOf(0L) }
+    val durationState = remember { mutableLongStateOf(0L) }
     
     // Convenience accessors for local use
     var position by positionState
@@ -543,15 +540,24 @@ fun BottomSheetPlayer(
 
     // Position update - only for local playback
     // When casting, we use castPosition directly to avoid sync issues
-    LaunchedEffect(playbackState, isCasting) {
-        if (!isCasting && playbackState == STATE_READY) {
+    // Use isPlaying instead of playbackState to ensure continuous updates during playback
+    LaunchedEffect(isPlaying, isCasting) {
+        if (!isCasting && isPlaying) {
             while (isActive) {
-                delay(500)
+                delay(100) // Update more frequently for smoother progress bar
                 if (sliderPosition == null) { // Only update if user isn't dragging
                     position = playerConnection.player.currentPosition
                     duration = playerConnection.player.duration
                 }
             }
+        }
+    }
+    
+    // Also update position when playback state changes (e.g., song change, seek)
+    LaunchedEffect(playbackState, mediaMetadata?.id) {
+        if (!isCasting) {
+            position = playerConnection.player.currentPosition
+            duration = playerConnection.player.duration
         }
     }
     
