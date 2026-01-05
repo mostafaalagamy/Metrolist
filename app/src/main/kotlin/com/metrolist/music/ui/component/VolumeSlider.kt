@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.VolumeDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.VectorPainter
@@ -61,6 +63,9 @@ fun VolumeSlider(
         inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
         inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
+    
+    val stopIndicatorColor = MaterialTheme.colorScheme.surfaceVariant
+    val stopIndicatorSize = 6.dp
 
     Slider(
         value = value,
@@ -72,16 +77,17 @@ fun VolumeSlider(
         colors = colors,
         interactionSource = interactionSource,
         track = { sliderState ->
-            val iconSize = DpSize(20.dp, 20.dp)
-            val iconPadding = 10.dp
-            val thumbTrackGapSize = 6.dp
+            val iconSize = DpSize(24.dp, 24.dp)
+            val iconPadding = 12.dp
+            val thumbTrackGapSize = 8.dp
+
             val activeIconColor = colors.activeTickColor
             val inactiveIconColor = colors.inactiveTickColor
 
             SliderDefaults.Track(
                 sliderState = sliderState,
                 modifier = Modifier
-                    .height(36.dp)
+                    .height(44.dp)
                     .drawWithContent {
                         drawContent()
                         val yOffset = size.height / 2 - iconSize.toSize().height / 2
@@ -107,8 +113,17 @@ fun VolumeSlider(
                 colors = colors,
                 enabled = enabled,
                 thumbTrackGapSize = thumbTrackGapSize,
-                trackCornerSize = 12.dp,
-                drawStopIndicator = null
+                trackCornerSize = 16.dp,
+                drawStopIndicator = { drawScope ->
+                    with(drawScope) {
+                        ProgressIndicatorDefaults.drawStopIndicator(
+                            drawScope = this,
+                            stopSize = stopIndicatorSize,
+                            color = stopIndicatorColor,
+                            strokeCap = StrokeCap.Round
+                        )
+                    }
+                }
             )
         }
     )

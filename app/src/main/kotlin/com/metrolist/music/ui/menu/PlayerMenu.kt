@@ -231,7 +231,7 @@ fun PlayerMenu(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(36.dp),
+                    .height(44.dp),
                 accentColor = if (isCasting) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary
             )
         }

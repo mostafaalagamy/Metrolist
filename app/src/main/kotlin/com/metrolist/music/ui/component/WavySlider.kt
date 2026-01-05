@@ -6,9 +6,11 @@
 package com.metrolist.music.ui.component
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,11 +46,13 @@ fun WavySlider(
     colors: SliderColors = SliderDefaults.colors(),
     isPlaying: Boolean = true,
     strokeWidth: Dp = 4.dp,
+    thumbRadius: Dp = 8.dp,
     wavelength: Dp = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
     waveSpeed: Dp = wavelength
 ) {
     val density = LocalDensity.current
     val strokeWidthPx = with(density) { strokeWidth.toPx() }
+    val thumbRadiusPx = with(density) { thumbRadius.toPx() }
     val stroke = remember(strokeWidthPx) { 
         Stroke(width = strokeWidthPx, cap = StrokeCap.Round) 
     }
@@ -68,11 +73,15 @@ fun WavySlider(
     
     val activeColor = colors.activeTrackColor
     val inactiveColor = colors.inactiveTrackColor
+    val thumbColor = colors.thumbColor
+    
+    // Calculate container height to accommodate thumb
+    val containerHeight = maxOf(WavyProgressIndicatorDefaults.LinearContainerHeight, thumbRadius * 2)
     
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(WavyProgressIndicatorDefaults.LinearContainerHeight)
+            .height(containerHeight)
             .pointerInput(valueRange) {
                 detectTapGestures { offset ->
                     val newValue = (offset.x / size.width).coerceIn(0f, 1f)
@@ -112,11 +121,23 @@ fun WavySlider(
             trackColor = inactiveColor,
             stroke = stroke,
             trackStroke = stroke,
-            gapSize = WavyProgressIndicatorDefaults.LinearIndicatorTrackGapSize,
+            gapSize = thumbRadius + 4.dp,
             stopSize = WavyProgressIndicatorDefaults.LinearTrackStopIndicatorSize,
             amplitude = { progress -> if (progress > 0f) animatedAmplitude else 0f },
             wavelength = wavelength,
             waveSpeed = waveSpeed
         )
+        
+        // Draw circular thumb
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val thumbX = thumbRadiusPx + (size.width - thumbRadiusPx * 2) * displayValue
+            val thumbY = size.height / 2
+            
+            drawCircle(
+                color = thumbColor,
+                radius = thumbRadiusPx,
+                center = Offset(thumbX, thumbY)
+            )
+        }
     }
 }
