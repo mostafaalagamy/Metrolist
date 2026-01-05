@@ -33,7 +33,7 @@ val DeveloperModeKey = booleanPreferencesKey("developerMode")
 
 enum class SliderStyle {
     DEFAULT,
-    SQUIGGLY,
+    WAVY,
     SLIM
 }
 
