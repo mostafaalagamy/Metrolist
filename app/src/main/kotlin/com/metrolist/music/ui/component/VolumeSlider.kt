@@ -114,15 +114,11 @@ fun VolumeSlider(
                 enabled = enabled,
                 thumbTrackGapSize = thumbTrackGapSize,
                 trackCornerSize = 16.dp,
-                drawStopIndicator = { drawScope ->
-                    with(drawScope) {
-                        ProgressIndicatorDefaults.drawStopIndicator(
-                            drawScope = this,
-                            stopSize = stopIndicatorSize,
-                            color = stopIndicatorColor,
-                            strokeCap = StrokeCap.Round
-                        )
-                    }
+                drawStopIndicator = {
+                    drawCircle(
+                        color = stopIndicatorColor,
+                        radius = stopIndicatorSize.toPx() / 2
+                    )
                 }
             )
         }
