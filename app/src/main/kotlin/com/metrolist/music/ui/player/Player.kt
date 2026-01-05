@@ -1082,7 +1082,7 @@ fun BottomSheetPlayer(
                     )
                 }
 
-                SliderStyle.SQUIGGLY -> {
+                SliderStyle.WAVY -> {
                     WavySlider(
                         value = (sliderPosition ?: position).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),

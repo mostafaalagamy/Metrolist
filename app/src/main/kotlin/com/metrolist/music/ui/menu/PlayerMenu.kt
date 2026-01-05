@@ -229,10 +229,8 @@ fun PlayerMenu(
                         playerConnection.service.playerVolume.value = volume
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(44.dp),
-                accentColor = if (isCasting) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary
+                modifier = Modifier.fillMaxWidth(),
+                accentColor = MaterialTheme.colorScheme.primary
             )
         }
     }

@@ -1,6 +1,14 @@
 /**
  * Metrolist Project (C) 2026
  * Licensed under GPL-3.0 | See git history for contributors
+ * 
+ * Material 3 Expressive Volume Slider
+ * Based on M3 Expressive Slider specifications (Size M):
+ * - Track height: 40dp
+ * - Handle height: 52dp
+ * - Handle width: 4dp
+ * - Track corner radius: 12dp
+ * - Inset icon size: 24dp
  */
 
 package com.metrolist.music.ui.component
@@ -28,8 +36,23 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+
+/**
+ * Material 3 Expressive Volume Slider dimensions (Size M)
+ */
+private object VolumeSliderDefaults {
+    val TrackHeight: Dp = 40.dp
+    val HandleHeight: Dp = 52.dp
+    val HandleWidth: Dp = 4.dp
+    val TrackCornerRadius: Dp = 12.dp
+    val InsetIconSize: Dp = 24.dp
+    val IconPadding: Dp = 10.dp
+    val ThumbTrackGapSize: Dp = 6.dp
+    val StopIndicatorRadius: Dp = 4.dp
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -63,10 +86,7 @@ fun VolumeSlider(
         inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
     
-    // Stop indicator color - should contrast with the inactive track
     val stopIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
-    // Stop indicator radius - slightly taller than track to be visually distinct
-    val stopIndicatorRadius = 4.dp
 
     Slider(
         value = value,
@@ -78,30 +98,28 @@ fun VolumeSlider(
         colors = colors,
         interactionSource = interactionSource,
         track = { sliderState ->
-            val iconSize = DpSize(24.dp, 24.dp)
-            val iconPadding = 12.dp
-            val thumbTrackGapSize = 8.dp
-
+            val iconSize = DpSize(VolumeSliderDefaults.InsetIconSize, VolumeSliderDefaults.InsetIconSize)
             val activeIconColor = colors.activeTickColor
             val inactiveIconColor = colors.inactiveTickColor
 
             SliderDefaults.Track(
                 sliderState = sliderState,
                 modifier = Modifier
-                    .height(44.dp)
+                    .height(VolumeSliderDefaults.TrackHeight)
                     .drawWithContent {
                         drawContent()
                         val yOffset = size.height / 2 - iconSize.toSize().height / 2
                         val fraction = value.coerceIn(0f, 1f)
-                        val activeTrackEnd = size.width * fraction - thumbTrackGapSize.toPx()
-                        val inactiveTrackStart = activeTrackEnd + thumbTrackGapSize.toPx() * 2
+                        val thumbGapPx = VolumeSliderDefaults.ThumbTrackGapSize.toPx()
+                        val activeTrackEnd = size.width * fraction - thumbGapPx
+                        val inactiveTrackStart = activeTrackEnd + thumbGapPx * 2
                         val activeTrackWidth = activeTrackEnd
                         val inactiveTrackWidth = size.width - inactiveTrackStart
 
                         drawVolumeIcon(
                             icon = currentIcon,
                             iconSize = iconSize,
-                            iconPadding = iconPadding,
+                            iconPadding = VolumeSliderDefaults.IconPadding,
                             yOffset = yOffset,
                             activeTrackWidth = activeTrackWidth,
                             inactiveTrackStart = inactiveTrackStart,
@@ -113,14 +131,12 @@ fun VolumeSlider(
                     },
                 colors = colors,
                 enabled = enabled,
-                thumbTrackGapSize = thumbTrackGapSize,
-                trackCornerSize = 16.dp,
+                thumbTrackGapSize = VolumeSliderDefaults.ThumbTrackGapSize,
+                trackCornerSize = VolumeSliderDefaults.TrackCornerRadius,
                 drawStopIndicator = { offset ->
-                    // Draw stop indicator at the end of the track
-                    // The indicator is slightly taller than the track to be visually distinct
                     drawCircle(
                         color = stopIndicatorColor,
-                        radius = stopIndicatorRadius.toPx(),
+                        radius = VolumeSliderDefaults.StopIndicatorRadius.toPx(),
                         center = offset
                     )
                 }
@@ -132,7 +148,7 @@ fun VolumeSlider(
 private fun DrawScope.drawVolumeIcon(
     icon: VectorPainter,
     iconSize: DpSize,
-    iconPadding: androidx.compose.ui.unit.Dp,
+    iconPadding: Dp,
     yOffset: Float,
     activeTrackWidth: Float,
     inactiveTrackStart: Float,
@@ -145,16 +161,13 @@ private fun DrawScope.drawVolumeIcon(
     val iconPaddingPx = iconPadding.toPx()
     val minSpaceForIcon = iconSizePx.width + iconPaddingPx * 2
 
-    // Draw icon on active track if there's enough space
     if (activeTrackWidth >= minSpaceForIcon) {
         translate(iconPaddingPx, yOffset) {
             with(icon) {
                 draw(iconSizePx, colorFilter = ColorFilter.tint(activeIconColor))
             }
         }
-    }
-    // Otherwise draw icon on inactive track if there's enough space
-    else if (inactiveTrackWidth >= minSpaceForIcon) {
+    } else if (inactiveTrackWidth >= minSpaceForIcon) {
         translate(inactiveTrackStart + iconPaddingPx, yOffset) {
             with(volumeOffIcon) {
                 draw(iconSizePx, colorFilter = ColorFilter.tint(inactiveIconColor))

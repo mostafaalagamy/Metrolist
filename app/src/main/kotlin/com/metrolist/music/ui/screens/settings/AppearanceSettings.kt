@@ -657,11 +657,11 @@ fun AppearanceSettings(
                         .clip(RoundedCornerShape(16.dp))
                         .border(
                             1.dp,
-                            if (sliderStyle == SliderStyle.SQUIGGLY) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            if (sliderStyle == SliderStyle.WAVY) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                             RoundedCornerShape(16.dp)
                         )
                         .clickable {
-                            onSliderStyleChange(SliderStyle.SQUIGGLY)
+                            onSliderStyleChange(SliderStyle.WAVY)
                             showSliderOptionDialog = false
                         }
                         .padding(16.dp)
@@ -969,7 +969,7 @@ fun AppearanceSettings(
                         Text(
                             when (sliderStyle) {
                                 SliderStyle.DEFAULT -> stringResource(R.string.default_)
-                                SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                                SliderStyle.WAVY -> stringResource(R.string.wavy)
                                 SliderStyle.SLIM -> stringResource(R.string.slim)
                             }
                         )
