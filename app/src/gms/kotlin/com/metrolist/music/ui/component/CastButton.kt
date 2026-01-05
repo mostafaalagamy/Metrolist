@@ -1,7 +1,13 @@
+/**
+ * Metrolist Project (C) 2026
+ * Licensed under GPL-3.0 | See git history for contributors
+ */
+
 package com.metrolist.music.ui.component
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -18,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -123,11 +130,31 @@ fun CastButton(
     // Show the button if Cast is enabled and SDK is available
     if (enableGoogleCast && castAvailable) {
         Box(
-            contentAlignment = Alignment.Center,
             modifier = modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .clickable {
+        ) {
+            // Shadow background for cast button
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .align(Alignment.Center)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.4f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+            
+            // Cast button
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .align(Alignment.Center)
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable {
                     if (currentMetadata == null && !isCasting) {
                         Toast.makeText(context, "Play a song first to cast", Toast.LENGTH_SHORT).show()
                         return@clickable
@@ -159,17 +186,18 @@ fun CastButton(
                         )
                     }
                 }
-        ) {
-            Image(
-                painter = painterResource(
-                    if (isCasting) R.drawable.cast_connected else R.drawable.cast
-                ),
-                contentDescription = if (isCasting) "Stop casting" else "Cast",
-                colorFilter = ColorFilter.tint(
-                    if (isCasting) MaterialTheme.colorScheme.primary else tintColor
-                ),
-                modifier = Modifier.size(24.dp)
-            )
+            ) {
+                Image(
+                    painter = painterResource(
+                        if (isCasting) R.drawable.cast_connected else R.drawable.cast
+                    ),
+                    contentDescription = if (isCasting) "Stop casting" else "Cast",
+                    colorFilter = ColorFilter.tint(
+                        if (isCasting) MaterialTheme.colorScheme.primary else tintColor
+                    ),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }
