@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.equalizer
 
+import android.annotation.SuppressLint
 import android.media.session.PlaybackState
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,6 +16,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.metrolist.music.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -25,6 +29,7 @@ import timber.log.Timber
 /**
  * EQ Screen - Manage and select EQ profiles
  */
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun EqScreen(
     viewModel: EQViewModel = hiltViewModel(),
@@ -64,19 +69,16 @@ fun EqScreen(
                         fileName = fileName,
                         inputStream = inputStream,
                         onSuccess = {
-                            // CHANGED: Log silently instead of showing Snackbar
                             Timber.d("Custom EQ profile imported successfully: $fileName")
                         },
                         onError = { error ->
                             Timber.d("Error: Unable to import Custom EQ profile: $fileName")
-                            showError = error
-                        }
-                    )
+                        })
                 } else {
-                    showError = "Could not read file"
+                    showError = context.getString(R.string.error_file_read)
                 }
             } catch (e: Exception) {
-                showError = "Failed to open file: ${e.message}"
+                showError = context.getString(R.string.error_file_open, e.message)
             }
         }
     }
@@ -96,11 +98,15 @@ fun EqScreen(
     if (showError != null) {
         AlertDialog(
             onDismissRequest = { showError = null },
-            title = { Text("Import Error") },
-            text = { Text(showError ?: "") },
+            title = {
+                Text(stringResource(R.string.import_error_title))
+            },
+            text = {
+                Text(showError ?: "")
+            },
             confirmButton = {
                 TextButton(onClick = { showError = null }) {
-                    Text("OK")
+                    Text(stringResource(android.R.string.ok))
                 }
             }
         )
@@ -136,12 +142,15 @@ private fun EqScreenContent(
             ) {
                 Column {
                     Text(
-                        text = "Equalizer",
+                        text = stringResource(R.string.equalizer_header),
                         style = MaterialTheme.typography.headlineSmall
                     )
-                    val customProfilesCount = profiles.count { it.isCustom }
                     Text(
-                        text = "$customProfilesCount ${if (customProfilesCount == 1) "profile" else "profiles"}",
+                        text = pluralStringResource(
+                            id = R.plurals.profiles_count,
+                            count = profiles.size,
+                            profiles.size
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -149,7 +158,7 @@ private fun EqScreenContent(
                 IconButton(onClick = onImportCustomEQ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Import Custom EQ"
+                        contentDescription = stringResource(R.string.import_profile)
                     )
                 }
             }
@@ -201,13 +210,13 @@ private fun EqScreenContent(
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "No parametric EQ profiles",
+                                    text = stringResource(R.string.no_profiles),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Button(onClick = onImportCustomEQ) {
-                                    Text("Import Profile")
+                                    Text(stringResource(R.string.import_profile))
                                 }
                             }
                         }
@@ -228,7 +237,7 @@ private fun NoEqualizationItem(
     ListItem(
         headlineContent = {
             Text(
-                text = "Disabled",
+                stringResource(R.string.eq_disabled),
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
             )
         },
@@ -261,7 +270,13 @@ private fun EQProfileItem(
             )
         },
         supportingContent = {
-            Text("${profile.bands.size} bands")
+            Text(
+                pluralStringResource(
+                    id = R.plurals.band_count,
+                    count = profile.bands.size,
+                    profile.bands.size
+                )
+            )
         },
         leadingContent = {
             RadioButton(
@@ -273,7 +288,7 @@ private fun EQProfileItem(
             IconButton(onClick = { showDeleteDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete_profile_desc),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
@@ -287,8 +302,12 @@ private fun EQProfileItem(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Profile") },
-            text = { Text("Are you sure you want to delete \"${profile.name}\"? This action cannot be undone.") },
+            title = { Text(stringResource(R.string.delete_profile_desc)) },
+            text = {
+                Text(
+                    stringResource(R.string.delete_profile_confirmation, profile.name)
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -296,12 +315,12 @@ private fun EQProfileItem(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(android.R.string.yes))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(android.R.string.cancel))
                 }
             }
         )
