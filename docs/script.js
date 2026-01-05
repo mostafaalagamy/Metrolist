@@ -296,33 +296,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. Theme Toggle ---
+    // --- 3. Advanced Theme Management (Auto / Light / Dark) ---
     const themeBtn = document.getElementById('theme-toggle');
-    if (themeBtn) {
-        const themeIcon = themeBtn.querySelector('i');
-        const htmlElement = document.documentElement;
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    const themeText = document.getElementById('theme-text');
+    const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+    const htmlElement = document.documentElement;
 
-        if (savedTheme === 'light' || (!savedTheme && systemPrefersLight)) {
-            htmlElement.setAttribute('data-theme', 'light');
-            if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
-        }
+    // Function to get system preference
+    const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 
-        themeBtn.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                htmlElement.setAttribute('data-theme', 'dark');
-                if (themeIcon) themeIcon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'dark');
+    function updateThemeUI(mode, actualTheme) {
+        htmlElement.setAttribute('data-theme', actualTheme);
+        
+        if (themeText) themeText.innerText = mode;
+
+        if (themeIcon) {
+            if (mode === 'auto') {
+                themeIcon.className = 'fas fa-magic';
             } else {
-                htmlElement.setAttribute('data-theme', 'light');
-                if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'light');
+                themeIcon.className = actualTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
             }
+        }
+    }
+
+    function applyMode(mode) {
+        let themeToApply = mode;
+        if (mode === 'auto') {
+            themeToApply = getSystemTheme();
+        }
+        
+        updateThemeUI(mode, themeToApply);
+        localStorage.setItem('theme-mode', mode);
+    }
+
+    // Initial Load
+    const savedMode = localStorage.getItem('theme-mode') || 'auto';
+    applyMode(savedMode);
+
+    // Click Listener: Cycle between Auto -> Light -> Dark
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const currentMode = localStorage.getItem('theme-mode') || 'auto';
+            let nextMode;
+
+            if (currentMode === 'auto') nextMode = 'light';
+            else if (currentMode === 'light') nextMode = 'dark';
+            else nextMode = 'auto';
+
+            applyMode(nextMode);
         });
     }
 
+    // Watch for system changes (only active if mode is 'auto')
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        if (localStorage.getItem('theme-mode') === 'auto') {
+            updateThemeUI('auto', e.matches ? 'light' : 'dark');
+        }
+    });
+    
     // --- 4. Mobile Menu ---
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
