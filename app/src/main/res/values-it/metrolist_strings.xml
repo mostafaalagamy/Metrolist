@@ -351,4 +351,5 @@
     <string name="import_error_title">Errore di importazione</string>
     <string name="wavy">Ondulato</string>
     <string name="enable_wavy_slider">Attiva lo slider ondulato</string>
+    <string name="enable_squiggly_slider">Abilita slider ondulato</string>
 </resources>
