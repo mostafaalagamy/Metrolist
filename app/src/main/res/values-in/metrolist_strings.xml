@@ -95,7 +95,6 @@
     <string name="player_buttons_style">Warna tombol pemutar musik</string>
     <string name="default_style">Bawaan</string>
     <string name="secondary_color_style">Sekunder</string>
-    <string name="enable_squiggly_slider">Aktifkan penggeser bergelombang</string>
     <string name="enable_swipe_thumbnail">Aktifkan gestur geser untuk mengganti lagu</string>
     <string name="swipe_song_to_add">Geser lagu ke kiri untuk menambahkannya ke antrean atau ke kanan untuk memutar berikutnya</string>
     <string name="lyrics_click_change">Ganti lirik dengan ketukan</string>

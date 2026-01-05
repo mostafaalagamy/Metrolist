@@ -68,7 +68,6 @@
     <string name="player_buttons_style">Lejátszó gomb színek</string>
     <string name="default_style">Alapbeállítás</string>
     <string name="secondary_color_style">Másodlagos</string>
-    <string name="enable_squiggly_slider">Hernyó sáv</string>
     <string name="enable_swipe_thumbnail">Bekapcsolja a húzással való váltást</string>
     <string name="swipe_song_to_add">Húzza a számot balra a listához való hozzáadáshoz, vagy jobbra hogy következőnek azt játssza</string>
     <string name="lyrics_click_change">Dalszövegek váltása koppintásra</string>

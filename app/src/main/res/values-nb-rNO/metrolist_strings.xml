@@ -71,7 +71,6 @@
     <string name="player_buttons_style">Farger på avspillerknapper</string>
     <string name="default_style">Standard</string>
     <string name="secondary_color_style">Sekundære</string>
-    <string name="enable_squiggly_slider">Snirklete skyveknapp</string>
     <string name="swipe_song_to_add">Sveip til høyre for å spille den av nest eller til venstre for å legge den til i køen</string>
     <string name="lyrics_click_change">Endre sangtekster ved klikk</string>
     <string name="slim">Smal</string>

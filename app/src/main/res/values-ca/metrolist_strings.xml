@@ -97,7 +97,6 @@
     <string name="sync_playlist_desc">Sincronitza una llista amb YouTube Music</string>
     <string name="primary_color_style">Color primari</string>
     <string name="tertiary_color_style">Color terciari</string>
-    <string name="enable_squiggly_slider">Habilita control lliscador ondulat</string>
     <string name="swipe_song_to_add">Llisca la cançó cap a la esquerra per a afegir-la a la cua o a la dreta per a reproduir-la a continuació</string>
     <string name="swipe_song_to_remove">Llisca la cançó per a eliminar-la de la llista</string>
     <string name="lyrics_click_change">Canvia la lletra polsant</string>

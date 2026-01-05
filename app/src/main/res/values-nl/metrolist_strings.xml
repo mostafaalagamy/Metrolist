@@ -84,7 +84,6 @@
     <string name="similar_content">Vergelijkbare muziek</string>
     <string name="player_background_blur">Wazig</string>
     <string name="player_buttons_style">Afspeelknop kleuren</string>
-    <string name="enable_squiggly_slider">Kronkel slider aanzetten</string>
     <string name="enable_swipe_thumbnail">Vegen om lied te veranderen</string>
     <string name="swipe_song_to_add">Naar links vegen om lied in de afspeellijst te zetten of naar rechts om als volgende te spelen</string>
     <string name="lyrics_click_change">Naar tekst springen bij klikken</string>

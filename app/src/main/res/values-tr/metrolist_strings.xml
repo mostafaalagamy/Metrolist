@@ -54,7 +54,6 @@
     <string name="player_buttons_style">Oynatıcı düğme renkleri</string>
     <string name="default_style">Varsayılan</string>
     <string name="secondary_color_style">İkincil</string>
-    <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştir</string>
     <string name="enable_swipe_thumbnail">Şarkıyı değiştirmek için kaydırmayı etkinleştir</string>
     <string name="swipe_song_to_add">Şarkıyı kuyruğa eklemek için sola, sonra çalmak için sağa kaydırın</string>
     <string name="lyrics_click_change">Tıklama ile şarkı sözlerini değiştir</string>

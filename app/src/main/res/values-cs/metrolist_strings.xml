@@ -55,7 +55,6 @@
     <string name="player_buttons_style">Barvy tlačítek přehrávače</string>
     <string name="default_style">Výchozí</string>
     <string name="secondary_color_style">Sekundární</string>
-    <string name="enable_squiggly_slider">Povolit klikatou lištu přehrávače</string>
     <string name="enable_swipe_thumbnail">Povolit posunutí pro změnu skladby</string>
     <string name="swipe_song_to_add">Posuňte skladbu doleva pro přidání do fronty nebo doprava pro přehrání jako další</string>
     <string name="lyrics_click_change">Změnit texty po klepnutí</string>

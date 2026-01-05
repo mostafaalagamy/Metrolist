@@ -17,7 +17,6 @@
     <string name="player_background_style">Styl tła odtwarzacza</string>
     <string name="follow_theme">Zgodnie z motywem</string>
     <string name="gradient">Gradient</string>
-    <string name="enable_squiggly_slider">Włącz falisty pasek</string>
     <string name="proxy">Proxy</string>
     <string name="default_lib_chips">Zmień domyślny chip biblioteki</string>
     <string name="set_quick_picks">Ustaw Szybki wybór</string>

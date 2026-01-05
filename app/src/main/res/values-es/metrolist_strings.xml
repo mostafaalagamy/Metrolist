@@ -56,7 +56,6 @@
     <string name="player_buttons_style">Colores de los botones del reproductor</string>
     <string name="default_style">Predeterminado</string>
     <string name="secondary_color_style">Secundario</string>
-    <string name="enable_squiggly_slider">Habilitar control deslizante ondulado</string>
     <string name="enable_swipe_thumbnail">Habilitar deslizar para cambiar de canción</string>
     <string name="swipe_song_to_add">Desliza la canción a la derecha para reproducirla a continuación o a la izquierda para añadirla a la cola</string>
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>

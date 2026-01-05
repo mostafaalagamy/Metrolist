@@ -71,7 +71,6 @@
     <string name="player_buttons_style">Boje dugmeta reproduktora</string>
     <string name="default_style">Zadana vrijednost</string>
     <string name="secondary_color_style">Srednja</string>
-    <string name="enable_squiggly_slider">Omogući kliznu traku s valovima (izravno prevođenje)</string>
     <string name="enable_swipe_thumbnail">Omogući prebacivanje prstom za promjenu pjesme</string>
     <string name="swipe_song_to_add">Proslijedi pjesmu desnom prstom da je dodaješ u red čekanja ili lijevim prstom da je odmah riješiš</string>
     <string name="lyrics_click_change">Promijeni stihove po kliku</string>
