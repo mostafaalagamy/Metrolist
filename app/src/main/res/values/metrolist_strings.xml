@@ -366,6 +366,27 @@
     <string name="wrapped_create_playlist">Create playlist</string>
     <string name="wrapped_playlist_saved">Playlist saved</string>
 
+    <!-- Equalizer UI -->
+    <plurals name="profiles_count">
+        <item quantity="one">%d Profile</item>
+        <item quantity="other">%d Profiles</item>
+    </plurals>
+    <string name="equalizer_header">Equalizer</string>
+    <string name="no_profiles">No equalizer profiles</string>
+    <string name="import_profile">Import Profile</string>
+    <string name="eq_disabled">Disabled</string>
+    <plurals name="band_count">
+        <item quantity="one">%d band</item>
+        <item quantity="other">%d bands</item>
+    </plurals>
+    <string name="delete_profile_desc">Delete Profile</string>
+    <string name="delete_profile_confirmation">Are you sure you want to delete "%1$s"? This action
+        cannot be undone.
+    </string>
+    <string name="error_file_read">Could not read file</string>
+    <string name="error_file_open">Failed to open file: %1$s</string>
+    <string name="import_error_title">Import Error</string>
+
     <!-- Hardcoded strings -->
     <string name="casting_to">Casting to %s</string>
     <string name="progress_percent">Progress %s%%</string>
