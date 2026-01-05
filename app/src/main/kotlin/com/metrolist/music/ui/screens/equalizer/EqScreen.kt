@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.equalizer
 
+import android.annotation.SuppressLint
 import android.media.session.PlaybackState
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,15 +16,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.metrolist.music.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.metrolist.music.eq.data.SavedEQProfile
+import timber.log.Timber
 
 /**
  * EQ Screen - Manage and select EQ profiles
  */
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun EqScreen(
     viewModel: EQViewModel = hiltViewModel(),
@@ -33,7 +39,6 @@ fun EqScreen(
     val context = LocalContext.current
 
     var showError by remember { mutableStateOf<String?>(null) }
-    var showSuccess by remember { mutableStateOf(false) }
 
     // File picker for custom EQ import
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -64,17 +69,16 @@ fun EqScreen(
                         fileName = fileName,
                         inputStream = inputStream,
                         onSuccess = {
-                            showSuccess = true
+                            Timber.d("Custom EQ profile imported successfully: $fileName")
                         },
                         onError = { error ->
-                            showError = error
-                        }
-                    )
+                            Timber.d("Error: Unable to import Custom EQ profile: $fileName")
+                        })
                 } else {
-                    showError = "Could not read file"
+                    showError = context.getString(R.string.error_file_read)
                 }
             } catch (e: Exception) {
-                showError = "Failed to open file: ${e.message}"
+                showError = context.getString(R.string.error_file_open, e.message)
             }
         }
     }
@@ -90,33 +94,19 @@ fun EqScreen(
         onDeleteProfile = { viewModel.deleteProfile(it) }
     )
 
-    // Success Snackbar
-    if (showSuccess) {
-        LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(2000)
-            showSuccess = false
-        }
-        Snackbar(
-            modifier = Modifier.padding(16.dp),
-            action = {
-                TextButton(onClick = { showSuccess = false }) {
-                    Text("Dismiss")
-                }
-            }
-        ) {
-            Text("Custom EQ profile imported successfully")
-        }
-    }
-
     // Error dialog
     if (showError != null) {
         AlertDialog(
             onDismissRequest = { showError = null },
-            title = { Text("Import Error") },
-            text = { Text(showError ?: "") },
+            title = {
+                Text(stringResource(R.string.import_error_title))
+            },
+            text = {
+                Text(showError ?: "")
+            },
             confirmButton = {
                 TextButton(onClick = { showError = null }) {
-                    Text("OK")
+                    Text(stringResource(android.R.string.ok))
                 }
             }
         )
@@ -132,40 +122,51 @@ private fun EqScreenContent(
     onImportCustomEQ: () -> Unit,
     onDeleteProfile: (String) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("Equalizer")
-                        val customProfilesCount = profiles.count { it.isCustom }
-                        Text(
-                            text = "$customProfilesCount ${if (customProfilesCount == 1) "profile" else "profiles"}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onImportCustomEQ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Import Custom EQ"
-                        )
-                    }
+    Surface(
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tonalElevation = 6.dp,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .heightIn(max = 600.dp)
+            .padding(vertical = 24.dp) // Optional extra padding if desired, but dialog handles it.
+    ) {
+        Column {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.equalizer_header),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.profiles_count,
+                            count = profiles.size,
+                            profiles.size
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
+                IconButton(onClick = onImportCustomEQ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.import_profile)
+                    )
+                }
+            }
+
             // Profile list
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(bottom = 16.dp)
             ) {
                 // "No Equalization" option (always first)
                 item {
@@ -209,13 +210,13 @@ private fun EqScreenContent(
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "No custom EQ profiles yet",
+                                    text = stringResource(R.string.no_profiles),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Button(onClick = onImportCustomEQ) {
-                                    Text("Import Profile")
+                                    Text(stringResource(R.string.import_profile))
                                 }
                             }
                         }
@@ -233,45 +234,23 @@ private fun NoEqualizationItem(
     isSelected: Boolean,
     onSelected: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable(onClick = onSelected),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        headlineContent = {
+            Text(
+                stringResource(R.string.eq_disabled),
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+            )
+        },
+        leadingContent = {
             RadioButton(
                 selected = isSelected,
                 onClick = onSelected
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Equalizer Disabled",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "Select or import an EQ profile to apply equalization to your music. Profiles must conform to the EqualizerAPO ParametricEq format.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable(onClick = onSelected)
+            .padding(horizontal = 8.dp) // align with design
+    )
 }
 
 @Composable
@@ -283,65 +262,52 @@ private fun EQProfileItem(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable(onClick = onSelected),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = profile.deviceModel,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+            )
+        },
+        supportingContent = {
+            Text(
+                pluralStringResource(
+                    id = R.plurals.band_count,
+                    count = profile.bands.size,
+                    profile.bands.size
+                )
+            )
+        },
+        leadingContent = {
             RadioButton(
                 selected = isSelected,
                 onClick = onSelected
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                // Device model name (used as profile name for custom profiles)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = profile.deviceModel,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "${profile.bands.size} frequency bands",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+        },
+        trailingContent = {
             IconButton(onClick = { showDeleteDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete profile",
+                    contentDescription = stringResource(R.string.delete_profile_desc),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable(onClick = onSelected)
+            .padding(horizontal = 8.dp)
+    )
 
     // Delete confirmation dialog
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Profile") },
-            text = { Text("Are you sure you want to delete \"${profile.name}\"? This action cannot be undone.") },
+            title = { Text(stringResource(R.string.delete_profile_desc)) },
+            text = {
+                Text(
+                    stringResource(R.string.delete_profile_confirmation, profile.name)
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -349,12 +315,12 @@ private fun EQProfileItem(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(android.R.string.yes))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(android.R.string.cancel))
                 }
             }
         )
