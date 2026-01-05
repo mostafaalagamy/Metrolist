@@ -676,12 +676,10 @@ fun AppearanceSettings(
                             sliderValue = it
                         },
                         modifier = Modifier.weight(1f),
-                        isPlaying = true,
-                        strokeWidth = 3.dp,
-                        wavelength = 16.dp
+                        isPlaying = true
                     )
                     Text(
-                        text = stringResource(R.string.squiggly),
+                        text = stringResource(R.string.wavy),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
