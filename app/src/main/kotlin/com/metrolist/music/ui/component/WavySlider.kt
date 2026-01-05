@@ -42,7 +42,7 @@ fun WavySlider(
     onValueChangeFinished: (() -> Unit)? = null,
     colors: SliderColors = SliderDefaults.colors(),
     isPlaying: Boolean = true,
-    strokeWidth: Dp = WavyProgressIndicatorDefaults.LinearStrokeWidth,
+    strokeWidth: Dp = 4.dp,
     wavelength: Dp = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
     waveSpeed: Dp = wavelength
 ) {

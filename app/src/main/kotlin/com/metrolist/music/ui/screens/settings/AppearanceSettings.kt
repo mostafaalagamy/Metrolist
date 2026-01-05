@@ -678,8 +678,7 @@ fun AppearanceSettings(
                         modifier = Modifier.weight(1f),
                         isPlaying = true,
                         strokeWidth = 3.dp,
-                        wavelength = 16.dp,
-                        thumbRadius = 6.dp
+                        wavelength = 16.dp
                     )
                     Text(
                         text = stringResource(R.string.squiggly),
