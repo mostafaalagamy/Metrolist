@@ -277,6 +277,7 @@ class CustomEqualizerAudioProcessor : AudioProcessor {
     }
 
     override fun reset() {
+        @Suppress("DEPRECATION")
         flush()
         inputBuffer = EMPTY_BUFFER
         sampleRate = 0

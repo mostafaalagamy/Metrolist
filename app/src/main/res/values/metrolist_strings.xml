@@ -400,4 +400,5 @@
     <string name="copied_artist">Copied Artist</string>
     <string name="error_playing">Error playing</string>
     <string name="failed_to_parse_proxy">Failed to parse proxy url.</string>
+    <string name="enable_squiggly_slider">Enable squiggly slider</string>
 </resources>
