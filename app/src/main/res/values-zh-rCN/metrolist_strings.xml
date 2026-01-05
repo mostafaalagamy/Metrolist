@@ -325,4 +325,19 @@
     <string name="copied_artist">已复制艺术家</string>
     <string name="error_playing">播放错误</string>
     <string name="failed_to_parse_proxy">解析代理URL失败.</string>
+    <plurals name="profiles_count">
+        <item quantity="other">%d 个配置文件</item>
+    </plurals>
+    <string name="equalizer_header">均衡器</string>
+    <string name="no_profiles">无均衡器配置文件</string>
+    <string name="import_profile">导入配置</string>
+    <string name="eq_disabled">禁用</string>
+    <string name="delete_profile_desc">删除配置</string>
+    <string name="delete_profile_confirmation">你确定要删除 %1$s吗? 该操作不可逆转。</string>
+    <string name="error_file_read">无法读取文件</string>
+    <string name="error_file_open">无法打开文件: %1$s</string>
+    <string name="import_error_title">导入错误</string>
+    <plurals name="band_count">
+        <item quantity="other">%d 乐队</item>
+    </plurals>
 </resources>
