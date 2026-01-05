@@ -9,11 +9,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -21,16 +19,13 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -45,8 +40,6 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -65,18 +58,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,10 +80,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
@@ -100,9 +91,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
@@ -115,12 +103,10 @@ import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -142,10 +128,8 @@ import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DisableScreenshotKey
 import com.metrolist.music.constants.DynamicThemeKey
-import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.MiniPlayerBottomSpacing
-import com.metrolist.music.constants.UpdateNotificationsEnabledKey
-import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
+import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.constants.NavigationBarHeight
 import com.metrolist.music.constants.PauseSearchHistoryKey
@@ -154,6 +138,8 @@ import com.metrolist.music.constants.SYSTEM_DEFAULT
 import com.metrolist.music.constants.SlimNavBarHeight
 import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
+import com.metrolist.music.constants.UpdateNotificationsEnabledKey
+import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import com.metrolist.music.extensions.toEnum
@@ -168,7 +154,6 @@ import com.metrolist.music.ui.component.AppNavigationBar
 import com.metrolist.music.ui.component.AppNavigationRail
 import com.metrolist.music.ui.component.BottomSheetMenu
 import com.metrolist.music.ui.component.BottomSheetPage
-import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.rememberBottomSheetState
@@ -184,7 +169,6 @@ import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
-import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.resetHeightOffset
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.Updater
@@ -198,10 +182,8 @@ import com.metrolist.music.viewmodels.HomeViewModel
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -214,6 +196,11 @@ import kotlin.time.Duration.Companion.days
 @Suppress("DEPRECATION", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
+        private const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
+    }
+
     @Inject
     lateinit var database: MusicDatabase
 
@@ -262,7 +249,7 @@ class MainActivity : ComponentActivity() {
         bindService(
             Intent(this, MusicService::class.java),
             serviceConnection,
-            Context.BIND_AUTO_CREATE
+            BIND_AUTO_CREATE
         )
     }
 
@@ -337,103 +324,125 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
+            MetrolistApp(
+                latestVersionName = latestVersionName,
+                onLatestVersionNameChange = { latestVersionName = it },
+                playerConnection = playerConnection,
+                database = database,
+                downloadUtil = downloadUtil,
+                syncUtils = syncUtils,
+            )
+        }
+    }
 
-            LaunchedEffect(checkForUpdates) {
-                if (checkForUpdates) {
-                    withContext(Dispatchers.IO) {
-                        if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
-                            val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
-                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
-                            if (!updatesEnabled) return@withContext
-                            Updater.getLatestVersionName().onSuccess {
-                                latestVersionName = it
-                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
-                                    val downloadUrl = Updater.getLatestDownloadUrl()
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun MetrolistApp(
+        latestVersionName: String,
+        onLatestVersionNameChange: (String) -> Unit,
+        playerConnection: PlayerConnection?,
+        database: MusicDatabase,
+        downloadUtil: DownloadUtil,
+        syncUtils: SyncUtils,
+    ) {
+        val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
 
-                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or
-                                            (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-                                    val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+        LaunchedEffect(checkForUpdates) {
+            if (checkForUpdates) {
+                withContext(Dispatchers.IO) {
+                    if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                        val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
+                        val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
+                        if (!updatesEnabled) return@withContext
+                        Updater.getLatestVersionName().onSuccess {
+                            onLatestVersionNameChange(it)
+                            if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                                val downloadUrl = Updater.getLatestDownloadUrl()
+                                val intent = Intent(Intent.ACTION_VIEW, downloadUrl.toUri())
 
-                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
-                                        .setSmallIcon(R.drawable.update)
-                                        .setContentTitle(getString(R.string.update_available_title))
-                                        .setContentText(it)
-                                        .setContentIntent(pending)
-                                        .setAutoCancel(true)
-                                        .build()
-                                    
-                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                                        ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                        NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
-                                    }
+                                val flags = PendingIntent.FLAG_UPDATE_CURRENT or
+                                        (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+
+                                val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                    .setSmallIcon(R.drawable.update)
+                                    .setContentTitle(getString(R.string.update_available_title))
+                                    .setContentText(it)
+                                    .setContentIntent(pending)
+                                    .setAutoCancel(true)
+                                    .build()
+
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                                    ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
                                 }
                             }
                         }
                     }
-                } else {
-                    // when the user disables updates, reset to the current version
-                    // to trick the app into thinking it's on the latest version
-                    latestVersionName = BuildConfig.VERSION_NAME
                 }
+            } else {
+                // when the user disables updates, reset to the current version
+                // to trick the app into thinking it's on the latest version
+                onLatestVersionNameChange(BuildConfig.VERSION_NAME)
+            }
+        }
+
+        val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
+        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+            if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+        }
+
+        LaunchedEffect(useDarkTheme) {
+            setSystemBarAppearance(useDarkTheme)
+        }
+
+        val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
+        val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
+            pureBlackEnabled && useDarkTheme
+        }
+
+        var themeColor by rememberSaveable(stateSaver = ColorSaver) {
+            mutableStateOf(DefaultThemeColor)
+        }
+
+        LaunchedEffect(playerConnection, enableDynamicTheme) {
+            val playerConnection = playerConnection
+            if (!enableDynamicTheme || playerConnection == null) {
+                themeColor = DefaultThemeColor
+                return@LaunchedEffect
             }
 
-            val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
-            val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-            val isSystemInDarkTheme = isSystemInDarkTheme()
-            val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-                if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-            }
-
-            LaunchedEffect(useDarkTheme) {
-                setSystemBarAppearance(useDarkTheme)
-            }
-
-            val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
-            val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
-                pureBlackEnabled && useDarkTheme
-            }
-
-            var themeColor by rememberSaveable(stateSaver = ColorSaver) {
-                mutableStateOf(DefaultThemeColor)
-            }
-
-            LaunchedEffect(playerConnection, enableDynamicTheme) {
-                val playerConnection = playerConnection
-                if (!enableDynamicTheme || playerConnection == null) {
-                    themeColor = DefaultThemeColor
-                    return@LaunchedEffect
-                }
-
-                playerConnection.service.currentMediaMetadata.collectLatest { song ->
-                    if (song?.thumbnailUrl != null) {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                val result = imageLoader.execute(
-                                    ImageRequest.Builder(this@MainActivity)
-                                        .data(song.thumbnailUrl)
-                                        .allowHardware(false)
-                                        .memoryCachePolicy(CachePolicy.ENABLED)
-                                        .diskCachePolicy(CachePolicy.ENABLED)
-                                        .networkCachePolicy(CachePolicy.ENABLED)
-                                        .crossfade(false)
-                                        .build()
-                                )
-                                themeColor = result.image?.toBitmap()?.extractThemeColor()
-                                    ?: DefaultThemeColor
-                            } catch (e: Exception) {
-                                // Fallback to default on error
-                                themeColor = DefaultThemeColor
-                            }
+            playerConnection.service.currentMediaMetadata.collectLatest { song ->
+                if (song?.thumbnailUrl != null) {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            val result = imageLoader.execute(
+                                ImageRequest.Builder(this@MainActivity)
+                                    .data(song.thumbnailUrl)
+                                    .allowHardware(false)
+                                    .memoryCachePolicy(CachePolicy.ENABLED)
+                                    .diskCachePolicy(CachePolicy.ENABLED)
+                                    .networkCachePolicy(CachePolicy.ENABLED)
+                                    .crossfade(false)
+                                    .build()
+                            )
+                            themeColor = result.image?.toBitmap()?.extractThemeColor()
+                                ?: DefaultThemeColor
+                        } catch (e: Exception) {
+                            // Fallback to default on error
+                            themeColor = DefaultThemeColor
                         }
-                    } else {
-                        themeColor = DefaultThemeColor
                     }
+                } else {
+                    themeColor = DefaultThemeColor
                 }
             }
+        }
 
-            MetrolistTheme(
+        MetrolistTheme(
                 darkTheme = useDarkTheme,
                 pureBlack = pureBlack,
                 themeColor = themeColor,
@@ -468,8 +477,8 @@ class MainActivity : ComponentActivity() {
                     }
                     val tabOpenedFromShortcut = remember {
                         when (intent?.action) {
-                            ACTION_LIBRARY -> NavigationTab.LIBRARY
-                            ACTION_SEARCH -> NavigationTab.SEARCH
+                            ACTION_SEARCH -> NavigationTab.LIBRARY
+                            ACTION_LIBRARY -> NavigationTab.SEARCH
                             else -> null
                         }
                     }
@@ -507,74 +516,44 @@ class MainActivity : ComponentActivity() {
                     val currentRoute by remember {
                         derivedStateOf { navBackStackEntry?.destination?.route }
                     }
-                    
+
                     val inSearchScreen by remember {
                         derivedStateOf { currentRoute?.startsWith("search/") == true }
                     }
-
-                    // Cache navigation item routes for faster lookup
                     val navigationItemRoutes = remember(navigationItems) {
                         navigationItems.map { it.route }.toSet()
                     }
-                    
-                    val shouldShowNavigationBar by remember {
-                        derivedStateOf {
-                            val route = currentRoute
-                            route == null ||
-                                    navigationItemRoutes.contains(route) ||
-                                    route.startsWith("search/") ||
-                                    route == "equalizer"
-                        }
+
+                    val shouldShowNavigationBar = remember(currentRoute, navigationItemRoutes) {
+                        currentRoute == null ||
+                                navigationItemRoutes.contains(currentRoute) ||
+                                currentRoute!!.startsWith("search/")
                     }
 
-                    val isLandscape by remember {
-                        derivedStateOf { configuration.screenWidthDp > configuration.screenHeightDp }
-                    }
-                    
-                    val showRail by remember {
-                        derivedStateOf { isLandscape && !inSearchScreen }
+                    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
+                    val showRail = isLandscape && !inSearchScreen
+
+                    val navPadding = if (shouldShowNavigationBar && !showRail) {
+                        if (slimNav) SlimNavBarHeight else NavigationBarHeight
+                    } else {
+                        0.dp
                     }
 
-                    // Calculate nav padding without lambda to avoid recreation
-                    val navPadding by remember {
-                        derivedStateOf {
-                            if (shouldShowNavigationBar && !showRail) {
-                                if (slimNav) SlimNavBarHeight else NavigationBarHeight
-                            } else {
-                                0.dp
-                            }
-                        }
-                    }
-
-                    // Use derivedStateOf for animation target to reduce recomposition triggers
-                    val navigationBarTargetHeight by remember {
-                        derivedStateOf {
-                            if (shouldShowNavigationBar && !showRail) NavigationBarHeight else 0.dp
-                        }
-                    }
-                    
                     val navigationBarHeight by animateDpAsState(
-                        targetValue = navigationBarTargetHeight,
+                        targetValue = if (shouldShowNavigationBar && !showRail) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
                         label = "navBarHeight",
                     )
 
-                    val playerBottomSheetState =
-                        rememberBottomSheetState(
-                            dismissedBound = 0.dp,
-                            collapsedBound = bottomInset +
-                                    (if (!showRail && shouldShowNavigationBar) navPadding else 0.dp) +
-                                    (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
-                                    MiniPlayerHeight,
-                            expandedBound = maxHeight,
-                        )
-
-                    // Auto-close equalizer when player is expanded
-                    LaunchedEffect(playerBottomSheetState.isExpanded) {
-                        if (playerBottomSheetState.isExpanded && navController.currentDestination?.route == "equalizer") {
-                            navController.popBackStack()
-                        }
-                    }
+                    val playerBottomSheetState = rememberBottomSheetState(
+                        dismissedBound = 0.dp,
+                        collapsedBound = bottomInset +
+                                (if (!showRail && shouldShowNavigationBar) navPadding else 0.dp) +
+                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
+                                MiniPlayerHeight,
+                        expandedBound = maxHeight,
+                    )
 
                     val playerAwareWindowInsets = remember(
                         bottomInset,
@@ -591,7 +570,6 @@ class MainActivity : ComponentActivity() {
                             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                             .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                     }
-
                     appBarScrollBehavior(
                         canScroll = {
                             !inSearchScreen &&
@@ -833,36 +811,24 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             bottomBar = {
-                                // Memoize navigation click handler to avoid lambda recreation
                                 val onNavItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->
                                         if (playerBottomSheetState.isExpanded) {
                                             playerBottomSheetState.collapseSoft()
                                         }
-                                        
-                                        var handled = false
-                                        if (navController.currentDestination?.route == "equalizer") {
-                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
-                                            navController.popBackStack()
-                                            if (previousRoute == screen.route) {
-                                                handled = true
+
+                                        if (isSelected) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                        }
-                                        
-                                        if (!handled) {
-                                            if (isSelected) {
-                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                coroutineScope.launch {
-                                                    searchBarScrollBehavior.state.resetHeightOffset()
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
                                                 }
-                                            } else {
-                                                navController.navigate(screen.route) {
-                                                    popUpTo(navController.graph.startDestinationId) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
                                         }
                                     }
@@ -893,14 +859,19 @@ class MainActivity : ComponentActivity() {
                                                 .graphicsLayer {
                                                     val navBarHeightPx = navigationBarHeight.toPx()
                                                     val totalHeightPx = navBarTotalHeight.toPx()
-                                                    
+
                                                     translationY = if (navBarHeightPx == 0f) {
                                                         totalHeightPx
                                                     } else {
                                                         // Read progress only during draw phase
-                                                        val progress = playerBottomSheetState.progress.coerceIn(0f, 1f)
+                                                        val progress =
+                                                            playerBottomSheetState.progress.coerceIn(
+                                                                0f,
+                                                                1f
+                                                            )
                                                         val slideOffset = totalHeightPx * progress
-                                                        val hideOffset = totalHeightPx * (1 - navBarHeightPx / NavigationBarHeight.toPx())
+                                                        val hideOffset =
+                                                            totalHeightPx * (1 - navBarHeightPx / NavigationBarHeight.toPx())
                                                         slideOffset + hideOffset
                                                     }
                                                 }
@@ -914,7 +885,8 @@ class MainActivity : ComponentActivity() {
                                                 // Use graphicsLayer for background color changes
                                                 .graphicsLayer {
                                                     val progress = playerBottomSheetState.progress
-                                                    alpha = if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
+                                                    alpha =
+                                                        if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
                                                 }
                                                 .background(baseBg)
                                         )
@@ -936,7 +908,8 @@ class MainActivity : ComponentActivity() {
                                             // Use graphicsLayer for background color changes
                                             .graphicsLayer {
                                                 val progress = playerBottomSheetState.progress
-                                                alpha = if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
+                                                alpha =
+                                                    if (progress > 0f || (useNewMiniPlayerDesign && !shouldShowNavigationBar)) 0f else 1f
                                             }
                                             .background(baseBg)
                                     )
@@ -947,36 +920,24 @@ class MainActivity : ComponentActivity() {
                                 .nestedScroll(searchBarScrollBehavior.nestedScrollConnection)
                         ) {
                             Row(Modifier.fillMaxSize()) {
-                                // Memoize navigation click handler for rail
                                 val onRailItemClick: (Screens, Boolean) -> Unit = remember(navController, coroutineScope, searchBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->
                                         if (playerBottomSheetState.isExpanded) {
                                             playerBottomSheetState.collapseSoft()
                                         }
-                                        
-                                        var handled = false
-                                        if (navController.currentDestination?.route == "equalizer") {
-                                            val previousRoute = navController.previousBackStackEntry?.destination?.route
-                                            navController.popBackStack()
-                                            if (previousRoute == screen.route) {
-                                                handled = true
+
+                                        if (isSelected) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                        }
-                                        
-                                        if (!handled) {
-                                            if (isSelected) {
-                                                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                coroutineScope.launch {
-                                                    searchBarScrollBehavior.state.resetHeightOffset()
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
                                                 }
-                                            } else {
-                                                navController.navigate(screen.route) {
-                                                    popUpTo(navController.graph.startDestinationId) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
                                         }
                                     }
@@ -1127,13 +1088,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
+
 
     private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
         val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
         intent.data = null
         intent.removeExtra(Intent.EXTRA_TEXT)
-        val coroutineScope = lifecycleScope
+        val coroutineScope = lifecycle.coroutineScope
 
         when (val path = uri.pathSegments.firstOrNull()) {
             "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
@@ -1225,11 +1186,6 @@ class MainActivity : ComponentActivity() {
             window.navigationBarColor =
                 (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
         }
-    }
-
-    companion object {
-        const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
-        const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
     }
 }
 

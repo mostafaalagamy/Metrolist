@@ -2,8 +2,8 @@ package com.metrolist.music.ui.screens.equalizer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.metrolist.music.eq.data.EQProfileRepository
 import com.metrolist.music.eq.EqualizerService
+import com.metrolist.music.eq.data.EQProfileRepository
 import com.metrolist.music.eq.data.ParametricEQParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -96,7 +96,7 @@ class EQViewModel @Inject constructor(
         fileName: String,
         inputStream: InputStream,
         onSuccess: () -> Unit,
-        onError: (String) -> Unit
+        onError: (Exception) -> Unit
     ) {
         viewModelScope.launch {
             try {
@@ -110,7 +110,7 @@ class EQViewModel @Inject constructor(
                 // Validate the parsed EQ
                 val validationErrors = ParametricEQParser.validate(parametricEQ)
                 if (validationErrors.isNotEmpty()) {
-                    onError("Invalid EQ file: ${validationErrors.first()}")
+                    onError(Exception("Invalid EQ file: ${validationErrors.first()}"))
                     return@launch
                 }
 
@@ -123,7 +123,7 @@ class EQViewModel @Inject constructor(
                 _state.update { it.copy(importStatus = "Successfully imported $profileName") }
                 onSuccess()
             } catch (e: Exception) {
-                onError("Failed to import EQ profile: ${e.message}")
+                onError(Exception("Failed to import EQ profile: ${e.message}"))
             }
         }
     }
