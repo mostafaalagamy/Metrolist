@@ -330,4 +330,25 @@
     <string name="line_by_line_dialog_desc">Es tracta d\'una característica experimental propensa a errades.\n\nPer defecte, la llengua es determina per a tota la cançó, però amb aquesta opció, en el seu lloc, es determinarà la línia per línia. Açò permetrà que cançons multi-llengua funcionen correctament PERÒ la llengua detectada pot no ser sempre correcta (per exemple, si hi ha una lletra en ucraïnés que no conté cap caràcter específic de l\'idioma pot ser romanitzada com a russa).\n\nSi no té cap problema, es recomana mantenir aquesta opció desactivada.</string>
     <string name="audio_offload_description">Utilitzar la direcció de descarrega (offload) per a la reproducció de àudio. Desactivar aquesta funció podria incrementar l\'ús d\'energia però podria ser beneficiós si està tenint problemes en la reproducció d\'àudio o en pos processat</string>
     <string name="cache_size_warning_message">Ha triat un límit de grandària de memòria cau inferior al que l\'aplicació està utilitzant actualment (%1$s). Si continua, l\'aplicació eliminarà alguns %2$s emmagatzemats per ajustar-se al nou límit. Continuar de tota manera?</string>
+    <string name="enable_wavy_slider">Activar el lliscador ondulat</string>
+    <string name="wavy">Ondulat</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d Perfil</item>
+        <item quantity="many">%d de Perfils</item>
+        <item quantity="other">%d Perfils</item>
+    </plurals>
+    <string name="equalizer_header">Equalitzador</string>
+    <string name="no_profiles">Sense perfils d\'equalitzador</string>
+    <string name="import_profile">Importar Perfil</string>
+    <string name="eq_disabled">Deshabilitat</string>
+    <plurals name="band_count">
+        <item quantity="one">%d grup</item>
+        <item quantity="many">%d de grups</item>
+        <item quantity="other">%d grups</item>
+    </plurals>
+    <string name="delete_profile_desc">Eliminar Perfil</string>
+    <string name="delete_profile_confirmation">Està segur de que vol eliminar %1$s? Aquesta acció no és reversible.</string>
+    <string name="error_file_read">No s\'ha pogut llegir l\'arxiu</string>
+    <string name="error_file_open">No s\'ha pogut obrir l\'arxiu: %1$s</string>
+    <string name="import_error_title">Error d\'Importació</string>
 </resources>
