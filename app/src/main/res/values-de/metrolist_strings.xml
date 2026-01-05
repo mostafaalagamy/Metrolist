@@ -327,4 +327,5 @@
     <string name="wrapped_logo_content_description">Metrolist Logo</string>
     <string name="wrapped_year">2025</string>
     <string name="top_result">Top Ergebnis</string>
+    <string name="wrapped_top_artist_image_content_description">Bild des Top-Künstlers</string>
 </resources>
