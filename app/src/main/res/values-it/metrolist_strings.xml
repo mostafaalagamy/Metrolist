@@ -349,4 +349,6 @@
     <string name="error_file_read">Impossibile leggere il file</string>
     <string name="error_file_open">Impossibile aprire il file: %1$s</string>
     <string name="import_error_title">Errore di importazione</string>
+    <string name="wavy">Ondulato</string>
+    <string name="enable_wavy_slider">Attiva lo slider ondulato</string>
 </resources>
