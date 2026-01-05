@@ -315,7 +315,7 @@ private fun EQProfileItem(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text(stringResource(android.R.string.yes))
+                    Text(stringResource(android.R.string.ok))
                 }
             },
             dismissButton = {
