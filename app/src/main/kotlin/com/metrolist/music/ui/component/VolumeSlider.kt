@@ -17,18 +17,16 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.SliderState
-import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -43,23 +41,20 @@ fun VolumeSlider(
     onValueChangeFinished: (() -> Unit)? = null,
     accentColor: Color = MaterialTheme.colorScheme.primary
 ) {
-    val sliderState = rememberSliderState(
-        value = value,
-        valueRange = 0f..1f,
-        onValueChangeFinished = onValueChangeFinished
-    )
-    
-    // Update slider state when value changes externally
-    sliderState.value = value
-    
     val interactionSource = remember { MutableInteractionSource() }
-    
-    // Icons for different volume levels
+
     val volumeOffIcon = rememberVectorPainter(Icons.AutoMirrored.Filled.VolumeOff)
     val volumeMuteIcon = rememberVectorPainter(Icons.AutoMirrored.Filled.VolumeMute)
     val volumeDownIcon = rememberVectorPainter(Icons.AutoMirrored.Filled.VolumeDown)
     val volumeUpIcon = rememberVectorPainter(Icons.AutoMirrored.Filled.VolumeUp)
-    
+
+    val currentIcon = when {
+        value <= 0f -> volumeOffIcon
+        value < 0.33f -> volumeMuteIcon
+        value < 0.66f -> volumeDownIcon
+        else -> volumeUpIcon
+    }
+
     val colors = SliderDefaults.colors(
         thumbColor = accentColor,
         activeTrackColor = accentColor,
@@ -67,69 +62,86 @@ fun VolumeSlider(
         inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
         inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
     )
-    
+
     Slider(
-        state = sliderState,
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier,
         enabled = enabled,
+        valueRange = 0f..1f,
+        onValueChangeFinished = onValueChangeFinished,
         colors = colors,
         interactionSource = interactionSource,
-        onValueChange = onValueChange,
-        track = { state ->
+        track = { sliderState ->
             val iconSize = DpSize(20.dp, 20.dp)
             val iconPadding = 8.dp
             val thumbTrackGapSize = 6.dp
             val activeIconColor = colors.activeTickColor
             val inactiveIconColor = colors.inactiveTickColor
-            
-            // Choose icon based on volume level
-            val currentIcon = when {
-                state.value <= 0f -> volumeOffIcon
-                state.value < 0.33f -> volumeMuteIcon
-                state.value < 0.66f -> volumeDownIcon
-                else -> volumeUpIcon
-            }
-            
-            // Icon for when volume is at zero (show on inactive track)
-            val zeroStateIcon = volumeOffIcon
-            
-            val trackIconStart: DrawScope.(Offset, Color, Boolean) -> Unit = { offset, color, isZeroState ->
-                val iconToDraw = if (isZeroState) zeroStateIcon else currentIcon
-                translate(offset.x + iconPadding.toPx(), offset.y) {
-                    with(iconToDraw) {
-                        draw(iconSize.toSize(), colorFilter = ColorFilter.tint(color))
-                    }
-                }
-            }
-            
+
             SliderDefaults.Track(
-                sliderState = state,
+                sliderState = sliderState,
                 modifier = Modifier
                     .height(36.dp)
                     .drawWithContent {
                         drawContent()
                         val yOffset = size.height / 2 - iconSize.toSize().height / 2
-                        val activeTrackStart = 0f
-                        val activeTrackEnd = size.width * state.coercedValueAsFraction - thumbTrackGapSize.toPx()
+                        val fraction = (value - 0f) / (1f - 0f)
+                        val activeTrackEnd = size.width * fraction - thumbTrackGapSize.toPx()
                         val inactiveTrackStart = activeTrackEnd + thumbTrackGapSize.toPx() * 2
-                        val activeTrackWidth = activeTrackEnd - activeTrackStart
+                        val activeTrackWidth = activeTrackEnd
                         val inactiveTrackWidth = size.width - inactiveTrackStart
-                        
-                        // Draw icon on active track if there's enough space
-                        if (iconSize.toSize().width < activeTrackWidth - iconPadding.toPx() * 2) {
-                            trackIconStart(Offset(activeTrackStart, yOffset), activeIconColor, false)
-                        }
-                        // Draw mute icon on inactive track when volume is very low
-                        else if (state.value <= 0.1f && iconSize.toSize().width < inactiveTrackWidth - iconPadding.toPx() * 2) {
-                            trackIconStart(Offset(inactiveTrackStart, yOffset), inactiveIconColor, true)
-                        }
+
+                        drawVolumeIcon(
+                            icon = currentIcon,
+                            iconSize = iconSize,
+                            iconPadding = iconPadding,
+                            yOffset = yOffset,
+                            activeTrackWidth = activeTrackWidth,
+                            inactiveTrackStart = inactiveTrackStart,
+                            inactiveTrackWidth = inactiveTrackWidth,
+                            activeIconColor = activeIconColor,
+                            inactiveIconColor = inactiveIconColor,
+                            volumeOffIcon = volumeOffIcon,
+                            currentValue = value
+                        )
                     },
                 colors = colors,
                 enabled = enabled,
-                trackCornerSize = 18.dp,
-                drawStopIndicator = null,
-                thumbTrackGapSize = thumbTrackGapSize
+                thumbTrackGapSize = thumbTrackGapSize,
+                drawStopIndicator = null
             )
         }
     )
+}
+
+private fun DrawScope.drawVolumeIcon(
+    icon: VectorPainter,
+    iconSize: DpSize,
+    iconPadding: androidx.compose.ui.unit.Dp,
+    yOffset: Float,
+    activeTrackWidth: Float,
+    inactiveTrackStart: Float,
+    inactiveTrackWidth: Float,
+    activeIconColor: Color,
+    inactiveIconColor: Color,
+    volumeOffIcon: VectorPainter,
+    currentValue: Float
+) {
+    val iconSizePx = iconSize.toSize()
+    val iconPaddingPx = iconPadding.toPx()
+
+    if (iconSizePx.width < activeTrackWidth - iconPaddingPx * 2) {
+        translate(iconPaddingPx, yOffset) {
+            with(icon) {
+                draw(iconSizePx, colorFilter = ColorFilter.tint(activeIconColor))
+            }
+        }
+    } else if (currentValue <= 0.1f && iconSizePx.width < inactiveTrackWidth - iconPaddingPx * 2) {
+        translate(inactiveTrackStart + iconPaddingPx, yOffset) {
+            with(volumeOffIcon) {
+                draw(iconSizePx, colorFilter = ColorFilter.tint(inactiveIconColor))
+            }
+        }
+    }
 }
