@@ -354,4 +354,6 @@
     <string name="error_file_read">Nepodařilo se přečíst soubor</string>
     <string name="error_file_open">Nepodařilo se otevřít soubor: %1$s</string>
     <string name="import_error_title">Chyba importu</string>
+    <string name="enable_wavy_slider">Povolit vlnitý posuvník</string>
+    <string name="wavy">Vlnitý</string>
 </resources>
