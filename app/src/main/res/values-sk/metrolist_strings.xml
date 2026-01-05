@@ -86,7 +86,6 @@
     <string name="player_buttons_style">Farby tlačidiel prehrávača</string>
     <string name="default_style">Predvolené</string>
     <string name="secondary_color_style">Sekundárne</string>
-    <string name="enable_squiggly_slider">Povoliť vlnitý posuvník</string>
     <string name="enable_swipe_thumbnail">Povoliť zmenu skladby potiahnutím prstom</string>
     <string name="swipe_song_to_add">Potiahnutím skladby doľava ju pridáte do frontu alebo doprava ju prehráte ako ďalšiu</string>
     <string name="lyrics_click_change">Zmena textu po kliknutí</string>

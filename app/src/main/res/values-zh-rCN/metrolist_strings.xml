@@ -58,7 +58,6 @@
     <string name="player_buttons_style">播放器按钮颜色</string>
     <string name="default_style">默认</string>
     <string name="secondary_color_style">次要</string>
-    <string name="enable_squiggly_slider">启用波浪形进度条</string>
     <string name="enable_swipe_thumbnail">启用滑动手势切换歌曲</string>
     <string name="swipe_song_to_add">向右滑动歌曲以播放下一首，或向左滑动以添加到播放队列</string>
     <string name="slim">纤细</string>

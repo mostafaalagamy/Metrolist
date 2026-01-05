@@ -84,7 +84,6 @@
     <string name="player_buttons_style">Let på avspelarknappar</string>
     <string name="default_style">Standard</string>
     <string name="secondary_color_style">Sekundære</string>
-    <string name="enable_squiggly_slider">Snirklete skuveknapp</string>
     <string name="enable_swipe_thumbnail">Sveip for å byta songar</string>
     <string name="swipe_song_to_add">Sveip songen åt venstre for å leggja han til i køen eller til høgre for å spela han nest</string>
     <string name="swipe_song_to_remove">Sveip songen for å taka han bort frå spelelista</string>

@@ -79,7 +79,6 @@
     <string name="player_buttons_style">Couleurs des boutons du lecteur</string>
     <string name="default_style">Défaut</string>
     <string name="secondary_color_style">Secondaire</string>
-    <string name="enable_squiggly_slider">Activer la barre de défilement</string>
     <string name="enable_swipe_thumbnail">Activer le glissement pour changer de titre</string>
     <string name="lyrics_click_change">Changer les paroles avec un clic</string>
     <string name="slim">Subtil</string>

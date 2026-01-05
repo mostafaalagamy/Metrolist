@@ -84,7 +84,6 @@
     <string name="player_buttons_style">Kouler bouton dan lekter</string>
     <string name="default_style">Defaut</string>
     <string name="secondary_color_style">Secondaire</string>
-    <string name="enable_squiggly_slider">Aktiv slider vag</string>
     <string name="enable_swipe_thumbnail">Aktiv swipe pu sanz lamizik</string>
     <string name="swipe_song_to_add">Swipe dan gos pou azout dan queue ou drwat pu zwé li apre</string>
     <string name="swipe_song_to_remove">Swipe lamizk pu tir li dan playlist</string>

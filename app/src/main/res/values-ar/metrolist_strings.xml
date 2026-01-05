@@ -62,7 +62,6 @@
     <string name="player_buttons_style">ألوان أزرار المشغل</string>
     <string name="default_style">افتراضي</string>
     <string name="secondary_color_style">اللون الثانوي للتطبيق</string>
-    <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
     <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
     <string name="swipe_song_to_add">مرر الأغنية إلى اليسار لإضافتها إلى قائمة الانتظار أو إلى اليمين لتشغيلها بعد الأغنية الحالية</string>
     <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>

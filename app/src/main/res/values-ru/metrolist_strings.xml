@@ -15,7 +15,6 @@
     <string name="follow_theme">Следовать теме</string>
     <string name="gradient">Градиент</string>
     <string name="player_buttons_style">Цветовой стиль кнопок плеера</string>
-    <string name="enable_squiggly_slider">Включить волнистый слайдер</string>
     <string name="swipe_song_to_add">Свайп песни влево - добавить её в очередь, свайп песни вправо - воспроизвести её следующей</string>
     <string name="slim">Тонкий</string>
     <string name="google">Google</string>

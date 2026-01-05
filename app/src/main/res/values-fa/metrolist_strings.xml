@@ -38,7 +38,6 @@
     <string name="player_buttons_style">رنگ دکمه‌های پخش کننده</string>
     <string name="default_style">پیش فرض</string>
     <string name="player_background_blur">تار</string>
-    <string name="enable_squiggly_slider">فعال کردن نوار لغزنده</string>
     <string name="swipe_song_to_add">آهنگ را برای پخش بعدی به راست یا برای افزودن به صف به چپ بکشید</string>
     <string name="lyrics_click_change">تغییر متن ترانه با کلیک</string>
     <string name="slim">لاغر</string>

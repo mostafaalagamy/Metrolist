@@ -37,7 +37,6 @@
     <string name="player_buttons_style">播放器按鈕顏色</string>
     <string name="default_style">預設</string>
     <string name="secondary_color_style">次要</string>
-    <string name="enable_squiggly_slider">啟用波浪滑桿</string>
     <string name="enable_swipe_thumbnail">啟用滑動縮圖切換歌曲</string>
     <string name="lyrics_click_change">點擊以切換歌詞</string>
     <string name="slim">細</string>
