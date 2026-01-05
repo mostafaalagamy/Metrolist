@@ -334,4 +334,25 @@
     <string name="copied_artist">Скопійований виконавець</string>
     <string name="error_playing">Помилка відтворення</string>
     <string name="failed_to_parse_proxy">Не вдалося проаналізувати URL-адресу проксі-сервера.</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d профіль</item>
+        <item quantity="few">%d профіли</item>
+        <item quantity="many">%d профілів</item>
+        <item quantity="other">%d профілів</item>
+    </plurals>
+    <string name="equalizer_header">Еквалайзер</string>
+    <string name="no_profiles">Немає профілів еквалайзера</string>
+    <string name="import_profile">Імпортувати профіль</string>
+    <string name="eq_disabled">Вимкнено</string>
+    <plurals name="band_count">
+        <item quantity="one">%d діапазон</item>
+        <item quantity="few">%d діапазони</item>
+        <item quantity="many">%d діапазонів</item>
+        <item quantity="other">%d діапазонів</item>
+    </plurals>
+    <string name="delete_profile_desc">Видалити профіль</string>
+    <string name="delete_profile_confirmation">Ви впевнені, що хочете видалити %1$s? Цю дію не можна скасувати.</string>
+    <string name="error_file_read">Не вдалося прочитати файл</string>
+    <string name="error_file_open">Не вдалося відкрити файл: %1$s</string>
+    <string name="import_error_title">Помилка імпорту</string>
 </resources>
