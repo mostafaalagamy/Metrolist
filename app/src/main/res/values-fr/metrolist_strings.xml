@@ -330,4 +330,25 @@
     <string name="failed_to_parse_proxy">Impossible d\'analyser l\'URL du proxy.</string>
     <string name="lyrics_glow_effect">Activer l\'effet de paroles lumineuses</string>
     <string name="lyrics_glow_effect_desc">Ajouter une animation lumineuse et un effet de rebond aux paroles actives</string>
+    <string name="enable_wavy_slider">Activer le curseur ondulé</string>
+    <string name="wavy">Ondulé</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d Profile</item>
+        <item quantity="many">%d Profiles</item>
+        <item quantity="other">%d Profiles</item>
+    </plurals>
+    <string name="equalizer_header">Égaliseur</string>
+    <string name="no_profiles">Aucun profil d\'égaliseur</string>
+    <string name="import_profile">Importer un profil</string>
+    <string name="eq_disabled">Désactivé</string>
+    <string name="delete_profile_desc">Supprimer le profil</string>
+    <string name="delete_profile_confirmation">Êtes-vous sûr de vouloir supprimer %1$s ? Cette action est irréversible.</string>
+    <string name="error_file_read">Impossible de lire le fichier</string>
+    <string name="error_file_open">Impossible d\'ouvrir le fichier : %1$s</string>
+    <string name="import_error_title">Erreur d\'importation</string>
+    <plurals name="band_count">
+        <item quantity="one">%d bande</item>
+        <item quantity="many">%d bandes</item>
+        <item quantity="other">%d bandes</item>
+    </plurals>
 </resources>
