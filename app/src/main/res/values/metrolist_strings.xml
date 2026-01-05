@@ -108,7 +108,8 @@
     <string name="primary_color_style">Primary color</string>
     <string name="tertiary_color_style">Tertiary color</string>
     <string name="secondary_color_style">Secondary</string>
-    <string name="enable_squiggly_slider">Enable squiggly slider</string>
+    <string name="enable_wavy_slider">Enable wavy slider</string>
+    <string name="wavy">Wavy</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
     <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
