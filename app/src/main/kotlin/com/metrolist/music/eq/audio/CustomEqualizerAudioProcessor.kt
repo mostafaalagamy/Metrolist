@@ -16,6 +16,7 @@ import kotlin.math.pow
  * Uses ParametricEQ format from AutoEQ project
  */
 @UnstableApi
+@SuppressWarnings("Deprecated")
 class CustomEqualizerAudioProcessor : AudioProcessor {
 
     private var sampleRate = 0
