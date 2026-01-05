@@ -324,4 +324,21 @@
     <string name="lyrics_glow_effect_desc">Tambahkan animasi bercahaya dan efek pantulan pada lirik aktif</string>
     <string name="shuffle_playlist_first">Acak daftar putar/album terlebih dahulu</string>
     <string name="shuffle_playlist_first_desc">Saat mengacak, putar semua lagu dari daftar putar/album asli terlebih dahulu, lalu konten serupa</string>
+    <string name="enable_wavy_slider">Aktifkan penggeser bergelombang</string>
+    <string name="wavy">Bergelombang</string>
+    <plurals name="profiles_count">
+        <item quantity="other">%d Profil</item>
+    </plurals>
+    <string name="equalizer_header">Ekualiser</string>
+    <string name="no_profiles">Tidak ada profil ekualiser</string>
+    <string name="import_profile">Impor Profil</string>
+    <string name="eq_disabled">Nonaktif</string>
+    <plurals name="band_count">
+        <item quantity="other">%d pita frekuensi</item>
+    </plurals>
+    <string name="delete_profile_desc">Hapus Profil</string>
+    <string name="delete_profile_confirmation">Apakah anda yakin ingin menghapus %1$s? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="error_file_read">Tidak dapat membaca file</string>
+    <string name="error_file_open">Gagal membuka file: %1$s</string>
+    <string name="import_error_title">Kesalahan Impor</string>
 </resources>
