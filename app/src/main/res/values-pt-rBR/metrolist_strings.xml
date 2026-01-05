@@ -317,4 +317,27 @@
     <string name="wrapped_close">Feche o embrulho</string>
     <string name="wrapped_playlist_title">Seu %s Embrulhado</string>
     <string name="wrapped_create_playlist">Criar lista de reprodução</string>
+    <string name="enable_wavy_slider">Ativar o controle deslizante ondulado</string>
+    <string name="wavy">Ondulado</string>
+    <string name="wrapped_album_listening_time_minutes">%d minutos</string>
+    <string name="wrapped_playlist_saved">Playlist salva</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d Perfil</item>
+        <item quantity="many">%d Perfis</item>
+        <item quantity="other">%d Perfis</item>
+    </plurals>
+    <string name="equalizer_header">Equalizador</string>
+    <string name="no_profiles">Sem perfis de equalizador</string>
+    <string name="import_profile">Importar Perfil</string>
+    <string name="eq_disabled">Desativado</string>
+    <plurals name="band_count">
+        <item quantity="one">%d banda</item>
+        <item quantity="many">%d bandas</item>
+        <item quantity="other">%d bandas</item>
+    </plurals>
+    <string name="delete_profile_desc">Apagar Perfil</string>
+    <string name="delete_profile_confirmation">Tem a certeza que pretende apagar %1$s? Esta ação não pode ser desfeita.</string>
+    <string name="error_file_read">Não foi possível ler o arquivo</string>
+    <string name="error_file_open">Não foi possível abrir o arquivo: %1$s</string>
+    <string name="import_error_title">Erro ao importar</string>
 </resources>
