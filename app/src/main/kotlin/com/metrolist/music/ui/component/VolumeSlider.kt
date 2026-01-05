@@ -15,16 +15,15 @@ import androidx.compose.material.icons.automirrored.filled.VolumeDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.VectorPainter
@@ -64,8 +63,10 @@ fun VolumeSlider(
         inactiveTickColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
     
-    val stopIndicatorColor = MaterialTheme.colorScheme.surfaceVariant
-    val stopIndicatorSize = 6.dp
+    // Stop indicator color - should contrast with the inactive track
+    val stopIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
+    // Stop indicator radius - slightly taller than track to be visually distinct
+    val stopIndicatorRadius = 4.dp
 
     Slider(
         value = value,
@@ -114,10 +115,13 @@ fun VolumeSlider(
                 enabled = enabled,
                 thumbTrackGapSize = thumbTrackGapSize,
                 trackCornerSize = 16.dp,
-                drawStopIndicator = {
+                drawStopIndicator = { offset ->
+                    // Draw stop indicator at the end of the track
+                    // The indicator is slightly taller than the track to be visually distinct
                     drawCircle(
                         color = stopIndicatorColor,
-                        radius = stopIndicatorSize.toPx() / 2
+                        radius = stopIndicatorRadius.toPx(),
+                        center = offset
                     )
                 }
             )
