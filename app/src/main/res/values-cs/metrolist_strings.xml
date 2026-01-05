@@ -334,4 +334,25 @@
     <string name="copied_artist">Umělec zkopírován</string>
     <string name="error_playing">Chyba při přehrávání</string>
     <string name="failed_to_parse_proxy">Nepodařilo se zpracovat adresu proxy.</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d profil</item>
+        <item quantity="few">%d profily</item>
+        <item quantity="many">%d profilů</item>
+        <item quantity="other">%d profilů</item>
+    </plurals>
+    <string name="equalizer_header">Ekvalizér</string>
+    <string name="no_profiles">Žádné profily ekvalizéru</string>
+    <string name="import_profile">Importovat profil</string>
+    <string name="eq_disabled">Zakázáno</string>
+    <plurals name="band_count">
+        <item quantity="one">%d pásmo</item>
+        <item quantity="few">%d pásma</item>
+        <item quantity="many">%d pásem</item>
+        <item quantity="other">%d pásem</item>
+    </plurals>
+    <string name="delete_profile_desc">Odstranit profil</string>
+    <string name="delete_profile_confirmation">Opravdu chcete odstranit profil %1$s? Tato akce je nevratná.</string>
+    <string name="error_file_read">Nepodařilo se přečíst soubor</string>
+    <string name="error_file_open">Nepodařilo se otevřít soubor: %1$s</string>
+    <string name="import_error_title">Chyba importu</string>
 </resources>
