@@ -34,7 +34,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -86,6 +86,7 @@ import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.component.NewActionGrid
+import com.metrolist.music.ui.component.VolumeSlider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.log2
@@ -220,31 +221,20 @@ fun PlayerMenu(
                 }
             }
             
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.volume_up),
-                    contentDescription = null,
-                    modifier = Modifier.size(28.dp),
-                    tint = if (isCasting) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                )
-
-                Slider(
-                    value = if (isCasting) castVolume else playerVolume.value,
-                    onValueChange = { volume ->
-                        if (isCasting) {
-                            castHandler?.setVolume(volume)
-                        } else {
-                            playerConnection.service.playerVolume.value = volume
-                        }
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(36.dp),
-                )
-            }
+            VolumeSlider(
+                value = if (isCasting) castVolume else playerVolume.value,
+                onValueChange = { volume ->
+                    if (isCasting) {
+                        castHandler?.setVolume(volume)
+                    } else {
+                        playerConnection.service.playerVolume.value = volume
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                accentColor = if (isCasting) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary
+            )
         }
     }
 
