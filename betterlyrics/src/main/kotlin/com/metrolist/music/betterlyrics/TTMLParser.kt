@@ -1,6 +1,7 @@
 package com.metrolist.music.betterlyrics
 
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilderFactory
 
 object TTMLParser {
@@ -17,6 +18,13 @@ object TTMLParser {
         val endTime: Double
     )
     
+    private data class SpanInfo(
+        val text: String,
+        val startTime: Double,
+        val endTime: Double,
+        val hasTrailingSpace: Boolean
+    )
+    
     fun parseTTML(ttml: String): List<ParsedLine> {
         val lines = mutableListOf<ParsedLine>()
         
@@ -26,7 +34,6 @@ object TTMLParser {
             val builder = factory.newDocumentBuilder()
             val doc = builder.parse(ttml.byteInputStream())
             
-            // Find all <p> elements (paragraphs/lines)
             val pElements = doc.getElementsByTagName("p")
             
             for (i in 0 until pElements.length) {
@@ -36,45 +43,56 @@ object TTMLParser {
                 if (begin.isNullOrEmpty()) continue
                 
                 val startTime = parseTime(begin)
-                val words = mutableListOf<ParsedWord>()
-                val lineText = StringBuilder()
+                val spanInfos = mutableListOf<SpanInfo>()
                 
-                // Parse <span> elements (words)
-                val spans = pElement.getElementsByTagName("span")
-                for (j in 0 until spans.length) {
-                    val span = spans.item(j) as? Element ?: continue
+                // Parse child nodes to preserve whitespace between spans
+                val childNodes = pElement.childNodes
+                for (j in 0 until childNodes.length) {
+                    val node = childNodes.item(j)
                     
-                    val wordBegin = span.getAttribute("begin")
-                    val wordEnd = span.getAttribute("end")
-                    val wordText = span.textContent.trim()
-                    
-                    if (wordText.isNotEmpty()) {
-                        if (lineText.isNotEmpty()) {
-                            lineText.append(" ")
-                        }
-                        lineText.append(wordText)
-                        
-                        if (wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
-                            words.add(
-                                ParsedWord(
-                                    text = wordText,
-                                    startTime = parseTime(wordBegin),
-                                    endTime = parseTime(wordEnd)
-                                )
-                            )
+                    when (node.nodeType) {
+                        Node.ELEMENT_NODE -> {
+                            val span = node as? Element
+                            if (span?.tagName?.lowercase() == "span") {
+                                val wordBegin = span.getAttribute("begin")
+                                val wordEnd = span.getAttribute("end")
+                                val wordText = span.textContent
+                                
+                                if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
+                                    // Check if next sibling is whitespace text node
+                                    val nextSibling = node.nextSibling
+                                    val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
+                                        nextSibling.textContent?.contains(Regex("\\s")) == true
+                                    
+                                    spanInfos.add(
+                                        SpanInfo(
+                                            text = wordText,
+                                            startTime = parseTime(wordBegin),
+                                            endTime = parseTime(wordEnd),
+                                            hasTrailingSpace = hasTrailingSpace
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
                 
+                // Merge consecutive spans without whitespace between them into single words
+                val words = mergeSpansIntoWords(spanInfos)
+                val lineText = words.joinToString(" ") { it.text }
+                
                 // If no spans found, use text content directly
-                if (lineText.isEmpty()) {
-                    lineText.append(pElement.textContent.trim())
+                val finalText = if (lineText.isEmpty()) {
+                    pElement.textContent.trim()
+                } else {
+                    lineText
                 }
                 
-                if (lineText.isNotEmpty()) {
+                if (finalText.isNotEmpty()) {
                     lines.add(
                         ParsedLine(
-                            text = lineText.toString(),
+                            text = finalText,
                             startTime = startTime,
                             words = words
                         )
@@ -82,11 +100,62 @@ object TTMLParser {
                 }
             }
         } catch (e: Exception) {
-            // Return empty list on parse error
             return emptyList()
         }
         
         return lines
+    }
+    
+    private fun mergeSpansIntoWords(spanInfos: List<SpanInfo>): List<ParsedWord> {
+        if (spanInfos.isEmpty()) return emptyList()
+        
+        val words = mutableListOf<ParsedWord>()
+        var currentText = StringBuilder()
+        var currentStartTime = spanInfos[0].startTime
+        var currentEndTime = spanInfos[0].endTime
+        
+        for ((index, span) in spanInfos.withIndex()) {
+            if (index == 0) {
+                currentText.append(span.text)
+                currentStartTime = span.startTime
+                currentEndTime = span.endTime
+            } else {
+                // Check if previous span had trailing space (word boundary)
+                val prevSpan = spanInfos[index - 1]
+                if (prevSpan.hasTrailingSpace) {
+                    // Save current word and start new one
+                    if (currentText.isNotEmpty()) {
+                        words.add(
+                            ParsedWord(
+                                text = currentText.toString().trim(),
+                                startTime = currentStartTime,
+                                endTime = currentEndTime
+                            )
+                        )
+                    }
+                    currentText = StringBuilder(span.text)
+                    currentStartTime = span.startTime
+                    currentEndTime = span.endTime
+                } else {
+                    // No space between spans - merge into same word (syllables)
+                    currentText.append(span.text)
+                    currentEndTime = span.endTime
+                }
+            }
+        }
+        
+        // Add the last word
+        if (currentText.isNotEmpty()) {
+            words.add(
+                ParsedWord(
+                    text = currentText.toString().trim(),
+                    startTime = currentStartTime,
+                    endTime = currentEndTime
+                )
+            )
+        }
+        
+        return words
     }
     
     fun toLRC(lines: List<ParsedLine>): String {
@@ -99,7 +168,6 @@ object TTMLParser {
                 
                 appendLine(String.format("[%02d:%02d.%02d]%s", minutes, seconds, centiseconds, line.text))
                 
-                // Add word-level timestamps as special comments if available
                 if (line.words.isNotEmpty()) {
                     val wordsData = line.words.joinToString("|") { word ->
                         "${word.text}:${word.startTime}:${word.endTime}"
@@ -111,20 +179,17 @@ object TTMLParser {
     }
     
     private fun parseTime(timeStr: String): Double {
-        // Parse TTML time format (e.g., "9.731", "1:23.456", "1:23:45.678")
         return try {
             when {
                 timeStr.contains(":") -> {
                     val parts = timeStr.split(":")
                     when (parts.size) {
                         2 -> {
-                            // MM:SS.mmm format
                             val minutes = parts[0].toDouble()
                             val seconds = parts[1].toDouble()
                             minutes * 60 + seconds
                         }
                         3 -> {
-                            // HH:MM:SS.mmm format
                             val hours = parts[0].toDouble()
                             val minutes = parts[1].toDouble()
                             val seconds = parts[2].toDouble()
