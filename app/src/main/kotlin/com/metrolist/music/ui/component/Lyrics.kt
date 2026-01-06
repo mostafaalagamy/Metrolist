@@ -857,10 +857,16 @@ fun Lyrics(
                                     val fadeProgress = if (isWordActive && wordDuration > 0) {
                                         val timeElapsed = currentPlaybackPosition - wordStartMs
                                         val linear = (timeElapsed.toFloat() / wordDuration.toFloat()).coerceIn(0f, 1f)
+                                        // Smooth cubic easing
                                         linear * linear * (3f - 2f * linear)
                                     } else if (hasWordPassed) 1f else 0f
 
-                                    val wordAlpha = if (isActiveLine) 0.35f + (0.65f * fadeProgress) else 0.65f
+                                    val wordAlpha = when {
+                                        !isActiveLine -> 0.55f
+                                        hasWordPassed -> 1f
+                                        isWordActive -> 0.4f + (0.6f * fadeProgress)
+                                        else -> 0.4f
+                                    }
                                     val wordColor = expressiveAccent.copy(alpha = wordAlpha)
                                     val wordWeight = when {
                                         !isActiveLine -> FontWeight.Bold
@@ -868,9 +874,20 @@ fun Lyrics(
                                         isWordActive -> FontWeight.ExtraBold
                                         else -> FontWeight.Medium
                                     }
-                                    val wordShadow = if (isWordActive && fadeProgress > 0.3f) {
-                                        Shadow(color = expressiveAccent.copy(alpha = 0.3f * fadeProgress), offset = Offset.Zero, blurRadius = 8f * fadeProgress)
-                                    } else null
+                                    // Enhanced shadow for active words
+                                    val wordShadow = when {
+                                        isWordActive && fadeProgress > 0.2f -> Shadow(
+                                            color = expressiveAccent.copy(alpha = 0.35f * fadeProgress),
+                                            offset = Offset.Zero,
+                                            blurRadius = 10f * fadeProgress
+                                        )
+                                        hasWordPassed -> Shadow(
+                                            color = expressiveAccent.copy(alpha = 0.15f),
+                                            offset = Offset.Zero,
+                                            blurRadius = 6f
+                                        )
+                                        else -> null
+                                    }
 
                                     withStyle(style = SpanStyle(color = wordColor, fontWeight = wordWeight, shadow = wordShadow)) {
                                         append(word.text)
@@ -999,39 +1016,52 @@ fun Lyrics(
                                     if (isWordActive && wordDuration > 0) {
                                         val timeElapsed = currentPlaybackPosition - wordStartMs
                                         val linearProgress = (timeElapsed.toFloat() / wordDuration.toFloat()).coerceIn(0f, 1f)
+                                        // Smoother easing curve for more natural fill animation
                                         val fillProgress = linearProgress * linearProgress * (3f - 2f * linearProgress)
-                                        val breatheCycleDuration = wordDuration.toFloat().coerceIn(500f, 2500f)
-                                        val breatheValue = (timeElapsed % breatheCycleDuration) / breatheCycleDuration
-                                        val breatheEffect = (kotlin.math.sin(breatheValue * Math.PI.toFloat() * 2f) * 0.08f).coerceIn(0f, 0.08f)
-                                        val glowIntensity = (fillProgress + breatheEffect).coerceIn(0f, 1.1f)
+                                        
+                                        // Enhanced glow intensity calculation
+                                        val glowIntensity = fillProgress * fillProgress
 
                                         val wordBrush = Brush.horizontalGradient(
-                                            0.0f to expressiveAccent.copy(alpha = 0.35f),
-                                            (fillProgress * 0.5f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.7f),
-                                            (fillProgress * 0.8f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.95f),
+                                            0.0f to expressiveAccent.copy(alpha = 0.4f),
+                                            (fillProgress * 0.6f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.75f),
+                                            (fillProgress * 0.85f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.95f),
                                             fillProgress to expressiveAccent,
-                                            (fillProgress + 0.05f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.8f),
-                                            (fillProgress + 0.15f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.5f),
-                                            1.0f to expressiveAccent.copy(alpha = if (fillProgress >= 0.9f) 0.95f else 0.35f)
+                                            (fillProgress + 0.03f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.85f),
+                                            (fillProgress + 0.1f).coerceIn(0f, 1f) to expressiveAccent.copy(alpha = 0.5f),
+                                            1.0f to expressiveAccent.copy(alpha = if (fillProgress >= 0.9f) 0.95f else 0.4f)
+                                        )
+
+                                        // Improved shadow with better glow effect
+                                        val wordShadow = Shadow(
+                                            color = expressiveAccent.copy(alpha = 0.5f + (0.3f * glowIntensity)),
+                                            offset = Offset.Zero,
+                                            blurRadius = 16f + (12f * glowIntensity)
                                         )
 
                                         withStyle(style = SpanStyle(
                                             brush = wordBrush,
                                             fontWeight = FontWeight.ExtraBold,
-                                            shadow = Shadow(color = expressiveAccent.copy(alpha = 0.5f * glowIntensity), offset = Offset(0f, 0f), blurRadius = 16f * (1f + breatheEffect))
+                                            shadow = wordShadow
                                         )) {
                                             append(word.text)
                                         }
                                     } else if (hasWordPassed && isActiveLine) {
+                                        // Completed words with subtle glow
                                         withStyle(style = SpanStyle(
                                             color = expressiveAccent,
                                             fontWeight = FontWeight.Bold,
-                                            shadow = Shadow(color = expressiveAccent.copy(alpha = 0.3f), offset = Offset(0f, 0f), blurRadius = 10f)
+                                            shadow = Shadow(
+                                                color = expressiveAccent.copy(alpha = 0.25f),
+                                                offset = Offset.Zero,
+                                                blurRadius = 8f
+                                            )
                                         )) {
                                             append(word.text)
                                         }
                                     } else {
-                                        val wordColor = if (!isActiveLine) lineColor else expressiveAccent.copy(alpha = 0.35f)
+                                        // Inactive words
+                                        val wordColor = if (!isActiveLine) lineColor else expressiveAccent.copy(alpha = 0.4f)
                                         withStyle(style = SpanStyle(color = wordColor, fontWeight = FontWeight.Medium)) {
                                             append(word.text)
                                         }
@@ -1055,13 +1085,14 @@ fun Lyrics(
                                         (elapsed.toFloat() / wordDuration).coerceIn(0f, 1f)
                                     } else if (hasWordPassed) 1f else 0f
 
+                                    // Smooth cubic easing for natural animation
                                     val smoothProgress = rawProgress * rawProgress * (3f - 2f * rawProgress)
 
                                     val wordAlpha = when {
                                         !isActiveLine -> 0.55f
                                         hasWordPassed -> 1f
                                         isWordActive -> 0.55f + (0.45f * smoothProgress)
-                                        else -> 0.35f
+                                        else -> 0.4f
                                     }
                                     val wordColor = expressiveAccent.copy(alpha = wordAlpha)
                                     val wordWeight = when {
@@ -1070,9 +1101,19 @@ fun Lyrics(
                                         isWordActive -> FontWeight.ExtraBold
                                         else -> FontWeight.Normal
                                     }
+                                    // Enhanced shadow with better glow intensity
+                                    val glowIntensity = smoothProgress * smoothProgress
                                     val wordShadow = when {
-                                        isWordActive -> Shadow(color = expressiveAccent.copy(alpha = 0.15f + (0.35f * smoothProgress)), offset = Offset(0f, 0f), blurRadius = 8f + (10f * smoothProgress))
-                                        hasWordPassed && isActiveLine -> Shadow(color = expressiveAccent.copy(alpha = 0.25f), offset = Offset(0f, 0f), blurRadius = 10f)
+                                        isWordActive -> Shadow(
+                                            color = expressiveAccent.copy(alpha = 0.2f + (0.4f * glowIntensity)),
+                                            offset = Offset.Zero,
+                                            blurRadius = 10f + (12f * glowIntensity)
+                                        )
+                                        hasWordPassed && isActiveLine -> Shadow(
+                                            color = expressiveAccent.copy(alpha = 0.2f),
+                                            offset = Offset.Zero,
+                                            blurRadius = 8f
+                                        )
                                         else -> null
                                     }
 
