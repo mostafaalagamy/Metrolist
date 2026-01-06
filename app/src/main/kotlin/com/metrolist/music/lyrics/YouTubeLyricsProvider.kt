@@ -19,6 +19,7 @@ object YouTubeLyricsProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
+        album: String?,
     ): Result<String> =
         runCatching {
             val nextResult = YouTube.next(WatchEndpoint(videoId = id)).getOrThrow()

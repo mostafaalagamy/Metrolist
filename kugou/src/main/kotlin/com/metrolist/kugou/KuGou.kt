@@ -50,9 +50,9 @@ private const val HEAD_CUT_LIMIT = 30
 object KuGou {
     var useTraditionalChinese: Boolean = false
 
-    suspend fun getLyrics(title: String, artist: String, duration: Int): Result<String> =
+    suspend fun getLyrics(title: String, artist: String, duration: Int, album: String? = null): Result<String> =
         runCatching {
-            val keyword = generateKeyword(title, artist)
+            val keyword = generateKeyword(title, artist, album)
             getLyricsCandidate(keyword, duration)?.let { candidate ->
                 downloadLyrics(candidate.id, candidate.accesskey).content.decodeBase64String()
                     .normalize()
@@ -60,9 +60,9 @@ object KuGou {
         }
 
     suspend fun getAllPossibleLyricsOptions(
-        title: String, artist: String, duration: Int, callback: (String) -> Unit
+        title: String, artist: String, duration: Int, album: String? = null, callback: (String) -> Unit
     ) {
-        val keyword = generateKeyword(title, artist)
+        val keyword = generateKeyword(title, artist, album)
         searchSongs(keyword).data.info.forEach {
             if (duration == -1 || abs(it.duration - duration) <= DURATION_TOLERANCE) {
                 searchLyricsByHash(it.hash).candidates.firstOrNull()?.let { candidate ->
@@ -95,9 +95,18 @@ object KuGou {
             parameter("plat", 0)
             parameter("pagesize", PAGE_SIZE)
             parameter("showtype", 0)
+            val searchQuery = buildString {
+                append(keyword.title)
+                append(" - ")
+                append(keyword.artist)
+                if (!keyword.album.isNullOrBlank()) {
+                    append(" ")
+                    append(keyword.album)
+                }
+            }
             url.encodedParameters.append(
                 "keyword",
-                "${keyword.title} - ${keyword.artist}".encodeURLParameter(spaceToPlus = false)
+                searchQuery.encodeURLParameter(spaceToPlus = false)
             )
         }.body<SearchSongResponse>()
 
@@ -109,9 +118,18 @@ object KuGou {
             parameter(
                 "duration", duration.takeIf { it != -1 }?.times(1000)
             ) // if duration == -1, we don't care duration
+            val searchQuery = buildString {
+                append(keyword.title)
+                append(" - ")
+                append(keyword.artist)
+                if (!keyword.album.isNullOrBlank()) {
+                    append(" ")
+                    append(keyword.album)
+                }
+            }
             url.encodedParameters.append(
                 "keyword",
-                "${keyword.title} - ${keyword.artist}".encodeURLParameter(spaceToPlus = false)
+                searchQuery.encodeURLParameter(spaceToPlus = false)
             )
         }.body<SearchLyricsResponse>()
 
@@ -143,8 +161,8 @@ object KuGou {
         artist.replace(", ", "、").replace(" & ", "、").replace(".", "").replace("和", "、")
             .replace("\\(.*\\)".toRegex(), "").replace("（.*）".toRegex(), "")
 
-    fun generateKeyword(title: String, artist: String) =
-        Keyword(normalizeTitle(title), normalizeArtist(artist))
+    fun generateKeyword(title: String, artist: String, album: String? = null) =
+        Keyword(normalizeTitle(title), normalizeArtist(artist), album)
 
     private fun String.normalize(): String =
         replace("&apos;", "'").lines().filter { line -> line.matches(ACCEPTED_REGEX) }
