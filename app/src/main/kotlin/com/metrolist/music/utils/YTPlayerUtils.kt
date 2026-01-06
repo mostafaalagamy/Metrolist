@@ -42,7 +42,7 @@ object YTPlayerUtils {
      * - the correct metadata (like loudnessDb)
      * - premium formats
      */
-    private val MAIN_CLIENT: YouTubeClient = ANDROID_VR_1_43_32
+    private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
