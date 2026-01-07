@@ -711,7 +711,7 @@ fun Lyrics(
                                     }
                                 } else if (isSynced && changeLyrics) {
                                     // Professional seek action with smooth animation
-                                    playerConnection.player.seekTo(item.time)
+                                    playerConnection.seekTo(item.time)
                                     // Smooth slow scroll when clicking on lyrics (3 seconds)
                                     scope.launch {
                                         // First scroll to the clicked item without animation
