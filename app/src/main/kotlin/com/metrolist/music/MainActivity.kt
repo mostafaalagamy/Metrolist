@@ -20,7 +20,9 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -91,6 +93,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
@@ -938,9 +941,13 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
-                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
+                                            slideInHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
-                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
+                                            slideInHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Exit Transition - smoother with smaller offset and longer duration
                                     exitTransition = {
@@ -952,9 +959,13 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
-                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
+                                            slideOutHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
-                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
+                                            slideOutHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Pop Enter Transition - smoother with smaller offset and longer duration
                                     popEnterTransition = {
@@ -966,9 +977,13 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
+                                            slideInHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
-                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
+                                            slideInHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Pop Exit Transition - smoother with smaller offset and longer duration
                                     popExitTransition = {
@@ -980,9 +995,13 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
+                                            slideOutHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
-                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
+                                            slideOutHorizontally(
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                            ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     modifier = Modifier.nestedScroll(
                                         if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
