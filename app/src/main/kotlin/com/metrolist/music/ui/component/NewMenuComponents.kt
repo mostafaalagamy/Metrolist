@@ -83,7 +83,6 @@ fun NewActionButton(
         ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
         )
     ) {
         Column(
