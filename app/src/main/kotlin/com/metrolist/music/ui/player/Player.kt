@@ -1061,7 +1061,7 @@ fun BottomSheetPlayer(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(24.dp))
 
             when (sliderStyle) {
                 SliderStyle.DEFAULT -> {
@@ -1171,7 +1171,7 @@ fun BottomSheetPlayer(
                 )
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(24.dp))
 
             AnimatedVisibility(
                 visible = !isFullScreen,
