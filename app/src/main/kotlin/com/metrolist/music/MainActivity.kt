@@ -935,11 +935,11 @@ class MainActivity : ComponentActivity() {
 
                                         if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
                                             slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
                                             slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Exit Transition - smoother with smaller offset and longer duration
@@ -953,11 +953,11 @@ class MainActivity : ComponentActivity() {
 
                                         if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
                                             slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
                                             slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Pop Enter Transition - smoother with smaller offset and longer duration
@@ -971,11 +971,11 @@ class MainActivity : ComponentActivity() {
 
                                         if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
                                             slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
                                             slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     // Pop Exit Transition - smoother with smaller offset and longer duration
@@ -989,11 +989,11 @@ class MainActivity : ComponentActivity() {
 
                                         if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
                                             slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                         else
                                             slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold)
+                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
                                             ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
                                     },
                                     modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
