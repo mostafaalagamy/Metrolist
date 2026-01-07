@@ -40,7 +40,7 @@ body {
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container { max-width: 2160px; margin: 0 auto; padding: 0 45px; }
 
 /* --- Navbar --- */
 .navbar {
@@ -155,6 +155,50 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
     .hero-buttons { justify-content: center; }
     .lyrics-content { flex-direction: column-reverse; }
     .footer-top, .footer-bottom { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+    @media (max-width: 868px) {
+    /* 1. Reverses the order: text first, then video below */
+    .lyrics-content {
+        flex-direction: column; 
+        text-align: center;
+    }
+
+    /* 2. Adjusts the video container for mobile */
+    .video-side {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 40px; 
+    }
+
+    /* 3. Ensures the video doesn't overflow the screen */
+    .lyrics-video {
+        width: 100%;
+        max-width: 260px; 
+        height: auto;
+    }
+}
+@media (max-width: 868px) {
+    /* 1. Reverses the order: text first, then video below */
+    .lyrics-content {
+        flex-direction: column; 
+        text-align: center;
+    }
+
+    /* 2. Adjusts the video container for mobile */
+    .video-side {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 40px; /* Space between text and video */
+    }
+
+    /* 3. Ensures the video doesn't overflow the screen */
+    .lyrics-video {
+        width: 100%;
+        max-width: 260px; 
+        height: auto;
+    }
+}
 }
 
 /* --- Custom Styles Added --- */
@@ -278,4 +322,44 @@ footer { padding: 80px 0 30px; border-top: 1px solid var(--border-color); }
 ::-moz-selection {
     background-color: var(--accent);
     color: var(--bg-color);
+}
+.logo span {
+    margin-right: 12px; /* Modifies the space between Metrolist and the translation list*/
+}
+
+.gradient-text {
+    /* Multi-tone purple and blue gradient */
+    background: linear-gradient(
+        270deg, 
+        #7b2ff7, /* Electric Purple */
+        #1a86df, /* Blue */
+        #f107f1, /* Pinkish Purple */
+        #7b2ff7  /* Back to Purple for seamless loop */
+    );
+    background-size: 200% auto;
+    
+    /* Clipping the background to the text only */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Glow effect */
+    filter: drop-shadow(0px 4px 8px rgba(123, 47, 247, 0.3));
+    
+    /* Smooth hover animation */
+    transition: transform 0.3s ease;
+    display: inline-block;
+
+    /* Rainbow-like movement animation */
+    animation: purpleRainbow 8s linear infinite;
+}
+
+@keyframes purpleRainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+.gradient-text:hover {
+    /* Slight zoom effect on hover */
+    transform: scale(1.04);
 }
