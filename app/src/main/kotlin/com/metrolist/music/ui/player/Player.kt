@@ -284,6 +284,16 @@ fun BottomSheetPlayer(
     var position by positionState
     var duration by durationState
     
+    val effectivePosition by remember {
+        derivedStateOf {
+            if (isCasting) {
+                castPosition
+            } else {
+                position
+            }
+        }
+    }
+    
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
@@ -1066,7 +1076,7 @@ fun BottomSheetPlayer(
             when (sliderStyle) {
                 SliderStyle.DEFAULT -> {
                     Slider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1090,7 +1100,7 @@ fun BottomSheetPlayer(
 
                 SliderStyle.WAVY -> {
                     WavySlider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1115,7 +1125,7 @@ fun BottomSheetPlayer(
 
                 SliderStyle.SLIM -> {
                     Slider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1155,7 +1165,7 @@ fun BottomSheetPlayer(
                     .padding(horizontal = PlayerHorizontalPadding + 4.dp),
             ) {
                 Text(
-                    text = makeTimeString(sliderPosition ?: position),
+                    text = makeTimeString(sliderPosition ?: effectivePosition),
                     style = MaterialTheme.typography.labelMedium,
                     color = TextBackgroundColor,
                     maxLines = 1,
@@ -1463,7 +1473,11 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(
+                                    mediaMetadata = mediaMetadata,
+                                    showLyrics = showLyrics,
+                                    positionProvider = { effectivePosition }
+                                )
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
@@ -1520,7 +1534,11 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(
+                                    mediaMetadata = mediaMetadata,
+                                    showLyrics = showLyrics,
+                                    positionProvider = { effectivePosition }
+                                )
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
@@ -1572,7 +1590,11 @@ fun BottomSheetPlayer(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
+fun InlineLyricsView(
+    mediaMetadata: MediaMetadata?,
+    showLyrics: Boolean,
+    positionProvider: () -> Long
+) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val lyrics = remember(currentLyrics) { currentLyrics?.lyrics?.trim() }
@@ -1622,7 +1644,7 @@ fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
             else -> {
                 val lyricsContent: @Composable () -> Unit = {
                     Lyrics(
-                        sliderPositionProvider = { playerConnection.player.currentPosition },
+                        sliderPositionProvider = positionProvider,
                         modifier = Modifier.padding(horizontal = 24.dp),
                         showLyrics = showLyrics
                     )

@@ -732,7 +732,7 @@ class CastConnectionHandler(
                 remoteMediaClient?.let { client ->
                     _castPosition.value = client.approximateStreamPosition
                 }
-                delay(1000)
+                delay(500)
             }
         }
     }
