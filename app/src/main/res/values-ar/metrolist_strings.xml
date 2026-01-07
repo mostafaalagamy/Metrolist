@@ -339,4 +339,32 @@
     <string name="error_playing">حدث خطأ أثناء التشغيل</string>
     <string name="lyrics_glow_effect">تفعيل تأثير الكلمات المتوهجة</string>
     <string name="lyrics_glow_effect_desc">أضف تأثيرات متحركة متوهجة وارتدادية إلى كلمات الأغاني المتحركه</string>
+    <string name="enable_wavy_slider">تفعيل شريط التمرير المتموج</string>
+    <string name="wavy">متموج</string>
+    <plurals name="profiles_count">
+        <item quantity="zero">%d ملف تعريف</item>
+        <item quantity="one">%d ملف تعريف</item>
+        <item quantity="two">%d ملفا تعريف</item>
+        <item quantity="few">%d ملفات تعريف</item>
+        <item quantity="many">%d ملف تعريف</item>
+        <item quantity="other">%d ملف تعريف</item>
+    </plurals>
+    <string name="equalizer_header">مُعادل</string>
+    <string name="no_profiles">لا توجد ملفات تعريف للمعادل</string>
+    <string name="import_profile">ملف تعريف الاستيراد</string>
+    <string name="eq_disabled">معطّل</string>
+    <plurals name="band_count">
+        <item quantity="zero">%d نطاق</item>
+        <item quantity="one">%d نطاق</item>
+        <item quantity="two">%d نطاقين</item>
+        <item quantity="few">%d نطاقات</item>
+        <item quantity="many">%d نطاقًا</item>
+        <item quantity="other">%d نطاق</item>
+    </plurals>
+    <string name="delete_profile_desc">حذف الملف الشخصي</string>
+    <string name="delete_profile_confirmation">هل أنت متأكد من رغبتك في حذف %1$s؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="error_file_read">تعذر قراءة الملف</string>
+    <string name="error_file_open">فشل فتح الملف: %1$s</string>
+    <string name="import_error_title">خطأ في الاستيراد</string>
+    <string name="enable_squiggly_slider">تفعيل شريط التمرير المتعرج</string>
 </resources>
