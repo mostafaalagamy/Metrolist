@@ -18,5 +18,6 @@ object YouTubeSubtitleLyricsProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
+        album: String?,
     ): Result<String> = YouTube.transcript(id)
 }
