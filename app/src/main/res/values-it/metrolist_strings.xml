@@ -207,7 +207,7 @@
     <string name="show_uploaded_playlist">Mostra la playlist dei brani caricati</string>
     <string name="discord_use_details">Usa i dettagli al posto dello stato</string>
     <string name="discord_use_details_description">Mostra il titolo della canzone prominente al posto dei nomi degli artisti</string>
-    <string name="updater">Aggiornatore</string>
+    <string name="updater">Aggiornamenti</string>
     <string name="check_for_updates">Controlla automaticamente se ci sono aggiornamenti</string>
     <string name="update_notifications">Attiva le notifiche sugli aggiornamenti</string>
     <string name="update_available_title">Un aggiornamento è disponibile</string>
