@@ -174,6 +174,18 @@ class PlayerConnection(
         }
     }
 
+    /**
+     * Seek to position - handles Cast when active
+     */
+    fun seekTo(position: Long) {
+        val castHandler = service.castConnectionHandler
+        if (castHandler?.isCasting?.value == true) {
+            castHandler.seekTo(position)
+        } else {
+            player.seekTo(position)
+        }
+    }
+
     fun seekToNext() {
         // When casting, use Cast skip instead of local player
         val castHandler = service.castConnectionHandler

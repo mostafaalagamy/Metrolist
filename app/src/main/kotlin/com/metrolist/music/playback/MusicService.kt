@@ -184,7 +184,8 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class, UnstableApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@androidx.annotation.OptIn(UnstableApi::class)
 @AndroidEntryPoint
 class MusicService :
     MediaLibraryService(),

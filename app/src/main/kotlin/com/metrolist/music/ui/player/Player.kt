@@ -276,16 +276,23 @@ fun BottomSheetPlayer(
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
 
     // Use State objects for position/duration to pass to MiniPlayer without causing recomposition
-    val positionState = remember(playbackState) {
-        mutableLongStateOf(playerConnection.player.currentPosition)
-    }
-    val durationState = remember(playbackState) {
-        mutableLongStateOf(playerConnection.player.duration)
-    }
+    // These states persist across playback state changes to ensure continuous progress updates
+    val positionState = remember { mutableLongStateOf(0L) }
+    val durationState = remember { mutableLongStateOf(0L) }
     
     // Convenience accessors for local use
     var position by positionState
     var duration by durationState
+    
+    val effectivePosition by remember {
+        derivedStateOf {
+            if (isCasting) {
+                castPosition
+            } else {
+                position
+            }
+        }
+    }
     
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
@@ -543,15 +550,24 @@ fun BottomSheetPlayer(
 
     // Position update - only for local playback
     // When casting, we use castPosition directly to avoid sync issues
-    LaunchedEffect(playbackState, isCasting) {
-        if (!isCasting && playbackState == STATE_READY) {
+    // Use isPlaying instead of playbackState to ensure continuous updates during playback
+    LaunchedEffect(isPlaying, isCasting) {
+        if (!isCasting && isPlaying) {
             while (isActive) {
-                delay(500)
+                delay(100) // Update more frequently for smoother progress bar
                 if (sliderPosition == null) { // Only update if user isn't dragging
                     position = playerConnection.player.currentPosition
                     duration = playerConnection.player.duration
                 }
             }
+        }
+    }
+    
+    // Also update position when playback state changes (e.g., song change, seek)
+    LaunchedEffect(playbackState, mediaMetadata?.id) {
+        if (!isCasting) {
+            position = playerConnection.player.currentPosition
+            duration = playerConnection.player.duration
         }
     }
     
@@ -1055,12 +1071,12 @@ fun BottomSheetPlayer(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(24.dp))
 
             when (sliderStyle) {
                 SliderStyle.DEFAULT -> {
                     Slider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1084,7 +1100,7 @@ fun BottomSheetPlayer(
 
                 SliderStyle.WAVY -> {
                     WavySlider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1109,7 +1125,7 @@ fun BottomSheetPlayer(
 
                 SliderStyle.SLIM -> {
                     Slider(
-                        value = (sliderPosition ?: position).toFloat(),
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
                             sliderPosition = it.toLong()
@@ -1149,7 +1165,7 @@ fun BottomSheetPlayer(
                     .padding(horizontal = PlayerHorizontalPadding + 4.dp),
             ) {
                 Text(
-                    text = makeTimeString(sliderPosition ?: position),
+                    text = makeTimeString(sliderPosition ?: effectivePosition),
                     style = MaterialTheme.typography.labelMedium,
                     color = TextBackgroundColor,
                     maxLines = 1,
@@ -1165,7 +1181,7 @@ fun BottomSheetPlayer(
                 )
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(24.dp))
 
             AnimatedVisibility(
                 visible = !isFullScreen,
@@ -1457,7 +1473,11 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(
+                                    mediaMetadata = mediaMetadata,
+                                    showLyrics = showLyrics,
+                                    positionProvider = { effectivePosition }
+                                )
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
@@ -1514,7 +1534,11 @@ fun BottomSheetPlayer(
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { showLyrics ->
                             if (showLyrics) {
-                                InlineLyricsView(mediaMetadata = mediaMetadata, showLyrics = showLyrics)
+                                InlineLyricsView(
+                                    mediaMetadata = mediaMetadata,
+                                    showLyrics = showLyrics,
+                                    positionProvider = { effectivePosition }
+                                )
                             } else {
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
@@ -1566,7 +1590,11 @@ fun BottomSheetPlayer(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
+fun InlineLyricsView(
+    mediaMetadata: MediaMetadata?,
+    showLyrics: Boolean,
+    positionProvider: () -> Long
+) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val lyrics = remember(currentLyrics) { currentLyrics?.lyrics?.trim() }
@@ -1616,7 +1644,7 @@ fun InlineLyricsView(mediaMetadata: MediaMetadata?, showLyrics: Boolean) {
             else -> {
                 val lyricsContent: @Composable () -> Unit = {
                     Lyrics(
-                        sliderPositionProvider = { playerConnection.player.currentPosition },
+                        sliderPositionProvider = positionProvider,
                         modifier = Modifier.padding(horizontal = 24.dp),
                         showLyrics = showLyrics
                     )
