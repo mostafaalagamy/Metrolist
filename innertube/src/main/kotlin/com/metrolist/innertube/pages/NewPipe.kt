@@ -1,110 +1,70 @@
 package com.metrolist.innertube
 
-import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.response.PlayerResponse
-import io.ktor.http.URLBuilder
 import io.ktor.http.parseQueryString
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.schabi.newpipe.extractor.NewPipe
-import org.schabi.newpipe.extractor.downloader.CancellableCall
-import org.schabi.newpipe.extractor.downloader.Downloader
-import org.schabi.newpipe.extractor.downloader.Request
-import org.schabi.newpipe.extractor.downloader.Response
-import org.schabi.newpipe.extractor.exceptions.ParsingException
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
-import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
-import java.io.IOException
-import java.net.Proxy
-
-private class NewPipeDownloaderImpl(proxy: Proxy?, proxyAuth: String?) : Downloader() {
-
-    private val client = OkHttpClient.Builder()
-        .proxy(proxy)
-        .proxyAuthenticator { _, response ->
-            proxyAuth?.let { auth ->
-                response.request.newBuilder()
-                    .header("Proxy-Authorization", auth)
-                    .build()
-            } ?: response.request
-        }
-        .build()
-
-    @Throws(IOException::class, ReCaptchaException::class)
-    override fun execute(request: Request): Response {
-        val httpMethod = request.httpMethod()
-        val url = request.url()
-        val headers = request.headers()
-        val dataToSend = request.dataToSend()
-
-        val requestBuilder = okhttp3.Request.Builder()
-            .method(httpMethod, dataToSend?.toRequestBody())
-            .url(url)
-            .addHeader("User-Agent", YouTubeClient.USER_AGENT_WEB)
-
-        headers.forEach { (headerName, headerValueList) ->
-            if (headerValueList.size > 1) {
-                requestBuilder.removeHeader(headerName)
-                headerValueList.forEach { headerValue ->
-                    requestBuilder.addHeader(headerName, headerValue)
-                }
-            } else if (headerValueList.size == 1) {
-                requestBuilder.header(headerName, headerValueList[0])
-            }
-        }
-
-        val response = client.newCall(requestBuilder.build()).execute()
-
-        if (response.code == 429) {
-            response.close()
-
-            throw ReCaptchaException("reCaptcha Challenge requested", url)
-        }
-
-        val responseBodyToReturn = response.body.string()
-
-        val latestUrl = response.request.url.toString()
-        return Response(response.code, response.message, response.headers.toMultimap(), responseBodyToReturn, responseBodyToReturn.toByteArray(), latestUrl)
-    }
-
-    override fun executeAsync(request: Request, callback: AsyncCallback?): CancellableCall {
-        TODO("Placeholder")
-    }
-
-}
+import kotlinx.coroutines.runBlocking
+import project.pipepipe.extractor.services.youtube.YouTubeDecryptionHelper
+import java.net.URLEncoder
 
 object NewPipeUtils {
 
-    init {
-        NewPipe.init(NewPipeDownloaderImpl(YouTube.proxy, YouTube.proxyAuth))
+    private var cachedPlayer: Pair<String, Int>? = null
+
+    private fun getPlayer(): Pair<String, Int>? {
+        if (cachedPlayer == null) {
+            cachedPlayer = YouTubeDecryptionHelper.getLatestPlayer()
+        }
+        return cachedPlayer
     }
 
     fun getSignatureTimestamp(videoId: String): Result<Int> = runCatching {
-        YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId)
+        getPlayer()?.second ?: throw Exception("Could not get signature timestamp")
     }
 
     fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String): Result<String> =
         runCatching {
-            val url = format.url ?: format.signatureCipher?.let { signatureCipher ->
+            val player = getPlayer()?.first ?: throw Exception("Could not get player")
+            
+            // If format has direct URL
+            format.url?.let { directUrl ->
+                // Check if URL has encrypted 'n' parameter that needs decryption
+                val nParam = parseQueryString(directUrl.substringAfter("?"))["n"]
+                if (nParam != null) {
+                    val decrypted = runBlocking {
+                        YouTubeDecryptionHelper.batchDecryptCiphers(listOf(nParam), emptyList(), player)
+                    }
+                    val decryptedN = decrypted[nParam] ?: throw Exception("Could not decrypt n parameter")
+                    return@runCatching directUrl.replace("n=$nParam", "n=${URLEncoder.encode(decryptedN, "UTF-8")}")
+                }
+                return@runCatching directUrl
+            }
+
+            // If format has signatureCipher
+            format.signatureCipher?.let { signatureCipher ->
                 val params = parseQueryString(signatureCipher)
                 val obfuscatedSignature = params["s"]
-                    ?: throw ParsingException("Could not parse cipher signature")
-                val signatureParam = params["sp"]
-                    ?: throw ParsingException("Could not parse cipher signature parameter")
-                val url = params["url"]?.let { URLBuilder(it) }
-                    ?: throw ParsingException("Could not parse cipher url")
-                url.parameters[signatureParam] =
-                    YoutubeJavaScriptPlayerManager.deobfuscateSignature(
-                        videoId,
-                        obfuscatedSignature
-                    )
-                url.toString()
-            } ?: throw ParsingException("Could not find format url")
+                    ?: throw Exception("Could not parse cipher signature")
+                val signatureParam = params["sp"] ?: "sig"
+                val baseUrl = params["url"]
+                    ?: throw Exception("Could not parse cipher url")
 
-            return@runCatching YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(
-                videoId,
-                url
-            )
+                // Determine if this is 'n' or 'sig' type
+                val (nValues, sigValues) = if (signatureParam == "n") {
+                    listOf(obfuscatedSignature) to emptyList()
+                } else {
+                    emptyList<String>() to listOf(obfuscatedSignature)
+                }
+
+                val decrypted = runBlocking {
+                    YouTubeDecryptionHelper.batchDecryptCiphers(nValues, sigValues, player)
+                }
+                val decryptedValue = decrypted[obfuscatedSignature]
+                    ?: throw Exception("Could not decrypt signature")
+
+                return@runCatching "$baseUrl&$signatureParam=${URLEncoder.encode(decryptedValue, "UTF-8")}"
+            }
+
+            throw Exception("Could not find format url")
         }
 
 }

@@ -36,7 +36,8 @@ junit = "4.13.2"
 timber = "5.0.1"
 materialKolor = "4.0.5"
 kuromojiIpadic = "0.9.0"
-extractor = "d7c67daf"
+extractor = "9a242ad3af"
+metrolistshared = "8c2dda1732"
 tinypinyin = "2.0.3"
 
 [libraries]
@@ -116,7 +117,8 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 
 #newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor", version = "70abbdb" }
 #newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version = "dev-SNAPSHOT" }
-extractor = { module = "com.github.mostafaalagamy:MetrolistExtractor", version.ref = "extractor" }
+extractor = { module = "com.github.mostafaalagamy:MetroExtractor", version.ref = "extractor" }
+metrolistshared = { module = "com.github.mostafaalagamy.MetrolistShared:shared-jvm", version.ref = "metrolistshared" }
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 tinypinyin = { module = "com.github.promeG:tinypinyin", version.ref = "tinypinyin" }
