@@ -49,14 +49,42 @@ body {
     position: fixed; width: 100%; top: 0; z-index: 1000;
     border-bottom: 1px solid var(--border-color);
 }
+
 .nav-container { display: flex; justify-content: space-between; align-items: center; height: 72px; }
+
 .logo { display: flex; align-items: center; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 1.3rem; }
 .logo img { height: 36px; margin-right: 12px; }
+
 .nav-right { display: flex; align-items: center; gap: 20px; }
-.nav-links { list-style: none; display: flex; gap: 32px; }
+
+/* Desktop: Standard Flex */
+.nav-links { list-style: none; display: flex; gap: 32px; align-items: center; }
+
 .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.95rem; transition: 0.2s; }
 .nav-links a:hover { color: var(--text-main); }
-.github-link { display: flex; align-items: center; gap: 6px; color: var(--text-main) !important; }
+
+/* GitHub Link: Default Style */
+.github-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    color: var(--text-main) !important; 
+}
+
+/* --- Mobile Specific Fix --- */
+@media (max-width: 868px) {
+    .nav-links {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; /* Centers all items horizontally */
+        text-align: center;
+    }
+
+    .github-link {
+        justify-content: center; /* Centers the icon and text inside the link */
+        width: 100%;
+    }
+}
 
 /* Theme Btn */
 .theme-btn {
