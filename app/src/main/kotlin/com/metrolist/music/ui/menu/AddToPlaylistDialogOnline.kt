@@ -48,11 +48,14 @@ import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.text.Collator
+import java.util.Locale
 
 @Composable
 fun AddToPlaylistDialogOnline(
@@ -91,8 +94,12 @@ fun AddToPlaylistDialogOnline(
 
 
     LaunchedEffect(Unit) {
-        database.editablePlaylistsByCreateDateAsc().collect {
-            playlists = it.asReversed()
+        database.editablePlaylistsByNameAsc().map { playlists ->
+            val collator = Collator.getInstance(Locale.getDefault())
+            collator.strength = Collator.PRIMARY
+            playlists.sortedWith(compareBy(collator) { it.playlist.name })
+        }.collect {
+            playlists = it
         }
     }
 
