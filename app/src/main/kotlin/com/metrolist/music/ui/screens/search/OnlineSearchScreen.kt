@@ -138,6 +138,9 @@ fun OnlineSearchScreen(
                     modifier = Modifier.animateItem()
                 )
             }
+            item(key = "search_divider_spacer") {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
 
         items(viewState.items, key = { "item_${it.id}" }) { item ->
