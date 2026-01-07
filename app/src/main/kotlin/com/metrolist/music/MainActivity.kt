@@ -20,9 +20,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -93,7 +91,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
@@ -934,13 +931,9 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (currentRouteIndex == -1 || currentRouteIndex > previousRouteIndex)
-                                            slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                         else
-                                            slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                     },
                                     // Exit Transition - smoother with smaller offset and longer duration
                                     exitTransition = {
@@ -952,13 +945,9 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (targetRouteIndex == -1 || targetRouteIndex > currentRouteIndex)
-                                            slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                         else
-                                            slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                     },
                                     // Pop Enter Transition - smoother with smaller offset and longer duration
                                     popEnterTransition = {
@@ -970,13 +959,9 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                            slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideInHorizontally { it / 8 } + fadeIn(tween(200))
                                         else
-                                            slideInHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { -it / 8 } + fadeIn(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                     },
                                     // Pop Exit Transition - smoother with smaller offset and longer duration
                                     popExitTransition = {
@@ -988,13 +973,9 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                            slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { -it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
                                         else
-                                            slideOutHorizontally(
-                                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset(1, 1))
-                                            ) { it / 8 } + fadeOut(spring(stiffness = Spring.StiffnessMediumLow))
+                                            slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                     },
                                     modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                                 ) {

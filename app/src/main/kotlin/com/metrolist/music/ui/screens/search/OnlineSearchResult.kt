@@ -33,18 +33,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -280,42 +280,20 @@ fun OnlineSearchResult(
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
     ) {
-        // TopAppBar implementation for search as requested
-        TopAppBar(
-            title = {
-                Box {
-                    if (query.text.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.search_yt_music),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    BasicTextField(
-                        value = query,
-                        onValueChange = { newQuery ->
-                            query = newQuery
-                        },
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onSurface
-                        ),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Search
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onSearch = {
-                                onSearch(query.text)
-                            }
-                        ),
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
-                    )
-                }
+        // Google-style SearchBar with Material 3 design
+        OutlinedTextField(
+            value = query,
+            onValueChange = { newQuery ->
+                query = newQuery
             },
-            navigationIcon = {
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.search_yt_music),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            leadingIcon = {
                 IconButton(
                     onClick = { navController.navigateUp() }
                 ) {
@@ -326,7 +304,7 @@ fun OnlineSearchResult(
                     )
                 }
             },
-            actions = {
+            trailingIcon = {
                 if (query.text.isNotEmpty()) {
                     IconButton(
                         onClick = {
@@ -341,11 +319,32 @@ fun OnlineSearchResult(
                     }
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
             ),
-            windowInsets = WindowInsets(0.dp)
+            keyboardActions = KeyboardActions(
+                onSearch = { 
+                    onSearch(query.text)
+                }
+            ),
+            singleLine = true,
+            shape = RoundedCornerShape(28.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = if (pureBlack) 
+                    MaterialTheme.colorScheme.surface 
+                else 
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                unfocusedContainerColor = if (pureBlack) 
+                    MaterialTheme.colorScheme.surface 
+                else 
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .focusRequester(focusRequester)
         )
 
         // Main content area below search bar
