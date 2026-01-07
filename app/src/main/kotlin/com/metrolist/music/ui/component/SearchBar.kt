@@ -239,7 +239,7 @@ private fun SearchBarInputField(
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
                     placeholder = placeholder,
-                    shape = SearchBarDefaults.inputFieldShape,
+                    shape = RoundedCornerShape(0.dp),
                     colors = colors,
                     contentPadding = PaddingValues(),
                     container = {},
@@ -256,8 +256,7 @@ private fun SearchBarInputField(
 
 // Measurement specs
 val InputFieldHeight = 48.dp
-private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
-internal val SearchBarVerticalPadding: Dp = 8.dp
-internal val SearchBarHorizontalPadding: Dp = 12.dp
+internal val TopAppBarVerticalPadding: Dp = 8.dp
+internal val TopAppBarHorizontalPadding: Dp = 12.dp
 val SearchBarIconOffsetX: Dp = 4.dp
 private const val AnimationDurationMillis: Int = 300
