@@ -190,6 +190,17 @@ fun AboutScreen(
                     contentDescription = null
                 )
             }
+
+            IconButton(
+                onClick = {
+                    uriHandler.openUri("https://mostafaalagamy.github.io")
+                }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.language),
+                    contentDescription = null
+                )
+            }
         }
 
         Spacer(Modifier.height(16.dp))
