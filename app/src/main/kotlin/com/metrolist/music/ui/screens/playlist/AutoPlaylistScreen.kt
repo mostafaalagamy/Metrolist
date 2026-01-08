@@ -215,12 +215,17 @@ fun AutoPlaylistScreen(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
+    // Disable pull-to-refresh for downloads playlist (no sync needed)
+    val isPullToRefreshEnabled = playlistType != PlaylistType.DOWNLOAD
+    
     val onRefresh: () -> Unit = {
-        coroutineScope.launch(Dispatchers.IO) {
-            isRefreshing = true
-            if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
-            if (playlistType == PlaylistType.UPLOADED) viewModel.syncUploadedSongs()
-            isRefreshing = false
+        if (isPullToRefreshEnabled) {
+            coroutineScope.launch(Dispatchers.IO) {
+                isRefreshing = true
+                if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
+                if (playlistType == PlaylistType.UPLOADED) viewModel.syncUploadedSongs()
+                isRefreshing = false
+            }
         }
     }
 
@@ -310,10 +315,16 @@ fun AutoPlaylistScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .pullToRefresh(
-                state = pullRefreshState,
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh
+            .then(
+                if (isPullToRefreshEnabled) {
+                    Modifier.pullToRefresh(
+                        state = pullRefreshState,
+                        isRefreshing = isRefreshing,
+                        onRefresh = onRefresh
+                    )
+                } else {
+                    Modifier
+                }
             ),
         contentAlignment = Alignment.TopStart
     ) {
@@ -456,13 +467,15 @@ fun AutoPlaylistScreen(
             headerItems = 2
         )
 
-        Indicator(
-            isRefreshing = isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
-        )
+        if (isPullToRefreshEnabled) {
+            Indicator(
+                isRefreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
+            )
+        }
 
         TopAppBar(
             title = {
