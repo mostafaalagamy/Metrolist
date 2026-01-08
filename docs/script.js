@@ -385,4 +385,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
+
+    // --- 7. Fetch Version from Metrolist GitHub Releases ---
+    const versionBadge = document.getElementById('version-badge');
+    if (versionBadge) {
+        fetch('https://api.github.com/repos/mostafaalagamy/Metrolist/releases/latest', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.tag_name) {
+                const version = data.tag_name;
+                const isPrerelease = data.prerelease;
+                versionBadge.textContent = `${version} ${isPrerelease ? 'Beta' : 'Stable'}`;
+            }
+        })
+        .catch(error => {
+            console.log('Version fetch error:', error);
+        });
+    }
 });

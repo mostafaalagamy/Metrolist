@@ -102,6 +102,30 @@ body {
     padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
     margin-bottom: 20px; border: 1px solid rgba(138, 43, 226, 0.2);
 }
+
+/* Version Badge - Black & White Style */
+.badge.version-badge {
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid #333333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.badge.version-badge:hover {
+    background: #ffffff;
+    color: #000000;
+    border-color: #000000;
+}
+[data-theme="light"] .badge.version-badge {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #cccccc;
+}
+[data-theme="light"] .badge.version-badge:hover {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
 .hero h1 { font-size: 3.8rem; line-height: 1.1; margin-bottom: 24px; }
 .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero p { color: var(--text-muted); font-size: 1.15rem; margin-bottom: 35px; max-width: 540px; }
