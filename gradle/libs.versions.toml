@@ -38,6 +38,7 @@ materialKolor = "4.0.5"
 kuromojiIpadic = "0.9.0"
 extractor = "2d2d9ed"
 tinypinyin = "2.0.3"
+material3Version = "1.4.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -121,6 +122,7 @@ extractor = { module = "com.github.mostafaalagamy:MetrolistExtractor", version.r
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 tinypinyin = { module = "com.github.promeG:tinypinyin", version.ref = "tinypinyin" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

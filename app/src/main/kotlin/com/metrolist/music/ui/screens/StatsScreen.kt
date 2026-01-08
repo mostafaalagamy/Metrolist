@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -26,8 +25,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -35,9 +34,9 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -47,6 +46,7 @@ import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.ArtistSelectionDropdownMenu
 import com.metrolist.music.ui.component.ChoiceChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
@@ -62,6 +62,7 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.viewmodels.StatsViewModel
+import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -71,6 +72,7 @@ fun StatsScreen(
     navController: NavController,
     viewModel: StatsViewModel = hiltViewModel(),
 ) {
+    val sArtists = remember { mutableListOf<Artist>() }
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -80,7 +82,7 @@ fun StatsScreen(
 
     val indexChips by viewModel.indexChips.collectAsState()
     val mostPlayedSongs by viewModel.mostPlayedSongs.collectAsState()
-    val mostPlayedSongsStats by viewModel.mostPlayedSongsStats.collectAsState()
+    val mostPlayedSongsStats by viewModel.filteredSongs.collectAsState()
     val mostPlayedArtists by viewModel.mostPlayedArtists.collectAsState()
     val mostPlayedAlbums by viewModel.mostPlayedAlbums.collectAsState()
     val firstEvent by viewModel.firstEvent.collectAsState()
@@ -228,6 +230,40 @@ fun StatsScreen(
                     },
                     currentValue = indexChips,
                     onValueUpdate = { viewModel.indexChips.value = it },
+                )
+            }
+
+            item(key = "artistSelectionDropdown") {
+                ArtistSelectionDropdownMenu(
+                    artists = mostPlayedArtists.map { artistWrapper ->
+                        Artist(
+                            id = artistWrapper.artist.id,
+                            name = artistWrapper.artist.name,
+                        )
+                    },
+                    selectedArtists = sArtists, // Pass an empty list initially or fetch selected artists from the ViewModel
+                    onSelectionChange = { selectedArtists ->
+                        val b = selectedArtists.last()
+
+                        Timber.d( "Selected artists: $b")
+
+
+                        if (sArtists.contains(b)) {
+                            sArtists.remove(b)
+                        } else {
+                            sArtists.add(b)
+                        }
+
+                        Timber.d("All artists: $sArtists")
+                        val c = sArtists.isEmpty()
+                        Timber.d("No Artists: $c")
+                        viewModel.selectedArtists.clear()
+                        viewModel.selectedArtists.addAll(sArtists)
+                    },
+                    clearArtists = {
+                        viewModel.selectedArtists.clear()
+                        sArtists.clear()
+                    }
                 )
             }
 

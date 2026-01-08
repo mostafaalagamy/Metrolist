@@ -5,9 +5,12 @@
 
 package com.metrolist.music.viewmodels
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.Artist
 import com.metrolist.music.constants.statToPeriod
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.ui.screens.OptionStats
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -133,6 +137,27 @@ constructor(
         database
             .firstEvent()
             .stateIn(viewModelScope, SharingStarted.Lazily, null)
+
+    val selectedArtists = mutableStateListOf<Artist>() // Current artist selection
+
+    val filteredSongs = combine(
+        mostPlayedSongsStats, // Unfiltered songs
+        snapshotFlow { selectedArtists.toList() } // Selected artists
+    ) { songs, artists ->
+        val check = selectedArtists
+        Timber.d("Test")
+        Timber.d("$check")
+        if (check.isEmpty()) {
+            songs // No filtering, return all songs
+        } else {
+            songs.filter { song ->
+                song.artists.any {
+                    artist -> check.any { check -> artist.id == check.id } // Filter by artistId
+                }
+
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     init {
         viewModelScope.launch {
