@@ -130,7 +130,8 @@ fun WavySlider(
         
         // Draw circular thumb
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val thumbX = thumbRadiusPx + (size.width - thumbRadiusPx * 2) * displayValue
+            val thumbOffset = thumbRadiusPx * 1.5f // Move thumb forward
+            val thumbX = thumbOffset + (size.width - thumbOffset * 2) * displayValue
             val thumbY = size.height / 2
             
             drawCircle(
