@@ -813,12 +813,16 @@ fun HomeScreen(
                                 )
                             }
                         },
-                        onClick = section.endpoint?.browseId?.let { browseId ->
+                        onClick = section.endpoint?.let { endpoint ->
                             {
-                                if (browseId == "FEmusic_moods_and_genres")
-                                    navController.navigate("mood_and_genres")
-                                else
-                                    navController.navigate("browse/$browseId")
+                                when {
+                                    endpoint.browseId == "FEmusic_moods_and_genres" -> 
+                                        navController.navigate("mood_and_genres")
+                                    endpoint.params != null -> 
+                                        navController.navigate("youtube_browse/${endpoint.browseId}?params=${endpoint.params}")
+                                    else -> 
+                                        navController.navigate("browse/${endpoint.browseId}")
+                                }
                             }
                         },
                         modifier = Modifier.animateItem()
