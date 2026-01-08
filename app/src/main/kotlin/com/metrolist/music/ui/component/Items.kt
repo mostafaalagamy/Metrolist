@@ -104,12 +104,16 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.SmallGridThumbnailHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.SwipeToSongKey
+import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.AlbumEntity
@@ -134,6 +138,12 @@ import java.util.logging.Logger
 import kotlin.math.roundToInt
 
 const val ActiveBoxAlpha = 0.6f
+
+@Composable
+fun currentGridThumbnailHeight(): Dp {
+    val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
+    return if (gridItemSize == GridItemSize.BIG) GridThumbnailHeight else SmallGridThumbnailHeight
+}
 
 // Basic list item - optimized with inline to reduce recomposition
 @Composable
@@ -265,6 +275,7 @@ fun GridItem(
     thumbnailRatio: Float = 1f,
     fillMaxWidth: Boolean = false,
 ) {
+    val gridHeight = currentGridThumbnailHeight()
     Column(
         modifier = if (fillMaxWidth) {
             modifier
@@ -273,7 +284,7 @@ fun GridItem(
         } else {
             modifier
                 .padding(12.dp)
-                .width(GridThumbnailHeight * thumbnailRatio)
+                .width(gridHeight * thumbnailRatio)
         }
     ) {
         BoxWithConstraints(
@@ -281,7 +292,7 @@ fun GridItem(
             modifier = if (fillMaxWidth) {
                 Modifier.fillMaxWidth()
             } else {
-                Modifier.height(GridThumbnailHeight)
+                Modifier.height(gridHeight)
             }
                 .aspectRatio(thumbnailRatio)
         ) {
@@ -455,12 +466,13 @@ fun SongGridItem(
     },
     badges = badges,
     thumbnailContent = {
+        val gridHeight = currentGridThumbnailHeight()
         ItemThumbnail(
             thumbnailUrl = song.song.thumbnailUrl,
             isActive = isActive,
             isPlaying = isPlaying,
             shape = RoundedCornerShape(ThumbnailCornerRadius),
-            modifier = Modifier.size(GridThumbnailHeight)
+            modifier = Modifier.size(gridHeight)
         )
         if (!isActive) {
             OverlayPlayButton(

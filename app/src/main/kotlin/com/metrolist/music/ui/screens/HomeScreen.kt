@@ -98,8 +98,12 @@ import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.SmallGridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
@@ -198,6 +202,8 @@ fun HomeScreen(
 
     val scope = rememberCoroutineScope()
     val lazylistState = rememberLazyListState()
+    val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
+    val currentGridHeight = if (gridItemSize == GridItemSize.BIG) GridThumbnailHeight else SmallGridThumbnailHeight
     val backStackEntry by navController.currentBackStackEntryAsState()
     val scrollToTop =
         backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
@@ -586,7 +592,7 @@ fun HomeScreen(
                                 .asPaddingValues(),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height((GridThumbnailHeight + with(LocalDensity.current) {
+                                .height((currentGridHeight + with(LocalDensity.current) {
                                     MaterialTheme.typography.bodyLarge.lineHeight.toDp() * 2 +
                                             MaterialTheme.typography.bodyMedium.lineHeight.toDp() * 2
                                 }) * rows)
@@ -807,12 +813,16 @@ fun HomeScreen(
                                 )
                             }
                         },
-                        onClick = section.endpoint?.browseId?.let { browseId ->
+                        onClick = section.endpoint?.let { endpoint ->
                             {
-                                if (browseId == "FEmusic_moods_and_genres")
-                                    navController.navigate("mood_and_genres")
-                                else
-                                    navController.navigate("browse/$browseId")
+                                when {
+                                    endpoint.browseId == "FEmusic_moods_and_genres" -> 
+                                        navController.navigate("mood_and_genres")
+                                    endpoint.params != null -> 
+                                        navController.navigate("youtube_browse/${endpoint.browseId}?params=${endpoint.params}")
+                                    else -> 
+                                        navController.navigate("browse/${endpoint.browseId}")
+                                }
                             }
                         },
                         modifier = Modifier.animateItem()
