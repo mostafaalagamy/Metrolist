@@ -51,6 +51,7 @@ import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.ui.component.EnumDialog
 import com.metrolist.music.ui.component.IconButton
@@ -125,6 +126,10 @@ fun PlayerSettings(
     )
     val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(
         StopMusicOnTaskClearKey,
+        defaultValue = false
+    )
+    val (pauseOnMute, onPauseOnMuteChange) = rememberPreference(
+        PauseOnMute,
         defaultValue = false
     )
     val (historyDuration, onHistoryDurationChange) = rememberPreference(
@@ -493,6 +498,26 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onStopMusicOnTaskClearChange(!stopMusicOnTaskClear) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.volume_off_pause),
+                    title = { Text(stringResource(R.string.pause_music_when_media_is_muted)) },
+                    trailingContent = {
+                        Switch(
+                            checked = pauseOnMute,
+                            onCheckedChange = onPauseOnMuteChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (pauseOnMute) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onPauseOnMuteChange(!pauseOnMute) }
                 )
             )
         )
