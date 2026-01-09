@@ -352,4 +352,5 @@
         <item quantity="many">%d bandas</item>
         <item quantity="other">%d bandas</item>
     </plurals>
+    <string name="pause_music_when_media_is_muted">Pausar a música quando a multimédia está silenciada</string>
 </resources>
