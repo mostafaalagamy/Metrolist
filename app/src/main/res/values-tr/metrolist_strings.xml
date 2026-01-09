@@ -347,4 +347,5 @@
     <string name="error_file_open">Dosya açılamadı: %1$s</string>
     <string name="import_error_title">İçe Aktarma Hatası</string>
     <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştirin</string>
+    <string name="pause_music_when_media_is_muted">Medya sesi kapatıldığında müziği duraklat</string>
 </resources>
