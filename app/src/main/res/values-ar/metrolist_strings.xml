@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">استكشاف</string>
+    <string name="explore">الإستكشاف</string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
@@ -367,4 +367,5 @@
     <string name="error_file_open">فشل فتح الملف: %1$s</string>
     <string name="import_error_title">خطأ في الاستيراد</string>
     <string name="enable_squiggly_slider">تفعيل شريط التمرير المتعرج</string>
+    <string name="pause_music_when_media_is_muted">أوقف تشغيل الموسيقى مؤقتًا عند كتم صوت الوسائط</string>
 </resources>

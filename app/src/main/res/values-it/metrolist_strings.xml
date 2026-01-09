@@ -352,4 +352,5 @@
     <string name="wavy">Ondulato</string>
     <string name="enable_wavy_slider">Attiva lo slider ondulato</string>
     <string name="enable_squiggly_slider">Abilita slider ondulato</string>
+    <string name="pause_music_when_media_is_muted">Metti la musica in pausa quando il media è mutato</string>
 </resources>
