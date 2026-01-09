@@ -1495,6 +1495,17 @@ class MusicService :
             }
         }
 
+        // Update Discord RPC when media item transitions (for continuous playback)
+        if (events.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION) && player.isPlaying) {
+            scope.launch {
+                // Small delay to ensure currentSong is updated from the database
+                delay(100)
+                currentSong.value?.let { song ->
+                    discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                }
+            }
+        }
+
         // Scrobbling
         if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
             scrobbleManager?.onPlayerStateChanged(player.isPlaying, player.currentMetadata, duration = player.duration)
