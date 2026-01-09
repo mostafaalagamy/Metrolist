@@ -341,4 +341,6 @@
     <string name="error_file_read">Tidak dapat membaca file</string>
     <string name="error_file_open">Gagal membuka file: %1$s</string>
     <string name="import_error_title">Kesalahan Impor</string>
+    <string name="enable_squiggly_slider">Aktifkan penggeser berkelok</string>
+    <string name="pause_music_when_media_is_muted">Jeda musik saat media dibisukan</string>
 </resources>
