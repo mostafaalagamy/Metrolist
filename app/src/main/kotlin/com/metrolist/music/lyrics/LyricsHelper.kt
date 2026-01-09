@@ -38,6 +38,7 @@ constructor(
     private var lyricsProviders =
         listOf(
             BetterLyricsProvider,
+            SimpMusicLyricsProvider,
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
             YouTubeSubtitleLyricsProvider,
@@ -54,6 +55,7 @@ constructor(
                     PreferredLyricsProvider.LRCLIB -> listOf(
                         BetterLyricsProvider,
                         LrcLibLyricsProvider,
+                        SimpMusicLyricsProvider,
                         KuGouLyricsProvider,
                         YouTubeSubtitleLyricsProvider,
                         YouTubeLyricsProvider
@@ -61,12 +63,22 @@ constructor(
                     PreferredLyricsProvider.KUGOU -> listOf(
                         BetterLyricsProvider,
                         KuGouLyricsProvider,
+                        SimpMusicLyricsProvider,
                         LrcLibLyricsProvider,
                         YouTubeSubtitleLyricsProvider,
                         YouTubeLyricsProvider
                     )
                     PreferredLyricsProvider.BETTER_LYRICS -> listOf(
                         BetterLyricsProvider,
+                        SimpMusicLyricsProvider,
+                        LrcLibLyricsProvider,
+                        KuGouLyricsProvider,
+                        YouTubeSubtitleLyricsProvider,
+                        YouTubeLyricsProvider
+                    )
+                    PreferredLyricsProvider.SIMPMUSIC -> listOf(
+                        BetterLyricsProvider,
+                        SimpMusicLyricsProvider,
                         LrcLibLyricsProvider,
                         KuGouLyricsProvider,
                         YouTubeSubtitleLyricsProvider,
