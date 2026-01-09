@@ -38,7 +38,6 @@
     <string name="player_background_style">#Igrač #pozadina #stil</string>
     <string name="default_style">Podrazumevani stil</string>
     <string name="secondary_color_style">Sekundarno</string>
-    <string name="enable_squiggly_slider">Omogući valoviti klizač</string>
     <string name="enable_swipe_thumbnail">Omogući promjenu pjesme prevlačenjem</string>
     <string name="swipe_song_to_add">Prevucite pjesmu ulijevo da biste je dodali u red čekanja ili udesno da biste je pustili sljedeću</string>
     <string name="lyrics_click_change">Promijenite stihove klikom</string>

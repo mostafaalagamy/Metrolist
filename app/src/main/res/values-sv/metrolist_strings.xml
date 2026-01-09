@@ -119,7 +119,6 @@
     <string name="player_buttons_style">Färger på spelarens knappar</string>
     <string name="default_style">Standard</string>
     <string name="secondary_color_style">Sekundär</string>
-    <string name="enable_squiggly_slider">Aktivera vågig slider</string>
     <string name="enable_swipe_thumbnail">Aktivera svepning för att byta låt</string>
     <string name="swipe_song_to_add">Svep låten till vänster för att lägga den i kön eller till höger för att spela den härnäst</string>
     <string name="lyrics_click_change">Ändra låttext genom att klicka</string>

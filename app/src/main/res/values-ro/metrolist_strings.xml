@@ -67,7 +67,6 @@
     <string name="player_buttons_style">Culoarea butoanelor player-ului</string>
     <string name="default_style">Prestabilită</string>
     <string name="secondary_color_style">Secundară</string>
-    <string name="enable_squiggly_slider">Activează slider-ul ondulat</string>
     <string name="enable_swipe_thumbnail">Activează glisarea pentru schimbarea melodiei</string>
     <string name="swipe_song_to_add">Glisează melodia la stânga pentru a o adăuga la coadă sau la dreapta pentru a o reda următoarea</string>
     <string name="lyrics_click_change">Schimbă versurile la apăsare</string>
@@ -269,7 +268,7 @@
     <string name="enable_better_lyrics_desc">Folosește furnizorul Better Lyrics pentru versuri sincronizate cuvânt cu cuvânt</string>
     <string name="shuffle_playlist_first">Amestecă playlistul/albumul mai întâi</string>
     <string name="shuffle_playlist_first_desc">Când amestecarea este pornită, redă toate melodiile din playlistul/albumul original mai întâi, apoi redă conținut similar</string>
-    <string name="show_wrapped_card">Adișează cardul Wrapped</string>
+    <string name="show_wrapped_card">Afișează cardul Wrapped</string>
     <string name="lyrics_animation_style">Stil de animație cuvânt cu cuvânt</string>
     <string name="none">Fără</string>
     <string name="fade">Estompare</string>
@@ -331,4 +330,26 @@
     <string name="error_playing">Eroare la redare</string>
     <string name="failed_to_parse_proxy">Nu s-a putut analiza URL-ul proxy-ului.</string>
     <string name="top_result">Rezultat de top</string>
+    <string name="enable_wavy_slider">Activează glisorul ondulat</string>
+    <string name="wavy">Ondulat</string>
+    <plurals name="profiles_count">
+        <item quantity="one">Un profil</item>
+        <item quantity="few">%d profile</item>
+        <item quantity="other">%d de profile</item>
+    </plurals>
+    <string name="equalizer_header">Egalizator</string>
+    <string name="no_profiles">Niciun profil pentru egalizator</string>
+    <string name="import_profile">Importă profil</string>
+    <string name="eq_disabled">Dezactivat</string>
+    <plurals name="band_count">
+        <item quantity="one">O bandă</item>
+        <item quantity="few">%d benzi</item>
+        <item quantity="other">%d de benzi</item>
+    </plurals>
+    <string name="delete_profile_desc">Șterge profilul</string>
+    <string name="delete_profile_confirmation">Ești sigur(ă) că vrei să ștergi %1$s? Această acțiune nu poate fi anulată.</string>
+    <string name="error_file_read">Nu s-a putut citi fișierul</string>
+    <string name="error_file_open">Nu s-a putut deschide fișierul: %1$s</string>
+    <string name="import_error_title">Eroare la importare</string>
+    <string name="enable_squiggly_slider">Activează glisorul șerpuit</string>
 </resources>

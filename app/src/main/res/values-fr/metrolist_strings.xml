@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="liked">Favoris</string>
-    <string name="offline">Téléchargés</string>
+    <string name="offline">Téléchargé</string>
     <string name="my_top">Mon Top</string>
     <string name="select">Tout sélectionner</string>
     <string name="like_all">Tout aimer</string>
@@ -39,13 +39,13 @@
     <string name="show_top_playlist">Afficher la playlist « Top »</string>
     <string name="show_cached_playlist">Afficher la playlist « Mise en Cache »</string>
     <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
-    <string name="intent_supported_links_not_found">Impossible de trouver les paramètres des liens pris en charge. Veuillez les configurer manuellement.</string>
+    <string name="intent_supported_links_not_found">Impossible de trouver les paramètres des liens pris en charge, veuillez les configurer manuellement</string>
     <plurals name="seconds">
         <item quantity="one">%d seconde</item>
         <item quantity="many">%d secondes</item>
         <item quantity="other">%d secondes</item>
     </plurals>
-    <string name="min_playback_duration_description">La durée minimale d\'un titre qui doit être lu avant qu\'il soit considéré comme « lu ».</string>
+    <string name="min_playback_duration_description">La durée minimale d\'un titre qui doit être lu avant qu\'il soit considéré comme « lu »</string>
     <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
     <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
@@ -79,13 +79,12 @@
     <string name="player_buttons_style">Couleurs des boutons du lecteur</string>
     <string name="default_style">Défaut</string>
     <string name="secondary_color_style">Secondaire</string>
-    <string name="enable_squiggly_slider">Activer la barre de défilement</string>
     <string name="enable_swipe_thumbnail">Activer le glissement pour changer de titre</string>
     <string name="lyrics_click_change">Changer les paroles avec un clic</string>
     <string name="slim">Subtil</string>
     <string name="auto_playlists">Playlists Automatiques</string>
     <string name="show_liked_playlist">Afficher la playlist « Favoris »</string>
-    <string name="show_downloaded_playlist">Afficher la playlist « Téléchargés »</string>
+    <string name="show_downloaded_playlist">Afficher la playlist « Téléchargé »</string>
     <string name="advanced_login">Connexion avec un jeton</string>
     <string name="token_hidden">Cliquer pour afficher le jeton</string>
     <string name="token_shown">Cliquer encore pour copier ou éditer</string>
@@ -95,7 +94,7 @@
     <string name="general">Général</string>
     <string name="app_language">Langue de l\'application</string>
     <string name="configure_app_language">Configurer les langues de l\'application</string>
-    <string name="intent_app_language_not_found">Impossible de trouver les paramètres de langue de l\'application. Veuillez les configurer manuellement.</string>
+    <string name="intent_app_language_not_found">Impossible de trouver les paramètres linguistiques de l\'application, veuillez les configurer manuellement</string>
     <string name="open_supported_links">Ouvrir les liens supportés par défaut</string>
     <string name="configure_supported_links">Configurer les liens supportés</string>
     <string name="set_first_lyrics_provider">Fournisseur de paroles préférées</string>
@@ -135,7 +134,7 @@
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
@@ -203,9 +202,9 @@
     <string name="remove_custom_image">Supprimer l\'image personnalisée</string>
     <string name="audio_offload">Activer le déchargement</string>
     <string name="audio_offload_description">Utilisez le chemin audio de déchargement pour la lecture audio. Désactiver cette option peut augmenter la consommation d\'énergie, mais peut s\'avérer utile en cas de problèmes de lecture audio ou de post-traitement</string>
-    <string name="show_uploaded_playlist">Afficher la playlist « Téléchargés »</string>
-    <string name="uploaded_playlist">Téléchargés</string>
-    <string name="filter_uploaded">Téléchargés</string>
+    <string name="show_uploaded_playlist">Afficher la playlist « Téléversé »</string>
+    <string name="uploaded_playlist">Téléversé</string>
+    <string name="filter_uploaded">Téléversé</string>
     <string name="updater">Mise à jour</string>
     <string name="check_for_updates">Vérifier automatiquement les mises à jour</string>
     <string name="lyrics_romanize_macedonian">Romaniser les paroles en macédonien</string>
@@ -331,4 +330,26 @@
     <string name="failed_to_parse_proxy">Impossible d\'analyser l\'URL du proxy.</string>
     <string name="lyrics_glow_effect">Activer l\'effet de paroles lumineuses</string>
     <string name="lyrics_glow_effect_desc">Ajouter une animation lumineuse et un effet de rebond aux paroles actives</string>
+    <string name="enable_wavy_slider">Activer le curseur ondulé</string>
+    <string name="wavy">Ondulé</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d Profile</item>
+        <item quantity="many">%d Profiles</item>
+        <item quantity="other">%d Profiles</item>
+    </plurals>
+    <string name="equalizer_header">Égaliseur</string>
+    <string name="no_profiles">Aucun profil d\'égaliseur</string>
+    <string name="import_profile">Importer un profil</string>
+    <string name="eq_disabled">Désactivé</string>
+    <string name="delete_profile_desc">Supprimer le profil</string>
+    <string name="delete_profile_confirmation">Êtes-vous sûr de vouloir supprimer %1$s ? Cette action est irréversible.</string>
+    <string name="error_file_read">Impossible de lire le fichier</string>
+    <string name="error_file_open">Impossible d\'ouvrir le fichier : %1$s</string>
+    <string name="import_error_title">Erreur d\'importation</string>
+    <plurals name="band_count">
+        <item quantity="one">%d bande</item>
+        <item quantity="many">%d bandes</item>
+        <item quantity="other">%d bandes</item>
+    </plurals>
+    <string name="enable_squiggly_slider">Activer le curseur ondulé</string>
 </resources>

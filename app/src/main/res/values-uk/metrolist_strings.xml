@@ -38,7 +38,6 @@
     <string name="follow_theme">Дотримуватись теми</string>
     <string name="gradient">Градієнт</string>
     <string name="player_background_blur">Розмиття</string>
-    <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
     <string name="enable_swipe_thumbnail">Перемикання пісень проведенням по обкладинці</string>
     <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
     <string name="slim_navbar">Тонка нижня панель навігації</string>
@@ -153,16 +152,16 @@
     <string name="disable">Вимкнути</string>
     <string name="subscribe">Підписатися</string>
     <string name="subscribed">Підписані</string>
-    <string name="new_mini_player_design">Новий дизайн міні програвача</string>
+    <string name="new_mini_player_design">Новий дизайн мініпрогравача</string>
     <string name="playlist_not_found">Список відтворення не знайдено</string>
     <string name="playlist_not_found_desc">Не вдалося завантажити запитуваний список відтворення</string>
     <string name="empty_playlist">Порожній список відтворення</string>
     <string name="empty_playlist_desc">Цей плейлист не містить жодної пісні</string>
     <string name="now_playing">Зараз грає</string>
-    <string name="seek_backward">5 секунди назад</string>
-    <string name="seek_forward">5 секунди вперед</string>
-    <string name="seek_forward_dynamic">+%1$d секунди вперед</string>
-    <string name="seek_backward_dynamic">-%1$d секунди назад</string>
+    <string name="seek_backward">5 секунд назад</string>
+    <string name="seek_forward">5 секунд вперед</string>
+    <string name="seek_forward_dynamic">+%1$d сек. вперед</string>
+    <string name="seek_backward_dynamic">-%1$d сек. назад</string>
     <string name="seek_seconds_addup">Прогресивний пошук</string>
     <string name="seek_seconds_addup_description">Якщо ввімкнено, додає 5 додаткових секунд при кожному пропусканні пошуку</string>
     <string name="close">Закрити</string>
@@ -170,8 +169,8 @@
     <string name="maximum_volume">Максимальна гучність</string>
     <string name="disable_load_more_when_repeat_all">Вимкнути завантаження додаткових параметрів під час повторення всіх</string>
     <string name="disable_load_more_when_repeat_all_desc">Не завантажувати автоматично більше пісень та подібного контенту, коли ввімкнено режим повторення всіх</string>
-    <string name="hide_player_thumbnail">Приховати мініатюру гравця</string>
-    <string name="hide_player_thumbnail_desc">Замінити обкладинку альбому логотипом програми в плеєрі</string>
+    <string name="hide_player_thumbnail">Приховати мініатюру програвача</string>
+    <string name="hide_player_thumbnail_desc">Замінити обкладинку альбому логотипом додатка в програвачі</string>
     <string name="settings_section_ui">Інтерфейс</string>
     <string name="settings_section_privacy">Конфіденційність та безпека</string>
     <string name="settings_section_player">Плеєр і медіа</string>
@@ -280,7 +279,7 @@
     <string name="lyrics_line_spacing">Міжрядковий інтервал тексту пісень</string>
     <string name="shuffle_playlist_first">Спочатку перемішати відтворення відтворення/альбому</string>
     <string name="shuffle_playlist_first_desc">Під час перемішування спочатку відтворювати всі пісні з оригінального списку відтворення/альбому, а потім схожий контент</string>
-    <string name="lyrics_glow_effect">Увімкнути ефект світяться текстів пісень</string>
+    <string name="lyrics_glow_effect">Увімкнути ефект сяйва тексту пісень</string>
     <string name="lyrics_glow_effect_desc">Додайте анімацію сяйва та ефект відскоку до активних текстів пісень</string>
     <string name="show_wrapped_card">Показати обгорнуту картку</string>
     <string name="album_art_for">Обкладинка альбому для %s</string>
@@ -310,12 +309,12 @@
     <string name="wrapped_intro_subtitle">час подивитися, що ви слухали</string>
     <string name="wrapped_intro_button">Ходімо!</string>
     <string name="wrapped_end_thanks">Дякую, що вислухали Metrolist!</string>
-    <string name="wrapped_end_create_playlist">Створіть свій плейлист з обгорткою</string>
+    <string name="wrapped_end_create_playlist">Створіть свій підсумковий список відтворення</string>
     <string name="wrapped_end_creating_playlist">Створення...</string>
     <string name="wrapped_end_playlist_saved">Список відтворення збережено</string>
     <string name="wrapped_logo_content_description">Логотип Metrolist</string>
     <string name="wrapped_year">2025</string>
-    <string name="wrapped_ready_title">ВАША ЗАГОРНУТА СУКНІТЬ ГОТОВА!</string>
+    <string name="wrapped_ready_title">ВАШ АУДІОПІДСУМОК ЗА РІК ГОТОВИЙ!</string>
     <string name="wrapped_ready_subtitle">Час подивитися, що вам сподобалося цього року.</string>
     <string name="wrapped_thank_you">Дякую, що вислухали</string>
     <string name="wrapped_special_thanks">Особлива подяка MO Agamy за створення Metrolist</string>
@@ -334,4 +333,28 @@
     <string name="copied_artist">Скопійований виконавець</string>
     <string name="error_playing">Помилка відтворення</string>
     <string name="failed_to_parse_proxy">Не вдалося проаналізувати URL-адресу проксі-сервера.</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d профіль</item>
+        <item quantity="few">%d профіли</item>
+        <item quantity="many">%d профілів</item>
+        <item quantity="other">%d профілів</item>
+    </plurals>
+    <string name="equalizer_header">Еквалайзер</string>
+    <string name="no_profiles">Немає профілів еквалайзера</string>
+    <string name="import_profile">Імпортувати профіль</string>
+    <string name="eq_disabled">Вимкнено</string>
+    <plurals name="band_count">
+        <item quantity="one">%d діапазон</item>
+        <item quantity="few">%d діапазони</item>
+        <item quantity="many">%d діапазонів</item>
+        <item quantity="other">%d діапазонів</item>
+    </plurals>
+    <string name="delete_profile_desc">Видалити профіль</string>
+    <string name="delete_profile_confirmation">Ви впевнені, що хочете видалити %1$s? Цю дію не можна скасувати.</string>
+    <string name="error_file_read">Не вдалося прочитати файл</string>
+    <string name="error_file_open">Не вдалося відкрити файл: %1$s</string>
+    <string name="import_error_title">Помилка імпорту</string>
+    <string name="enable_wavy_slider">Увімкнути хвилястий повзунок</string>
+    <string name="wavy">Хвилястий</string>
+    <string name="enable_squiggly_slider">Увімкнути звивистий повзунок</string>
 </resources>

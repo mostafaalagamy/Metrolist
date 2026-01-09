@@ -54,7 +54,6 @@
     <string name="player_buttons_style">Χρώματα κουμπιού παίχτη</string>
     <string name="default_style">Προεπιλογή</string>
     <string name="secondary_color_style">Δευτερεύον</string>
-    <string name="enable_squiggly_slider">Ενεργοποίηση κυματιστού ολισθητή</string>
     <string name="enable_swipe_thumbnail">Ενεργοποίηση σάρωσης για αλλαγή τραγουδιού</string>
     <string name="swipe_song_to_add">Σύρετε το τραγούδι προς τα δεξιά για αναπαραγωγή επόμενου ή προς τα αριστερά για προσθήκη στην ουρά</string>
     <string name="lyrics_click_change">Αλλαγή στίχων στο κλικ</string>

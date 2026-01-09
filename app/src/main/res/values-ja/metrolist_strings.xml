@@ -54,7 +54,6 @@
     <string name="lyrics_click_change">タップで歌詞を変更</string>
     <string name="slim">スリム</string>
     <string name="similar_content">似ているコンテンツ</string>
-    <string name="enable_squiggly_slider">波線のスライダーを有効化</string>
     <string name="show_cached_playlist">キャッシュ済みの再生リストを表示</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
@@ -220,4 +219,5 @@
     <string name="scrobble_min_track_duration">曲をScrobbleに使用する最短再生時間</string>
     <string name="scrobble_delay_percent">Scrobbleの遅延率</string>
     <string name="scrobble_delay_minutes">Scrobbleの遅延時間</string>
+    <string name="other_results">その他</string>
 </resources>

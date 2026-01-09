@@ -95,7 +95,6 @@
     <string name="player_buttons_style">Warna tombol pemutar musik</string>
     <string name="default_style">Bawaan</string>
     <string name="secondary_color_style">Sekunder</string>
-    <string name="enable_squiggly_slider">Aktifkan penggeser bergelombang</string>
     <string name="enable_swipe_thumbnail">Aktifkan gestur geser untuk mengganti lagu</string>
     <string name="swipe_song_to_add">Geser lagu ke kiri untuk menambahkannya ke antrean atau ke kanan untuk memutar berikutnya</string>
     <string name="lyrics_click_change">Ganti lirik dengan ketukan</string>
@@ -172,7 +171,7 @@
     <string name="settings_section_storage">Penyimpanan &amp; Data</string>
     <string name="settings_section_system">Sistem &amp; Tentang Aplikasi</string>
     <string name="starting_radio">Memulai radio</string>
-    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sejenak hingga sampul baru muncul di daftar putar Anda.</string>
+    <string name="edit_playlist_cover_note_wait">Setelah memilih gambar, harap tunggu sejenak hingga sampul yang baru muncul di daftar putar Anda.</string>
     <string name="config_proxy">Atur proksi</string>
     <string name="proxy_username">Nama pengguna proksi</string>
     <string name="proxy_password">Kata sandi proksi</string>
@@ -230,7 +229,7 @@
     <string name="sync_playlist_desc">Sinkronkan daftar putar dengan YouTube Music</string>
     <string name="primary_color_style">Warna primer</string>
     <string name="tertiary_color_style">Warna tersier</string>
-    <string name="enable_better_lyrics">Aktifkan Better Lyrics</string>
+    <string name="enable_better_lyrics">Aktifkan penyedia lirik Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Gunakan penyedia Better Lyrics untuk lirik tersinkron kata per kata</string>
     <string name="auto_scroll">Sinkron Ulang</string>
     <string name="share_desc">Bagikan tautan ke item ini</string>
@@ -270,11 +269,11 @@
     <string name="wrapped_top_artist_title">Artis teratas Anda sepanjang tahun adalah</string>
     <string name="wrapped_top_artist_image_content_description">Gambar artis teratas</string>
     <string name="wrapped_top_artist_listening_time">Anda telah mendengarkan mereka selama %d menit</string>
-    <string name="wrapped_top_song_title">Lagu yang paling sering Anda putar adalah</string>
+    <string name="wrapped_top_song_title">Lagu yang paling sering Anda dengarkan adalah</string>
     <string name="wrapped_top_song_listening_time">Anda telah mendengarkan selama %d menit</string>
-    <string name="wrapped_total_artists_title">Anda mendengarkan</string>
+    <string name="wrapped_total_artists_title">Anda telah mendengarkan</string>
     <string name="wrapped_total_artists_subtitle">artis berbeda</string>
-    <string name="wrapped_total_songs_title">Anda mendengarkan</string>
+    <string name="wrapped_total_songs_title">Anda telah mendengarkan</string>
     <string name="wrapped_total_songs_subtitle">lagu berbeda</string>
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_intro_subtitle">saatnya melihat apa yang telah Anda dengarkan</string>
@@ -325,4 +324,21 @@
     <string name="lyrics_glow_effect_desc">Tambahkan animasi bercahaya dan efek pantulan pada lirik aktif</string>
     <string name="shuffle_playlist_first">Acak daftar putar/album terlebih dahulu</string>
     <string name="shuffle_playlist_first_desc">Saat mengacak, putar semua lagu dari daftar putar/album asli terlebih dahulu, lalu konten serupa</string>
+    <string name="enable_wavy_slider">Aktifkan penggeser bergelombang</string>
+    <string name="wavy">Bergelombang</string>
+    <plurals name="profiles_count">
+        <item quantity="other">%d Profil</item>
+    </plurals>
+    <string name="equalizer_header">Ekualiser</string>
+    <string name="no_profiles">Tidak ada profil ekualiser</string>
+    <string name="import_profile">Impor Profil</string>
+    <string name="eq_disabled">Nonaktif</string>
+    <plurals name="band_count">
+        <item quantity="other">%d pita frekuensi</item>
+    </plurals>
+    <string name="delete_profile_desc">Hapus Profil</string>
+    <string name="delete_profile_confirmation">Apakah anda yakin ingin menghapus %1$s? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="error_file_read">Tidak dapat membaca file</string>
+    <string name="error_file_open">Gagal membuka file: %1$s</string>
+    <string name="import_error_title">Kesalahan Impor</string>
 </resources>

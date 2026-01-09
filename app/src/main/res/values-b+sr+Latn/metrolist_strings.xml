@@ -65,7 +65,6 @@
     <string name="player_buttons_style">Boje dugmadi plejera</string>
     <string name="default_style">Podrazumevano</string>
     <string name="secondary_color_style">Sekundarno</string>
-    <string name="enable_squiggly_slider">Omogući talasasti klizač</string>
     <string name="enable_swipe_thumbnail">Omogući prevlačenje za promenu pesme</string>
     <string name="swipe_song_to_add">Prevuci pesmu ulevo da je dodaš u red, ili udesno da je pustiš odmah posle</string>
     <string name="lyrics_click_change">Promeni tekst pesme na klik</string>
