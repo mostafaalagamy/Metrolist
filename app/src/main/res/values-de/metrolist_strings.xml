@@ -327,4 +327,17 @@
     <string name="wrapped_year">2025</string>
     <string name="top_result">Top Ergebnis</string>
     <string name="wrapped_top_artist_image_content_description">Bild des Top-Künstlers</string>
+    <string name="enable_wavy_slider">Wellenförmigen Schieberegler aktivieren</string>
+    <string name="wavy">Wellig</string>
+    <string name="pause_music_when_media_is_muted">Musik pausieren, wenn Medien stumm geschaltet sind</string>
+    <string name="equalizer_header">Equalizer</string>
+    <string name="no_profiles">Keine Equalizer-Profile</string>
+    <string name="import_profile">Profil importieren</string>
+    <string name="eq_disabled">Deaktiviert</string>
+    <string name="delete_profile_desc">Profil löschen</string>
+    <string name="delete_profile_confirmation">Möchten Sie %1$s wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="error_file_read">Datei konnte nicht gelesen werden</string>
+    <string name="error_file_open">Datei konnte nicht geöffnet werden: %1$s</string>
+    <string name="import_error_title">Importfehler</string>
+    <string name="enable_squiggly_slider">Wellenförmigen Schieberegler aktivieren</string>
 </resources>
