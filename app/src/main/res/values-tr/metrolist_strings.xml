@@ -327,4 +327,24 @@
     <string name="failed_to_parse_proxy">Proxy URL\'si ayrıştırılamadı.</string>
     <string name="lyrics_glow_effect">Parıltılı şarkı sözü efektini aktif et</string>
     <string name="lyrics_glow_effect_desc">Aktif şarkı sözlerine parlama animasyonu ve zıplama efekti ekle</string>
+    <string name="enable_wavy_slider">Dalgalı kaydırıcıyı etkinleştir</string>
+    <string name="wavy">Dalgalı</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d Profil</item>
+        <item quantity="other">%d Profil</item>
+    </plurals>
+    <string name="equalizer_header">Ekolayzer</string>
+    <string name="no_profiles">Ekolayzır profili yok</string>
+    <string name="import_profile">Profili İçe Aktar</string>
+    <string name="eq_disabled">Devre dışı</string>
+    <plurals name="band_count">
+        <item quantity="one">%d bant</item>
+        <item quantity="other">%d bant</item>
+    </plurals>
+    <string name="delete_profile_desc">Profili Sil</string>
+    <string name="delete_profile_confirmation">%1$s profilini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
+    <string name="error_file_read">Dosya okunamadı</string>
+    <string name="error_file_open">Dosya açılamadı: %1$s</string>
+    <string name="import_error_title">İçe Aktarma Hatası</string>
+    <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştirin</string>
 </resources>
