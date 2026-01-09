@@ -357,4 +357,5 @@
     <string name="enable_wavy_slider">Povolit vlnitý posuvník</string>
     <string name="wavy">Vlnitý</string>
     <string name="enable_squiggly_slider">Povolit vlnitou lištu</string>
+    <string name="pause_music_when_media_is_muted">Pozastavit hudbu při ztlumení médií</string>
 </resources>
