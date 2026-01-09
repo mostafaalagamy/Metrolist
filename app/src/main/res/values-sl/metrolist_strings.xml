@@ -71,7 +71,6 @@
     <string name="player_buttons_style">Barve gumbov predvajalnika</string>
     <string name="default_style">Privzeto</string>
     <string name="secondary_color_style">Sekundarni</string>
-    <string name="enable_squiggly_slider">Omogoči valovit drsnik</string>
     <string name="enable_swipe_thumbnail">Omogoči poteg za menjavo skladbe</string>
     <string name="swipe_song_to_add">Če želite pesem dodati v čakalno vrsto, jo podrsnite v levo, če jo želite predvajati naslednjo, pa v desno</string>
     <string name="lyrics_click_change">Spremeni besedila ob kliku</string>

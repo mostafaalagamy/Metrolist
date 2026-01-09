@@ -15,7 +15,6 @@
     <string name="follow_theme">Следовать теме</string>
     <string name="gradient">Градиент</string>
     <string name="player_buttons_style">Цветовой стиль кнопок плеера</string>
-    <string name="enable_squiggly_slider">Включить волнистый слайдер</string>
     <string name="swipe_song_to_add">Свайп песни влево - добавить её в очередь, свайп песни вправо - воспроизвести её следующей</string>
     <string name="slim">Тонкий</string>
     <string name="google">Google</string>
@@ -334,4 +333,28 @@
     <string name="copied_artist">Исполнитель скопирован</string>
     <string name="error_playing">Ошибка воспроизведения</string>
     <string name="failed_to_parse_proxy">Не удалось разобрать url-адрес прокси.</string>
+    <string name="enable_wavy_slider">Включить волнистый ползунок</string>
+    <string name="wavy">Волнистый</string>
+    <plurals name="profiles_count">
+        <item quantity="one">%d профиль</item>
+        <item quantity="few">%d профиля</item>
+        <item quantity="many">%d профилей</item>
+        <item quantity="other">%d профилей</item>
+    </plurals>
+    <string name="equalizer_header">Эквалайзер</string>
+    <string name="no_profiles">Нет профилей эквалайзера</string>
+    <string name="import_profile">Импортировать профиль</string>
+    <string name="eq_disabled">Отключено</string>
+    <plurals name="band_count">
+        <item quantity="one">%d полоса</item>
+        <item quantity="few">%d полосы</item>
+        <item quantity="many">%d полос</item>
+        <item quantity="other">%d полос</item>
+    </plurals>
+    <string name="delete_profile_desc">Удалить профиль</string>
+    <string name="delete_profile_confirmation">Вы уверены, что хотите удалить «%1$s»? Это действие нельзя отменить.</string>
+    <string name="error_file_read">Не удалось прочитать файл</string>
+    <string name="error_file_open">Не удалось открыть файл: %1$s</string>
+    <string name="import_error_title">Ошибка импорта</string>
+    <string name="enable_squiggly_slider">Включить извилистый ползунок</string>
 </resources>

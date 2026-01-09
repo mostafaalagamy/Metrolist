@@ -88,7 +88,6 @@
     <string name="player_buttons_style">Grotuvo mygtukų spalvos</string>
     <string name="default_style">Numatytoji</string>
     <string name="secondary_color_style">Antrinė</string>
-    <string name="enable_squiggly_slider">Įjungti banguotą slankiklį</string>
     <string name="enable_swipe_thumbnail">Įjungti dainos keitimą braukiant</string>
     <string name="swipe_song_to_add">Braukti į kairę, kad pridėti dainą į eilę, arba į dešinę, kad ji būtų sekanti eilėje</string>
     <string name="lyrics_click_change">Paspaudus pakeisti dainos žodžius</string>

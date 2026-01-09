@@ -19,7 +19,6 @@
     <string name="follow_theme">Design folgen</string>
     <string name="gradient">Farbverlauf</string>
     <string name="player_background_blur">Unschärfe</string>
-    <string name="enable_squiggly_slider">Schnörkeligen Schieberegler aktivieren</string>
     <string name="enable_swipe_thumbnail">Wischen zum Songwechsel aktivieren</string>
     <string name="lyrics_click_change">Mit Tippen im Songtext springen</string>
     <string name="slim">Schmal</string>
@@ -235,8 +234,8 @@
     <string name="enable_better_lyrics">Better Lyrics-Songtext-Anbieter aktivieren</string>
     <string name="enable_better_lyrics_desc">Verwenden Sie den Anbieter „Better Lyrics“ für Wort-für-Wort synchronisierte Songtexte.</string>
     <string name="auto_scroll">Neu synchronisieren</string>
-    <string name="shuffle_playlist_first">Wiedergabeliste/Album mischen</string>
-    <string name="shuffle_playlist_first_desc">Während des Shuffles werden zuerst alle Songs der ursprünglichen Wiedergabeliste/des ursprünglichen Albums und dann ähnliche Inhalte wiedergegeben.</string>
+    <string name="shuffle_playlist_first">Wiedergabeliste/Album zuerst mischen</string>
+    <string name="shuffle_playlist_first_desc">Gib beim Mischen zuerst alle Songs der ursprünglichen Wiedergabeliste/des ursprünglichen Albums und dann ähnliche Inhalte wieder</string>
     <string name="show_wrapped_card">Wrapped-Tab anzeigen</string>
     <string name="lyrics_romanize_chinese">Chinesische Liedtexte romanisieren</string>
     <string name="google_cast">Google Cast</string>
@@ -283,7 +282,7 @@
     <string name="wrapped_top_5_artists_title">Deine Top-Künstler des Jahres</string>
     <string name="wrapped_artist_listening_time">%d Minuten</string>
     <string name="wrapped_top_5_songs_title">Deine Top-Songs des Jahres</string>
-    <string name="wrapped_total_albums_title">Du hast gehört</string>
+    <string name="wrapped_total_albums_title">Du hast dir angehört</string>
     <string name="wrapped_total_albums_subtitle">einzigartige Alben</string>
     <string name="wrapped_playlist_ready">Deine persönliche Playlist ist fertig.</string>
     <string name="wrapped_top_5_albums_title">Deine Top 5 Alben</string>
@@ -322,4 +321,10 @@
     <string name="copied_artist">Kopierter Künstler</string>
     <string name="error_playing">Fehler beim Abspielen</string>
     <string name="failed_to_parse_proxy">Die Proxy-URL konnte nicht analysiert werden.</string>
+    <string name="wrapped_artist_image_content_description">Künstlerbild</string>
+    <string name="wrapped_top_song_album_art_content_description">Albumcover</string>
+    <string name="wrapped_logo_content_description">Metrolist Logo</string>
+    <string name="wrapped_year">2025</string>
+    <string name="top_result">Top Ergebnis</string>
+    <string name="wrapped_top_artist_image_content_description">Bild des Top-Künstlers</string>
 </resources>

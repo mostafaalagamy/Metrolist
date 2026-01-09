@@ -80,7 +80,6 @@
     <string name="player_background_blur">మసకబార్చు</string>
     <string name="player_buttons_style">వాయించే తెర మీటల రంగులు</string>
     <string name="secondary_color_style">ద్వితీయ</string>
-    <string name="enable_squiggly_slider">మెలికల నియంత్రికను ప్రారంభించు</string>
     <string name="default_style">డిఫాల్ట్</string>
     <string name="seek_seconds_addup_description">సక్రియమైనట్లయితే, ప్రతి సీక్ స్కిప్‌కి 5 అదనపు సెకండ్లను క్రమంగా జోడిస్తుంది</string>
 </resources>

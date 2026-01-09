@@ -82,7 +82,6 @@
     <string name="player_buttons_style">Erreproduzitzaile botoi kolorea</string>
     <string name="default_style">Lehenetsia</string>
     <string name="secondary_color_style">Bigarren mailako</string>
-    <string name="enable_squiggly_slider">Uhin-formako irristagailua gaitu</string>
     <string name="enable_swipe_thumbnail">Irristatu abestia aldatzeko gaitu</string>
     <string name="swipe_song_to_add">Abestia ezkerretara irristatu ilara gehitzeko, edo eskuinera hurrengoan jotzeko</string>
     <string name="lyrics_click_change">Klik egitean letrak aldatu</string>
