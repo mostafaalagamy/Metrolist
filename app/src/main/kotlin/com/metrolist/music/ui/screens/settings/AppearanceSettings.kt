@@ -33,6 +33,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -653,7 +654,9 @@ fun AppearanceSettings(
                         )
                         Text(
                             text = stringResource(R.string.default_),
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Column(
@@ -688,7 +691,9 @@ fun AppearanceSettings(
                         )
                         Text(
                             text = stringResource(R.string.wavy),
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Column(
@@ -736,7 +741,9 @@ fun AppearanceSettings(
 
                         Text(
                             text = stringResource(R.string.slim),
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -754,7 +761,9 @@ fun AppearanceSettings(
                     ) {
                         Text(
                             text = stringResource(R.string.enable_squiggly_slider),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Switch(
                             checked = squigglySlider,
