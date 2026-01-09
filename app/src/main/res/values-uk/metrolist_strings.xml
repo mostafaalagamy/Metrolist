@@ -357,4 +357,5 @@
     <string name="enable_wavy_slider">Увімкнути хвилястий повзунок</string>
     <string name="wavy">Хвилястий</string>
     <string name="enable_squiggly_slider">Увімкнути звивистий повзунок</string>
+    <string name="pause_music_when_media_is_muted">Призупиняти музику, коли медіа вимкнено</string>
 </resources>
