@@ -287,7 +287,6 @@
     <string name="auto_skip_next_on_error">Auto skip to next song when error occurs</string>
     <string name="auto_skip_next_on_error_desc">Ensure your continuous playback experience</string>
     <string name="stop_music_on_task_clear">Stop music on task clear</string>
-    <string name="pause_music_when_media_is_muted">Pause music when media is muted</string>
     <string name="equalizer">Equalizer</string>
 
     <string name="storage">Storage</string>
