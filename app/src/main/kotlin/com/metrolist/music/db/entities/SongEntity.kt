@@ -13,7 +13,6 @@ import androidx.room.PrimaryKey
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -66,7 +65,6 @@ data class SongEntity(
     ).also {
         CoroutineScope(Dispatchers.IO).launch {
             YouTube.likeVideo(id, !liked)
-            this.cancel()
         }
     }
 
