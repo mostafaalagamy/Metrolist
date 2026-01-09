@@ -339,4 +339,8 @@
     <plurals name="band_count">
         <item quantity="other">%d 乐队</item>
     </plurals>
+    <string name="enable_wavy_slider">启用波浪滑块</string>
+    <string name="wavy">波浪</string>
+    <string name="pause_music_when_media_is_muted">在静音时暂停播放</string>
+    <string name="enable_squiggly_slider">启用波浪形滑块</string>
 </resources>
