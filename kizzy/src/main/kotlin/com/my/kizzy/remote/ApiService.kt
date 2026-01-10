@@ -36,17 +36,17 @@ class ApiService {
         install(HttpCache)
     }
 
-    suspend fun getImage(imageUrl: String) = runCatching {
-        logger.info("Requesting image proxy for URL: $imageUrl")
+    suspend fun getImage(urls: List<String>) = runCatching {
+        logger.info("Requesting image proxy for URLs: $urls")
         client.get {
             url("$BASE_URL/image")
-            parameter("url", imageUrl)
+            urls.forEach { parameter("url", it) }
         }
     }.onFailure {
         logger.severe("Image proxy request failed: ${it.stackTraceToString()}")
     }
 
     companion object {
-        const val BASE_URL = "https://kizzy-api.cjjdxhdjd.workers.dev"
+        const val BASE_URL = "https://metrolist-discord-rpc-api.adrieldsilvas-2.workers.dev"
     }
 }
