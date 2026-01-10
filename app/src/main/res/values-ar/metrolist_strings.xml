@@ -368,4 +368,6 @@
     <string name="import_error_title">خطأ في الاستيراد</string>
     <string name="enable_squiggly_slider">تفعيل شريط التمرير المتعرج</string>
     <string name="pause_music_when_media_is_muted">أوقف تشغيل الموسيقى مؤقتًا عند كتم صوت الوسائط</string>
+    <string name="enable_simpmusic">تفعيل كلمات أغاني SimpMusic</string>
+    <string name="enable_simpmusic_desc">استخدم موفر كلمات SimpMusic لمزامنة الكلمات</string>
 </resources>
