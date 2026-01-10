@@ -230,7 +230,7 @@
     <string name="primary_color_style">Warna primer</string>
     <string name="tertiary_color_style">Warna tersier</string>
     <string name="enable_better_lyrics">Aktifkan penyedia lirik Better Lyrics</string>
-    <string name="enable_better_lyrics_desc">Gunakan penyedia Better Lyrics untuk lirik tersinkron kata per kata</string>
+    <string name="enable_better_lyrics_desc">Gunakan penyedia lirik Better Lyrics untuk lirik tersinkron kata per kata</string>
     <string name="auto_scroll">Sinkron Ulang</string>
     <string name="share_desc">Bagikan tautan ke item ini</string>
     <string name="delete_desc">Hapus item ini secara permanen</string>
@@ -343,4 +343,6 @@
     <string name="import_error_title">Kesalahan Impor</string>
     <string name="enable_squiggly_slider">Aktifkan penggeser berkelok</string>
     <string name="pause_music_when_media_is_muted">Jeda musik saat media dibisukan</string>
+    <string name="enable_simpmusic">Aktifkan penyedia lirik SimpMusic</string>
+    <string name="enable_simpmusic_desc">Gunakan penyedia lirik SimpMusic untuk lirik yang disinkronkan</string>
 </resources>
