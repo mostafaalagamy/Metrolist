@@ -15,6 +15,7 @@ package com.my.kizzy.repository
 import com.my.kizzy.remote.ApiService
 import com.my.kizzy.remote.ImageProxyResponse
 import io.ktor.client.call.body
+import io.ktor.http.HttpStatusCode
 
 /**
  * Modified by Zion Huang
@@ -22,7 +23,16 @@ import io.ktor.client.call.body
 class KizzyRepository {
     private val api = ApiService()
 
-    suspend fun getImages(urls: List<String>): ImageProxyResponse? {
-        return api.getImage(urls).getOrNull()?.body()
+    suspend fun getImage(url: String): String? {
+        return try {
+            val response = api.getImage(url).getOrNull()
+            if (response?.status == HttpStatusCode.OK) {
+                response.body<ImageProxyResponse>().id
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

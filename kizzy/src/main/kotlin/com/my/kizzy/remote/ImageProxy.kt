@@ -5,13 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ImageProxyResponse(
-    val results: List<ImageProxyResult>
-)
-
-@Serializable
-data class ImageProxyResult(
-    @SerialName("original_url")
-    val originalUrl: String,
-    val status: String,
+    @SerialName("id")
     val id: String
 )
