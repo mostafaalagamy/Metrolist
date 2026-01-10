@@ -50,7 +50,7 @@
     <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
     <string name="back_button_desc">Retour</string>
-    <string name="no_title">Pas de titre</string>
+    <string name="no_title">Sans titre</string>
     <string name="unknown_artist">Artiste inconnu</string>
     <string name="unknown_item_type">Type d\'élément inconnu</string>
     <string name="loading_charts">Chargement des graphiques…</string>
