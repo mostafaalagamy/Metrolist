@@ -352,4 +352,5 @@
     <string name="error_file_open">Nu s-a putut deschide fișierul: %1$s</string>
     <string name="import_error_title">Eroare la importare</string>
     <string name="enable_squiggly_slider">Activează glisorul șerpuit</string>
+    <string name="pause_music_when_media_is_muted">Întrerupe muzica atunci volumul media este setat la 0</string>
 </resources>
