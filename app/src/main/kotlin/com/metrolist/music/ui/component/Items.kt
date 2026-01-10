@@ -913,6 +913,7 @@ fun MediaMetadataListItem(
             mediaMetadata.artists.joinToString { it.name },
             makeTimeString(mediaMetadata.duration * 1000L)
         ),
+        badges = { if (mediaMetadata.explicit) Icon.Explicit()},
         thumbnailContent = {
             ItemThumbnail(
                 thumbnailUrl = mediaMetadata.thumbnailUrl,
@@ -1643,7 +1644,7 @@ data class Quadruple<A, B, C, D>(
     val fourth: D
 )
 
-private object Icon {
+object Icon {
     @Composable
     fun Favorite() {
         Icon(

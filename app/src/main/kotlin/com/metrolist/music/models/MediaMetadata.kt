@@ -86,6 +86,7 @@ fun Song.toMediaMetadata() =
                 title = song.albumName.orEmpty(),
             )
         },
+        explicit = song.explicit,
         musicVideoType = null,
     )
 
