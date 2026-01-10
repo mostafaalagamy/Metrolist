@@ -47,6 +47,6 @@ class ApiService {
     }
 
     companion object {
-        const val BASE_URL = "https://metrolist-discord-rpc-api.adrieldsilvas-2.workers.dev"
+        const val BASE_URL = "https://kizzy-api.cjjdxhdjd.workers.dev"
     }
 }

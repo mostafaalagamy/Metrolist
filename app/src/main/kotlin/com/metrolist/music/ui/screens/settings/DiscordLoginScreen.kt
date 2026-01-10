@@ -6,6 +6,7 @@
 package com.metrolist.music.ui.screens.settings
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
@@ -32,6 +33,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+private const val JS_SNIPPET =
+    "javascript:(function()%7Bvar%20i%3Ddocument.createElement('iframe')%3Bdocument.body.appendChild(i)%3Balert(i.contentWindow.localStorage.token.slice(1,-1))%7D)()"
+
+private const val MOTOROLA = "motorola"
+private const val SAMSUNG_USER_AGENT =
+    "Mozilla/5.0 (Linux; Android 14; SM-S921U; Build/UP1A.231005.007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36"
+
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,74 +59,28 @@ fun DiscordLoginScreen(navController: NavController) {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
-                WebView.setWebContentsDebuggingEnabled(true)
-
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
-                settings.setSupportZoom(true)
-                settings.builtInZoomControls = true
 
-                CookieManager.getInstance().apply {
-                    removeAllCookies(null)
-                    flush()
+                // Fix for Motorola devices - UA parsing issue breaks Discord login
+                // See: https://github.com/dead8309/Kizzy/issues/345#issuecomment-2699729072
+                if (Build.MANUFACTURER.equals(MOTOROLA, ignoreCase = true)) {
+                    settings.userAgentString = SAMSUNG_USER_AGENT
                 }
 
-                WebStorage.getInstance().deleteAllData()
-
-                addJavascriptInterface(object {
-                    @JavascriptInterface
-                    fun onRetrieveToken(token: String) {
-                        Timber.d("Token: %s", token)
-                        if (token != "null" && token != "error") {
-                            discordToken = token
-                            scope.launch(Dispatchers.Main) {
-                                webView?.loadUrl("about:blank")
-                                navController.navigateUp()
-                            }
-                        }
-                    }
-                }, "Android")
-
                 webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView, url: String) {
-                        if (url.contains("/channels/@me") || url.contains("/app")) {
-                            view.evaluateJavascript(
-                                """
-                                (function() {
-                                    try {
-                                        var token = localStorage.getItem("token");
-                                        if (token) {
-                                            Android.onRetrieveToken(token.slice(1, -1));
-                                        } else {
-                                            // fallback إلى alert (منطق kizzy)
-                                            var i = document.createElement('iframe');
-                                            document.body.appendChild(i);
-                                            setTimeout(function() {
-                                                try {
-                                                    var alt = i.contentWindow.localStorage.token;
-                                                    if (alt) {
-                                                        alert(alt.slice(1, -1));
-                                                    } else {
-                                                        alert("null");
-                                                    }
-                                                } catch (e) {
-                                                    alert("error");
-                                                }
-                                            }, 1000);
-                                        }
-                                    } catch (e) {
-                                        alert("error");
-                                    }
-                                })();
-                                """.trimIndent(), null
-                            )
-                        }
-                    }
-
+                    @Deprecated("Deprecated in Java")
                     override fun shouldOverrideUrlLoading(
                         view: WebView,
-                        request: WebResourceRequest
-                    ): Boolean = false
+                        url: String,
+                    ): Boolean {
+                        if (url.endsWith("/app")) {
+                            view.stopLoading()
+                            view.loadUrl(JS_SNIPPET)
+                            view.visibility = View.GONE
+                        }
+                        return false
+                    }
                 }
 
                 webChromeClient = object : WebChromeClient() {
@@ -128,13 +90,14 @@ fun DiscordLoginScreen(navController: NavController) {
                         message: String,
                         result: JsResult
                     ): Boolean {
-                        if (message != "null" && message != "error") {
+                        Timber.d("Discord Token received")
+                        if (message.isNotBlank() && message != "null" && message != "undefined") {
                             discordToken = message
                             scope.launch(Dispatchers.Main) {
-                                view.loadUrl("about:blank")
                                 navController.navigateUp()
                             }
                         }
+                        view.visibility = View.GONE
                         result.confirm()
                         return true
                     }
