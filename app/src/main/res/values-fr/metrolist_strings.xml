@@ -50,7 +50,7 @@
     <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
     <string name="back_button_desc">Retour</string>
-    <string name="no_title">Pas de titre</string>
+    <string name="no_title">Sans titre</string>
     <string name="unknown_artist">Artiste inconnu</string>
     <string name="unknown_item_type">Type d\'élément inconnu</string>
     <string name="loading_charts">Chargement des graphiques…</string>
@@ -352,4 +352,7 @@
         <item quantity="other">%d bandes</item>
     </plurals>
     <string name="enable_squiggly_slider">Activer le curseur ondulé</string>
+    <string name="pause_music_when_media_is_muted">Mettre la musique en pause lorsque le son est coupé</string>
+    <string name="enable_simpmusic">Activer les paroles de SimpMusic</string>
+    <string name="enable_simpmusic_desc">Utilisez le fournisseur de paroles SimpMusic pour des paroles synchronisées</string>
 </resources>
