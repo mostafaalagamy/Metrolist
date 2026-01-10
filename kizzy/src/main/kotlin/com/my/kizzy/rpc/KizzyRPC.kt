@@ -74,10 +74,19 @@ open class KizzyRPC(token: String) {
             discordWebSocket.connect()
         }
         
-        val images = listOfNotNull(largeImage, smallImage)
-        val externalImages = images.filterIsInstance<RpcImage.ExternalImage>()
-        val imageUrls = externalImages.map { it.image }
-        val resolvedImages = kizzyRepository.getImages(imageUrls)?.results?.associate { it.originalUrl to it.id } ?: emptyMap()
+        // Resolve external images to Discord CDN URLs
+        val resolvedLargeImage = largeImage?.let { 
+            when (it) {
+                is RpcImage.DiscordImage -> "mp:${it.image}"
+                is RpcImage.ExternalImage -> kizzyRepository.getImage(it.image)
+            }
+        }
+        val resolvedSmallImage = smallImage?.let { 
+            when (it) {
+                is RpcImage.DiscordImage -> "mp:${it.image}"
+                is RpcImage.ExternalImage -> kizzyRepository.getImage(it.image)
+            }
+        }
 
         val presence = Presence(
             activities = listOf(
@@ -91,18 +100,8 @@ open class KizzyRPC(token: String) {
                     statusDisplayType = statusDisplayType.value,
                     timestamps = Timestamps(startTime, endTime),
                     assets = Assets(
-                        largeImage = largeImage?.let { 
-                            when (it) {
-                                is RpcImage.DiscordImage -> "mp:${it.image}"
-                                is RpcImage.ExternalImage -> resolvedImages[it.image]
-                            }
-                        },
-                        smallImage = smallImage?.let { 
-                            when (it) {
-                                is RpcImage.DiscordImage -> "mp:${it.image}"
-                                is RpcImage.ExternalImage -> resolvedImages[it.image]
-                            }
-                        },
+                        largeImage = resolvedLargeImage,
+                        smallImage = resolvedSmallImage,
                         largeText = largeText,
                         smallText = smallText
                     ),
