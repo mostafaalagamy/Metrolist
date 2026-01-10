@@ -111,12 +111,19 @@ fun DiscordSettings(
     LaunchedEffect(discordToken) {
         val token = discordToken
         if (token.isEmpty()) {
+            discordUsername = ""
+            discordName = ""
             return@LaunchedEffect
         }
-        coroutineScope.launch(Dispatchers.IO) {
+        // Fetch user info when token changes
+        launch(Dispatchers.IO) {
             KizzyRPC.getUserInfo(token).onSuccess {
                 discordUsername = it.username
                 discordName = it.name
+            }.onFailure {
+                // Clear user info on failure
+                discordUsername = ""
+                discordName = ""
             }
         }
     }

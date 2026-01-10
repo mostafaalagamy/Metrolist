@@ -26,5 +26,7 @@ data class LyricsData(
 data class SimpMusicApiResponse(
     val type: String? = null,
     val data: List<LyricsData> = emptyList(),
-    val success: Boolean = false,
-)
+) {
+    val success: Boolean
+        get() = type == "success"
+}
