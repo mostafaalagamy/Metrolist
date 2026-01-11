@@ -345,4 +345,15 @@
     <string name="pause_music_when_media_is_muted">Jeda musik saat media dibisukan</string>
     <string name="enable_simpmusic">Aktifkan penyedia lirik SimpMusic</string>
     <string name="enable_simpmusic_desc">Gunakan penyedia lirik SimpMusic untuk lirik yang disinkronkan</string>
+    <string name="album_art">Sampul album</string>
+    <string name="no_song_playing">Tidak ada lagu yang sedang diputar</string>
+    <string name="tap_to_open">Ketuk untuk membuka Metrolist</string>
+    <string name="previous">Sebelumnya</string>
+    <string name="play_pause">Putar/Jeda</string>
+    <string name="next">Selanjutnya</string>
+    <string name="like">Suka</string>
+    <string name="widget_description">Widget pemutar musik dengan kontrol pemutaran</string>
+    <string name="turntable_widget_description">Akses cepat ke trek yang terakhir Anda putar</string>
+    <string name="system_equalizer">Ekualiser Sistem</string>
+    <string name="queue_widget_description">Pemutar musik dengan pratinjau antrean</string>
 </resources>
