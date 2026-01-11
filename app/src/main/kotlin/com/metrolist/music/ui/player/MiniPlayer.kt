@@ -143,11 +143,7 @@ fun MiniPlayer(
         Box(modifier = modifier.fillMaxWidth()) {
             LegacyMiniPlayer(
                 progressState = progressState,
-                modifier = if (isTabletLandscape) {
-                    Modifier.align(Alignment.CenterEnd)
-                } else {
-                    Modifier.align(Alignment.Center)
-                }
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
@@ -282,7 +278,7 @@ private fun NewMiniPlayer(
     ) {
         Box(
             modifier = Modifier
-                .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.CenterEnd) else Modifier.fillMaxWidth())
+                .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.Center) else Modifier.fillMaxWidth())
                 .height(64.dp)
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
