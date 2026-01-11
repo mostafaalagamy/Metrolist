@@ -95,12 +95,11 @@ class MusicWidget : GlanceAppWidget() {
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Album Art - Left side
+                // Album Art - Left side (Square 1:1)
                 Box(
                     modifier = GlanceModifier
-                        .fillMaxHeight()
-                        .width(100.dp)
-                        .cornerRadius(20.dp)
+                        .size(88.dp)
+                        .cornerRadius(16.dp)
                         .background(GlanceTheme.colors.secondaryContainer)
                         .clickable(actionStartActivity<MainActivity>()),
                     contentAlignment = Alignment.Center
@@ -109,14 +108,14 @@ class MusicWidget : GlanceAppWidget() {
                         Image(
                             provider = BitmapImageProvider(albumArtBitmap),
                             contentDescription = context.getString(R.string.album_art),
-                            modifier = GlanceModifier.fillMaxSize().cornerRadius(20.dp),
+                            modifier = GlanceModifier.size(88.dp).cornerRadius(16.dp),
                             contentScale = ContentScale.Crop
                         )
                     } else {
                         Image(
                             provider = ImageProvider(R.mipmap.ic_launcher),
                             contentDescription = context.getString(R.string.album_art),
-                            modifier = GlanceModifier.size(64.dp).cornerRadius(16.dp),
+                            modifier = GlanceModifier.size(56.dp).cornerRadius(12.dp),
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -141,11 +140,9 @@ class MusicWidget : GlanceAppWidget() {
                         Image(
                             provider = ImageProvider(R.mipmap.ic_launcher),
                             contentDescription = context.getString(R.string.app_name),
-                            modifier = GlanceModifier.size(24.dp).cornerRadius(6.dp)
+                            modifier = GlanceModifier.size(20.dp).cornerRadius(5.dp)
                         )
                     }
-
-                    Spacer(modifier = GlanceModifier.height(4.dp))
 
                     // Song Title
                     Text(
@@ -172,7 +169,7 @@ class MusicWidget : GlanceAppWidget() {
                         modifier = GlanceModifier.clickable(actionStartActivity<MainActivity>())
                     )
 
-                    Spacer(modifier = GlanceModifier.defaultWeight())
+                    Spacer(modifier = GlanceModifier.height(8.dp))
 
                     // Control Buttons - aligned to start (left)
                     Row(
