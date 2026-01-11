@@ -428,6 +428,9 @@ object YouTube {
         val header = base?.musicResponsiveHeaderRenderer ?: base?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
 
         val editable = base?.musicEditablePlaylistDetailHeaderRenderer != null
+        
+        val musicPlaylistShelfRenderer = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+            ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer
 
         PlaylistPage(
             playlist = PlaylistItem(
@@ -448,12 +451,11 @@ object YouTube {
                 }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
                 isEditable = editable
             ),
-            songs = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getItems()?.mapNotNull {
+            songs = musicPlaylistShelfRenderer?.contents?.getItems()?.mapNotNull {
                     PlaylistPage.fromMusicResponsiveListItemRenderer(it)
                 } ?: emptyList(),
-            songsContinuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation(),
+            songsContinuation = musicPlaylistShelfRenderer?.continuations?.getContinuation()
+                ?: musicPlaylistShelfRenderer?.contents?.getContinuation(),
             continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
                 ?.continuations?.getContinuation()
         )
@@ -611,7 +613,7 @@ object YouTube {
 
         val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs
 
-        val contents = if (tabs != null && tabs.size >= tabIndex) {
+        val contents = if (tabs != null && tabs.size > tabIndex) {
             tabs[tabIndex].tabRenderer.content?.sectionListRenderer?.contents?.firstOrNull()
         }
         else {
@@ -628,12 +630,20 @@ object YouTube {
                 )
             }
 
-            else -> { // contents?.musicShelfRenderer != null
+            contents?.musicShelfRenderer != null -> {
                 LibraryPage(
-                    items = contents?.musicShelfRenderer?.contents!!
-                        .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
-                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    items = contents.musicShelfRenderer.contents
+                        ?.mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        ?.mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) }
+                        ?: emptyList(),
                     continuation = contents.musicShelfRenderer.continuations?.getContinuation()
+                )
+            }
+
+            else -> {
+                LibraryPage(
+                    items = emptyList(),
+                    continuation = null
                 )
             }
         }
@@ -658,12 +668,20 @@ object YouTube {
                 )
             }
 
-            else -> { // contents?.musicShelfContinuation != null
+            contents?.musicShelfContinuation != null -> {
                 LibraryContinuationPage(
-                    items = contents?.musicShelfContinuation?.contents!!
-                        .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
-                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    items = contents.musicShelfContinuation.contents
+                        ?.mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        ?.mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) }
+                        ?: emptyList(),
                     continuation = contents.musicShelfContinuation.continuations?.getContinuation()
+                )
+            }
+
+            else -> {
+                LibraryContinuationPage(
+                    items = emptyList(),
+                    continuation = null
                 )
             }
         }
