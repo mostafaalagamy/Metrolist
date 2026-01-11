@@ -1,92 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1C1C1C"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/img_album_art"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="Album Art" />
+    android:padding="4dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:orientation="vertical"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
+        android:background="@drawable/widget_background"
+        android:orientation="horizontal"
+        android:clipToOutline="true"
+        android:clipChildren="true">
 
-        <TextView
-            android:id="@+id/txt_song_title"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <!-- Album Art with rounded corners -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical|start"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="15dp"
-            android:text="No Song Playing"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_margin="8dp">
 
+            <ImageView
+                android:id="@+id/img_album_art"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                android:background="@drawable/widget_album_art_background"
+                android:clipToOutline="true"
+                android:contentDescription="@string/album_art" />
+        </FrameLayout>
+
+        <!-- Content area -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|start"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center_vertical">
 
-            <ImageButton
-                android:id="@+id/btn_prev"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_skip_previous"
-                android:scaleType="fitCenter"
-                android:padding="4dp"
-                android:tint="#FFFFFF" />
+            <!-- Song info - clickable to open app -->
+            <LinearLayout
+                android:id="@+id/widget_song_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/widget_ripple_background">
 
-            <ImageButton
-                android:id="@+id/btn_play"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_play"
-                android:scaleType="fitCenter"
-                android:padding="4dp"
-                android:tint="#FFFFFF" />
+                <TextView
+                    android:id="@+id/txt_song_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="@string/no_song_playing"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
 
-            <ImageButton
-                android:id="@+id/btn_next"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_skip_next"
-                android:scaleType="fitCenter"
-                android:padding="4dp"
-                android:tint="#FFFFFF" />
+                <TextView
+                    android:id="@+id/txt_artist_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/tap_to_open"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/btn_like"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_heart"
-                android:scaleType="fitCenter"
-                android:padding="4dp"
-                android:tint="#FFFFFF" />
+            <!-- Control buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
+                <ImageButton
+                    android:id="@+id/btn_prev"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/widget_button_ripple"
+                    android:src="@drawable/ic_skip_previous"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:contentDescription="@string/previous" />
+
+                <ImageButton
+                    android:id="@+id/btn_play"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/widget_play_button_background"
+                    android:src="@drawable/ic_play"
+                    android:scaleType="centerInside"
+                    android:padding="10dp"
+                    android:contentDescription="@string/play_pause" />
+
+                <ImageButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/widget_button_ripple"
+                    android:src="@drawable/ic_skip_next"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:contentDescription="@string/next" />
+
+                <ImageButton
+                    android:id="@+id/btn_like"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/widget_button_ripple"
+                    android:src="@drawable/ic_heart_outline"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:contentDescription="@string/like" />
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

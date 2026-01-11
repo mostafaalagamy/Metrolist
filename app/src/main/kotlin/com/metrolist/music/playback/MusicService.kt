@@ -1986,14 +1986,22 @@ class MusicService :
             if (ids.isEmpty()) return
 
             scope.launch(Dispatchers.IO) {
-                val song = currentSong.value?.song
-                val songTitle = song?.title ?: "No Song Playing"
+                val songData = currentSong.value
+                val song = songData?.song
+                val songTitle = song?.title ?: getString(R.string.no_song_playing)
+                val artistName = song?.artists?.joinToString(", ") { it.name } ?: getString(R.string.tap_to_open)
+                val isLiked = songData?.song?.liked == true
 
                 val views = RemoteViews(packageName, R.layout.widget_hello)
                 views.setTextViewText(R.id.txt_song_title, songTitle)
+                views.setTextViewText(R.id.txt_artist_name, artistName)
 
                 val playIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
                 views.setImageViewResource(R.id.btn_play, playIcon)
+
+                // Update like button icon based on liked state
+                val likeIcon = if (isLiked) R.drawable.ic_heart else R.drawable.ic_heart_outline
+                views.setImageViewResource(R.id.btn_like, likeIcon)
 
                 // --- COIL 3 IMAGE LOADING (SAFE MODE) ---
                 if (song?.thumbnailUrl != null) {
@@ -2019,40 +2027,52 @@ class MusicService :
                         e.printStackTrace()
                     }
                 } else {
-                    views.setImageViewResource(R.id.img_album_art, android.R.drawable.ic_menu_gallery)
+                    views.setImageViewResource(R.id.img_album_art, R.mipmap.ic_launcher)
                 }
 
                 // --- FIXED: Renamed 'flags' to 'piFlags' to avoid conflict ---
                 val piFlags = if (android.os.Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
 
-                fun getPending(action: String): PendingIntent {
+                fun getPending(action: String, requestCode: Int): PendingIntent {
                     val i = Intent(context, MusicService::class.java).apply { this.action = action }
                     return if (android.os.Build.VERSION.SDK_INT >= 26) {
-                        PendingIntent.getForegroundService(context, 0, i, piFlags)
+                        PendingIntent.getForegroundService(context, requestCode, i, piFlags)
                     } else {
-                        PendingIntent.getService(context, 0, i, piFlags)
+                        PendingIntent.getService(context, requestCode, i, piFlags)
                     }
                 }
 
-                views.setOnClickPendingIntent(R.id.btn_prev, getPending(HelloWidget.ACTION_PREV))
-                views.setOnClickPendingIntent(R.id.btn_play, getPending(HelloWidget.ACTION_PLAY_PAUSE))
-                views.setOnClickPendingIntent(R.id.btn_next, getPending(HelloWidget.ACTION_NEXT))
-                views.setOnClickPendingIntent(R.id.btn_like, getPending(HelloWidget.ACTION_LIKE))
+                views.setOnClickPendingIntent(R.id.btn_prev, getPending(HelloWidget.ACTION_PREV, 1))
+                views.setOnClickPendingIntent(R.id.btn_play, getPending(HelloWidget.ACTION_PLAY_PAUSE, 2))
+                views.setOnClickPendingIntent(R.id.btn_next, getPending(HelloWidget.ACTION_NEXT, 3))
+                views.setOnClickPendingIntent(R.id.btn_like, getPending(HelloWidget.ACTION_LIKE, 4))
 
-                // --- APP OPEN LOGIC ---
+                // --- APP OPEN LOGIC with proper launch animation ---
                 val openAppIntent = Intent(context, MainActivity::class.java).apply {
-                    // Now this works because 'flags' refers to the Intent, not the variable above
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    action = Intent.ACTION_MAIN
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                }
+
+                val openAppOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    android.app.ActivityOptions.makeBasic().apply {
+                        pendingIntentCreatorBackgroundActivityStartMode =
+                            android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    }.toBundle()
+                } else {
+                    null
                 }
 
                 val openAppPendingIntent = PendingIntent.getActivity(
                     context,
                     0,
                     openAppIntent,
-                    piFlags // Use the renamed variable here
+                    piFlags,
+                    openAppOptions
                 )
 
                 views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
+                views.setOnClickPendingIntent(R.id.widget_song_info, openAppPendingIntent)
 
                 appWidgetManager.updateAppWidget(ids, views)
             }
