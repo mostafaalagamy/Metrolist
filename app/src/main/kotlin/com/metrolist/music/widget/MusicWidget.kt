@@ -123,38 +123,42 @@ class MusicWidget : GlanceAppWidget() {
 
                 Spacer(modifier = GlanceModifier.width(12.dp))
 
-                // Content Column - Song info and controls
+                // Content Column - Song info and controls (centered vertically)
                 Column(
                     modifier = GlanceModifier
-                        .fillMaxHeight()
                         .defaultWeight(),
-                    verticalAlignment = Alignment.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    // Top row with app logo
+                    // Song Title row with app logo on the right
                     Row(
                         modifier = GlanceModifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.End,
-                        verticalAlignment = Alignment.Top
+                        horizontalAlignment = Alignment.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // Song Title
+                        Text(
+                            text = title,
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurfaceVariant,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            maxLines = 1,
+                            modifier = GlanceModifier
+                                .defaultWeight()
+                                .clickable(actionStartActivity<MainActivity>())
+                        )
+                        
+                        Spacer(modifier = GlanceModifier.width(8.dp))
+                        
+                        // App logo aligned with song info
                         Image(
                             provider = ImageProvider(R.mipmap.ic_launcher),
                             contentDescription = context.getString(R.string.app_name),
                             modifier = GlanceModifier.size(20.dp).cornerRadius(5.dp)
                         )
                     }
-
-                    // Song Title
-                    Text(
-                        text = title,
-                        style = TextStyle(
-                            color = GlanceTheme.colors.onSurfaceVariant,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        maxLines = 1,
-                        modifier = GlanceModifier.clickable(actionStartActivity<MainActivity>())
-                    )
 
                     Spacer(modifier = GlanceModifier.height(2.dp))
 
@@ -169,7 +173,7 @@ class MusicWidget : GlanceAppWidget() {
                         modifier = GlanceModifier.clickable(actionStartActivity<MainActivity>())
                     )
 
-                    Spacer(modifier = GlanceModifier.height(8.dp))
+                    Spacer(modifier = GlanceModifier.height(10.dp))
 
                     // Control Buttons - aligned to start (left)
                     Row(
@@ -219,13 +223,13 @@ class MusicWidget : GlanceAppWidget() {
 
                         Spacer(modifier = GlanceModifier.width(4.dp))
 
-                        // Like Button
+                        // Like Button (smaller size)
                         ControlButton(
                             context = context,
                             iconRes = if (isLiked) R.drawable.ic_widget_heart else R.drawable.ic_widget_heart_outline,
                             contentDescription = context.getString(R.string.like),
                             action = MusicWidgetActions.ACTION_LIKE,
-                            size = 36
+                            size = 32
                         )
                     }
                 }
