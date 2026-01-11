@@ -370,4 +370,5 @@
     <string name="widget_description">Виджет музыкального плеера с элементами управления воспроизведением</string>
     <string name="turntable_widget_description">Быстрый доступ к последнему воспроизведённому треку</string>
     <string name="queue_widget_description">Музыкальный плеер с предпросмотром очереди</string>
+    <string name="system_equalizer">Системный эквалайзер</string>
 </resources>
