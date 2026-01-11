@@ -201,16 +201,32 @@
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
+        <!-- Music Widget -->
         <receiver
-            android:name=".widget.HelloWidget"
-            android:exported="true">
+            android:name=".widget.MusicWidgetReceiver"
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+                android:resource="@xml/music_widget_info" />
+        </receiver>
+
+        <!-- Turntable Widget (2x2) -->
+        <receiver
+            android:name=".widget.TurntableWidgetReceiver"
+            android:exported="true"
+            android:label="Turntable">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/turntable_widget_info" />
         </receiver>
 
         <!-- Google Cast Options Provider -->
