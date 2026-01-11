@@ -104,14 +104,17 @@ class InnerTube {
                         maxSize = 50L * 1024L * 1024L // 50 MB
                     )
                 )
-            }
-            
-            proxy?.let { proxy = this@InnerTube.proxy }
-            proxyAuth?.let {
-                config {
+                
+                // Apply proxy configuration
+                this@InnerTube.proxy?.let { proxyConfig ->
+                    proxy(proxyConfig)
+                }
+                
+                // Apply proxy authentication
+                this@InnerTube.proxyAuth?.let { auth ->
                     proxyAuthenticator { _, response ->
                         response.request.newBuilder()
-                            .header("Proxy-Authorization", proxyAuth!!)
+                            .header("Proxy-Authorization", auth)
                             .build()
                     }
                 }
