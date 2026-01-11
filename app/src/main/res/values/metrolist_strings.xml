@@ -379,6 +379,7 @@
     <string name="equalizer_header">Equalizer</string>
     <string name="no_profiles">No equalizer profiles</string>
     <string name="import_profile">Import Profile</string>
+    <string name="system_equalizer">System Equalizer</string>
     <string name="eq_disabled">Disabled</string>
     <plurals name="band_count">
         <item quantity="one">%d band</item>
