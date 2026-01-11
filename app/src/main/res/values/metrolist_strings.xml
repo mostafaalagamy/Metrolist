@@ -391,6 +391,9 @@
     <string name="error_file_read">Could not read file</string>
     <string name="error_file_open">Failed to open file: %1$s</string>
     <string name="import_error_title">Import Error</string>
+    <string name="system_equalizer">System Equalizer</string>
+    <string name="system_equalizer_desc">Open device\'s built-in equalizer</string>
+    <string name="system_equalizer_not_available">System equalizer is not available on this device</string>
 
     <!-- Hardcoded strings -->
     <string name="casting_to">Casting to %s</string>

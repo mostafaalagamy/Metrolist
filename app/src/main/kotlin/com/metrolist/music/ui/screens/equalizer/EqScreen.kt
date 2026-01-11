@@ -1,8 +1,11 @@
 package com.metrolist.music.ui.screens.equalizer
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.media.audiofx.AudioEffect
 import android.media.session.PlaybackState
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -23,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.eq.data.SavedEQProfile
 import timber.log.Timber
 
@@ -37,6 +41,7 @@ fun EqScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val playerConnection = LocalPlayerConnection.current
 
     var showError by remember { mutableStateOf<String?>(null) }
 
@@ -83,6 +88,34 @@ fun EqScreen(
         }
     }
 
+    // Function to open system equalizer
+    val openSystemEqualizer: () -> Unit = {
+        try {
+            val audioSessionId = playerConnection?.player?.audioSessionId ?: 0
+            val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            }
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+            } else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.system_equalizer_not_available),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to open system equalizer")
+            Toast.makeText(
+                context,
+                context.getString(R.string.system_equalizer_not_available),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     EqScreenContent(
         profiles = state.profiles,
         activeProfileId = state.activeProfileId,
@@ -91,7 +124,8 @@ fun EqScreen(
             // Launch file picker for .txt files
             filePickerLauncher.launch("text/plain")
         },
-        onDeleteProfile = { viewModel.deleteProfile(it) }
+        onDeleteProfile = { viewModel.deleteProfile(it) },
+        onOpenSystemEqualizer = openSystemEqualizer
     )
 
     // Error dialog
@@ -120,7 +154,8 @@ private fun EqScreenContent(
     activeProfileId: String?,
     onProfileSelected: (String?) -> Unit,
     onImportCustomEQ: () -> Unit,
-    onDeleteProfile: (String) -> Unit
+    onDeleteProfile: (String) -> Unit,
+    onOpenSystemEqualizer: () -> Unit
 ) {
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
@@ -129,7 +164,7 @@ private fun EqScreenContent(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .heightIn(max = 600.dp)
-            .padding(vertical = 24.dp) // Optional extra padding if desired, but dialog handles it.
+            .padding(vertical = 24.dp)
     ) {
         Column {
             // Header
@@ -155,11 +190,19 @@ private fun EqScreenContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onImportCustomEQ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.import_profile)
-                    )
+                Row {
+                    IconButton(onClick = onOpenSystemEqualizer) {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = stringResource(R.string.system_equalizer)
+                        )
+                    }
+                    IconButton(onClick = onImportCustomEQ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.import_profile)
+                        )
+                    }
                 }
             }
 
@@ -215,8 +258,21 @@ private fun EqScreenContent(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Button(onClick = onImportCustomEQ) {
-                                    Text(stringResource(R.string.import_profile))
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    OutlinedButton(onClick = onOpenSystemEqualizer) {
+                                        Icon(
+                                            imageVector = Icons.Default.Tune,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(stringResource(R.string.system_equalizer))
+                                    }
+                                    Button(onClick = onImportCustomEQ) {
+                                        Text(stringResource(R.string.import_profile))
+                                    }
                                 }
                             }
                         }
