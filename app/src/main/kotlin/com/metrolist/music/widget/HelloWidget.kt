@@ -23,10 +23,11 @@ import com.metrolist.music.playback.MusicService
 class HelloWidget : AppWidgetProvider() {
 
     companion object {
-        const val ACTION_PLAY_PAUSE = "com.metrolist.music.ACTION_PLAY"
-        const val ACTION_NEXT = "com.metrolist.music.ACTION_NEXT"
-        const val ACTION_PREV = "com.metrolist.music.ACTION_PREV"
-        const val ACTION_LIKE = "com.metrolist.music.ACTION_LIKE"
+        // Use shared actions from MusicWidgetActions
+        const val ACTION_PLAY_PAUSE = MusicWidgetActions.ACTION_PLAY_PAUSE
+        const val ACTION_NEXT = MusicWidgetActions.ACTION_NEXT
+        const val ACTION_PREV = MusicWidgetActions.ACTION_PREV
+        const val ACTION_LIKE = MusicWidgetActions.ACTION_LIKE
         const val ACTION_OPEN_APP = "com.metrolist.music.ACTION_OPEN_APP"
 
         const val EXTRA_SONG_TITLE = "song_title"

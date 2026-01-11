@@ -14,6 +14,8 @@ import coil3.request.SuccessResult
 import coil3.toBitmap
 import kotlinx.coroutines.launch
 import com.metrolist.music.widget.HelloWidget
+import com.metrolist.music.widget.MusicWidget
+import com.metrolist.music.widget.MusicWidgetActions
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -1953,21 +1955,21 @@ class MusicService :
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Intercept Widget Commands
+        // Intercept Widget Commands (both legacy and Glance widgets use same actions)
         when (intent?.action) {
-            HelloWidget.ACTION_PLAY_PAUSE -> {
+            MusicWidgetActions.ACTION_PLAY_PAUSE -> {
                 if (player.isPlaying) player.pause() else player.play()
                 updateWidgetUI(player.isPlaying) // Instant UI update
             }
-            HelloWidget.ACTION_NEXT -> {
+            MusicWidgetActions.ACTION_NEXT -> {
                 player.seekToNext()
                 updateWidgetUI(player.isPlaying)
             }
-            HelloWidget.ACTION_PREV -> {
+            MusicWidgetActions.ACTION_PREV -> {
                 player.seekToPrevious()
                 updateWidgetUI(player.isPlaying)
             }
-            HelloWidget.ACTION_LIKE -> {
+            MusicWidgetActions.ACTION_LIKE -> {
                 toggleLike()
                 updateWidgetUI(player.isPlaying)
             }
@@ -1983,7 +1985,6 @@ class MusicService :
             val context = this
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, HelloWidget::class.java))
-            if (ids.isEmpty()) return
 
             scope.launch(Dispatchers.IO) {
                 val songData = currentSong.value
@@ -1992,89 +1993,106 @@ class MusicService :
                 val artistName = song?.artists?.joinToString(", ") { it.name } ?: getString(R.string.tap_to_open)
                 val isLiked = songData?.song?.liked == true
 
-                val views = RemoteViews(packageName, R.layout.widget_hello)
-                views.setTextViewText(R.id.txt_song_title, songTitle)
-                views.setTextViewText(R.id.txt_artist_name, artistName)
+                // Update Glance Widget (Material 3 Expressive)
+                try {
+                    MusicWidget.updateWidget(
+                        context = context,
+                        title = songTitle,
+                        artist = artistName,
+                        isPlaying = isPlaying,
+                        albumArtUrl = song?.thumbnailUrl,
+                        isLiked = isLiked
+                    )
+                } catch (e: Exception) {
+                    // Glance widget may not be added
+                }
 
-                val playIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
-                views.setImageViewResource(R.id.btn_play, playIcon)
+                // Update legacy RemoteViews widget
+                if (ids.isNotEmpty()) {
+                    val views = RemoteViews(packageName, R.layout.widget_hello)
+                    views.setTextViewText(R.id.txt_song_title, songTitle)
+                    views.setTextViewText(R.id.txt_artist_name, artistName)
 
-                // Update like button icon based on liked state
-                val likeIcon = if (isLiked) R.drawable.ic_heart else R.drawable.ic_heart_outline
-                views.setImageViewResource(R.id.btn_like, likeIcon)
+                    val playIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
+                    views.setImageViewResource(R.id.btn_play, playIcon)
 
-                // --- COIL 3 IMAGE LOADING (SAFE MODE) ---
-                if (song?.thumbnailUrl != null) {
-                    try {
-                        val loader = ImageLoader(context)
-                        val request = ImageRequest.Builder(context)
-                            .data(song.thumbnailUrl)
-                            .size(300, 300)
-                            .build()
+                    // Update like button icon based on liked state
+                    val likeIcon = if (isLiked) R.drawable.ic_heart else R.drawable.ic_heart_outline
+                    views.setImageViewResource(R.id.btn_like, likeIcon)
 
-                        val result = loader.execute(request)
+                    // --- COIL 3 IMAGE LOADING (SAFE MODE) ---
+                    if (song?.thumbnailUrl != null) {
+                        try {
+                            val loader = ImageLoader(context)
+                            val request = ImageRequest.Builder(context)
+                                .data(song.thumbnailUrl)
+                                .size(300, 300)
+                                .build()
 
-                        if (result is SuccessResult) {
-                            val originalBitmap = result.image.toBitmap()
-                            val safeBitmap = if (originalBitmap.config == Bitmap.Config.HARDWARE) {
-                                originalBitmap.copy(Bitmap.Config.ARGB_8888, false)
-                            } else {
-                                originalBitmap
+                            val result = loader.execute(request)
+
+                            if (result is SuccessResult) {
+                                val originalBitmap = result.image.toBitmap()
+                                val safeBitmap = if (originalBitmap.config == Bitmap.Config.HARDWARE) {
+                                    originalBitmap.copy(Bitmap.Config.ARGB_8888, false)
+                                } else {
+                                    originalBitmap
+                                }
+                                views.setImageViewBitmap(R.id.img_album_art, safeBitmap)
                             }
-                            views.setImageViewBitmap(R.id.img_album_art, safeBitmap)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    views.setImageViewResource(R.id.img_album_art, R.mipmap.ic_launcher)
-                }
-
-                // --- FIXED: Renamed 'flags' to 'piFlags' to avoid conflict ---
-                val piFlags = if (android.os.Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-
-                fun getPending(action: String, requestCode: Int): PendingIntent {
-                    val i = Intent(context, MusicService::class.java).apply { this.action = action }
-                    return if (android.os.Build.VERSION.SDK_INT >= 26) {
-                        PendingIntent.getForegroundService(context, requestCode, i, piFlags)
                     } else {
-                        PendingIntent.getService(context, requestCode, i, piFlags)
+                        views.setImageViewResource(R.id.img_album_art, R.mipmap.ic_launcher)
                     }
+
+                    // --- FIXED: Renamed 'flags' to 'piFlags' to avoid conflict ---
+                    val piFlags = if (android.os.Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+
+                    fun getPending(action: String, requestCode: Int): PendingIntent {
+                        val i = Intent(context, MusicService::class.java).apply { this.action = action }
+                        return if (android.os.Build.VERSION.SDK_INT >= 26) {
+                            PendingIntent.getForegroundService(context, requestCode, i, piFlags)
+                        } else {
+                            PendingIntent.getService(context, requestCode, i, piFlags)
+                        }
+                    }
+
+                    views.setOnClickPendingIntent(R.id.btn_prev, getPending(MusicWidgetActions.ACTION_PREV, 1))
+                    views.setOnClickPendingIntent(R.id.btn_play, getPending(MusicWidgetActions.ACTION_PLAY_PAUSE, 2))
+                    views.setOnClickPendingIntent(R.id.btn_next, getPending(MusicWidgetActions.ACTION_NEXT, 3))
+                    views.setOnClickPendingIntent(R.id.btn_like, getPending(MusicWidgetActions.ACTION_LIKE, 4))
+
+                    // --- APP OPEN LOGIC with proper launch animation ---
+                    val openAppIntent = Intent(context, MainActivity::class.java).apply {
+                        action = Intent.ACTION_MAIN
+                        addCategory(Intent.CATEGORY_LAUNCHER)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                    }
+
+                    val openAppOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        android.app.ActivityOptions.makeBasic().apply {
+                            pendingIntentCreatorBackgroundActivityStartMode =
+                                android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                        }.toBundle()
+                    } else {
+                        null
+                    }
+
+                    val openAppPendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        openAppIntent,
+                        piFlags,
+                        openAppOptions
+                    )
+
+                    views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
+                    views.setOnClickPendingIntent(R.id.widget_song_info, openAppPendingIntent)
+
+                    appWidgetManager.updateAppWidget(ids, views)
                 }
-
-                views.setOnClickPendingIntent(R.id.btn_prev, getPending(HelloWidget.ACTION_PREV, 1))
-                views.setOnClickPendingIntent(R.id.btn_play, getPending(HelloWidget.ACTION_PLAY_PAUSE, 2))
-                views.setOnClickPendingIntent(R.id.btn_next, getPending(HelloWidget.ACTION_NEXT, 3))
-                views.setOnClickPendingIntent(R.id.btn_like, getPending(HelloWidget.ACTION_LIKE, 4))
-
-                // --- APP OPEN LOGIC with proper launch animation ---
-                val openAppIntent = Intent(context, MainActivity::class.java).apply {
-                    action = Intent.ACTION_MAIN
-                    addCategory(Intent.CATEGORY_LAUNCHER)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                }
-
-                val openAppOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    android.app.ActivityOptions.makeBasic().apply {
-                        pendingIntentCreatorBackgroundActivityStartMode =
-                            android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                    }.toBundle()
-                } else {
-                    null
-                }
-
-                val openAppPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    openAppIntent,
-                    piFlags,
-                    openAppOptions
-                )
-
-                views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
-                views.setOnClickPendingIntent(R.id.widget_song_info, openAppPendingIntent)
-
-                appWidgetManager.updateAppWidget(ids, views)
             }
         } catch (e: Exception) {
             // Fail silently on Wear OS or other platforms without widget support

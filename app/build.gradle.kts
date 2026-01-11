@@ -238,6 +238,11 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
+    // Glance for Material 3 Expressive Widgets
+    implementation(libs.glance)
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+
     implementation(libs.apache.lang3)
 
     implementation(libs.hilt)
