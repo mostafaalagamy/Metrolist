@@ -1,6 +1,8 @@
 package com.metrolist.music.ui.screens.equalizer
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.media.audiofx.AudioEffect
 import android.media.session.PlaybackState
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,8 +18,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,8 +41,14 @@ fun EqScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val playerConnection = LocalPlayerConnection.current
 
     var showError by remember { mutableStateOf<String?>(null) }
+
+    // Activity result launcher for system equalizer
+    val activityResultLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { }
 
     // File picker for custom EQ import
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -91,6 +101,27 @@ fun EqScreen(
             // Launch file picker for .txt files
             filePickerLauncher.launch("text/plain")
         },
+        onOpenSystemEqualizer = {
+            playerConnection?.let { connection ->
+                val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                    putExtra(
+                        AudioEffect.EXTRA_AUDIO_SESSION,
+                        connection.player.audioSessionId
+                    )
+                    putExtra(
+                        AudioEffect.EXTRA_PACKAGE_NAME,
+                        context.packageName
+                    )
+                    putExtra(
+                        AudioEffect.EXTRA_CONTENT_TYPE,
+                        AudioEffect.CONTENT_TYPE_MUSIC
+                    )
+                }
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    activityResultLauncher.launch(intent)
+                }
+            }
+        },
         onDeleteProfile = { viewModel.deleteProfile(it) }
     )
 
@@ -120,6 +151,7 @@ private fun EqScreenContent(
     activeProfileId: String?,
     onProfileSelected: (String?) -> Unit,
     onImportCustomEQ: () -> Unit,
+    onOpenSystemEqualizer: () -> Unit,
     onDeleteProfile: (String) -> Unit
 ) {
     Surface(
@@ -155,11 +187,19 @@ private fun EqScreenContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onImportCustomEQ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.import_profile)
-                    )
+                Row {
+                    IconButton(onClick = onImportCustomEQ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.import_profile)
+                        )
+                    }
+                    IconButton(onClick = onOpenSystemEqualizer) {
+                        Icon(
+                            painter = painterResource(R.drawable.equalizer),
+                            contentDescription = stringResource(R.string.system_equalizer)
+                        )
+                    }
                 }
             }
 
@@ -217,6 +257,10 @@ private fun EqScreenContent(
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Button(onClick = onImportCustomEQ) {
                                     Text(stringResource(R.string.import_profile))
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                OutlinedButton(onClick = onOpenSystemEqualizer) {
+                                    Text(stringResource(R.string.system_equalizer))
                                 }
                             }
                         }
