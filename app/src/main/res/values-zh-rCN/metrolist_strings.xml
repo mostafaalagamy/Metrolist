@@ -231,8 +231,8 @@
     <string name="tertiary_color_style">三级颜色</string>
     <string name="lyrics_glow_effect">启用歌词发光效果</string>
     <string name="lyrics_glow_effect_desc">为动态歌词添加发光动画和弹跳效果</string>
-    <string name="enable_better_lyrics">启用Better Lyrics</string>
-    <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词提供商以获取逐字同步的歌词</string>
+    <string name="enable_better_lyrics">启用Better Lyrics提供歌词</string>
+    <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词服务以获取逐字同步的歌词</string>
     <string name="auto_scroll">重新同步</string>
     <string name="shuffle_playlist_first">随机播放列表或专辑</string>
     <string name="shuffle_playlist_first_desc">随机播放时,先播放原播放列表/专辑中的所有歌曲,然后再播放内容相似的歌曲</string>
@@ -343,4 +343,6 @@
     <string name="wavy">波浪</string>
     <string name="pause_music_when_media_is_muted">在静音时暂停播放</string>
     <string name="enable_squiggly_slider">启用波浪形滑块</string>
+    <string name="enable_simpmusic">启用SimpMusic提供歌词</string>
+    <string name="enable_simpmusic_desc">使用SimpMusic歌词服务以获取逐字同步的歌词</string>
 </resources>
