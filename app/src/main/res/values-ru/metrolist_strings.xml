@@ -326,7 +326,7 @@
     <string name="progress_percent">Прогресс %s%%</string>
     <string name="listening_to_metrolist">Вы слушаете Metrolist</string>
     <string name="listen_on_youtube_music">Слушать в YouTube Music</string>
-    <string name="visit_metrolist">Перейти на Metrolist</string>
+    <string name="visit_metrolist">Посетить Metrolist</string>
     <string name="open">Открыть</string>
     <string name="failed_to_create_image">Не удалось создать изображение: %s</string>
     <string name="copied_title">Название скопировано</string>
@@ -358,4 +358,6 @@
     <string name="import_error_title">Ошибка импорта</string>
     <string name="enable_squiggly_slider">Включить извилистый ползунок</string>
     <string name="pause_music_when_media_is_muted">Приостанавливать музыку при отключении звука</string>
+    <string name="enable_simpmusic">Включить SimpMusic Lyrics</string>
+    <string name="enable_simpmusic_desc">Использовать SimpMusic Lyrics для синхронизации текстов</string>
 </resources>
