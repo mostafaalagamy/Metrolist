@@ -405,4 +405,16 @@
     <string name="error_playing">Error playing</string>
     <string name="failed_to_parse_proxy">Failed to parse proxy url.</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
+
+    <!-- Widget strings -->
+    <string name="album_art">Album art</string>
+    <string name="no_song_playing">No song playing</string>
+    <string name="tap_to_open">Tap to open Metrolist</string>
+    <string name="previous">Previous</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="next">Next</string>
+    <string name="like">Like</string>
+    <string name="widget_description">Music player widget with playback controls</string>
+    <string name="turntable_widget_description">Quick access to your most recently played track</string>
+    <string name="queue_widget_description">Music player with queue preview</string>
 </resources>
