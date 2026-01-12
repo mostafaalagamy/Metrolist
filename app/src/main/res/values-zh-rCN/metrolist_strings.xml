@@ -345,4 +345,15 @@
     <string name="enable_squiggly_slider">启用波浪形滑块</string>
     <string name="enable_simpmusic">启用SimpMusic提供歌词</string>
     <string name="enable_simpmusic_desc">使用SimpMusic歌词服务以获取逐字同步的歌词</string>
+    <string name="system_equalizer">系统均衡器</string>
+    <string name="album_art">专辑封面</string>
+    <string name="no_song_playing">没有音乐正在播放</string>
+    <string name="tap_to_open">点击开启 Metrolist</string>
+    <string name="previous">上一曲</string>
+    <string name="play_pause">播放/暂停</string>
+    <string name="next">下一曲</string>
+    <string name="like">喜欢</string>
+    <string name="widget_description">带播放控制的音乐播放器小部件</string>
+    <string name="turntable_widget_description">快速访问你最近播放过的曲目</string>
+    <string name="queue_widget_description">带队列预览的音乐播放器</string>
 </resources>
