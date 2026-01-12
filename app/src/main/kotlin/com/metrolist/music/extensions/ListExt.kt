@@ -49,6 +49,14 @@ fun List<Song>.filterExplicit(enabled: Boolean = true) =
         this
     }
 
+// Extension function to filter video songs for local Song entities
+fun List<Song>.filterVideoSongs(enabled: Boolean = true) =
+    if (enabled) {
+        filter { !it.song.isVideo }
+    } else {
+        this
+    }
+
 // Extension function to filter explicit content for local Album entities
 fun List<Album>.filterExplicitAlbums(enabled: Boolean = true) =
     if (enabled) {

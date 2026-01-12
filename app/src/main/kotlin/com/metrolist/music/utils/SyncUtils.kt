@@ -193,11 +193,12 @@ class SyncUtils @Inject constructor(
                         try {
                             val dbSong = database.song(song.id).firstOrNull()
                             val timestamp = LocalDateTime.now().minusSeconds((batchIndex * 10 + index).toLong())
+                            val isVideoSong = song.isVideoSong
                             database.transaction {
                                 if (dbSong == null) {
-                                    insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
-                                } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
-                                    update(dbSong.song.copy(liked = true, likedDate = timestamp))
+                                    insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp, isVideo = isVideoSong) }
+                                } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp || dbSong.song.isVideo != isVideoSong) {
+                                    update(dbSong.song.copy(liked = true, likedDate = timestamp, isVideo = isVideoSong))
                                 }
                             }
                         } catch (e: Exception) { e.printStackTrace() }

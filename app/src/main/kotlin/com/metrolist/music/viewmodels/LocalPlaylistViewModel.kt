@@ -9,6 +9,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.PlaylistSongSortDescendingKey
 import com.metrolist.music.constants.PlaylistSongSortType
 import com.metrolist.music.constants.PlaylistSongSortTypeKey
@@ -49,22 +50,30 @@ constructor(
             database.playlistSongs(playlistId),
             context.dataStore.data
                 .map {
-                    it[PlaylistSongSortTypeKey].toEnum(PlaylistSongSortType.CUSTOM) to (it[PlaylistSongSortDescendingKey]
-                        ?: true)
+                    Triple(
+                        it[PlaylistSongSortTypeKey].toEnum(PlaylistSongSortType.CUSTOM),
+                        it[PlaylistSongSortDescendingKey] ?: true,
+                        it[HideVideoSongsKey] ?: false
+                    )
                 }.distinctUntilChanged(),
-        ) { songs, (sortType, sortDescending) ->
+        ) { songs, (sortType, sortDescending, hideVideoSongs) ->
+            val filteredSongs = if (hideVideoSongs) {
+                songs.filter { !it.song.song.isVideo }
+            } else {
+                songs
+            }
             when (sortType) {
-                PlaylistSongSortType.CUSTOM -> songs
-                PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.map.id }
+                PlaylistSongSortType.CUSTOM -> filteredSongs
+                PlaylistSongSortType.CREATE_DATE -> filteredSongs.sortedBy { it.map.id }
                 PlaylistSongSortType.NAME -> {
                     val collator = Collator.getInstance(Locale.getDefault())
                     collator.strength = Collator.PRIMARY
-                    songs.sortedWith(compareBy(collator) { it.song.song.title })
+                    filteredSongs.sortedWith(compareBy(collator) { it.song.song.title })
                 }
                 PlaylistSongSortType.ARTIST -> {
                     val collator = Collator.getInstance(Locale.getDefault())
                     collator.strength = Collator.PRIMARY
-                    songs
+                    filteredSongs
                         .sortedWith(compareBy(collator) { song -> song.song.artists.joinToString("") { it.name } })
                         .groupBy { it.song.album?.title }
                         .flatMap { (_, songsByAlbum) ->
@@ -76,7 +85,7 @@ constructor(
                         }
                 }
 
-                PlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.song.totalPlayTime }
+                PlaylistSongSortType.PLAY_TIME -> filteredSongs.sortedBy { it.song.song.totalPlayTime }
             }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
         }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
