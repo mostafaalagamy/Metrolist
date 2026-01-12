@@ -115,6 +115,7 @@ import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.SimilarContent
+import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
@@ -147,6 +148,7 @@ import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.playback.queues.filterVideoSongs
+import com.metrolist.music.playback.audio.SilenceDetectorAudioProcessor
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
 import com.metrolist.music.utils.NetworkConnectivityObserver
@@ -178,12 +180,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 import okhttp3.OkHttpClient
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+
+private const val INSTANT_SILENCE_SKIP_STEP_MS = 15_000L
+private const val INSTANT_SILENCE_SKIP_SETTLE_MS = 350L
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -260,6 +266,10 @@ class MusicService :
 
     // Custom Audio Processor
     private val customEqualizerAudioProcessor = CustomEqualizerAudioProcessor()
+    private val silenceDetectorAudioProcessor =
+        SilenceDetectorAudioProcessor { handleLongSilenceDetected() }
+
+    private val instantSilenceSkipEnabled = MutableStateFlow(false)
 
     private var isAudioEffectSessionOpened = false
     private var loudnessEnhancer: LoudnessEnhancer? = null
@@ -278,6 +288,7 @@ class MusicService :
     private var consecutivePlaybackErr = 0
     private var retryJob: Job? = null
     private var retryCount = 0
+    private var silenceSkipJob: Job? = null
     
     // Google Cast support
     var castConnectionHandler: CastConnectionHandler? = null
@@ -467,10 +478,19 @@ class MusicService :
         }
 
         dataStore.data
-            .map { it[SkipSilenceKey] ?: false }
+            .map { (it[SkipSilenceKey] ?: false) to (it[SkipSilenceInstantKey] ?: false) }
             .distinctUntilChanged()
-            .collectLatest(scope) {
-                player.skipSilenceEnabled = it
+            .collectLatest(scope) { (skipSilence, instantSkip) ->
+                player.skipSilenceEnabled = skipSilence
+
+                val enableInstant = skipSilence && instantSkip
+                instantSilenceSkipEnabled.value = enableInstant
+                silenceDetectorAudioProcessor.instantModeEnabled = enableInstant
+
+                if (!enableInstant) {
+                    silenceDetectorAudioProcessor.resetTracking()
+                    silenceSkipJob?.cancel()
+                }
             }
 
         combine(
@@ -1684,6 +1704,37 @@ class MusicService :
             ).setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
 
+    private fun handleLongSilenceDetected() {
+        if (!instantSilenceSkipEnabled.value) return
+        if (silenceSkipJob?.isActive == true) return
+
+        silenceSkipJob = scope.launch {
+            // Debounce so short fades or transitions do not trigger a jump.
+            delay(200)
+            performInstantSilenceSkip()
+        }
+    }
+
+    private suspend fun performInstantSilenceSkip() {
+        val duration = player.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: return
+        if (duration <= INSTANT_SILENCE_SKIP_STEP_MS) return
+
+        var hops = 0
+        while (coroutineContext.isActive && instantSilenceSkipEnabled.value && silenceDetectorAudioProcessor.isCurrentlySilent()) {
+            val current = player.currentPosition
+            val target = (current + INSTANT_SILENCE_SKIP_STEP_MS).coerceAtMost(duration - 500)
+
+            if (target <= current) break
+
+            player.seekTo(target)
+            hops++
+
+            if (hops >= 80 || target >= duration - 500) break
+
+            delay(INSTANT_SILENCE_SKIP_SETTLE_MS)
+        }
+    }
+
     private fun createDataSourceFactory(): DataSource.Factory {
         val songUrlCache = HashMap<String, Pair<String, Long>>()
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
@@ -1800,7 +1851,10 @@ class MusicService :
                 .setAudioProcessorChain(
                     DefaultAudioSink.DefaultAudioProcessorChain(
                         // 2. Inject processor into audio pipeline
-                        arrayOf(customEqualizerAudioProcessor),
+                        arrayOf(
+                            customEqualizerAudioProcessor,
+                            silenceDetectorAudioProcessor,
+                        ),
                         SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
                         SonicAudioProcessor(),
                     ),

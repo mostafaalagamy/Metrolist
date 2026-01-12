@@ -48,6 +48,7 @@ import com.metrolist.music.constants.EnableGoogleCastKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
+import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
@@ -78,6 +79,10 @@ fun PlayerSettings(
     )
     val (skipSilence, onSkipSilenceChange) = rememberPreference(
         SkipSilenceKey,
+        defaultValue = false
+    )
+    val (skipSilenceInstant, onSkipSilenceInstantChange) = rememberPreference(
+        SkipSilenceInstantKey,
         defaultValue = false
     )
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
@@ -229,6 +234,28 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onSkipSilenceChange(!skipSilence) }
+                ))
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.skip_next),
+                    title = { Text(stringResource(R.string.skip_silence_instant)) },
+                    description = { Text(stringResource(R.string.skip_silence_instant_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = skipSilenceInstant,
+                            onCheckedChange = { onSkipSilenceInstantChange(it) },
+                            enabled = skipSilence,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (skipSilenceInstant) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { if (skipSilence) onSkipSilenceInstantChange(!skipSilenceInstant) }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.volume_up),
