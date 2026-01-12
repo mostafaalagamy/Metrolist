@@ -320,7 +320,7 @@ interface DatabaseDao {
     @Transaction
     @Query(
         """
-        SELECT s.id, s.title, s.thumbnailUrl,
+        SELECT s.id, s.title, s.thumbnailUrl, s.isVideo,
                (SELECT name FROM artist WHERE id = sam.artistId) as artistName,
                (SELECT COUNT(1)
                 FROM event
