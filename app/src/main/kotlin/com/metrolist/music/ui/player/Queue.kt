@@ -129,6 +129,7 @@ import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
+import com.metrolist.music.ui.menu.QueueMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
@@ -740,11 +741,10 @@ fun Queue(
                                             IconButton(
                                                 onClick = {
                                                     menuState.show {
-                                                        PlayerMenu(
+                                                        QueueMenu(
                                                             mediaMetadata = window.mediaItem.metadata!!,
                                                             navController = navController,
                                                             playerBottomSheetState = playerBottomSheetState,
-                                                            isQueueTrigger = true,
                                                             onShowDetailsDialog = {
                                                                 window.mediaItem.mediaId.let {
                                                                     bottomSheetPageState.show {
@@ -893,11 +893,10 @@ fun Queue(
                                         onClick = {},
                                         onLongClick = {
                                             menuState.show {
-                                                PlayerMenu(
+                                                QueueMenu(
                                                     mediaMetadata = item.metadata!!,
                                                     navController = navController,
                                                     playerBottomSheetState = playerBottomSheetState,
-                                                    isQueueTrigger = true,
                                                     onShowDetailsDialog = {
                                                         item.mediaId.let {
                                                             bottomSheetPageState.show {
