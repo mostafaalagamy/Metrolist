@@ -9,8 +9,10 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -385,6 +387,15 @@ fun SelectionSongMenu(
                     //         }
                     //     }
                     // ),
+                }
+            )
+        }
+
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            Material3MenuGroup(
+                items = buildList {
                     add(
                         when (downloadState) {
                             Download.STATE_COMPLETED -> {
@@ -726,6 +737,15 @@ fun SelectionMediaMetadataMenu(
                             }
                         )
                     )
+                }
+            )
+        }
+
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            Material3MenuGroup(
+                items = buildList {
                     add(
                         Material3MenuItemData(
                             title = {

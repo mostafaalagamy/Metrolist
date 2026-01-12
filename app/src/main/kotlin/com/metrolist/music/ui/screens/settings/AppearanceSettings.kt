@@ -939,6 +939,8 @@ fun AppearanceSettings(
 
         Spacer(modifier = Modifier.height(27.dp))
 
+        var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
+
         Material3SettingsGroup(
             title = stringResource(R.string.player),
             items = listOf(
@@ -1045,97 +1047,86 @@ fun AppearanceSettings(
                     },
                     onClick = { onSwipeThumbnailChange(!swipeThumbnail) }
                 )
-            )
+            ) + if (swipeThumbnail) listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.tune),
+                    title = { Text(stringResource(R.string.swipe_sensitivity)) },
+                    description = {
+                        Text(
+                            stringResource(
+                                R.string.sensitivity_percentage,
+                                (swipeSensitivity * 100).roundToInt()
+                            )
+                        )
+                    },
+                    onClick = { showSensitivityDialog = true }
+                )
+            ) else emptyList()
         )
 
-        AnimatedVisibility(swipeThumbnail) {
-            var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
+        if (showSensitivityDialog) {
+            var tempSensitivity by remember { mutableFloatStateOf(swipeSensitivity) }
 
-            if (showSensitivityDialog) {
-                var tempSensitivity by remember { mutableFloatStateOf(swipeSensitivity) }
-
-                DefaultDialog(
-                    onDismiss = {
-                        tempSensitivity = swipeSensitivity
-                        showSensitivityDialog = false
-                    },
-                    buttons = {
-                        TextButton(
-                            onClick = {
-                                tempSensitivity = 0.73f
-                            }
-                        ) {
-                            Text(stringResource(R.string.reset))
+            DefaultDialog(
+                onDismiss = {
+                    tempSensitivity = swipeSensitivity
+                    showSensitivityDialog = false
+                },
+                buttons = {
+                    TextButton(
+                        onClick = {
+                            tempSensitivity = 0.73f
                         }
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        TextButton(
-                            onClick = {
-                                tempSensitivity = swipeSensitivity
-                                showSensitivityDialog = false
-                            }
-                        ) {
-                            Text(stringResource(android.R.string.cancel))
-                        }
-                        TextButton(
-                            onClick = {
-                                onSwipeSensitivityChange(tempSensitivity)
-                                showSensitivityDialog = false
-                            }
-                        ) {
-                            Text(stringResource(android.R.string.ok))
-                        }
-                    }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(
-                            text = stringResource(R.string.swipe_sensitivity),
-                            style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                        Text(stringResource(R.string.reset))
+                    }
 
-                        Text(
-                            text = stringResource(
-                                R.string.sensitivity_percentage,
-                                (tempSensitivity * 100).roundToInt()
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                    Spacer(modifier = Modifier.weight(1f))
 
-                        Slider(
-                            value = tempSensitivity,
-                            onValueChange = { tempSensitivity = it },
-                            valueRange = 0f..1f,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    TextButton(
+                        onClick = {
+                            tempSensitivity = swipeSensitivity
+                            showSensitivityDialog = false
+                        }
+                    ) {
+                        Text(stringResource(android.R.string.cancel))
+                    }
+                    TextButton(
+                        onClick = {
+                            onSwipeSensitivityChange(tempSensitivity)
+                            showSensitivityDialog = false
+                        }
+                    ) {
+                        Text(stringResource(android.R.string.ok))
                     }
                 }
-            }
-            Column {
-                Spacer(modifier = Modifier.height(27.dp))
-                Material3SettingsGroup(
-                    title = "",
-                    items = listOf(
-                        Material3SettingsItem(
-                            icon = painterResource(R.drawable.tune),
-                            title = { Text(stringResource(R.string.swipe_sensitivity)) },
-                            description = {
-                                Text(
-                                    stringResource(
-                                        R.string.sensitivity_percentage,
-                                        (swipeSensitivity * 100).roundToInt()
-                                    )
-                                )
-                            },
-                            onClick = { showSensitivityDialog = true }
-                        )
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.swipe_sensitivity),
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                )
+
+                    Text(
+                        text = stringResource(
+                            R.string.sensitivity_percentage,
+                            (tempSensitivity * 100).roundToInt()
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    Slider(
+                        value = tempSensitivity,
+                        onValueChange = { tempSensitivity = it },
+                        valueRange = 0f..1f,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
 
