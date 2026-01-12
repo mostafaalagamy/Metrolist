@@ -366,4 +366,6 @@
     <string name="turntable_widget_description">Accès rapide à votre dernier titre écouté</string>
     <string name="queue_widget_description">Lecteur de musique avec aperçu de la file d\'attente</string>
     <string name="like">J\'aime</string>
+    <string name="remember_shuffle_and_repeat">Se souvenir de la lecture aléatoire et de la répétition</string>
+    <string name="remember_shuffle_and_repeat_desc">Se souvenir du mode aléatoire et répétition lors du redémarrage de l\'application</string>
 </resources>
