@@ -46,6 +46,8 @@ data class SongEntity(
     val isLocal: Boolean = false,
     val libraryAddToken: String? = null,
     val libraryRemoveToken: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val lyricsOffset: Int = 0,
     @ColumnInfo(defaultValue = true.toString())
     val romanizeLyrics: Boolean = true,
     @ColumnInfo(defaultValue = "0")
