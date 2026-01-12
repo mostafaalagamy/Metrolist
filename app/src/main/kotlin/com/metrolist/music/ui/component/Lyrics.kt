@@ -527,7 +527,8 @@ fun Lyrics(
             isSeeking = sliderPosition != null
             val position = sliderPosition ?: playerConnection.player.currentPosition
             currentPlaybackPosition = position
-            currentLineIndex = findCurrentLineIndex(lines, position)
+            val lyricsOffset = currentSong?.song?.lyricsOffset ?: 0
+            currentLineIndex = findCurrentLineIndex(lines, position + lyricsOffset)
         }
     }
 
@@ -711,7 +712,8 @@ fun Lyrics(
                                     }
                                 } else if (isSynced && changeLyrics) {
                                     // Professional seek action with smooth animation
-                                    playerConnection.seekTo(item.time)
+                                    val lyricsOffset = currentSong?.song?.lyricsOffset ?: 0
+                                    playerConnection.seekTo((item.time - lyricsOffset).coerceAtLeast(0))
                                     // Smooth slow scroll when clicking on lyrics (3 seconds)
                                     scope.launch {
                                         // First scroll to the clicked item without animation
