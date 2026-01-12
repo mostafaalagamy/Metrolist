@@ -46,9 +46,8 @@ constructor(
         combine(
             selectedOption,
             indexChips,
-            context.dataStore.data.map { it[HideVideoSongsKey] ?: false }.distinctUntilChanged()
-        ) { first, second, third -> Triple(first, second, third) }
-            .flatMapLatest { (selection, t, hideVideoSongs) ->
+        ) { first, second -> Pair(first, second) }
+            .flatMapLatest { (selection, t) ->
                 database
                     .mostPlayedSongsStats(
                         fromTimeStamp = statToPeriod(selection, t),
@@ -63,9 +62,7 @@ constructor(
                         } else {
                             statToPeriod(selection, t - 1)
                         },
-                    ).map { songs ->
-                        if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
-                    }
+                    )
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val mostPlayedSongs =
@@ -90,7 +87,7 @@ constructor(
                             statToPeriod(selection, t - 1)
                         },
                     ).map { songs ->
-                        if (hideVideoSongs) songs.filter { !it.song.song.isVideo } else songs
+                        if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
                     }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
