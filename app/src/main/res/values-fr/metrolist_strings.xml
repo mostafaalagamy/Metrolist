@@ -368,4 +368,5 @@
     <string name="like">J\'aime</string>
     <string name="remember_shuffle_and_repeat">Se souvenir de la lecture aléatoire et de la répétition</string>
     <string name="remember_shuffle_and_repeat_desc">Se souvenir du mode aléatoire et répétition lors du redémarrage de l\'application</string>
+    <string name="lyrics_offset">Décalage des paroles</string>
 </resources>
