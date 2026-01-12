@@ -255,6 +255,9 @@
     <string name="line_by_line_dialog_enable">Enable</string>
     <string name="romanize_current_track">Romanize current track</string>
 
+    <!-- Lyrics Offset Settings -->
+    <string name="lyrics_offset">Lyrics Offset</string>
+
     <!-- Material 3 Settings Sections -->
     <string name="settings_section_ui">Interface</string>
     <string name="settings_section_privacy">Privacy &amp; Security</string>

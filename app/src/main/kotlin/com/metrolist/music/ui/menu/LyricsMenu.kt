@@ -408,7 +408,7 @@ fun LyricsMenu(
             Material3MenuGroup(
                 items = listOf(
                     Material3MenuItemData(
-                        title = { Text("Lyrics Offset") },
+                        title = { Text(stringResource(R.string.lyrics_offset)) },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.fast_forward),
