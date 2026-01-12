@@ -356,4 +356,7 @@
     <string name="turntable_widget_description">Akses cepat ke trek yang terakhir Anda putar</string>
     <string name="system_equalizer">Ekualiser Sistem</string>
     <string name="queue_widget_description">Pemutar musik dengan pratinjau antrean</string>
+    <string name="remember_shuffle_and_repeat">Ingat mode acak dan ulang</string>
+    <string name="remember_shuffle_and_repeat_desc">Ingat mode acak dan ulang saat aplikasi dibuka ulang</string>
+    <string name="lyrics_offset">Offset Lirik</string>
 </resources>
