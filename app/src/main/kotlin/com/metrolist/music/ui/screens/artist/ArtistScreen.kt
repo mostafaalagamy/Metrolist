@@ -92,6 +92,8 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.ShowArtistDescriptionKey
+import com.metrolist.music.constants.ShowArtistSubscriberCountKey
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
@@ -99,6 +101,7 @@ import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AutoResizeText
+import com.metrolist.music.ui.component.ExpandableText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
@@ -148,6 +151,8 @@ fun ArtistScreen(
     val librarySongs by viewModel.librarySongs.collectAsState()
     val libraryAlbums by viewModel.libraryAlbums.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
+    val showArtistDescription by rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
+    val showArtistSubscriberCount by rememberPreference(key = ShowArtistSubscriberCountKey, defaultValue = true)
 
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -452,6 +457,48 @@ fun ArtistScreen(
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+                }
+
+                // About Artist Section
+                if (!showLocal && (showArtistDescription || showArtistSubscriberCount)) {
+                    val description = artistPage?.description
+                    val subscriberCount = artistPage?.subscriberCountText
+                    
+                    if ((showArtistDescription && !description.isNullOrEmpty()) || 
+                        (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty())) {
+                        item(key = "about_artist") {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 16.dp)
+                                    .animateItem()
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.about_artist),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                
+                                if (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty()) {
+                                    Text(
+                                        text = subscriberCount,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(bottom = if (showArtistDescription && !description.isNullOrEmpty()) 8.dp else 0.dp)
+                                    )
+                                }
+                                
+                                if (showArtistDescription && !description.isNullOrEmpty()) {
+                                    ExpandableText(
+                                        text = description,
+                                        collapsedMaxLines = 3
+                                    )
+                                }
+                            }
                         }
                     }
                 }

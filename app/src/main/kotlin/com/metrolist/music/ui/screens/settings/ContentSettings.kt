@@ -92,6 +92,8 @@ fun ContentSettings(
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (hideVideoSongs, onHideVideoSongsChange) = rememberPreference(key = HideVideoSongsKey, defaultValue = false)
+    val (showArtistDescription, onShowArtistDescriptionChange) = rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
+    val (showArtistSubscriberCount, onShowArtistSubscriberCountChange) = rememberPreference(key = ShowArtistSubscriberCountKey, defaultValue = true)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
@@ -447,6 +449,54 @@ fun ContentSettings(
                         )
                     },
                     onClick = { onHideVideoSongsChange(!hideVideoSongs) }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        Material3SettingsGroup(
+            title = stringResource(R.string.artist_page_settings),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.info),
+                    title = { Text(stringResource(R.string.show_artist_description)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showArtistDescription,
+                            onCheckedChange = onShowArtistDescriptionChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showArtistDescription) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowArtistDescriptionChange(!showArtistDescription) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.person),
+                    title = { Text(stringResource(R.string.show_artist_subscriber_count)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showArtistSubscriberCount,
+                            onCheckedChange = onShowArtistSubscriberCountChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showArtistSubscriberCount) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowArtistSubscriberCountChange(!showArtistSubscriberCount) }
                 )
             )
         )

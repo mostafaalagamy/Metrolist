@@ -27,6 +27,7 @@ data class ArtistPage(
     val artist: ArtistItem,
     val sections: List<ArtistSection>,
     val description: String?,
+    val subscriberCountText: String?,
 ) {
     companion object {
         fun fromSectionListRendererContent(content: SectionListRenderer.Content): ArtistSection? {
