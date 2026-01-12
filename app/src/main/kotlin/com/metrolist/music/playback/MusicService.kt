@@ -111,8 +111,10 @@ import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
+import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.ShuffleModeKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
@@ -376,6 +378,11 @@ class MusicService :
                 ).setBitmapLoader(CoilBitmapLoader(this, scope))
                 .build()
         player.repeatMode = dataStore.get(RepeatModeKey, REPEAT_MODE_OFF)
+        
+        // Restore shuffle mode if remember option is enabled
+        if (dataStore.get(RememberShuffleAndRepeatKey, true)) {
+            player.shuffleModeEnabled = dataStore.get(ShuffleModeKey, false)
+        }
 
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, MusicService::class.java))
@@ -1397,7 +1404,7 @@ class MusicService :
             }
         }
 
-        // Auto load more songs
+        // Auto load more songs from queue
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
             player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
@@ -1412,6 +1419,52 @@ class MusicService :
                 }
                 if (player.playbackState != STATE_IDLE && mediaItems.isNotEmpty()) {
                     player.addMediaItems(mediaItems)
+                }
+            }
+        }
+        
+        // Auto load similar content when near end of queue and no more pages available
+        if (dataStore.get(AutoLoadMoreKey, true) &&
+            reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+            player.mediaItemCount - player.currentMediaItemIndex <= 3 &&
+            !currentQueue.hasNextPage() &&
+            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)
+        ) {
+            scope.launch(SilentHandler) {
+                // If automixItems is empty, try to load similar content based on current song
+                if (automixItems.value.isEmpty()) {
+                    val currentSongId = player.currentMetadata?.id
+                    if (currentSongId != null) {
+                        withContext(Dispatchers.IO) {
+                            try {
+                                // Try to get radio/similar content for current song
+                                YouTube.next(WatchEndpoint(
+                                    videoId = currentSongId,
+                                    playlistId = "RDAMVM$currentSongId",
+                                    params = "wAEB"
+                                )).onSuccess { radioResult ->
+                                    val filteredItems = radioResult.items
+                                        .filter { it.id != currentSongId }
+                                        .map { it.toMediaItem() }
+                                    if (filteredItems.isNotEmpty()) {
+                                        automixItems.value = filteredItems
+                                    }
+                                }
+                            } catch (_: Exception) {
+                                // Silent fail
+                            }
+                        }
+                    }
+                }
+                
+                val itemsToAdd = automixItems.value
+                    .filterExplicit(dataStore.get(HideExplicitKey, false))
+                    .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                    .take(10)
+                if (player.playbackState != STATE_IDLE && itemsToAdd.isNotEmpty()) {
+                    player.addMediaItems(itemsToAdd)
+                    // Remove added items from automix
+                    automixItems.value = automixItems.value.drop(itemsToAdd.size)
                 }
             }
         }
@@ -1564,6 +1617,15 @@ class MusicService :
                 shuffledIndices[shuffledIndices.indexOf(currentIndex)] = shuffledIndices[0]
                 shuffledIndices[0] = currentIndex
                 player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
+            }
+        }
+
+        // Save shuffle mode to preferences
+        if (dataStore.get(RememberShuffleAndRepeatKey, true)) {
+            scope.launch {
+                dataStore.edit { settings ->
+                    settings[ShuffleModeKey] = shuffleModeEnabled
+                }
             }
         }
 

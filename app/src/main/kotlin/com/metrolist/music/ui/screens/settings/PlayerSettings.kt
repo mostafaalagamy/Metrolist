@@ -45,6 +45,7 @@ import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.EnableGoogleCastKey
+import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
@@ -119,6 +120,10 @@ fun PlayerSettings(
     val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(
         AutoSkipNextOnErrorKey,
         defaultValue = false
+    )
+    val (rememberShuffleAndRepeat, onRememberShuffleAndRepeatChange) = rememberPreference(
+        RememberShuffleAndRepeatKey,
+        defaultValue = true
     )
     val (shufflePlaylistFirst, onShufflePlaylistFirstChange) = rememberPreference(
         ShufflePlaylistFirstKey,
@@ -428,6 +433,27 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { similarContentEnabledChange(!similarContentEnabled) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.shuffle),
+                    title = { Text(stringResource(R.string.remember_shuffle_and_repeat)) },
+                    description = { Text(stringResource(R.string.remember_shuffle_and_repeat_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = rememberShuffleAndRepeat,
+                            onCheckedChange = onRememberShuffleAndRepeatChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (rememberShuffleAndRepeat) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onRememberShuffleAndRepeatChange(!rememberShuffleAndRepeat) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.shuffle),
