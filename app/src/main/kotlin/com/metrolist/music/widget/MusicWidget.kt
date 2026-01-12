@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -20,12 +21,14 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalSize
 import androidx.glance.action.Action
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartService
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
@@ -63,11 +66,149 @@ import kotlinx.coroutines.withContext
 class MusicWidget : GlanceAppWidget() {
 
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
+    
+    override val sizeMode = SizeMode.Responsive(
+        setOf(
+            COMPACT_SIZE,
+            NORMAL_SIZE
+        )
+    )
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceTheme {
-                MusicWidgetContent(context)
+                val size = LocalSize.current
+                if (size.height < 80.dp) {
+                    CompactMusicWidgetContent(context)
+                } else {
+                    MusicWidgetContent(context)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CompactMusicWidgetContent(context: Context) {
+        val prefs = currentState<Preferences>()
+        val title = prefs[PREF_TITLE] ?: context.getString(R.string.no_song_playing)
+        val artist = prefs[PREF_ARTIST] ?: context.getString(R.string.tap_to_open)
+        val isPlaying = prefs[PREF_IS_PLAYING] ?: false
+        
+        val albumArtBitmap = cachedAlbumArtBitmap
+
+        Box(
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .padding(2.dp)
+        ) {
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .background(GlanceTheme.colors.surfaceVariant)
+                    .cornerRadius(20.dp)
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Album Art - Compact size
+                Box(
+                    modifier = GlanceModifier
+                        .size(40.dp)
+                        .cornerRadius(10.dp)
+                        .background(GlanceTheme.colors.secondaryContainer)
+                        .clickable(actionStartActivity<MainActivity>()),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (albumArtBitmap != null) {
+                        Image(
+                            provider = BitmapImageProvider(albumArtBitmap),
+                            contentDescription = context.getString(R.string.album_art),
+                            modifier = GlanceModifier.size(40.dp).cornerRadius(10.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Image(
+                            provider = ImageProvider(R.mipmap.ic_launcher),
+                            contentDescription = context.getString(R.string.album_art),
+                            modifier = GlanceModifier.size(28.dp).cornerRadius(6.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                Spacer(modifier = GlanceModifier.width(8.dp))
+
+                // Song info - Single line
+                Column(
+                    modifier = GlanceModifier.defaultWeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurfaceVariant,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        maxLines = 1,
+                        modifier = GlanceModifier.clickable(actionStartActivity<MainActivity>())
+                    )
+                    Text(
+                        text = artist,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurfaceVariant,
+                            fontSize = 10.sp
+                        ),
+                        maxLines = 1,
+                        modifier = GlanceModifier.clickable(actionStartActivity<MainActivity>())
+                    )
+                }
+
+                Spacer(modifier = GlanceModifier.width(4.dp))
+
+                // Compact controls
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Previous Button
+                    ControlButton(
+                        context = context,
+                        iconRes = R.drawable.ic_widget_skip_previous,
+                        contentDescription = context.getString(R.string.previous),
+                        action = MusicWidgetActions.ACTION_PREV,
+                        size = 28
+                    )
+
+                    Spacer(modifier = GlanceModifier.width(2.dp))
+
+                    // Play/Pause Button
+                    Box(
+                        modifier = GlanceModifier
+                            .size(36.dp)
+                            .cornerRadius(18.dp)
+                            .background(GlanceTheme.colors.primary)
+                            .clickable(getServiceAction(context, MusicWidgetActions.ACTION_PLAY_PAUSE)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            provider = ImageProvider(
+                                if (isPlaying) R.drawable.ic_widget_pause else R.drawable.ic_widget_play
+                            ),
+                            contentDescription = context.getString(R.string.play_pause),
+                            modifier = GlanceModifier.size(20.dp)
+                        )
+                    }
+
+                    Spacer(modifier = GlanceModifier.width(2.dp))
+
+                    // Next Button
+                    ControlButton(
+                        context = context,
+                        iconRes = R.drawable.ic_widget_skip_next,
+                        contentDescription = context.getString(R.string.next),
+                        action = MusicWidgetActions.ACTION_NEXT,
+                        size = 28
+                    )
+                }
             }
         }
     }
@@ -279,6 +420,9 @@ class MusicWidget : GlanceAppWidget() {
     }
 
     companion object {
+        private val COMPACT_SIZE = DpSize(280.dp, 56.dp)
+        private val NORMAL_SIZE = DpSize(280.dp, 100.dp)
+        
         private val PREF_TITLE = stringPreferencesKey("title")
         private val PREF_ARTIST = stringPreferencesKey("artist")
         private val PREF_IS_PLAYING = booleanPreferencesKey("is_playing")
