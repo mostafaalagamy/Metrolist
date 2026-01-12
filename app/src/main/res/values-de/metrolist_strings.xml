@@ -344,6 +344,20 @@
     <string name="enable_simpmusic_desc">Verwenden Sie den Anbieter SimpMusic-Lyrics für synchronisierte Songtexte.</string>
     <plurals name="profiles_count">
         <item quantity="one">Equalizer-Benutzeroberfläche</item>
-        <item quantity="other"></item>
+        <item quantity="other"/>
     </plurals>
+    <string name="system_equalizer">System-Equalizer</string>
+    <string name="no_song_playing">Es wird kein Song abgespielt</string>
+    <string name="tap_to_open">Tippen, um Metrolist zu öffnen</string>
+    <string name="previous">Zurück</string>
+    <string name="play_pause">Wiedergabe/Pause</string>
+    <string name="next">Weiter</string>
+    <string name="widget_description">Musikplayer-Widget mit Wiedergabesteuerung</string>
+    <plurals name="band_count">
+        <item quantity="one">%d band</item>
+        <item quantity="other">%d bands</item>
+    </plurals>
+    <string name="album_art">Albumcover</string>
+    <string name="turntable_widget_description">Schneller Zugriff auf den zuletzt abgespielten Titel</string>
+    <string name="queue_widget_description">Musikplayer mit Warteschlangenvorschau</string>
 </resources>
