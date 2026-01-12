@@ -1445,8 +1445,8 @@ class MusicService :
     override fun onPlaybackStateChanged(
         @Player.State playbackState: Int,
     ) {
-        // Save state when playback state changes
-        if (dataStore.get(PersistentQueueKey, true)) {
+        // Save state when playback state changes (but not during silence skipping)
+        if (dataStore.get(PersistentQueueKey, true) && !isSilenceSkipping) {
             saveQueueToDisk()
         }
 
@@ -1704,6 +1704,9 @@ class MusicService :
             ).setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
 
+    // Flag to prevent queue saving during silence skip operations
+    private var isSilenceSkipping = false
+
     private fun handleLongSilenceDetected() {
         if (!instantSilenceSkipEnabled.value) return
         if (silenceSkipJob?.isActive == true) return
@@ -1719,19 +1722,29 @@ class MusicService :
         val duration = player.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: return
         if (duration <= INSTANT_SILENCE_SKIP_STEP_MS) return
 
-        var hops = 0
-        while (coroutineContext.isActive && instantSilenceSkipEnabled.value && silenceDetectorAudioProcessor.isCurrentlySilent()) {
-            val current = player.currentPosition
-            val target = (current + INSTANT_SILENCE_SKIP_STEP_MS).coerceAtMost(duration - 500)
+        isSilenceSkipping = true
+        try {
+            var hops = 0
+            while (coroutineContext.isActive && instantSilenceSkipEnabled.value && silenceDetectorAudioProcessor.isCurrentlySilent()) {
+                val current = player.currentPosition
+                val target = (current + INSTANT_SILENCE_SKIP_STEP_MS).coerceAtMost(duration - 500)
 
-            if (target <= current) break
+                if (target <= current) break
 
-            player.seekTo(target)
-            hops++
+                // Reset silence tracking before seeking to prevent immediate re-trigger
+                silenceDetectorAudioProcessor.resetTracking()
+                player.seekTo(target)
+                hops++
 
-            if (hops >= 80 || target >= duration - 500) break
+                if (hops >= 80 || target >= duration - 500) break
 
-            delay(INSTANT_SILENCE_SKIP_SETTLE_MS)
+                delay(INSTANT_SILENCE_SKIP_SETTLE_MS)
+            }
+            if (hops > 0) {
+                Log.d(TAG, "Silence skip: jumped $hops times")
+            }
+        } finally {
+            isSilenceSkipping = false
         }
     }
 
