@@ -57,7 +57,8 @@ data class MediaMetadata(
             likedDate = likedDate,
             inLibrary = inLibrary,
             libraryAddToken = libraryAddToken,
-            libraryRemoveToken = libraryRemoveToken
+            libraryRemoveToken = libraryRemoveToken,
+            isVideo = isVideoSong
         )
 }
 
