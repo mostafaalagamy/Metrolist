@@ -371,4 +371,6 @@
     <string name="turntable_widget_description">Быстрый доступ к последнему воспроизведённому треку</string>
     <string name="queue_widget_description">Музыкальный плеер с предпросмотром очереди</string>
     <string name="system_equalizer">Системный эквалайзер</string>
+    <string name="remember_shuffle_and_repeat">Запоминать перемешивание и повтор</string>
+    <string name="remember_shuffle_and_repeat_desc">Запоминать режим перемешивания и повтора при перезапуске приложения</string>
 </resources>
