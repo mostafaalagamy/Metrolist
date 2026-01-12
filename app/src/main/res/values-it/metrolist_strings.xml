@@ -111,7 +111,7 @@
     <string name="numbers">Numeri</string>
     <string name="subscribers">Iscritti</string>
     <string name="views">Visualizzazioni</string>
-    <string name="likes">Mi piace</string>
+    <string name="likes">Piaciuti</string>
     <string name="dislikes">Non mi piace</string>
     <plurals name="seconds">
         <item quantity="one">1 secondo</item>
@@ -365,4 +365,5 @@
     <string name="like">Mi piace</string>
     <string name="widget_description">Widget lettore musicale con controlli della riproduzione</string>
     <string name="turntable_widget_description">Accesso rapido i tuoi brani ascoltati più recentemente</string>
+    <string name="queue_widget_description">Lettore musicale con anteprima della coda</string>
 </resources>
