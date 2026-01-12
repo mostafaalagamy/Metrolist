@@ -245,4 +245,24 @@
     <string name="last_fm_send_likes">Enviar Me gusta/No me gusta</string>
     <string name="last_fm_send_likes_description">Marcar como Me gusta/No me gusta las canciones en Last.fm cuando son marcadas como Me gusta/No me gusta en Metrolist</string>
     <string name="logging_in">Iniciando sesión…</string>
+    <string name="enable_wavy_slider">Habilitar deslizador ondulado</string>
+    <string name="wavy">Ondulado</string>
+    <string name="enable_simpmusic">Habilitar letras SimpMusic</string>
+    <string name="enable_simpmusic_desc">Usar el proveedor SimpMusic para letras sincronizadas</string>
+    <string name="remember_shuffle_and_repeat">Recordar aleatorio y repetir</string>
+    <string name="remember_shuffle_and_repeat_desc">Recordar el estado de los modos aleatorio y repetir al reiniciar la app</string>
+    <string name="pause_music_when_media_is_muted">Pausar la música al silenciar la multimedia</string>
+    <string name="lyrics_offset">Compensación de letras</string>
+    <string name="scrobbling_configuration">Configuración de scrobbling</string>
+    <string name="scrobble_min_track_duration">Hacer scrobble a canciones más largas que</string>
+    <string name="scrobble_delay_percent">Porcentaje de retraso de scrobble</string>
+    <string name="scrobble_delay_minutes">Minutos de retraso de scrobble</string>
+    <string name="hide_video_songs">Ocultar canciones de video</string>
+    <string name="details_desc">Ver la información de la canción</string>
+    <string name="edit_desc">Cambiar el título o artista</string>
+    <string name="start_radio_desc">Crear una estación basada en este elemento</string>
+    <string name="play_next_desc">Añadir al inicio de la cola</string>
+    <string name="add_to_queue_desc">Añadir al final de la cola</string>
+    <string name="add_to_library_desc">Guardar en tu biblioteca</string>
+    <string name="download_desc">Hacer disponible para reproducir sin conexión</string>
 </resources>
