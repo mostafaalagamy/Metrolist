@@ -1134,6 +1134,61 @@ class MusicService :
         }
     }
 
+    private fun getAutomixForCurrentSong(currentSongId: String) {
+        scope.launch(SilentHandler) {
+            // Get current queue IDs to filter duplicates
+            val currentQueueIds = mutableSetOf<String>()
+            for (i in 0 until player.mediaItemCount) {
+                player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
+            }
+            
+            withContext(Dispatchers.IO) {
+                try {
+                    YouTube.next(WatchEndpoint(
+                        videoId = currentSongId,
+                        playlistId = "RDAMVM$currentSongId",
+                        params = "wAEB"
+                    )).onSuccess { radioResult ->
+                        val newItems = radioResult.items
+                            .filter { it.id !in currentQueueIds }
+                            .distinctBy { it.id }
+                            .map { it.toMediaItem() }
+                        if (newItems.isNotEmpty()) {
+                            automixItems.value = newItems
+                            // After loading, add items to queue
+                            addAutomixItemsToQueue()
+                        }
+                    }
+                } catch (_: Exception) {
+                    // Silent fail
+                }
+            }
+        }
+    }
+
+    private fun addAutomixItemsToQueue() {
+        scope.launch(SilentHandler) {
+            // Get current queue IDs to filter duplicates
+            val currentQueueIds = mutableSetOf<String>()
+            for (i in 0 until player.mediaItemCount) {
+                player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
+            }
+            
+            val itemsToAdd = automixItems.value
+                .filter { it.mediaId !in currentQueueIds }
+                .distinctBy { it.mediaId }
+                .filterExplicit(dataStore.get(HideExplicitKey, false))
+                .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                .take(10)
+                
+            if (player.playbackState != STATE_IDLE && itemsToAdd.isNotEmpty()) {
+                player.addMediaItems(itemsToAdd)
+                // Clear automixItems to prevent re-adding
+                automixItems.value = emptyList()
+            }
+        }
+    }
+
     fun addToQueueAutomix(
         item: MediaItem,
         position: Int,
@@ -1446,61 +1501,22 @@ class MusicService :
         }
 
         // Load similar content when near end of queue and no more pages available
-        // Works in playlists, home page, and anywhere when SimilarContent is enabled
+        // Uses existing automixItems or loads new ones via getAutomix logic
         if (dataStore.get(SimilarContent, false) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
             player.mediaItemCount - player.currentMediaItemIndex <= 3 &&
             !currentQueue.hasNextPage() &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)
         ) {
-            scope.launch(SilentHandler) {
-                // Get all current queue song IDs to filter duplicates
-                val currentQueueIds = mutableSetOf<String>()
-                for (i in 0 until player.mediaItemCount) {
-                    player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
+            // If automixItems is empty, trigger loading similar content
+            if (automixItems.value.isEmpty()) {
+                val currentSongId = player.currentMetadata?.id
+                if (currentSongId != null) {
+                    getAutomixForCurrentSong(currentSongId)
                 }
-                
-                // If automixItems is empty or all items are already in queue, load new similar content
-                val availableItems = automixItems.value.filter { it.mediaId !in currentQueueIds }
-                
-                if (availableItems.isEmpty()) {
-                    val currentSongId = player.currentMetadata?.id
-                    if (currentSongId != null) {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                YouTube.next(WatchEndpoint(
-                                    videoId = currentSongId,
-                                    playlistId = "RDAMVM$currentSongId",
-                                    params = "wAEB"
-                                )).onSuccess { radioResult ->
-                                    val newItems = radioResult.items
-                                        .filter { it.id !in currentQueueIds }
-                                        .distinctBy { it.id }
-                                        .map { it.toMediaItem() }
-                                    if (newItems.isNotEmpty()) {
-                                        automixItems.value = newItems
-                                    }
-                                }
-                            } catch (_: Exception) {
-                                // Silent fail
-                            }
-                        }
-                    }
-                }
-                
-                // Re-check available items after potential load
-                val itemsToAdd = automixItems.value
-                    .filter { it.mediaId !in currentQueueIds }
-                    .distinctBy { it.mediaId }
-                    .filterExplicit(dataStore.get(HideExplicitKey, false))
-                    .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
-                    .take(10)
-                    
-                if (player.playbackState != STATE_IDLE && itemsToAdd.isNotEmpty()) {
-                    player.addMediaItems(itemsToAdd)
-                    // Clear automixItems to prevent re-adding
-                    automixItems.value = emptyList()
-                }
+            } else {
+                // Add available automix items to queue
+                addAutomixItemsToQueue()
             }
         }
 
