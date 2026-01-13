@@ -258,7 +258,6 @@ class CastConnectionHandler(
     /**
      * Reload the Cast queue centered on the current item
      * This updates prev/next context after a skip
-     * Respects shuffle mode when determining prev/next items
      */
     private fun reloadQueueForCurrentItem(metadata: AppMediaMetadata) {
         if (!_isCasting.value || isReloadingQueue) return
@@ -268,25 +267,15 @@ class CastConnectionHandler(
             try {
                 val player = musicService.player
                 val currentIndex = player.currentMediaItemIndex
-                val shuffleEnabled = player.shuffleModeEnabled
-                val timeline = player.currentTimeline
+                val mediaItemCount = player.mediaItemCount
                 
                 // Build new queue items: up to 2 previous, current, and up to 2 next
                 val queueItems = mutableListOf<MediaQueueItem>()
                 
-                // Get previous items respecting shuffle order
-                val prevItems = mutableListOf<androidx.media3.common.MediaItem>()
-                if (!timeline.isEmpty) {
-                    var prevIdx = currentIndex
-                    for (i in 0 until 2) {
-                        prevIdx = timeline.getPreviousWindowIndex(prevIdx, Player.REPEAT_MODE_OFF, shuffleEnabled)
-                        if (prevIdx == androidx.media3.common.C.INDEX_UNSET) break
-                        prevItems.add(0, player.getMediaItemAt(prevIdx))
-                    }
-                }
-                
-                // Add previous items
-                for (prevItem in prevItems) {
+                // Add up to 2 previous items if available
+                val prevCount = minOf(2, currentIndex)
+                for (i in prevCount downTo 1) {
+                    val prevItem = player.getMediaItemAt(currentIndex - i)
                     prevItem.metadata?.let { prevMetadata ->
                         buildMediaInfo(prevMetadata)?.let { mediaInfo ->
                             queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
@@ -301,23 +290,19 @@ class CastConnectionHandler(
                     queueItems.add(MediaQueueItem.Builder(currentMediaInfo).build())
                 }
                 
-                // Get next items respecting shuffle order
-                if (!timeline.isEmpty) {
-                    var nextIdx = currentIndex
-                    for (i in 0 until 2) {
-                        nextIdx = timeline.getNextWindowIndex(nextIdx, Player.REPEAT_MODE_OFF, shuffleEnabled)
-                        if (nextIdx == androidx.media3.common.C.INDEX_UNSET) break
-                        val nextItem = player.getMediaItemAt(nextIdx)
-                        nextItem.metadata?.let { nextMetadata ->
-                            buildMediaInfo(nextMetadata)?.let { mediaInfo ->
-                                queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
-                            }
+                // Add up to 2 next items if available
+                val nextCount = minOf(2, mediaItemCount - currentIndex - 1)
+                for (i in 1..nextCount) {
+                    val nextItem = player.getMediaItemAt(currentIndex + i)
+                    nextItem.metadata?.let { nextMetadata ->
+                        buildMediaInfo(nextMetadata)?.let { mediaInfo ->
+                            queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
                         }
                     }
                 }
                 
                 if (queueItems.isNotEmpty()) {
-                    Timber.d("Reloading Cast queue: ${queueItems.size} items, startIndex=$startIndex, shuffle=$shuffleEnabled")
+                    Timber.d("Reloading Cast queue: ${queueItems.size} items, startIndex=$startIndex")
                     
                     withContext(Dispatchers.Main) {
                         remoteMediaClient?.queueLoad(
@@ -505,7 +490,6 @@ class CastConnectionHandler(
     /**
      * Load media with queue context to enable skip prev/next buttons on Cast widget
      * Loads up to 5 items: 2 previous, current, and 2 next for smoother transitions
-     * Respects shuffle mode when determining prev/next items
      */
     private fun loadMediaWithQueue(metadata: AppMediaMetadata) {
         if (!_isCasting.value) return
@@ -520,32 +504,22 @@ class CastConnectionHandler(
                 val player = musicService.player
                 val currentIndex = player.currentMediaItemIndex
                 val mediaItemCount = player.mediaItemCount
-                val shuffleEnabled = player.shuffleModeEnabled
-                val timeline = player.currentTimeline
                 
                 // Build queue items: up to 2 previous, current, and up to 2 next songs
                 val queueItems = mutableListOf<MediaQueueItem>()
+                var startIndex = 0
                 
-                // Get previous items respecting shuffle order
-                val prevItems = mutableListOf<androidx.media3.common.MediaItem>()
-                if (!timeline.isEmpty) {
-                    var prevIdx = currentIndex
-                    for (i in 0 until 2) {
-                        prevIdx = timeline.getPreviousWindowIndex(prevIdx, Player.REPEAT_MODE_OFF, shuffleEnabled)
-                        if (prevIdx == androidx.media3.common.C.INDEX_UNSET) break
-                        prevItems.add(0, player.getMediaItemAt(prevIdx)) // Add at beginning to maintain order
-                    }
-                }
-                
-                // Add previous items
-                for (prevItem in prevItems) {
+                // Add up to 2 previous items if available
+                val prevCount = minOf(2, currentIndex)
+                for (i in prevCount downTo 1) {
+                    val prevItem = player.getMediaItemAt(currentIndex - i)
                     prevItem.metadata?.let { prevMetadata ->
                         buildMediaInfo(prevMetadata)?.let { mediaInfo ->
                             queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
                         }
                     }
                 }
-                val startIndex = queueItems.size // Current item index after previous items
+                startIndex = queueItems.size // Current item index after previous items
                 
                 // Add current item
                 val currentMediaInfo = buildMediaInfo(metadata)
@@ -556,17 +530,13 @@ class CastConnectionHandler(
                 }
                 queueItems.add(MediaQueueItem.Builder(currentMediaInfo).build())
                 
-                // Get next items respecting shuffle order
-                if (!timeline.isEmpty) {
-                    var nextIdx = currentIndex
-                    for (i in 0 until 2) {
-                        nextIdx = timeline.getNextWindowIndex(nextIdx, Player.REPEAT_MODE_OFF, shuffleEnabled)
-                        if (nextIdx == androidx.media3.common.C.INDEX_UNSET) break
-                        val nextItem = player.getMediaItemAt(nextIdx)
-                        nextItem.metadata?.let { nextMetadata ->
-                            buildMediaInfo(nextMetadata)?.let { mediaInfo ->
-                                queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
-                            }
+                // Add up to 2 next items if available
+                val nextCount = minOf(2, mediaItemCount - currentIndex - 1)
+                for (i in 1..nextCount) {
+                    val nextItem = player.getMediaItemAt(currentIndex + i)
+                    nextItem.metadata?.let { nextMetadata ->
+                        buildMediaInfo(nextMetadata)?.let { mediaInfo ->
+                            queueItems.add(MediaQueueItem.Builder(mediaInfo).build())
                         }
                     }
                 }
@@ -578,7 +548,7 @@ class CastConnectionHandler(
                     0L
                 }
                 
-                Timber.d("Loading Cast queue: ${queueItems.size} items, startIndex=$startIndex, shuffle=$shuffleEnabled")
+                Timber.d("Loading Cast queue: ${queueItems.size} items, startIndex=$startIndex")
                 
                 withContext(Dispatchers.Main) {
                     val client = remoteMediaClient ?: return@withContext
