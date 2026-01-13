@@ -96,6 +96,7 @@ data class BrowseResponse(
             val subscriptionButton: SubscriptionButton?,
             val menu: Menu,
             val subscriptionButton2: SubscriptionButton2?,
+            val monthlyListenerCount: Runs? = null,
         ) {
             @Serializable
             data class SubscriptionButton2(

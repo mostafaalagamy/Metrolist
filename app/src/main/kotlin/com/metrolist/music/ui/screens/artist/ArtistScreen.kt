@@ -105,6 +105,7 @@ import com.metrolist.music.ui.component.ExpandableText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.LinkSegment
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
@@ -464,10 +465,13 @@ fun ArtistScreen(
                 // About Artist Section
                 if (!showLocal && (showArtistDescription || showArtistSubscriberCount)) {
                     val description = artistPage?.description
+                    val descriptionRuns = artistPage?.descriptionRuns
                     val subscriberCount = artistPage?.subscriberCountText
-                    
-                    if ((showArtistDescription && !description.isNullOrEmpty()) || 
-                        (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty())) {
+                    val monthlyListeners = artistPage?.monthlyListenerCount
+
+                    if ((showArtistDescription && !description.isNullOrEmpty()) ||
+                        (showArtistSubscriberCount && (!subscriberCount.isNullOrEmpty() || !monthlyListeners.isNullOrEmpty()))
+                    ) {
                         item(key = "about_artist") {
                             Column(
                                 modifier = Modifier
@@ -482,19 +486,34 @@ fun ArtistScreen(
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
-                                
+
                                 if (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty()) {
                                     Text(
                                         text = subscriberCount,
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(bottom = 4.dp)
+                                    )
+                                }
+
+                                if (showArtistSubscriberCount && !monthlyListeners.isNullOrEmpty()) {
+                                    Text(
+                                        text = monthlyListeners,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.padding(bottom = if (showArtistDescription && !description.isNullOrEmpty()) 8.dp else 0.dp)
                                     )
                                 }
-                                
-                                if (showArtistDescription && !description.isNullOrEmpty()) {
+
+                                if (showArtistDescription && (!description.isNullOrEmpty() || !descriptionRuns.isNullOrEmpty())) {
                                     ExpandableText(
-                                        text = description,
+                                        text = description.orEmpty(),
+                                        runs = descriptionRuns?.map {
+                                            LinkSegment(
+                                                text = it.text,
+                                                url = it.navigationEndpoint?.urlEndpoint?.url
+                                            )
+                                        },
                                         collapsedMaxLines = 3
                                     )
                                 }

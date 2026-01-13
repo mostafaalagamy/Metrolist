@@ -285,6 +285,19 @@ object YouTube {
     suspend fun artist(browseId: String): Result<ArtistPage> = runCatching {
         val response = innerTube.browse(WEB_REMIX, browseId).body<BrowseResponse>()
 
+        fun mapRuns(runs: List<Run>?): List<Run>? = runs?.map { run ->
+            Run(
+                text = run.text,
+                navigationEndpoint = run.navigationEndpoint
+            )
+        }
+
+        val descriptionRuns = response.contents?.sectionListRenderer?.contents
+            ?.firstOrNull { it.musicDescriptionShelfRenderer != null }
+            ?.musicDescriptionShelfRenderer?.description?.runs
+            ?.let(::mapRuns)
+            ?: response.header?.musicImmersiveHeaderRenderer?.description?.runs?.let(::mapRuns)
+
         ArtistPage(
             artist = ArtistItem(
                 id = browseId,
@@ -307,9 +320,15 @@ object YouTube {
             sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
                 ?.tabRenderer?.content?.sectionListRenderer?.contents
                 ?.mapNotNull(ArtistPage::fromSectionListRendererContent)!!,
-            description = response.header?.musicImmersiveHeaderRenderer?.description?.runs?.firstOrNull()?.text,
-            subscriberCountText = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton2
-                ?.subscribeButtonRenderer?.subscriberCountWithSubscribeText?.runs?.firstOrNull()?.text
+            description = descriptionRuns?.joinToString(separator = "") { it.text },
+                subscriberCountText = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton2
+                    ?.subscribeButtonRenderer?.subscriberCountWithSubscribeText?.runs?.firstOrNull()?.text
+                    ?: response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer
+                        ?.longSubscriberCountText?.runs?.firstOrNull()?.text
+                    ?: response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer
+                        ?.shortSubscriberCountText?.runs?.firstOrNull()?.text,
+            monthlyListenerCount = response.header?.musicImmersiveHeaderRenderer?.monthlyListenerCount?.runs?.firstOrNull()?.text,
+            descriptionRuns = descriptionRuns
         )
     }
 
@@ -1057,7 +1076,10 @@ object YouTube {
 
     suspend fun lyrics(endpoint: BrowseEndpoint): Result<String?> = runCatching {
         val response = innerTube.browse(WEB_REMIX, endpoint.browseId, endpoint.params).body<BrowseResponse>()
-        response.contents?.sectionListRenderer?.contents?.firstOrNull()?.musicDescriptionShelfRenderer?.description?.runs?.firstOrNull()?.text
+        response.contents?.sectionListRenderer?.contents
+            ?.firstOrNull { it.musicDescriptionShelfRenderer != null }
+            ?.musicDescriptionShelfRenderer?.description?.runs
+            ?.joinToString(separator = "") { it.text }
     }
 
     suspend fun related(endpoint: BrowseEndpoint): Result<RelatedPage> = runCatching {
