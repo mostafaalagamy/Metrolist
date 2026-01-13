@@ -360,4 +360,6 @@
     <string name="album_art">Albumcover</string>
     <string name="turntable_widget_description">Schneller Zugriff auf den zuletzt abgespielten Titel</string>
     <string name="queue_widget_description">Musikplayer mit Warteschlangenvorschau</string>
+    <string name="remember_shuffle_and_repeat_desc">Behalte den Shuffle- und Wiederholungsmodus beim Neustart der App bei.</string>
+    <string name="remember_shuffle_and_repeat">Behalte den Shuffle- und Wiederholungsmodus</string>
 </resources>
