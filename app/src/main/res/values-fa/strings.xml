@@ -131,7 +131,7 @@
         <item quantity="one">%d سال</item>
         <item quantity="other">%d سال‌ها</item>
     </plurals>
-    <string name="playlist_imported">فهرست‌پخش واردشد</string>
+    <string name="playlist_imported">فهرست‌پخش افزوده شد</string>
     <string name="removed_song_from_playlist">«%s» از فهرست‌پخش حذف شد</string>
     <string name="playlist_synced">فهرست‌پخش همگام‌شد</string>
     <string name="undo">واگرد</string>
@@ -236,4 +236,5 @@
     <string name="remove_from_playlist">حذف از لیست پخش</string>
     <string name="remove_from_queue">حذف از صف</string>
     <string name="tempo_and_pitch">تمپو و زیر و بمی صدا</string>
+    <string name="duplicates">تکراری ها</string>
 </resources>

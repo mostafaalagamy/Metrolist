@@ -63,8 +63,8 @@
     <string name="details">Подробнее</string>
     <string name="edit">Редактировать</string>
     <string name="start_radio">Запустить радио</string>
-    <string name="play">Воспроизвести</string>
-    <string name="play_next">Воспроизвести следующим</string>
+    <string name="play">Играть</string>
+    <string name="play_next">Играть следующим</string>
     <string name="add_to_queue">Добавить в очередь</string>
     <string name="add_to_library">Добавить в библиотеку</string>
     <string name="add_all_to_library">Добавить все в библиотеку</string>
