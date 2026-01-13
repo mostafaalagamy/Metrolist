@@ -1065,7 +1065,7 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        if (dataStore[SimilarContent] == true &&
+        if (dataStore.get(SimilarContent, true) &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
                 try {
