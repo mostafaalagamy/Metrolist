@@ -371,4 +371,7 @@
     <string name="widget_description">Віджет музичного плеєра з елементами керування відтворенням</string>
     <string name="turntable_widget_description">Швидкий доступ до останньої відтвореної композиції</string>
     <string name="queue_widget_description">Музичний плеєр з попереднім переглядом черги</string>
+    <string name="remember_shuffle_and_repeat">Пам’ятайте про перемішування та повторення</string>
+    <string name="remember_shuffle_and_repeat_desc">Запам\'ятайте режим випадкового відтворення та повтору під час перезапуску програми</string>
+    <string name="lyrics_offset">Текст пісні Offset</string>
 </resources>
