@@ -133,6 +133,9 @@
     <string name="shuffle_playlist_first">Shuffle playlist/album first</string>
     <string name="shuffle_playlist_first_desc">When shuffling, play all songs from the original playlist/album first, then similar content</string>
     <string name="show_wrapped_card">Show Wrapped card</string>
+    <string name="skip_silence_desc">Fast forward through silent parts of songs</string>
+    <string name="skip_silence_instant">Instantly skip silence</string>
+    <string name="skip_silence_instant_desc">Jump ahead during silent moments instead of speeding up playback</string>
 
     <string name="google">Google</string>
     <string name="discord">Discord</string>
