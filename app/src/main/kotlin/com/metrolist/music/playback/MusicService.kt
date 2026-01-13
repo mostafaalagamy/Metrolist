@@ -2112,6 +2112,7 @@ class MusicService :
         const val ARTIST = "artist"
         const val ALBUM = "album"
         const val PLAYLIST = "playlist"
+        const val YOUTUBE_PLAYLIST = "youtube_playlist"
         const val SEARCH = "search"
 
         const val CHANNEL_ID = "music_channel_01"

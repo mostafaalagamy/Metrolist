@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.filterVideoSongs
@@ -216,6 +217,17 @@ constructor(
                     MusicService.PLAYLIST -> {
                         val likedSongCount = database.likedSongsCount().first()
                         val downloadedSongCount = downloadUtil.downloads.value.size
+                        val youtubePlaylists = try {
+                            YouTube.home().getOrNull()?.sections
+                                ?.flatMap { it.items }
+                                ?.filterIsInstance<PlaylistItem>()
+                                ?.take(10)
+                                ?: emptyList()
+                        } catch (e: Exception) {
+                            reportException(e)
+                            emptyList()
+                        }
+                        
                         listOf(
                             browsableMediaItem(
                                 "${MusicService.PLAYLIST}/${PlaylistEntity.LIKED_PLAYLIST_ID}",
@@ -250,6 +262,15 @@ constructor(
                                     playlist.songCount
                                 ),
                                 playlist.thumbnails.firstOrNull()?.toUri(),
+                                MediaMetadata.MEDIA_TYPE_PLAYLIST,
+                            )
+                        } +
+                        youtubePlaylists.map { ytPlaylist ->
+                            browsableMediaItem(
+                                "${MusicService.YOUTUBE_PLAYLIST}/${ytPlaylist.id}",
+                                ytPlaylist.title,
+                                ytPlaylist.author?.name ?: "YouTube Music",
+                                ytPlaylist.thumbnail?.toUri(),
                                 MediaMetadata.MEDIA_TYPE_PLAYLIST,
                             )
                         }
@@ -301,6 +322,35 @@ constructor(
                                 }.first().map {
                                     it.toMediaItem(parentId)
                                 }
+
+                            parentId.startsWith("${MusicService.YOUTUBE_PLAYLIST}/") -> {
+                                val playlistId = parentId.removePrefix("${MusicService.YOUTUBE_PLAYLIST}/")
+                                try {
+                                    YouTube.playlist(playlistId).getOrNull()?.songs
+                                        ?.take(100)
+                                        ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                                        ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
+                                        ?.map { songItem ->
+                                            MediaItem.Builder()
+                                                .setMediaId("$parentId/${songItem.id}")
+                                                .setMediaMetadata(
+                                                    MediaMetadata.Builder()
+                                                        .setTitle(songItem.title)
+                                                        .setSubtitle(songItem.artists.joinToString(", ") { it.name })
+                                                        .setArtist(songItem.artists.joinToString(", ") { it.name })
+                                                        .setArtworkUri(songItem.thumbnail.toUri())
+                                                        .setIsPlayable(true)
+                                                        .setIsBrowsable(false)
+                                                        .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                                                        .build()
+                                                )
+                                                .build()
+                                        } ?: emptyList()
+                                } catch (e: Exception) {
+                                    reportException(e)
+                                    emptyList()
+                                }
+                            }
 
                             else -> emptyList()
                         }
@@ -504,6 +554,26 @@ constructor(
                         songs.map { it.toMediaItem() },
                         songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                         startPositionMs
+                    )
+                }
+
+                MusicService.YOUTUBE_PLAYLIST -> {
+                    val songId = path.getOrNull(2) ?: return@future defaultResult
+                    val playlistId = path.getOrNull(1) ?: return@future defaultResult
+                    
+                    val songs = try {
+                        YouTube.playlist(playlistId).getOrNull()?.songs?.map {
+                            it.toMediaItem()
+                        } ?: emptyList()
+                    } catch (e: Exception) {
+                        reportException(e)
+                        return@future defaultResult
+                    }
+                    
+                    MediaItemsWithStartPosition(
+                        songs,
+                        songs.indexOfFirst { it.mediaId.endsWith(songId) }.takeIf { it != -1 } ?: 0,
+                        C.TIME_UNSET
                     )
                 }
 
