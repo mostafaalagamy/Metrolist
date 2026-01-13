@@ -369,4 +369,14 @@
     <string name="remember_shuffle_and_repeat">Se souvenir de la lecture aléatoire et de la répétition</string>
     <string name="remember_shuffle_and_repeat_desc">Se souvenir du mode aléatoire et répétition lors du redémarrage de l\'application</string>
     <string name="lyrics_offset">Décalage des paroles</string>
+    <string name="about_artist">À propos</string>
+    <string name="show_more">Afficher plus</string>
+    <string name="show_less">Afficher moins</string>
+    <string name="artist_page_settings">Page de l\'artiste</string>
+    <string name="show_artist_description">Afficher la description de l\'artiste</string>
+    <string name="show_artist_subscriber_count">Afficher le nombre d\'abonnés</string>
+    <string name="show_artist_monthly_listeners">Afficher les auditeurs mensuels</string>
+    <string name="skip_silence_desc">Avance rapide pendant les parties silencieuses des titres</string>
+    <string name="skip_silence_instant">Ignorer instantanément les silences</string>
+    <string name="skip_silence_instant_desc">Avancez pendant les silences au lieu d\'accélérer la lecture</string>
 </resources>
