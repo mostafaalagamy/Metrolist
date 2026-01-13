@@ -59,7 +59,7 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.YouTubePlaylistQueue
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.menu.*
 import com.metrolist.music.ui.utils.backToMain
@@ -168,6 +168,7 @@ fun OnlinePlaylistScreen(
                                 dbPlaylist = dbPlaylist,
                                 navController = navController,
                                 coroutineScope = coroutineScope,
+                                continuation = viewModel.continuation,
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -197,9 +198,11 @@ fun OnlinePlaylistScreen(
                                             playerConnection.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = playlist.title,
-                                                    items = filteredSongs.map { it.second.toMediaItem() },
+                                                YouTubePlaylistQueue(
+                                                    playlistId = playlist.id,
+                                                    playlistTitle = playlist.title,
+                                                    initialSongs = filteredSongs.map { it.second },
+                                                    initialContinuation = viewModel.continuation,
                                                     startIndex = index
                                                 )
                                             )
@@ -368,6 +371,7 @@ private fun OnlinePlaylistHeader(
     dbPlaylist: Playlist?,
     navController: NavController,
     coroutineScope: CoroutineScope,
+    continuation: String?,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -479,7 +483,14 @@ private fun OnlinePlaylistHeader(
             Surface(
                 onClick = {
                     if (songs.isNotEmpty()) {
-                        playerConnection.playQueue(ListQueue(playlist.title, songs.map { it.toMediaItem() }))
+                        playerConnection.playQueue(
+                            YouTubePlaylistQueue(
+                                playlistId = playlist.id,
+                                playlistTitle = playlist.title,
+                                initialSongs = songs,
+                                initialContinuation = continuation
+                            )
+                        )
                     }
                 },
                 color = MaterialTheme.colorScheme.primary,
