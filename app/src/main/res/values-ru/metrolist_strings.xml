@@ -373,4 +373,5 @@
     <string name="system_equalizer">Системный эквалайзер</string>
     <string name="remember_shuffle_and_repeat">Запоминать перемешивание и повтор</string>
     <string name="remember_shuffle_and_repeat_desc">Запоминать режим перемешивания и повтора при перезапуске приложения</string>
+    <string name="lyrics_offset">Смещение текста песни</string>
 </resources>
