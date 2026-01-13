@@ -371,4 +371,7 @@
     <string name="widget_description">Widget hudebního přehrávače s ovládáním přehrávání</string>
     <string name="turntable_widget_description">Rychlý přístup k vaší naposledy přehrané skladbě</string>
     <string name="queue_widget_description">Hudební přehrávač s náhledem fronty</string>
+    <string name="remember_shuffle_and_repeat">Zapamatovat náhodné přehrávání a opakování</string>
+    <string name="remember_shuffle_and_repeat_desc">Zapamatovat náhodné přehrávání a režim opakování při restartování aplikace</string>
+    <string name="lyrics_offset">Zpoždění textů</string>
 </resources>
