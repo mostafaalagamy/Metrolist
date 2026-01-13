@@ -374,4 +374,14 @@
     <string name="remember_shuffle_and_repeat">Zapamatovat náhodné přehrávání a opakování</string>
     <string name="remember_shuffle_and_repeat_desc">Zapamatovat náhodné přehrávání a režim opakování při restartování aplikace</string>
     <string name="lyrics_offset">Zpoždění textů</string>
+    <string name="about_artist">O umělci</string>
+    <string name="show_more">Zobrazit více</string>
+    <string name="show_less">Zobrazit méně</string>
+    <string name="artist_page_settings">Stránka umělce</string>
+    <string name="show_artist_description">Zobrazit popis umělce</string>
+    <string name="show_artist_subscriber_count">Zobrazit počet odběratelů</string>
+    <string name="show_artist_monthly_listeners">Zobrazit počet měsíčních posluchačů</string>
+    <string name="skip_silence_desc">Zrychlit tichá místa skladeb</string>
+    <string name="skip_silence_instant">Okamžitě přeskočit ticho</string>
+    <string name="skip_silence_instant_desc">Přeskočit vpřed během tichých momentů namísto zrychlení přehrávání</string>
 </resources>
