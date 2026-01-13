@@ -222,7 +222,7 @@
     <string name="scrobble_delay_percent">Scrobble gecikme yüzdesi</string>
     <string name="scrobble_delay_minutes">Scrobble gecikme dakikaları</string>
     <string name="swipe_song_to_remove">Şarkıyı çalma listesinden kaldırmak için kaydırın</string>
-    <string name="last_fm_send_likes">Beğeni/Beğenmeme Gönder</string>
+    <string name="last_fm_send_likes">Beğenilenler/Beğenilmeyenleri Gönder</string>
     <string name="last_fm_send_likes_description">Metrolist\'te Beğenilen/Beğenilmeyen şarkıları Last.fm\'de de Beğen/Beğenme</string>
     <string name="primary_color_style">Ana renk</string>
     <string name="auto_scroll">Yeniden senkronize et</string>
@@ -363,4 +363,5 @@
     <string name="widget_description">Oynatıcı widgetı için arkaplan kontrolcüsü</string>
     <string name="turntable_widget_description">Son zamanlarda en çok dinlediğin parçalar için hızlı erişim</string>
     <string name="queue_widget_description">Sıra önizlemeli oynatıcı</string>
+    <string name="lyrics_offset">Şarkı sözünün gecikme süresi</string>
 </resources>
