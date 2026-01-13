@@ -374,4 +374,7 @@
     <string name="remember_shuffle_and_repeat">Запоминать перемешивание и повтор</string>
     <string name="remember_shuffle_and_repeat_desc">Запоминать режим перемешивания и повтора при перезапуске приложения</string>
     <string name="lyrics_offset">Смещение текста песни</string>
+    <string name="skip_silence_desc">Ускорять воспроизведение тихих участков треков</string>
+    <string name="skip_silence_instant">Мгновенно пропускать тишину</string>
+    <string name="skip_silence_instant_desc">Пропускать тихие фрагменты сразу вместо их ускорения</string>
 </resources>
