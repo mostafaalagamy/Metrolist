@@ -1435,6 +1435,63 @@ class MusicService :
             }
         }
 
+        // Load similar content when near end of queue and no more pages available
+        // Works in playlists and home page when SimilarContent is enabled
+        if (dataStore.get(SimilarContent, false) &&
+            reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+            player.mediaItemCount - player.currentMediaItemIndex <= 3 &&
+            !currentQueue.hasNextPage() &&
+            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)
+        ) {
+            scope.launch(SilentHandler) {
+                // Get all current queue song IDs to filter duplicates
+                val currentQueueIds = (0 until player.mediaItemCount).map { 
+                    player.getMediaItemAt(it).mediaId 
+                }.toSet()
+                
+                // If automixItems is empty, try to load similar content based on current song
+                if (automixItems.value.isEmpty()) {
+                    val currentSongId = player.currentMetadata?.id
+                    if (currentSongId != null) {
+                        withContext(Dispatchers.IO) {
+                            try {
+                                YouTube.next(WatchEndpoint(
+                                    videoId = currentSongId,
+                                    playlistId = "RDAMVM$currentSongId",
+                                    params = "wAEB"
+                                )).onSuccess { radioResult ->
+                                    val filteredItems = radioResult.items
+                                        .filter { it.id !in currentQueueIds }
+                                        .map { it.toMediaItem() }
+                                    if (filteredItems.isNotEmpty()) {
+                                        automixItems.value = filteredItems
+                                    }
+                                }
+                            } catch (_: Exception) {
+                                // Silent fail
+                            }
+                        }
+                    }
+                }
+                
+                // Filter out any songs already in queue before adding
+                val itemsToAdd = automixItems.value
+                    .filter { it.mediaId !in currentQueueIds }
+                    .filterExplicit(dataStore.get(HideExplicitKey, false))
+                    .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                    .take(10)
+                    
+                if (player.playbackState != STATE_IDLE && itemsToAdd.isNotEmpty()) {
+                    player.addMediaItems(itemsToAdd)
+                    // Remove all items that were either added or already in queue
+                    val addedIds = itemsToAdd.map { it.mediaId }.toSet()
+                    automixItems.value = automixItems.value.filter { 
+                        it.mediaId !in addedIds && it.mediaId !in currentQueueIds 
+                    }
+                }
+            }
+        }
+
         // Save state when media item changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
