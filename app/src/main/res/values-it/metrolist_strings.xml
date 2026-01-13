@@ -366,4 +366,6 @@
     <string name="widget_description">Widget lettore musicale con controlli della riproduzione</string>
     <string name="turntable_widget_description">Accesso rapido i tuoi brani ascoltati più recentemente</string>
     <string name="queue_widget_description">Lettore musicale con anteprima della coda</string>
+    <string name="remember_shuffle_and_repeat">Ricorda le opzioni di ripeti e shuffle</string>
+    <string name="remember_shuffle_and_repeat_desc">Ricorda le modalità di ripetizione e di mescolamento quando l\'app viene riavviata</string>
 </resources>
