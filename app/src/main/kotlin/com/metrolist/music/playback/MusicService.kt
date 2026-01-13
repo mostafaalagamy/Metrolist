@@ -1069,29 +1069,21 @@ class MusicService :
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
                 try {
-                    // Get current queue IDs to filter duplicates
-                    val currentQueueIds = mutableSetOf<String>()
-                    for (i in 0 until player.mediaItemCount) {
-                        player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
-                    }
-                    
                     // Try primary method
                     YouTube.next(WatchEndpoint(playlistId = playlistId))
                         .onSuccess { firstResult ->
                             YouTube.next(WatchEndpoint(playlistId = firstResult.endpoint.playlistId))
                                 .onSuccess { secondResult ->
-                                    automixItems.value = secondResult.items
-                                        .filter { it.id !in currentQueueIds }
-                                        .distinctBy { it.id }
-                                        .map { song -> song.toMediaItem() }
+                                    automixItems.value = secondResult.items.map { song ->
+                                        song.toMediaItem()
+                                    }
                                 }
                                 .onFailure {
                                     // Fallback: use first result items
                                     if (firstResult.items.isNotEmpty()) {
-                                        automixItems.value = firstResult.items
-                                            .filter { it.id !in currentQueueIds }
-                                            .distinctBy { it.id }
-                                            .map { song -> song.toMediaItem() }
+                                        automixItems.value = firstResult.items.map { song ->
+                                            song.toMediaItem()
+                                        }
                                     }
                                 }
                         }
@@ -1105,8 +1097,7 @@ class MusicService :
                                     params = "wAEB"
                                 )).onSuccess { radioResult ->
                                     val filteredItems = radioResult.items
-                                        .filter { it.id != currentSong.id && it.id !in currentQueueIds }
-                                        .distinctBy { it.id }
+                                        .filter { it.id != currentSong.id }
                                         .map { it.toMediaItem() }
                                     if (filteredItems.isNotEmpty()) {
                                         automixItems.value = filteredItems
@@ -1116,8 +1107,7 @@ class MusicService :
                                     YouTube.next(WatchEndpoint(videoId = currentSong.id)).getOrNull()?.relatedEndpoint?.let { relatedEndpoint ->
                                         YouTube.related(relatedEndpoint).onSuccess { relatedPage ->
                                             val relatedItems = relatedPage.songs
-                                                .filter { it.id != currentSong.id && it.id !in currentQueueIds }
-                                                .distinctBy { it.id }
+                                                .filter { it.id != currentSong.id }
                                                 .map { it.toMediaItem() }
                                             if (relatedItems.isNotEmpty()) {
                                                 automixItems.value = relatedItems
@@ -1130,61 +1120,6 @@ class MusicService :
                 } catch (_: Exception) {
                     // Silent fail
                 }
-            }
-        }
-    }
-
-    private fun getAutomixForCurrentSong(currentSongId: String) {
-        scope.launch(SilentHandler) {
-            // Get current queue IDs to filter duplicates
-            val currentQueueIds = mutableSetOf<String>()
-            for (i in 0 until player.mediaItemCount) {
-                player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
-            }
-            
-            withContext(Dispatchers.IO) {
-                try {
-                    YouTube.next(WatchEndpoint(
-                        videoId = currentSongId,
-                        playlistId = "RDAMVM$currentSongId",
-                        params = "wAEB"
-                    )).onSuccess { radioResult ->
-                        val newItems = radioResult.items
-                            .filter { it.id !in currentQueueIds }
-                            .distinctBy { it.id }
-                            .map { it.toMediaItem() }
-                        if (newItems.isNotEmpty()) {
-                            automixItems.value = newItems
-                            // After loading, add items to queue
-                            addAutomixItemsToQueue()
-                        }
-                    }
-                } catch (_: Exception) {
-                    // Silent fail
-                }
-            }
-        }
-    }
-
-    private fun addAutomixItemsToQueue() {
-        scope.launch(SilentHandler) {
-            // Get current queue IDs to filter duplicates
-            val currentQueueIds = mutableSetOf<String>()
-            for (i in 0 until player.mediaItemCount) {
-                player.getMediaItemAt(i).mediaId.let { currentQueueIds.add(it) }
-            }
-            
-            val itemsToAdd = automixItems.value
-                .filter { it.mediaId !in currentQueueIds }
-                .distinctBy { it.mediaId }
-                .filterExplicit(dataStore.get(HideExplicitKey, false))
-                .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
-                .take(10)
-                
-            if (player.playbackState != STATE_IDLE && itemsToAdd.isNotEmpty()) {
-                player.addMediaItems(itemsToAdd)
-                // Clear automixItems to prevent re-adding
-                automixItems.value = emptyList()
             }
         }
     }
@@ -1497,26 +1432,6 @@ class MusicService :
                 if (player.playbackState != STATE_IDLE && mediaItems.isNotEmpty()) {
                     player.addMediaItems(mediaItems)
                 }
-            }
-        }
-
-        // Load similar content when near end of queue and no more pages available
-        // Uses existing automixItems or loads new ones via getAutomix logic
-        if (dataStore.get(SimilarContent, false) &&
-            reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
-            player.mediaItemCount - player.currentMediaItemIndex <= 3 &&
-            !currentQueue.hasNextPage() &&
-            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)
-        ) {
-            // If automixItems is empty, trigger loading similar content
-            if (automixItems.value.isEmpty()) {
-                val currentSongId = player.currentMetadata?.id
-                if (currentSongId != null) {
-                    getAutomixForCurrentSong(currentSongId)
-                }
-            } else {
-                // Add available automix items to queue
-                addAutomixItemsToQueue()
             }
         }
 
