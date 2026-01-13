@@ -367,4 +367,11 @@
     <string name="skip_silence_desc">Şarkıların sessiz kısımlarını hızlıca atla</string>
     <string name="skip_silence_instant">Sessiz kısımları hemen atla</string>
     <string name="skip_silence_instant_desc">Şarkı hızını arttırmadan şarkının sessiz kısımları atla</string>
+    <string name="about_artist">Hakkında</string>
+    <string name="show_more">Daha fazla göster</string>
+    <string name="show_less">Daha az göster</string>
+    <string name="artist_page_settings">Sanatçı sayfası</string>
+    <string name="show_artist_description">Sanatçının açıklamasını göster</string>
+    <string name="show_artist_subscriber_count">Abone sayısını göster</string>
+    <string name="show_artist_monthly_listeners">Aylık dinleyicileri göster</string>
 </resources>
