@@ -11,6 +11,7 @@ data class NavigationEndpoint(
     val queueAddEndpoint: QueueAddEndpoint? = null,
     val shareEntityEndpoint: ShareEntityEndpoint? = null,
     val feedbackEndpoint: FeedbackEndpoint? = null,
+    val urlEndpoint: UrlEndpoint? = null,
 ) {
     val endpoint: Endpoint?
         get() =
