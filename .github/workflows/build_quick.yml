@@ -1,0 +1,74 @@
+name: Quick Test Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ '**' ]
+    paths-ignore:
+      - 'README.md'
+      - 'fastlane/**'
+      - 'assets/**'
+      - '.github/**/*.md'
+      - '.github/FUNDING.yml'
+      - '.github/ISSUE_TEMPLATE/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build_quick:
+    name: Quick Universal Release Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: false
+          cache-cleanup: on-success
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Change Package Name for Test Build
+        run: |
+          # Change applicationId to test variant
+          sed -i 's/applicationId = "com.metrolist.music"/applicationId = "com.metrolist.music.test"/' app/build.gradle.kts
+
+      - name: Build Universal Release APK (No Lint)
+        run: ./gradlew --no-configuration-cache --console=plain assembleUniversalFossRelease --warning-mode summary -x lint -x lintUniversalFossRelease
+        env:
+          PULL_REQUEST: 'false'
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+
+      - name: Sign APK
+        uses: ilharp/sign-android-release@v2.0.0
+        with:
+          releaseDir: app/build/outputs/apk/universalFoss/release/
+          signingKey: ${{ secrets.KEYSTORE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 35.0.0
+
+      - name: Move signed APK
+        run: |
+          OUTPUT_DIR="app/build/outputs/apk/universalFoss/release"
+          mkdir -p "$OUTPUT_DIR/out"
+          find "$OUTPUT_DIR" -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} "$OUTPUT_DIR/out/app-universal-test-release.apk"
+
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v6
+        with:
+          name: app-universal-test-release
+          path: app/build/outputs/apk/universalFoss/release/out/*
