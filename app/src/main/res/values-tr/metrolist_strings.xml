@@ -364,4 +364,7 @@
     <string name="turntable_widget_description">Son zamanlarda en çok dinlediğin parçalar için hızlı erişim</string>
     <string name="queue_widget_description">Sıra önizlemeli oynatıcı</string>
     <string name="lyrics_offset">Şarkı sözünün gecikme süresi</string>
+    <string name="skip_silence_desc">Şarkıların sessiz kısımlarını hızlıca atla</string>
+    <string name="skip_silence_instant">Sessiz kısımları hemen atla</string>
+    <string name="skip_silence_instant_desc">Şarkı hızını arttırmadan şarkının sessiz kısımları atla</string>
 </resources>
