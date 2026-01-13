@@ -50,7 +50,16 @@
     <string name="added_to_play_next">Added to play next</string>
     <string name="added_to_queue">Added to the queue</string>
     <string name="remove_from_cache">Remove from cache</string>
-    
+
+    <!-- Artist about section -->
+    <string name="about_artist">About</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+    <string name="artist_page_settings">Artist page</string>
+    <string name="show_artist_description">Show artist description</string>
+    <string name="show_artist_subscriber_count">Show subscriber count</string>
+    <string name="show_artist_monthly_listeners">Show monthly listeners</string>
+
     <!-- Menu descriptions -->
     <string name="download_playlist_desc">Download all songs for offline playback</string>
     <string name="remove_download_playlist_desc">Remove all downloaded songs from this playlist</string>
