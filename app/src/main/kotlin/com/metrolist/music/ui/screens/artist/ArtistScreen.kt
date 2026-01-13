@@ -94,6 +94,7 @@ import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.ShowArtistDescriptionKey
 import com.metrolist.music.constants.ShowArtistSubscriberCountKey
+import com.metrolist.music.constants.ShowMonthlyListenersKey
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
@@ -154,6 +155,7 @@ fun ArtistScreen(
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
     val showArtistDescription by rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
     val showArtistSubscriberCount by rememberPreference(key = ShowArtistSubscriberCountKey, defaultValue = true)
+    val showMonthlyListeners by rememberPreference(key = ShowMonthlyListenersKey, defaultValue = true)
 
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -463,15 +465,15 @@ fun ArtistScreen(
                 }
 
                 // About Artist Section
-                if (!showLocal && (showArtistDescription || showArtistSubscriberCount)) {
+                if (!showLocal && (showArtistDescription || showArtistSubscriberCount || showMonthlyListeners)) {
                     val description = artistPage?.description
                     val descriptionRuns = artistPage?.descriptionRuns
                     val subscriberCount = artistPage?.subscriberCountText
                     val monthlyListeners = artistPage?.monthlyListenerCount
 
                     if ((showArtistDescription && !description.isNullOrEmpty()) ||
-                        (showArtistSubscriberCount && (!subscriberCount.isNullOrEmpty() || !monthlyListeners.isNullOrEmpty()))
-                    ) {
+                        (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty()) ||
+                        (showMonthlyListeners && !monthlyListeners.isNullOrEmpty())) {
                         item(key = "about_artist") {
                             Column(
                                 modifier = Modifier
@@ -480,12 +482,14 @@ fun ArtistScreen(
                                     .padding(bottom = 16.dp)
                                     .animateItem()
                             ) {
-                                Text(
-                                    text = stringResource(R.string.about_artist),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(bottom = 8.dp)
-                                )
+                                if (showArtistDescription && (!description.isNullOrEmpty() || !descriptionRuns.isNullOrEmpty())) {
+                                    Text(
+                                        text = stringResource(R.string.about_artist),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                }
 
                                 if (showArtistSubscriberCount && !subscriberCount.isNullOrEmpty()) {
                                     Text(
@@ -496,7 +500,7 @@ fun ArtistScreen(
                                     )
                                 }
 
-                                if (showArtistSubscriberCount && !monthlyListeners.isNullOrEmpty()) {
+                                if (showMonthlyListeners && !monthlyListeners.isNullOrEmpty()) {
                                     Text(
                                         text = monthlyListeners,
                                         style = MaterialTheme.typography.bodyMedium,

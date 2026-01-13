@@ -68,15 +68,7 @@ fun ExpandableText(
     }
 
     Column(
-        modifier = modifier
-            .animateContentSize()
-            .then(
-                if (hasOverflow) {
-                    Modifier.clickable { isExpanded = !isExpanded }
-                } else {
-                    Modifier
-                }
-            )
+        modifier = modifier.animateContentSize()
     ) {
         ClickableText(
             text = annotatedText,
@@ -90,7 +82,11 @@ fun ExpandableText(
                 annotatedText.getStringAnnotations(tag = "URL", start = offset, end = offset)
                     .firstOrNull()?.let { annotation ->
                         uriHandler.openUri(annotation.item)
+                        return@ClickableText
                     }
+                if (hasOverflow) {
+                    isExpanded = !isExpanded
+                }
             }
         )
         
@@ -99,7 +95,9 @@ fun ExpandableText(
                 text = stringResource(if (isExpanded) R.string.show_less else R.string.show_more),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .clickable { isExpanded = !isExpanded }
             )
         }
     }

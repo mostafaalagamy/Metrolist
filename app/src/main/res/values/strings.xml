@@ -69,9 +69,6 @@
 
     <!-- Artist screen -->
     <string name="from_your_library">From your library</string>
-    <string name="about_artist">About</string>
-    <string name="show_more">Show more</string>
-    <string name="show_less">Show less</string>
 
     <!-- Album screen -->
     <string name="other_versions">Other versions</string>
@@ -321,10 +318,6 @@
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="hide_explicit">Hide explicit content</string>
-    <string name="artist_page_settings">Artist page</string>
-    <string name="show_artist_description">Show artist description</string>
-    <string name="show_artist_subscriber_count">Show subscriber count</string>
-
 
     <string name="backup_restore">Backup and restore</string>
     <string name="action_backup">Backup</string>
