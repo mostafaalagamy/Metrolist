@@ -144,7 +144,8 @@ fun WrappedIntro(onNext: () -> Unit) {
                         fontFamily = bbhBartle,
                         fontSize = 800.sp, // Increased size
                         color = Color.White,
-                        drawStyle = Stroke(width = 2f)
+                        drawStyle = Stroke(width = 2f),
+                        textAlign = null
                     ),
                     modifier = Modifier.width(this.maxHeight) // Use height for width due to rotation
                 )
