@@ -362,4 +362,14 @@
     <string name="queue_widget_description">Musikplayer mit Warteschlangenvorschau</string>
     <string name="remember_shuffle_and_repeat_desc">Behalte den Shuffle- und Wiederholungsmodus beim Neustart der App bei.</string>
     <string name="remember_shuffle_and_repeat">Behalte den Shuffle- und Wiederholungsmodus</string>
+    <string name="about_artist">Über</string>
+    <string name="show_more">Mehr anzeigen</string>
+    <string name="show_less">Weniger anzeigen</string>
+    <string name="artist_page_settings">Künstlerseite</string>
+    <string name="show_artist_description">Künstlerbeschreibung anzeigen</string>
+    <string name="show_artist_subscriber_count">Abonnentenzahl anzeigen</string>
+    <string name="show_artist_monthly_listeners">Monatliche Hörer anzeigen</string>
+    <string name="skip_silence_instant">Stille sofort überspringen</string>
+    <string name="skip_silence_instant_desc">Springe in stillen Momenten vorwärts, anstatt die Wiedergabe zu beschleunigen</string>
+    <string name="skip_silence_desc">Stille Teile von Songs vorspulen</string>
 </resources>
