@@ -362,10 +362,9 @@ fun SongListItem(
         if (song.song.explicit) {
             Icon.Explicit()
         }
-        // COMMENTED OUT: Library icon
-        // if (showInLibraryIcon && song.song.inLibrary != null) {
-        //     Icon.Library()
-        // }
+        if (showInLibraryIcon && song.song.inLibrary != null) {
+            Icon.Library()
+        }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id)
                 .collectAsState(initial = null)
@@ -429,10 +428,9 @@ fun SongGridItem(
         if (showLikedIcon && song.song.liked) {
             Icon.Favorite()
         }
-        // COMMENTED OUT: Library icon
-        // if (showInLibraryIcon && song.song.inLibrary != null) {
-        //     Icon.Library()
-        // }
+        if (showInLibraryIcon && song.song.inLibrary != null) {
+            Icon.Library()
+        }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
             Icon.Download(download?.state)
@@ -503,7 +501,7 @@ fun ArtistListItem(
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) = ListItem(
     title = artist.artist.name,
-    subtitle = "",
+    subtitle = pluralStringResource(R.plurals.n_song, artist.songCount, artist.songCount),
     badges = badges,
     thumbnailContent = {
         AsyncImage(
@@ -535,7 +533,7 @@ fun ArtistGridItem(
     fillMaxWidth: Boolean = false,
 ) = GridItem(
     title = artist.artist.name,
-    subtitle = "",
+    subtitle = pluralStringResource(R.plurals.n_song, artist.songCount, artist.songCount),
     badges = badges,
     thumbnailContent = {
         AsyncImage(

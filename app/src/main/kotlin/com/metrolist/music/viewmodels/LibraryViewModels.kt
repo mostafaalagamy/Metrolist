@@ -20,6 +20,8 @@ import com.metrolist.music.constants.AlbumFilterKey
 import com.metrolist.music.constants.AlbumSortDescendingKey
 import com.metrolist.music.constants.AlbumSortType
 import com.metrolist.music.constants.AlbumSortTypeKey
+import com.metrolist.music.constants.ArtistFilter
+import com.metrolist.music.constants.ArtistFilterKey
 import com.metrolist.music.constants.ArtistSongSortDescendingKey
 import com.metrolist.music.constants.ArtistSongSortType
 import com.metrolist.music.constants.ArtistSongSortTypeKey
@@ -98,19 +100,16 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedSongs() {
-        syncUtils.syncLikedSongs()
+    fun syncLikedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
 
-    // COMMENTED OUT: Library sync function - disabled to save resources
-    // suspend fun syncLibrarySongs() {
-    //     syncUtils.syncLibrarySongs()
-    // }
+    fun syncLibrarySongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+    }
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncUploadedSongs() {
-        syncUtils.syncUploadedSongs()
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }
 
@@ -125,18 +124,21 @@ constructor(
     val allArtists =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
+                    it[ArtistFilterKey].toEnum(ArtistFilter.LIKED),
                     it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
                     it[ArtistSortDescendingKey] ?: true,
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (sortType, descending) ->
-                database.artistsBookmarked(sortType, descending)
+            .flatMapLatest { (filter, sortType, descending) ->
+                when (filter) {
+                    ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+                    ArtistFilter.LIBRARY -> database.artists(sortType, descending)
+                }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedArtists() {
-        syncUtils.syncArtistsSubscriptions()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
     }
 
     init {
@@ -185,18 +187,13 @@ constructor(
                 val (filter, sortType, descending) = filterSort
                 when (filter) {
                     AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                     AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete - syncs liked albums
-    suspend fun syncLikedAlbums() {
-        syncUtils.syncLikedAlbums()
-    }
-
-    // Suspend function that waits for sync to complete - syncs uploaded albums
-    suspend fun syncUploadedAlbums() {
-        syncUtils.syncUploadedAlbums()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
     }
 
     init {
@@ -296,8 +293,7 @@ constructor(
     // Suspend function that waits for all syncs to complete
     suspend fun syncAllLibrary() {
         syncUtils.syncLikedSongs()
-        // COMMENTED OUT: Library sync
-        // syncUtils.syncLibrarySongs()
+        syncUtils.syncLibrarySongs()
         syncUtils.syncArtistsSubscriptions()
         syncUtils.syncLikedAlbums()
         syncUtils.syncSavedPlaylists()

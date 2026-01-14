@@ -338,55 +338,56 @@ fun SelectionSongMenu(
                             }
                         )
                     )
-                    // COMMENTED OUT: Library add/remove option
-                    // Material3MenuItemData(
-                    //     title = {
-                    //         Text(
-                    //             text = stringResource(
-                    //                 if (allInLibrary) R.string.remove_from_library else R.string.add_to_library
-                    //             )
-                    //         )
-                    //     },
-                    //     icon = {
-                    //         Icon(
-                    //             painter = painterResource(
-                    //                 if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
-                    //             ),
-                    //             contentDescription = null,
-                    //         )
-                    //     },
-                    //     onClick = {
-                    //         if (allInLibrary) {
-                    //             database.query {
-                    //                 songSelection.forEach { song ->
-                    //                     inLibrary(song.id, null)
-                    //                 }
-                    //             }
-                    //             coroutineScope.launch {
-                    //                 val tokens =
-                    //                     songSelection.mapNotNull { it.song.libraryRemoveToken }
-                    //                 tokens.chunked(20).forEach {
-                    //                     YouTube.feedback(it)
-                    //                 }
-                    //             }
-                    //         } else {
-                    //             database.transaction {
-                    //                 songSelection.forEach { song ->
-                    //                     insert(song.toMediaMetadata())
-                    //                     inLibrary(song.id, LocalDateTime.now())
-                    //                 }
-                    //             }
-                    //             coroutineScope.launch {
-                    //                 val tokens =
-                    //                     songSelection.filter { it.song.inLibrary == null }
-                    //                         .mapNotNull { it.song.libraryAddToken }
-                    //                 tokens.chunked(20).forEach {
-                    //                     YouTube.feedback(it)
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // ),
+                    add(
+                        Material3MenuItemData(
+                            title = {
+                                Text(
+                                    text = stringResource(
+                                        if (allInLibrary) R.string.remove_from_library else R.string.add_to_library
+                                    )
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(
+                                        if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
+                                    ),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                if (allInLibrary) {
+                                    database.query {
+                                        songSelection.forEach { song ->
+                                            inLibrary(song.id, null)
+                                        }
+                                    }
+                                    coroutineScope.launch {
+                                        val tokens =
+                                            songSelection.mapNotNull { it.song.libraryRemoveToken }
+                                        tokens.chunked(20).forEach {
+                                            YouTube.feedback(it)
+                                        }
+                                    }
+                                } else {
+                                    database.transaction {
+                                        songSelection.forEach { song ->
+                                            insert(song.toMediaMetadata())
+                                            inLibrary(song.id, LocalDateTime.now())
+                                        }
+                                    }
+                                    coroutineScope.launch {
+                                        val tokens =
+                                            songSelection.filter { it.song.inLibrary == null }
+                                                .mapNotNull { it.song.libraryAddToken }
+                                        tokens.chunked(20).forEach {
+                                            YouTube.feedback(it)
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    )
                 }
             )
         }
