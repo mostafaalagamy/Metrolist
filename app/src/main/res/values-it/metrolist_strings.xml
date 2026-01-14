@@ -111,7 +111,7 @@
     <string name="numbers">Numeri</string>
     <string name="subscribers">Iscritti</string>
     <string name="views">Visualizzazioni</string>
-    <string name="likes">Mi piace</string>
+    <string name="likes">Piaciuti</string>
     <string name="dislikes">Non mi piace</string>
     <plurals name="seconds">
         <item quantity="one">1 secondo</item>
@@ -263,8 +263,8 @@
     <string name="share_playlist_desc">Condividi questa playlist con altri</string>
     <string name="delete_playlist_desc">Rimuovi definitivamente questa playlist</string>
     <string name="sync_playlist_desc">Sincronizza la playlist con YouTube Music</string>
-    <string name="enable_better_lyrics">Abilita Better Lyrics</string>
-    <string name="enable_better_lyrics_desc">Utilizza il provider Better Lyrics per testi sincronizzati parola per parola</string>
+    <string name="enable_better_lyrics">Attiva il fornitore di testi Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Usa Better Lyrics come fornitore di testi sincronizzati parola per parola</string>
     <string name="shuffle_playlist_first">Riproduzione casuale della playlist/album all\'inizio</string>
     <string name="shuffle_playlist_first_desc">Durante la riproduzione casuale, riproduci prima tutte le canzoni della playlist/album originale e poi i contenuti simili</string>
     <string name="lyrics_animation_style">Stile di animazione parola per parola</string>
@@ -353,4 +353,19 @@
     <string name="enable_wavy_slider">Attiva lo slider ondulato</string>
     <string name="enable_squiggly_slider">Abilita slider ondulato</string>
     <string name="pause_music_when_media_is_muted">Metti la musica in pausa quando il media è mutato</string>
+    <string name="enable_simpmusic_desc">Usa SimpMusic Lyrics come fornitore di testi sincronizzati</string>
+    <string name="enable_simpmusic">Attiva SimpMusic Lyrics</string>
+    <string name="system_equalizer">Equalizzatore di sistema</string>
+    <string name="album_art">Copertina</string>
+    <string name="no_song_playing">Nessun brano in riproduzione</string>
+    <string name="tap_to_open">Premi per aprire Metrolist</string>
+    <string name="previous">Precedente</string>
+    <string name="play_pause">Play/Pausa</string>
+    <string name="next">Prossimo</string>
+    <string name="like">Mi piace</string>
+    <string name="widget_description">Widget lettore musicale con controlli della riproduzione</string>
+    <string name="turntable_widget_description">Accesso rapido i tuoi brani ascoltati più recentemente</string>
+    <string name="queue_widget_description">Lettore musicale con anteprima della coda</string>
+    <string name="remember_shuffle_and_repeat">Ricorda le opzioni di ripeti e shuffle</string>
+    <string name="remember_shuffle_and_repeat_desc">Ricorda le modalità di ripetizione e di mescolamento quando l\'app viene riavviata</string>
 </resources>

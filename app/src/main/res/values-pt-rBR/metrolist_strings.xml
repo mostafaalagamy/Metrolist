@@ -352,4 +352,20 @@
     <string name="error_playing">Erro ao reproduzir</string>
     <string name="failed_to_parse_proxy">Não foi possível analisar o url proxy.</string>
     <string name="enable_squiggly_slider">Ativar o controle deslizante ondulado</string>
+    <string name="pause_music_when_media_is_muted">Pausar a música quando o dispositivo estiver sem som</string>
+    <string name="enable_simpmusic">Habilitar letras do SimpMusic</string>
+    <string name="enable_simpmusic_desc">Usar o provedor SimpMusic Lyrics para letras sincronizadas</string>
+    <string name="remember_shuffle_and_repeat">Memorizar aleatório e repetir</string>
+    <string name="remember_shuffle_and_repeat_desc">Memorizar aleatório e modo de repetição ao reiniciar o aplicativo</string>
+    <string name="system_equalizer">Equalizador do Sistema</string>
+    <string name="album_art">Capa do Álbum</string>
+    <string name="no_song_playing">Nenhuma música tocando</string>
+    <string name="tap_to_open">Toque para abrir o Metrolist</string>
+    <string name="previous">Anterior</string>
+    <string name="play_pause">Tocar/Pausar</string>
+    <string name="next">Próximo</string>
+    <string name="like">Gostei</string>
+    <string name="widget_description">Widget do tocador com controles de reprodução</string>
+    <string name="turntable_widget_description">Acesso rápido a sua música tocada mais recente</string>
+    <string name="queue_widget_description">Tocador de música com prévia da fila</string>
 </resources>

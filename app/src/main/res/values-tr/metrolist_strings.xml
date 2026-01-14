@@ -10,7 +10,7 @@
     <string name="unknown_item_type">Bilinmeyen öğe türü</string>
     <string name="loading_charts">Listeler yükleniyor…</string>
     <string name="retry_button">Tekrar dene</string>
-    <string name="album_cover_desc">Albüm kapağı</string>
+    <string name="album_cover_desc">Albüm açıklaması</string>
     <string name="top_music_videos">En Popüler Müzik Videoları</string>
     <string name="trending">Trendler</string>
     <string name="weeks">Haftalar</string>
@@ -222,7 +222,7 @@
     <string name="scrobble_delay_percent">Scrobble gecikme yüzdesi</string>
     <string name="scrobble_delay_minutes">Scrobble gecikme dakikaları</string>
     <string name="swipe_song_to_remove">Şarkıyı çalma listesinden kaldırmak için kaydırın</string>
-    <string name="last_fm_send_likes">Beğeni/Beğenmeme Gönder</string>
+    <string name="last_fm_send_likes">Beğenilenler/Beğenilmeyenleri Gönder</string>
     <string name="last_fm_send_likes_description">Metrolist\'te Beğenilen/Beğenilmeyen şarkıları Last.fm\'de de Beğen/Beğenme</string>
     <string name="primary_color_style">Ana renk</string>
     <string name="auto_scroll">Yeniden senkronize et</string>
@@ -331,15 +331,15 @@
     <string name="wavy">Dalgalı</string>
     <plurals name="profiles_count">
         <item quantity="one">%d Profil</item>
-        <item quantity="other">%d Profil</item>
+        <item quantity="other">%d Profiller</item>
     </plurals>
     <string name="equalizer_header">Ekolayzer</string>
     <string name="no_profiles">Ekolayzır profili yok</string>
     <string name="import_profile">Profili İçe Aktar</string>
     <string name="eq_disabled">Devre dışı</string>
     <plurals name="band_count">
-        <item quantity="one">%d bant</item>
-        <item quantity="other">%d bant</item>
+        <item quantity="one">%d Gurup</item>
+        <item quantity="other">%d Guruplar</item>
     </plurals>
     <string name="delete_profile_desc">Profili Sil</string>
     <string name="delete_profile_confirmation">%1$s profilini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
@@ -347,4 +347,31 @@
     <string name="error_file_open">Dosya açılamadı: %1$s</string>
     <string name="import_error_title">İçe Aktarma Hatası</string>
     <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştirin</string>
+    <string name="pause_music_when_media_is_muted">Medya sesi kapatıldığında müziği duraklat</string>
+    <string name="enable_simpmusic">SimpMusic\'in şarkı sözlerini etkinleştir</string>
+    <string name="enable_simpmusic_desc">Eşitlenmiş sözcükler için SimpMusic sağlayıcısını etkinleştir</string>
+    <string name="remember_shuffle_and_repeat">Karışık listeyi hatırla ve tekrarla</string>
+    <string name="remember_shuffle_and_repeat_desc">Karışık listeyi hatırla ve uygulama yeniden başlatıldığında tekrarla</string>
+    <string name="system_equalizer">Sistem Ekolayzeri</string>
+    <string name="album_art">Albüm kapağı</string>
+    <string name="no_song_playing">Oynatılan şarkı yok</string>
+    <string name="tap_to_open">Metrolist\'i açmak için bas</string>
+    <string name="previous">Bir önceki</string>
+    <string name="play_pause">Oynat/Duraklat</string>
+    <string name="next">Bir sonraki</string>
+    <string name="like">Beğen</string>
+    <string name="widget_description">Oynatıcı widgetı için arkaplan kontrolcüsü</string>
+    <string name="turntable_widget_description">Son zamanlarda en çok dinlediğin parçalar için hızlı erişim</string>
+    <string name="queue_widget_description">Sıra önizlemeli oynatıcı</string>
+    <string name="lyrics_offset">Şarkı sözünün gecikme süresi</string>
+    <string name="skip_silence_desc">Şarkıların sessiz kısımlarını hızlıca atla</string>
+    <string name="skip_silence_instant">Sessiz kısımları hemen atla</string>
+    <string name="skip_silence_instant_desc">Şarkı hızını arttırmadan şarkının sessiz kısımları atla</string>
+    <string name="about_artist">Hakkında</string>
+    <string name="show_more">Daha fazla göster</string>
+    <string name="show_less">Daha az göster</string>
+    <string name="artist_page_settings">Sanatçı sayfası</string>
+    <string name="show_artist_description">Sanatçının açıklamasını göster</string>
+    <string name="show_artist_subscriber_count">Abone sayısını göster</string>
+    <string name="show_artist_monthly_listeners">Aylık dinleyicileri göster</string>
 </resources>

@@ -231,8 +231,8 @@
     <string name="tertiary_color_style">三级颜色</string>
     <string name="lyrics_glow_effect">启用歌词发光效果</string>
     <string name="lyrics_glow_effect_desc">为动态歌词添加发光动画和弹跳效果</string>
-    <string name="enable_better_lyrics">启用Better Lyrics</string>
-    <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词提供商以获取逐字同步的歌词</string>
+    <string name="enable_better_lyrics">启用Better Lyrics提供歌词</string>
+    <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词服务以获取逐字同步的歌词</string>
     <string name="auto_scroll">重新同步</string>
     <string name="shuffle_playlist_first">随机播放列表或专辑</string>
     <string name="shuffle_playlist_first_desc">随机播放时,先播放原播放列表/专辑中的所有歌曲,然后再播放内容相似的歌曲</string>
@@ -339,4 +339,21 @@
     <plurals name="band_count">
         <item quantity="other">%d 乐队</item>
     </plurals>
+    <string name="enable_wavy_slider">启用波浪滑块</string>
+    <string name="wavy">波浪</string>
+    <string name="pause_music_when_media_is_muted">在静音时暂停播放</string>
+    <string name="enable_squiggly_slider">启用波浪形滑块</string>
+    <string name="enable_simpmusic">启用SimpMusic提供歌词</string>
+    <string name="enable_simpmusic_desc">使用SimpMusic歌词服务以获取逐字同步的歌词</string>
+    <string name="system_equalizer">系统均衡器</string>
+    <string name="album_art">专辑封面</string>
+    <string name="no_song_playing">没有音乐正在播放</string>
+    <string name="tap_to_open">点击开启 Metrolist</string>
+    <string name="previous">上一曲</string>
+    <string name="play_pause">播放/暂停</string>
+    <string name="next">下一曲</string>
+    <string name="like">喜欢</string>
+    <string name="widget_description">带播放控制的音乐播放器小部件</string>
+    <string name="turntable_widget_description">快速访问你最近播放过的曲目</string>
+    <string name="queue_widget_description">带队列预览的音乐播放器</string>
 </resources>
