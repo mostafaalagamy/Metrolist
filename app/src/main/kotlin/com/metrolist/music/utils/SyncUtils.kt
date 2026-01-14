@@ -237,7 +237,7 @@ class SyncUtils @Inject constructor(
 
                 localSongs.filterNot { it.id in remoteIds }.forEach {
                     if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
-                        feedbackTokens.add(it.song.libraryAddToken!!)
+                        feedbackTokens.add(it.song.libraryAddToken)
                     } else {
                         try {
                             database.transaction { update(it.song.toggleLibrary()) }
