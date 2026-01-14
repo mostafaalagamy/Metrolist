@@ -208,7 +208,7 @@ fun LibrarySongsScreen(
             ) { index, song ->
                 SongListItem(
                     song = song,
-                    showInLibraryIcon = true,
+                    showInLibraryIcon = filter != SongFilter.LIBRARY,
                     isActive = song.id == mediaMetadata?.id,
                     isPlaying = isPlaying,
                     showLikedIcon = filter != SongFilter.LIKED,

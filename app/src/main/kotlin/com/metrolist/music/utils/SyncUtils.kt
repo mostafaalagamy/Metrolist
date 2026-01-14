@@ -193,11 +193,16 @@ class SyncUtils @Inject constructor(
                 }
 
                 // Process remote songs - with batching
-                remoteSongs.chunked(10).forEachIndexed { batchIndex, batch ->
+                // Remote songs come in newest-first order from YouTube, so we process them in reverse
+                // to assign timestamps correctly (oldest first gets earliest timestamp)
+                val totalSongs = remoteSongs.size
+                remoteSongs.reversed().chunked(10).forEachIndexed { batchIndex, batch ->
                     batch.forEachIndexed { index, song ->
                         try {
                             val dbSong = database.song(song.id).firstOrNull()
-                            val timestamp = LocalDateTime.now().minusSeconds((batchIndex * 10 + index).toLong())
+                            // Calculate position from the end (newest songs get most recent timestamps)
+                            val positionFromEnd = totalSongs - 1 - (batchIndex * 10 + index)
+                            val timestamp = LocalDateTime.now().minusSeconds(positionFromEnd.toLong())
                             val isVideoSong = song.isVideoSong
                             database.transaction {
                                 if (dbSong == null) {
@@ -224,7 +229,8 @@ class SyncUtils @Inject constructor(
         isSyncingLibrarySongs.value = true
         try {
             YouTube.library("FEmusic_liked_videos").completed().onSuccess { page ->
-                val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
+                // Remote songs come in newest-first order from YouTube
+                val remoteSongs = page.items.filterIsInstance<SongItem>()
                 val remoteIds = remoteSongs.map { it.id }.toSet()
                 val localSongs = database.songsByNameAsc().first()
                 val feedbackTokens = mutableListOf<String>()
@@ -240,15 +246,20 @@ class SyncUtils @Inject constructor(
                 }
                 feedbackTokens.chunked(20).forEach { YouTube.feedback(it) }
 
-                remoteSongs.forEach { song ->
+                // Process in reverse order so oldest songs get earliest timestamps
+                val totalSongs = remoteSongs.size
+                remoteSongs.reversed().forEachIndexed { index, song ->
                     try {
                         val dbSong = database.song(song.id).firstOrNull()
+                        // Calculate position from the end (newest songs get most recent timestamps)
+                        val positionFromEnd = totalSongs - 1 - index
+                        val timestamp = LocalDateTime.now().minusSeconds(positionFromEnd.toLong())
                         database.transaction {
                             if (dbSong == null) {
-                                insert(song.toMediaMetadata()) { it.toggleLibrary() }
+                                insert(song.toMediaMetadata()) { it.copy(inLibrary = timestamp) }
                             } else {
                                 if (dbSong.song.inLibrary == null) {
-                                    update(dbSong.song.toggleLibrary())
+                                    update(dbSong.song.copy(inLibrary = timestamp))
                                 }
                                 addLibraryTokens(song.id, song.libraryAddToken, song.libraryRemoveToken)
                             }
