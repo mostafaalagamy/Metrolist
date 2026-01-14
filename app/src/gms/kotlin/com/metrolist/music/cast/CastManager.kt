@@ -37,11 +37,14 @@ class CastManager(
      * Initialize the Cast context. Should be called when the activity is created.
      * This is safe to call even if Google Play Services is not available.
      */
+    @Suppress("DEPRECATION")
     fun initialize() {
         try {
             castContext = CastContext.getSharedInstance(context)
             castContext?.addCastStateListener(this)
             
+            // Using deprecated constructor and setSessionAvailabilityListener as the new
+            // CastPlayer.Builder API requires a local player which we don't use in this architecture
             castPlayer = CastPlayer(castContext!!)
             castPlayer?.setSessionAvailabilityListener(this)
             
@@ -74,6 +77,7 @@ class CastManager(
     /**
      * Check if casting is currently active.
      */
+    @Suppress("DEPRECATION")
     fun isCastSessionAvailable(): Boolean = castPlayer?.isCastSessionAvailable == true
 
     /**
@@ -137,6 +141,7 @@ class CastManager(
     /**
      * Release resources. Should be called when the service is destroyed.
      */
+    @Suppress("DEPRECATION")
     fun release() {
         castContext?.removeCastStateListener(this)
         castPlayer?.setSessionAvailabilityListener(null)
