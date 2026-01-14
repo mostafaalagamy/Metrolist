@@ -137,7 +137,7 @@
     <string name="disable">Nonaktifkan</string>
     <string name="pause_remote_listen_history">Jeda berbagi riwayat mendengarkan dengan YouTube Music</string>
     <string name="top_length">Panjang daftar teratas Saya</string>
-    <string name="subscribers">Pelanggan</string>
+    <string name="subscribers">Subskriber</string>
     <string name="subscribe">Berlangganan</string>
     <string name="subscribed">Telah Berlangganan</string>
     <plurals name="seconds">
@@ -359,6 +359,14 @@
     <string name="remember_shuffle_and_repeat">Ingat mode acak dan ulang</string>
     <string name="remember_shuffle_and_repeat_desc">Ingat mode acak dan ulang saat aplikasi dibuka ulang</string>
     <string name="lyrics_offset">Offset Lirik</string>
-    <string name="show_more">Lihat selengkapnya</string>
+    <string name="show_more">Tampilkan lebih banyak</string>
     <string name="show_less">Tampilkan lebih sedikit</string>
+    <string name="skip_silence_desc">Lewati bagian hening pada lagu secara cepat</string>
+    <string name="skip_silence_instant">Lewati keheningan secara instan</string>
+    <string name="about_artist">Tentang</string>
+    <string name="artist_page_settings">Halaman artis</string>
+    <string name="show_artist_description">Tampilkan deskripsi artis</string>
+    <string name="show_artist_subscriber_count">Tampilkan jumlah subskriber</string>
+    <string name="show_artist_monthly_listeners">Tampilkan pendengar bulanan</string>
+    <string name="skip_silence_instant_desc">Melompat ke depan saat bagian hening, alih-alih mempercepat pemutaran</string>
 </resources>
