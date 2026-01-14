@@ -357,4 +357,21 @@
     <string name="enable_wavy_slider">Увімкнути хвилястий повзунок</string>
     <string name="wavy">Хвилястий</string>
     <string name="enable_squiggly_slider">Увімкнути звивистий повзунок</string>
+    <string name="pause_music_when_media_is_muted">Призупиняти музику, коли медіа вимкнено</string>
+    <string name="enable_simpmusic">Увімкнути текст пісні SimpMusic</string>
+    <string name="enable_simpmusic_desc">Використовуйте постачальника текстів пісень SimpMusic для синхронізованих текстів пісень</string>
+    <string name="system_equalizer">Системний еквалайзер</string>
+    <string name="album_art">Обкладинка альбому</string>
+    <string name="no_song_playing">Пісня не відтворюється</string>
+    <string name="tap_to_open">Натисніть, щоб відкрити Metrolist</string>
+    <string name="previous">Попередній</string>
+    <string name="play_pause">Відтворення/Пауза</string>
+    <string name="next">Далі</string>
+    <string name="like">Подобається</string>
+    <string name="widget_description">Віджет музичного плеєра з елементами керування відтворенням</string>
+    <string name="turntable_widget_description">Швидкий доступ до останньої відтвореної композиції</string>
+    <string name="queue_widget_description">Музичний плеєр з попереднім переглядом черги</string>
+    <string name="remember_shuffle_and_repeat">Пам’ятайте про перемішування та повторення</string>
+    <string name="remember_shuffle_and_repeat_desc">Запам\'ятайте режим випадкового відтворення та повтору під час перезапуску програми</string>
+    <string name="lyrics_offset">Текст пісні Offset</string>
 </resources>

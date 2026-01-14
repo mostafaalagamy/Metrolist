@@ -50,7 +50,7 @@
     <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
     <string name="back_button_desc">Retour</string>
-    <string name="no_title">Pas de titre</string>
+    <string name="no_title">Sans titre</string>
     <string name="unknown_artist">Artiste inconnu</string>
     <string name="unknown_item_type">Type d\'élément inconnu</string>
     <string name="loading_charts">Chargement des graphiques…</string>
@@ -352,4 +352,31 @@
         <item quantity="other">%d bandes</item>
     </plurals>
     <string name="enable_squiggly_slider">Activer le curseur ondulé</string>
+    <string name="pause_music_when_media_is_muted">Mettre la musique en pause lorsque le son est coupé</string>
+    <string name="enable_simpmusic">Activer les paroles de SimpMusic</string>
+    <string name="enable_simpmusic_desc">Utilisez le fournisseur de paroles SimpMusic pour des paroles synchronisées</string>
+    <string name="system_equalizer">Égaliseur système</string>
+    <string name="album_art">Pochette d\'album</string>
+    <string name="no_song_playing">Aucun titre en cours de lecture</string>
+    <string name="tap_to_open">Appuyez pour ouvrir Metrolist</string>
+    <string name="previous">Précédent</string>
+    <string name="play_pause">Lecture/Pause</string>
+    <string name="next">Suivant</string>
+    <string name="widget_description">Widget de lecteur de musique avec commandes de lecture</string>
+    <string name="turntable_widget_description">Accès rapide à votre dernier titre écouté</string>
+    <string name="queue_widget_description">Lecteur de musique avec aperçu de la file d\'attente</string>
+    <string name="like">J\'aime</string>
+    <string name="remember_shuffle_and_repeat">Se souvenir de la lecture aléatoire et de la répétition</string>
+    <string name="remember_shuffle_and_repeat_desc">Se souvenir du mode aléatoire et répétition lors du redémarrage de l\'application</string>
+    <string name="lyrics_offset">Décalage des paroles</string>
+    <string name="about_artist">À propos</string>
+    <string name="show_more">Afficher plus</string>
+    <string name="show_less">Afficher moins</string>
+    <string name="artist_page_settings">Page de l\'artiste</string>
+    <string name="show_artist_description">Afficher la description de l\'artiste</string>
+    <string name="show_artist_subscriber_count">Afficher le nombre d\'abonnés</string>
+    <string name="show_artist_monthly_listeners">Afficher les auditeurs mensuels</string>
+    <string name="skip_silence_desc">Avance rapide pendant les parties silencieuses des titres</string>
+    <string name="skip_silence_instant">Ignorer instantanément les silences</string>
+    <string name="skip_silence_instant_desc">Avancez pendant les silences au lieu d\'accélérer la lecture</string>
 </resources>
