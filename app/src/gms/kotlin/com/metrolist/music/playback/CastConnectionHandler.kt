@@ -128,7 +128,8 @@ class CastConnectionHandler(
      * This syncs the local player - we don't reload the queue since the item is already loaded
      */
     private fun handleCastItemChanged(mediaStatus: MediaStatus) {
-        val queueItems = mediaStatus.queueItems ?: return
+        val queueItems = mediaStatus.queueItems
+        if (queueItems.isEmpty()) return
         val currentItemId = mediaStatus.currentItemId
         val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
         
@@ -644,7 +645,8 @@ class CastConnectionHandler(
     fun navigateToMediaIfInQueue(mediaId: String): Boolean {
         val client = remoteMediaClient ?: return false
         val mediaStatus = client.mediaStatus ?: return false
-        val queueItems = mediaStatus.queueItems ?: return false
+        val queueItems = mediaStatus.queueItems
+        if (queueItems.isEmpty()) return false
         
         // Find the item in Cast queue
         val targetIndex = queueItems.indexOfFirst { 
@@ -704,15 +706,13 @@ class CastConnectionHandler(
             // Check if there's a next item in Cast queue
             val currentItemId = mediaStatus.currentItemId
             val queueItems = mediaStatus.queueItems
-            if (queueItems != null) {
-                val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
-                if (currentIndex >= 0 && currentIndex < queueItems.size - 1) {
-                    // There's a next item in Cast queue, use it
-                    client.queueNext(org.json.JSONObject())
-                    // Ensure local player stays paused
-                    musicService.player.pause()
-                    return
-                }
+            val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
+            if (currentIndex >= 0 && currentIndex < queueItems.size - 1) {
+                // There's a next item in Cast queue, use it
+                client.queueNext(org.json.JSONObject())
+                // Ensure local player stays paused
+                musicService.player.pause()
+                return
             }
         }
         
@@ -734,15 +734,13 @@ class CastConnectionHandler(
             // Check if there's a previous item in Cast queue
             val currentItemId = mediaStatus.currentItemId
             val queueItems = mediaStatus.queueItems
-            if (queueItems != null) {
-                val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
-                if (currentIndex > 0) {
-                    // There's a previous item in Cast queue, use it
-                    client.queuePrev(org.json.JSONObject())
-                    // Ensure local player stays paused
-                    musicService.player.pause()
-                    return
-                }
+            val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
+            if (currentIndex > 0) {
+                // There's a previous item in Cast queue, use it
+                client.queuePrev(org.json.JSONObject())
+                // Ensure local player stays paused
+                musicService.player.pause()
+                return
             }
         }
         
