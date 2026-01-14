@@ -362,7 +362,7 @@ fun StatsScreen(
                                         album.songCountListened!!,
                                         album.songCountListened
                                     ),
-                                    makeTimeString(album.timeListened?.toLong()),
+                                    makeTimeString(album.timeListened),
                                 ),
                                 thumbnailUrl = album.album.thumbnailUrl,
                                 isActive = album.id == mediaMetadata?.album?.id,

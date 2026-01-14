@@ -566,9 +566,11 @@ fun LocalPlaylistScreen(
                             coroutineScope.launch {
                                 playlist?.playlist?.browseId?.let { browseId ->
                                     val setVideoId = getSetVideoId(currentItem.map.songId)
-                                    if (setVideoId?.setVideoId != null) {
+                                    setVideoId?.setVideoId?.let { setVideoIdValue ->
                                         YouTube.removeFromPlaylist(
-                                            browseId, currentItem.map.songId, setVideoId.setVideoId!!
+                                            browseId,
+                                            currentItem.map.songId,
+                                            setVideoIdValue
                                         )
                                     }
                                 }

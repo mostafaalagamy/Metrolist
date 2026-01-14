@@ -132,12 +132,14 @@ class SilenceDetectorAudioProcessor(
 
     override fun isEnded(): Boolean = inputEnded && outputBuffer === EMPTY_BUFFER
 
+    @Deprecated("Deprecated in AudioProcessor")
     override fun flush() {
         outputBuffer = EMPTY_BUFFER
         inputEnded = false
         clearSilenceState()
     }
 
+    @Deprecated("Deprecated in AudioProcessor")
     override fun reset() {
         flush()
         sampleRate = 0
