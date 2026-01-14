@@ -129,7 +129,7 @@ fun YouTubeSelectionSongMenu(
                     song = com.metrolist.music.db.entities.SongEntity(
                         id = metadata.id,
                         title = metadata.title,
-                        duration = metadata.duration ?: -1,
+                        duration = metadata.duration,
                         thumbnailUrl = metadata.thumbnailUrl,
                         albumId = metadata.album?.id,
                         albumName = metadata.album?.title,
@@ -398,7 +398,7 @@ fun YouTubeSelectionSongMenu(
                                         val songEntity = com.metrolist.music.db.entities.SongEntity(
                                             id = metadata.id,
                                             title = metadata.title,
-                                            duration = metadata.duration ?: -1,
+                                            duration = metadata.duration,
                                             thumbnailUrl = metadata.thumbnailUrl,
                                             albumId = metadata.album?.id,
                                             albumName = metadata.album?.title,

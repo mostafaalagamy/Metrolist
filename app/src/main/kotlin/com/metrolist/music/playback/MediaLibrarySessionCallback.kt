@@ -111,6 +111,7 @@ constructor(
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
     }
 
+    @Deprecated("Deprecated in MediaLibrarySession.Callback")
     override fun onPlaybackResumption(
         mediaSession: MediaSession,
         controller: MediaSession.ControllerInfo
@@ -437,9 +438,9 @@ constructor(
                                 localSong.id == onlineSong.id ||
                                 (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
                                  localSong.artists.any { artist ->
-                                     onlineSong.artists?.any { 
-                                         it.name.equals(artist.name, ignoreCase = true) 
-                                     } == true
+                                     onlineSong.artists.any {
+                                         it.name.equals(artist.name, ignoreCase = true)
+                                     }
                                  })
                             }
                         } ?: emptyList()
@@ -456,9 +457,9 @@ constructor(
                                 .setMediaMetadata(
                                     MediaMetadata.Builder()
                                         .setTitle(songItem.title)
-                                        .setSubtitle(songItem.artists?.joinToString(", ") { it.name } ?: "")
-                                        .setArtist(songItem.artists?.joinToString(", ") { it.name } ?: "")
-                                        .setArtworkUri(songItem.thumbnail?.toUri())
+                                        .setSubtitle(songItem.artists.joinToString(", ") { it.name })
+                                        .setArtist(songItem.artists.joinToString(", ") { it.name })
+                                        .setArtworkUri(songItem.thumbnail.toUri())
                                         .setIsPlayable(true)
                                         .setIsBrowsable(true)
                                         .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
@@ -618,9 +619,9 @@ constructor(
                                     localSong.id == onlineSong.id ||
                                     (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
                                      localSong.artists.any { artist ->
-                                         onlineSong.artists?.any { 
-                                             it.name.equals(artist.name, ignoreCase = true) 
-                                         } == true
+                                         onlineSong.artists.any {
+                                             it.name.equals(artist.name, ignoreCase = true)
+                                         }
                                      })
                                 }
                             } ?: emptyList()

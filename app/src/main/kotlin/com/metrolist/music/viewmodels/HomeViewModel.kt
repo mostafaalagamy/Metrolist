@@ -315,7 +315,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val hideExplicit = context.dataStore.get(HideExplicitKey, false)
             val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
-            val nextSections = YouTube.home(params = chip?.endpoint?.params).getOrNull() ?: return@launch
+            val nextSections = YouTube.home(params = chip.endpoint?.params).getOrNull() ?: return@launch
 
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,

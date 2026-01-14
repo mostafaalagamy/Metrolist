@@ -70,6 +70,7 @@ fun ExpandableText(
     Column(
         modifier = modifier.animateContentSize()
     ) {
+        @Suppress("DEPRECATION")
         ClickableText(
             text = annotatedText,
             style = MaterialTheme.typography.bodyMedium.copy(color = bodyColor),
