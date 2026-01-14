@@ -376,48 +376,47 @@ fun YouTubeSongMenu(
                             )
                         )
                     }
-                    // COMMENTED OUT: Library add/remove option
-                    // add(
-                    //     Material3MenuItemData(
-                    //         title = {
-                    //             Text(text = if (librarySong?.song?.inLibrary != null) stringResource(R.string.remove_from_library) else stringResource(R.string.add_to_library))
-                    //         },
-                    //         description = { Text(text = stringResource(R.string.add_to_library_desc)) },
-                    //         icon = {
-                    //             Icon(
-                    //                 painter = painterResource(if (librarySong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
-                    //                 contentDescription = null,
-                    //             )
-                    //         },
-                    //         onClick = {
-                    //             val isInLibrary = librarySong?.song?.inLibrary != null
-                    //             val token =
-                    //                 if (isInLibrary) song.libraryRemoveToken else song.libraryAddToken
+                    add(
+                        Material3MenuItemData(
+                            title = {
+                                Text(text = if (librarySong?.song?.inLibrary != null) stringResource(R.string.remove_from_library) else stringResource(R.string.add_to_library))
+                            },
+                            description = { Text(text = stringResource(R.string.add_to_library_desc)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(if (librarySong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                val isInLibrary = librarySong?.song?.inLibrary != null
+                                val token =
+                                    if (isInLibrary) song.libraryRemoveToken else song.libraryAddToken
 
-                    //             token?.let {
-                    //                 coroutineScope.launch {
-                    //                     YouTube.feedback(listOf(it))
-                    //                 }
-                    //             }
+                                token?.let {
+                                    coroutineScope.launch {
+                                        YouTube.feedback(listOf(it))
+                                    }
+                                }
 
-                    //             if (isInLibrary) {
-                    //                 database.query {
-                    //                     inLibrary(song.id, null)
-                    //                 }
-                    //             } else {
-                    //                 database.transaction {
-                    //                     insert(song.toMediaMetadata())
-                    //                     inLibrary(song.id, LocalDateTime.now())
-                    //                     addLibraryTokens(
-                    //                         song.id,
-                    //                         song.libraryAddToken,
-                    //                         song.libraryRemoveToken
-                    //                     )
-                    //                 }
-                    //             }
-                    //         }
-                    //     )
-                    // )
+                                if (isInLibrary) {
+                                    database.query {
+                                        inLibrary(song.id, null)
+                                    }
+                                } else {
+                                    database.transaction {
+                                        insert(song.toMediaMetadata())
+                                        inLibrary(song.id, LocalDateTime.now())
+                                        addLibraryTokens(
+                                            song.id,
+                                            song.libraryAddToken,
+                                            song.libraryRemoveToken
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    )
                 }
             )
         }

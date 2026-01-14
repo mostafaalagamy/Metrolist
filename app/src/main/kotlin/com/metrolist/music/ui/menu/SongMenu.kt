@@ -445,45 +445,44 @@ fun SongMenu(
         item {
             Material3MenuGroup(
                 items = buildList {
-                    // COMMENTED OUT: Library add/remove option
-                    // add(
-                    //     Material3MenuItemData(
-                    //         title = {
-                    //             Text(
-                    //                 text = stringResource(
-                    //                     if (song.song.inLibrary == null) R.string.add_to_library
-                    //                     else R.string.remove_from_library
-                    //                 )
-                    //             )
-                    //         },
-                    //         description = { Text(text = stringResource(R.string.add_to_library_desc)) },
-                    //         icon = {
-                    //             Icon(
-                    //                 painter = painterResource(
-                    //                     if (song.song.inLibrary == null) R.drawable.library_add
-                    //                     else R.drawable.library_add_check
-                    //                 ),
-                    //                 contentDescription = null,
-                    //             )
-                    //         },
-                    //         onClick = {
-                    //             val currentSong = song.song
-                    //             val isInLibrary = currentSong.inLibrary != null
-                    //             val token =
-                    //                 if (isInLibrary) currentSong.libraryRemoveToken else currentSong.libraryAddToken
+                    add(
+                        Material3MenuItemData(
+                            title = {
+                                Text(
+                                    text = stringResource(
+                                        if (song.song.inLibrary == null) R.string.add_to_library
+                                        else R.string.remove_from_library
+                                    )
+                                )
+                            },
+                            description = { Text(text = stringResource(R.string.add_to_library_desc)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(
+                                        if (song.song.inLibrary == null) R.drawable.library_add
+                                        else R.drawable.library_add_check
+                                    ),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                val currentSong = song.song
+                                val isInLibrary = currentSong.inLibrary != null
+                                val token =
+                                    if (isInLibrary) currentSong.libraryRemoveToken else currentSong.libraryAddToken
 
-                    //             token?.let {
-                    //                 coroutineScope.launch {
-                    //                     YouTube.feedback(listOf(it))
-                    //                 }
-                    //             }
+                                token?.let {
+                                    coroutineScope.launch {
+                                        YouTube.feedback(listOf(it))
+                                    }
+                                }
 
-                    //             database.query {
-                    //                 update(song.song.toggleLibrary())
-                    //             }
-                    //         }
-                    //     )
-                    // )
+                                database.query {
+                                    update(song.song.toggleLibrary())
+                                }
+                            }
+                        )
+                    )
                     if (event != null) {
                         add(
                             Material3MenuItemData(

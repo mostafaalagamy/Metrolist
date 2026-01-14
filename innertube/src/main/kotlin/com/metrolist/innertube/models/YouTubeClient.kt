@@ -52,14 +52,14 @@ data class YouTubeClient(
 
         val WEB = YouTubeClient(
             clientName = "WEB",
-            clientVersion = "2.20251227.00.00",
+            clientVersion = "2.20260114.00.00",
             clientId = "1",
             userAgent = USER_AGENT_WEB,
         )
 
         val WEB_REMIX = YouTubeClient(
             clientName = "WEB_REMIX",
-            clientVersion = "1.20251227.01.00",
+            clientVersion = "1.20260114.01.00",
             clientId = "67",
             userAgent = USER_AGENT_WEB,
             loginSupported = true,
@@ -68,7 +68,7 @@ data class YouTubeClient(
 
         val WEB_CREATOR = YouTubeClient(
             clientName = "WEB_CREATOR",
-            clientVersion = "1.20251227.00.00",
+            clientVersion = "1.20260114.00.00",
             clientId = "62",
             userAgent = USER_AGENT_WEB,
             loginSupported = true,
@@ -78,7 +78,7 @@ data class YouTubeClient(
 
         val TVHTML5 = YouTubeClient(
             clientName = "TVHTML5",
-            clientVersion = "7.20251227.00.00",
+            clientVersion = "7.20260114.00.00",
             clientId = "7",
             userAgent = "Mozilla/5.0(SMART-TV; Linux; Tizen 4.0.0.2) AppleWebkit/605.1.15 (KHTML, like Gecko) SamsungBrowser/9.2 TV Safari/605.1.15",
             loginSupported = true,
@@ -99,17 +99,17 @@ data class YouTubeClient(
 
         val IOS = YouTubeClient(
             clientName = "IOS",
-            clientVersion = "20.51.39",
+            clientVersion = "21.02.1",
             clientId = "5",
-            userAgent = "com.google.ios.youtube/20.51.39 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)",
+            userAgent = "com.google.ios.youtube/21.02.1 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)",
             osVersion = "18.2.22C152",
         )
 
         val MOBILE = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "20.51.39",
+            clientVersion = "21.02.38",
             clientId = "3",
-            userAgent = "com.google.android.youtube/20.51.39 (Linux; U; Android 14) gzip",
+            userAgent = "com.google.android.youtube/21.02.38 (Linux; U; Android 14) gzip",
             loginSupported = true,
             useSignatureTimestamp = true
         )
