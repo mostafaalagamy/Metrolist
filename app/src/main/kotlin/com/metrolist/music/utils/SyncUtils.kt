@@ -380,6 +380,10 @@ class SyncUtils @Inject constructor(
 
                 remoteArtists.forEach { artist ->
                     val dbArtist = database.artist(artist.id).firstOrNull()
+                    // Try to get channelId if not available from library response
+                    val channelId = artist.channelId ?: if (artist.id.startsWith("UC")) {
+                        YouTube.getChannelId(artist.id).takeIf { it.isNotEmpty() }
+                    } else null
                     database.transaction {
                         if (dbArtist == null) {
                             insert(
@@ -387,12 +391,19 @@ class SyncUtils @Inject constructor(
                                     id = artist.id,
                                     name = artist.title,
                                     thumbnailUrl = artist.thumbnail,
-                                    channelId = artist.channelId,
+                                    channelId = channelId,
                                     bookmarkedAt = LocalDateTime.now()
                                 )
                             )
-                        } else if (dbArtist.artist.bookmarkedAt == null) {
-                            update(dbArtist.artist.localToggleLike())
+                        } else {
+                            // Update channelId if we have it now but didn't before
+                            val needsChannelIdUpdate = dbArtist.artist.channelId == null && channelId != null
+                            if (dbArtist.artist.bookmarkedAt == null || needsChannelIdUpdate) {
+                                update(dbArtist.artist.copy(
+                                    bookmarkedAt = dbArtist.artist.bookmarkedAt ?: LocalDateTime.now(),
+                                    channelId = channelId ?: dbArtist.artist.channelId
+                                ))
+                            }
                         }
                     }
                 }
