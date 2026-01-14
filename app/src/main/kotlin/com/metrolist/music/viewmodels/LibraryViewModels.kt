@@ -98,19 +98,16 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedSongs() {
-        syncUtils.syncLikedSongs()
+    fun syncLikedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLibrarySongs() {
-        syncUtils.syncLibrarySongs()
+    fun syncLibrarySongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
     }
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncUploadedSongs() {
-        syncUtils.syncUploadedSongs()
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }
 
@@ -134,9 +131,8 @@ constructor(
                 database.artistsBookmarked(sortType, descending)
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedArtists() {
-        syncUtils.syncArtistsSubscriptions()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
     }
 
     init {
@@ -190,19 +186,8 @@ constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete - syncs liked albums
-    suspend fun syncLikedAlbums() {
-        syncUtils.syncLikedAlbums()
-    }
-
-    // Suspend function that waits for sync to complete - syncs library albums
-    suspend fun syncLibraryAlbums() {
-        syncUtils.syncLikedAlbums()
-    }
-
-    // Suspend function that waits for sync to complete - syncs uploaded albums
-    suspend fun syncUploadedAlbums() {
-        syncUtils.syncUploadedAlbums()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
     }
 
     init {
