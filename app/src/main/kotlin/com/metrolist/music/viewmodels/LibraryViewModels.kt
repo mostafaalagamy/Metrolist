@@ -185,12 +185,18 @@ constructor(
                 val (filter, sortType, descending) = filterSort
                 when (filter) {
                     AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                     AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     // Suspend function that waits for sync to complete - syncs liked albums
     suspend fun syncLikedAlbums() {
+        syncUtils.syncLikedAlbums()
+    }
+
+    // Suspend function that waits for sync to complete - syncs library albums
+    suspend fun syncLibraryAlbums() {
         syncUtils.syncLikedAlbums()
     }
 

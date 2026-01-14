@@ -114,6 +114,7 @@ fun LibraryAlbumsScreen(
             isRefreshing = true
             when (filter) {
                 AlbumFilter.LIKED -> viewModel.syncLikedAlbums()
+                AlbumFilter.LIBRARY -> viewModel.syncLibraryAlbums()
                 AlbumFilter.UPLOADED -> viewModel.syncUploadedAlbums()
             }
             isRefreshing = false
