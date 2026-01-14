@@ -103,10 +103,10 @@ constructor(
         syncUtils.syncLikedSongs()
     }
 
-    // COMMENTED OUT: Library sync function - disabled to save resources
-    // suspend fun syncLibrarySongs() {
-    //     syncUtils.syncLibrarySongs()
-    // }
+    // Suspend function that waits for sync to complete
+    suspend fun syncLibrarySongs() {
+        syncUtils.syncLibrarySongs()
+    }
 
     // Suspend function that waits for sync to complete
     suspend fun syncUploadedSongs() {
@@ -296,8 +296,7 @@ constructor(
     // Suspend function that waits for all syncs to complete
     suspend fun syncAllLibrary() {
         syncUtils.syncLikedSongs()
-        // COMMENTED OUT: Library sync
-        // syncUtils.syncLibrarySongs()
+        syncUtils.syncLibrarySongs()
         syncUtils.syncArtistsSubscriptions()
         syncUtils.syncLikedAlbums()
         syncUtils.syncSavedPlaylists()

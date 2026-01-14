@@ -108,6 +108,7 @@ fun LibrarySongsScreen(
             isRefreshing = true
             when (filter) {
                 SongFilter.LIKED -> viewModel.syncLikedSongs()
+                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
                 SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
                 else -> {}
             }
@@ -171,8 +172,7 @@ fun LibrarySongsScreen(
                         chips =
                         listOf(
                             SongFilter.LIKED to stringResource(R.string.filter_liked),
-                            // COMMENTED OUT: Library filter option
-                            // SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                            SongFilter.LIBRARY to stringResource(R.string.filter_library),
                             SongFilter.UPLOADED to stringResource(R.string.filter_uploaded),
                             SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                         ),

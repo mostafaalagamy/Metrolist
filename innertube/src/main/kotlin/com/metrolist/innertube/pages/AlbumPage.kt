@@ -113,7 +113,7 @@ data class AlbumPage(
                 }?.toggleMenuServiceItemRenderer, "LIBRARY_ADD"),
                 libraryRemoveToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
                     it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType?.startsWith("LIBRARY_") == true
-                }?.toggleMenuServiceItemRenderer, "LIBRARY_SAVED")
+                }?.toggleMenuServiceItemRenderer, "LIBRARY_REMOVE")
             )
         }
     }

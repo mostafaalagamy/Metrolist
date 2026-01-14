@@ -183,10 +183,12 @@ enum class SongFilter {
 }
 
 enum class ArtistFilter {
+    LIBRARY,
     LIKED
 }
 
 enum class AlbumFilter {
+    LIBRARY,
     LIKED,
     UPLOADED
 }
