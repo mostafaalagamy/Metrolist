@@ -200,4 +200,11 @@
     <string name="small">छोटा</string>
     <string name="big">बड़ा</string>
     <string name="clear_all_downloads">सभी डौन्लोडस निकाल दे</string>
+    <string name="misc">विविध</string>
+    <string name="default_open_tab">डिफ़ॉल्ट खुला टैब</string>
+    <string name="default_">डिफॉल्ट</string>
+    <string name="action_logout">लॉग आउट</string>
+    <string name="action_login">लॉग इन</string>
+    <string name="login">लॉगिन</string>
+    <string name="login_failed">लॉगिन असफल रहा</string>
 </resources>

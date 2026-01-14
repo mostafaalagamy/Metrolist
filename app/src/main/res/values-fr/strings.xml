@@ -28,8 +28,8 @@
     <string name="search_yt_music">Rechercher sur YouTube Music…</string>
     <string name="search_library">Rechercher dans votre bibliothèque…</string>
     <string name="filter_library">Bibliothèque</string>
-    <string name="filter_liked">Aimé</string>
-    <string name="filter_downloaded">Téléchargé</string>
+    <string name="filter_liked">Favoris</string>
+    <string name="filter_downloaded">Téléchargés</string>
     <string name="filter_all">Tout</string>
     <string name="filter_songs">Titres</string>
     <string name="filter_videos">Vidéos</string>
@@ -41,12 +41,12 @@
     <string name="filter_bookmarked">Favoris</string>
     <string name="no_results_found">Aucun résultat trouvé</string>
     <string name="from_your_library">De votre bibliothèque</string>
-    <string name="liked_songs">Titres aimés</string>
+    <string name="liked_songs">Titres favoris</string>
     <string name="downloaded_songs">Titres téléchargés</string>
     <string name="playlist_is_empty">La playlist est vide</string>
     <string name="retry">Réessayer</string>
     <string name="radio">Radio</string>
-    <string name="shuffle">Lecture Aléatoire</string>
+    <string name="shuffle">Lecture aléatoire</string>
     <string name="reset">Réinitialiser</string>
     <string name="details">Détails</string>
     <string name="edit">Modifier</string>
@@ -157,7 +157,7 @@
     <string name="error_unknown">Erreur inconnue</string>
     <string name="action_like">J’aime</string>
     <string name="action_remove_like">Je n’aime plus</string>
-    <string name="action_shuffle_on">Lecture aléatoire</string>
+    <string name="action_shuffle_on">Lecture aléatoire activée</string>
     <string name="action_shuffle_off">Lecture aléatoire désactivée</string>
     <string name="repeat_mode_off">Répétition désactivée</string>
     <string name="repeat_mode_one">Répéter le titre actuel</string>
