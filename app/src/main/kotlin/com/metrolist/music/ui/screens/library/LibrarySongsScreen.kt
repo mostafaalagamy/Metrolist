@@ -211,7 +211,7 @@ fun LibrarySongsScreen(
                     showInLibraryIcon = filter != SongFilter.LIBRARY,
                     isActive = song.id == mediaMetadata?.id,
                     isPlaying = isPlaying,
-                    showLikedIcon = filter != SongFilter.LIKED,
+                    showLikedIcon = true,
                     showDownloadIcon = filter != SongFilter.DOWNLOADED,
                     trailingContent = {
                         IconButton(
