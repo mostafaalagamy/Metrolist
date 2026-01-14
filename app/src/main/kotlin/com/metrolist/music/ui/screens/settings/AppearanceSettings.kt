@@ -6,10 +6,8 @@
 package com.metrolist.music.ui.screens.settings
 
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -99,11 +98,13 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.component.PlayerSliderTrack
+import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.IconUtils
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.component.WavySlider
+import me.saket.squiggles.SquigglySlider
 import kotlin.math.roundToInt
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.rememberCoroutineScope
@@ -617,11 +618,17 @@ fun AppearanceSettings(
                 showSliderOptionDialog = false
             }
         ) {
+            val sliderPreviewColors = PlayerSliderColors.getSliderColors(
+                MaterialTheme.colorScheme.primary,
+                PlayerBackgroundStyle.DEFAULT,
+                isSystemInDarkTheme()
+            )
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -632,24 +639,23 @@ fun AppearanceSettings(
                             .clip(RoundedCornerShape(16.dp))
                             .border(
                                 1.dp,
-                                if (sliderStyle == SliderStyle.DEFAULT) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                                if (sliderStyle == SliderStyle.DEFAULT && !squigglySlider) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable {
                                 onSliderStyleChange(SliderStyle.DEFAULT)
+                                onSquigglySliderChange(false)
                                 showSliderOptionDialog = false
                             }
-                            .padding(16.dp)
+                            .padding(12.dp)
                     ) {
-                        var sliderValue by remember {
-                            mutableFloatStateOf(0.5f)
-                        }
+                        val sliderValue = 0.35f
                         Slider(
                             value = sliderValue,
                             valueRange = 0f..1f,
-                            onValueChange = {
-                                sliderValue = it
-                            },
+                            onValueChange = { /* preview only */ },
+                            colors = sliderPreviewColors,
+                            enabled = false,
                             modifier = Modifier.weight(1f)
                         )
                         Text(
@@ -668,26 +674,25 @@ fun AppearanceSettings(
                             .clip(RoundedCornerShape(16.dp))
                             .border(
                                 1.dp,
-                                if (sliderStyle == SliderStyle.WAVY) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                                if (sliderStyle == SliderStyle.WAVY && !squigglySlider) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable {
                                 onSliderStyleChange(SliderStyle.WAVY)
+                                onSquigglySliderChange(false)
                                 showSliderOptionDialog = false
                             }
-                            .padding(16.dp)
+                            .padding(12.dp)
                     ) {
-                        var sliderValue by remember {
-                            mutableFloatStateOf(0.5f)
-                        }
+                        val sliderValue = 0.5f
                         WavySlider(
                             value = sliderValue,
                             valueRange = 0f..1f,
-                            onValueChange = {
-                                sliderValue = it
-                            },
+                            onValueChange = { /* preview only */ },
+                            colors = sliderPreviewColors,
                             modifier = Modifier.weight(1f),
-                            isPlaying = true
+                            isPlaying = true,
+                            enabled = false
                         )
                         Text(
                             text = stringResource(R.string.wavy),
@@ -696,6 +701,10 @@ fun AppearanceSettings(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -710,33 +719,26 @@ fun AppearanceSettings(
                             )
                             .clickable {
                                 onSliderStyleChange(SliderStyle.SLIM)
+                                onSquigglySliderChange(false)
                                 showSliderOptionDialog = false
                             }
-                            .padding(16.dp)
+                            .padding(12.dp)
                     ) {
-                        var sliderValue by remember {
-                            mutableFloatStateOf(0.5f)
-                        }
+                        val sliderValue = 0.65f
                         Slider(
                             value = sliderValue,
                             valueRange = 0f..1f,
-                            onValueChange = {
-                                sliderValue = it
-                            },
+                            onValueChange = { /* preview only */ },
                             thumb = { Spacer(modifier = Modifier.size(0.dp)) },
                             track = { sliderState ->
                                 PlayerSliderTrack(
                                     sliderState = sliderState,
-                                    colors = SliderDefaults.colors()
+                                    colors = sliderPreviewColors
                                 )
                             },
-                            modifier = Modifier
-                                .weight(1f)
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onPress = {}
-                                    )
-                                }
+                            colors = sliderPreviewColors,
+                            enabled = false,
+                            modifier = Modifier.weight(1f)
                         )
 
                         Text(
@@ -746,37 +748,49 @@ fun AppearanceSettings(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                }
-                
-                // Squiggly slider option - only visible when WAVY is selected
-                AnimatedVisibility(visible = sliderStyle == SliderStyle.WAVY) {
-                    Row(
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { onSquigglySliderChange(!squigglySlider) }
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.enable_squiggly_slider),
-                            style = MaterialTheme.typography.labelSmall,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Switch(
-                            checked = squigglySlider,
-                            onCheckedChange = onSquigglySliderChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(
-                                        id = if (squigglySlider) R.drawable.check else R.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
+                            .aspectRatio(1f)
+                            .weight(1f)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(
+                                1.dp,
+                                if (sliderStyle == SliderStyle.WAVY && squigglySlider) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .clickable {
+                                onSliderStyleChange(SliderStyle.WAVY)
+                                onSquigglySliderChange(true)
+                                showSliderOptionDialog = false
                             }
+                            .padding(12.dp)
+                    ) {
+                        val sliderValue = 0.5f
+                        SquigglySlider(
+                            value = sliderValue,
+                            valueRange = 0f..1f,
+                            onValueChange = { /* preview only */ },
+                            modifier = Modifier
+                                .weight(1f)
+                                .pointerInput(Unit) {
+                                    awaitPointerEventScope {
+                                        while (true) {
+                                            awaitPointerEvent()
+                                        }
+                                    }
+                                },
+                            squigglesSpec = SquigglySlider.SquigglesSpec(
+                                amplitude = 2.dp,
+                                strokeWidth = 3.dp,
+                            ),
+                        )
+                        Text(
+                            text = stringResource(R.string.squiggly),
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
