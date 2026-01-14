@@ -218,7 +218,7 @@
     <string name="pause_search_history">Sospendi la cronologia delle ricerche</string>
     <string name="clear_search_history">Pulisci la cronologia delle ricerche</string>
     <string name="clear_search_history_confirm">Sei sicuro di voler cancellare la cronologia delle ricerche?</string>
-    <string name="enable_kugou">Attiva i testi forniti da KuGou</string>
+    <string name="enable_kugou">Attiva il fornitore di testi KuGou</string>
     <string name="backup_restore">Backup e ripristino</string>
     <string name="action_backup">Fai un backup</string>
     <string name="action_restore">Ripristina</string>
@@ -268,7 +268,7 @@
     <string name="auto_load_more">Carica automaticamente più canzoni</string>
     <string name="auto_skip_next_on_error">Salta alla prossima canzone quando si verifica un errore</string>
     <string name="auto_load_more_desc">Aggiungi automaticamente canzoni quando si raggiunge la fine della coda, se possibile</string>
-    <string name="enable_lrclib">Abilita il provider di testi LcrLib</string>
+    <string name="enable_lrclib">Attiva il fornitore di testi LcrLib</string>
     <string name="grid_cell_size">Dimensione delle celle della griglia</string>
     <string name="auto_skip_next_on_error_desc">Garantisci la tua esperienza di riproduzione continua</string>
     <string name="stop_music_on_task_clear">Interrompi la musica quando l\'attività è interrotta</string>
