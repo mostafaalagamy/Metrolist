@@ -65,7 +65,7 @@
     <string name="description">Deskripsi</string>
     <string name="numbers">Nomor</string>
     <string name="likes">Suka</string>
-    <string name="dislikes">Tidak suka</string>
+    <string name="dislikes">Tidak Suka</string>
     <string name="clear_downloads_dialog">Apakah Anda yakin ingin menghapus semua unduhan?</string>
     <string name="token_adv_login_description">Ini adalah metode masuk LANJUTAN. Sebagai alternatif dari portal web, Anda dapat langsung memasukkan atau memperbarui token masuk di sini. Sebagai contoh, ini dapat mempercepat proses masuk di berbagai perangkat. Harap diperhatikan bahwa format token yang tidak valid yang gagal dibaca oleh aplikasi tidak akan diterima</string>
     <string name="local_history">Riwayat Lokal</string>
@@ -367,6 +367,6 @@
     <string name="artist_page_settings">Halaman artis</string>
     <string name="show_artist_description">Tampilkan deskripsi artis</string>
     <string name="show_artist_subscriber_count">Tampilkan jumlah subskriber</string>
-    <string name="show_artist_monthly_listeners">Tampilkan pendengar bulanan</string>
+    <string name="show_artist_monthly_listeners">Tampilkan jumlah pendengar bulanan</string>
     <string name="skip_silence_instant_desc">Melompat ke depan saat bagian hening, alih-alih mempercepat pemutaran</string>
 </resources>
