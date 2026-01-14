@@ -140,12 +140,11 @@ fun WrappedIntro(onNext: () -> Unit) {
             BoxWithConstraints {
                 AutoResizingText(
                     text = stringResource(id = R.string.wrapped_year),
-                    style = TextStyle(
+                    style = TextStyle.Default.copy(
                         fontFamily = bbhBartle,
                         fontSize = 800.sp, // Increased size
                         color = Color.White,
-                        drawStyle = Stroke(width = 2f),
-                        textAlign = null
+                        drawStyle = Stroke(width = 2f)
                     ),
                     modifier = Modifier.width(this.maxHeight) // Use height for width due to rotation
                 )
