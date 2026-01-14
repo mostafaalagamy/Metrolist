@@ -11,8 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -190,7 +188,7 @@ private fun EqScreenContent(
                 Row {
                     IconButton(onClick = onImportCustomEQ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            painter = painterResource(R.drawable.add),
                             contentDescription = stringResource(R.string.import_profile)
                         )
                     }
@@ -243,7 +241,7 @@ private fun EqScreenContent(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Equalizer,
+                                    painter = painterResource(R.drawable.equalizer),
                                     contentDescription = null,
                                     modifier = Modifier.size(48.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -331,7 +329,7 @@ private fun EQProfileItem(
         trailingContent = {
             IconButton(onClick = { showDeleteDialog = true }) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    painter = painterResource(R.drawable.delete),
                     contentDescription = stringResource(R.string.delete_profile_desc),
                     tint = MaterialTheme.colorScheme.error
                 )

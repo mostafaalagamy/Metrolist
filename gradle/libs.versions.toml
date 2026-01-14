@@ -1,13 +1,11 @@
 [versions]
 androidGradlePlugin = "8.13.2"
-annotation = "1.9.1"
 json = "20250517"
 kotlin = "2.3.0"
 compose = "1.10.1"
 lifecycle = "2.10.0"
 material3 = "1.5.0-alpha09"
 appcompat = "1.7.1"
-materialIconsExtended = "1.7.8"
 media3 = "1.9.0"
 mediarouter = "1.8.1"
 castFramework = "22.2.0"
@@ -16,7 +14,6 @@ hilt = "2.57.2"
 ktor = "3.3.3"
 ksp = "2.3.4"
 jsoup = "1.22.1"
-multidex = "2.0.1"
 coil = "3.3.0"
 ucrop = "2.2.11"
 guava = "33.5.0-jre"
@@ -42,8 +39,6 @@ squigglyslider = "1.0.0"
 glance = "1.1.1"
 
 [libraries]
-androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutinesGuava" }
 concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFutures" }
@@ -113,8 +108,6 @@ desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "des
 junit = { module = "junit:junit", version.ref = "junit" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-
-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 
 #newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor", version = "70abbdb" }
 #newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version = "dev-SNAPSHOT" }
