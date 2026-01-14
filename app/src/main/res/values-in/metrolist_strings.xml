@@ -359,4 +359,6 @@
     <string name="remember_shuffle_and_repeat">Ingat mode acak dan ulang</string>
     <string name="remember_shuffle_and_repeat_desc">Ingat mode acak dan ulang saat aplikasi dibuka ulang</string>
     <string name="lyrics_offset">Offset Lirik</string>
+    <string name="show_more">Lihat selengkapnya</string>
+    <string name="show_less">Tampilkan lebih sedikit</string>
 </resources>
