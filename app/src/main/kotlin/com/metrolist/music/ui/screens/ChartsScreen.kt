@@ -185,7 +185,7 @@ fun ChartsScreen(
                             NavigationTitle(
                                 title = when (section.title) {
                                     "Trending" -> stringResource(R.string.trending)
-                                    else -> section.title ?: stringResource(R.string.charts)
+                                        else -> section.title.ifEmpty { stringResource(R.string.charts) }
                                 },
                                 modifier = Modifier.animateItem(),
                             )
