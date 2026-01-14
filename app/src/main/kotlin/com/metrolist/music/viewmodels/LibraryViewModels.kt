@@ -20,6 +20,8 @@ import com.metrolist.music.constants.AlbumFilterKey
 import com.metrolist.music.constants.AlbumSortDescendingKey
 import com.metrolist.music.constants.AlbumSortType
 import com.metrolist.music.constants.AlbumSortTypeKey
+import com.metrolist.music.constants.ArtistFilter
+import com.metrolist.music.constants.ArtistFilterKey
 import com.metrolist.music.constants.ArtistSongSortDescendingKey
 import com.metrolist.music.constants.ArtistSongSortType
 import com.metrolist.music.constants.ArtistSongSortTypeKey
@@ -122,13 +124,17 @@ constructor(
     val allArtists =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
+                    it[ArtistFilterKey].toEnum(ArtistFilter.LIKED),
                     it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
                     it[ArtistSortDescendingKey] ?: true,
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (sortType, descending) ->
-                database.artistsBookmarked(sortType, descending)
+            .flatMapLatest { (filter, sortType, descending) ->
+                when (filter) {
+                    ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+                    ArtistFilter.LIBRARY -> database.artists(sortType, descending)
+                }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun sync() {
