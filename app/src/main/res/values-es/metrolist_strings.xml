@@ -330,4 +330,12 @@
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_logo_content_description">Logo de Metrolist</string>
     <string name="wrapped_year">2025</string>
+    <string name="show_artist_description">Ver descripción del artista</string>
+    <string name="show_artist_subscriber_count">Ver numero de suscriptores</string>
+    <string name="show_artist_monthly_listeners">Ver oyentes mensuales</string>
+    <string name="lyrics_offset">Desfase de la letra</string>
+    <string name="about_artist">Acerca de</string>
+    <string name="show_more">Ver más</string>
+    <string name="show_less">Ver menos</string>
+    <string name="artist_page_settings">Página del artista</string>
 </resources>
