@@ -314,8 +314,8 @@
     <string name="wrapped_end_playlist_saved">Playlist uložen</string>
     <string name="wrapped_logo_content_description">Logo Metrolist</string>
     <string name="wrapped_year">2025</string>
-    <string name="wrapped_ready_title">VÁŠ WRAPPED JE PŘIPRAVEN!</string>
-    <string name="wrapped_ready_subtitle">Je čas podívat se, co se vám tento rok líbilo.</string>
+    <string name="wrapped_ready_title">TVŮJ WRAPPED JE READY!</string>
+    <string name="wrapped_ready_subtitle">Je čas podívat se, co se ti tento rok líbilo.</string>
     <string name="wrapped_thank_you">Děkujeme za poslouchání</string>
     <string name="wrapped_special_thanks">Zvláštní poděkování patří MO Agamy za vytvoření Metrolistu</string>
     <string name="wrapped_close">Zavřít Wrapped</string>
