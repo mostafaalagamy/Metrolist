@@ -374,4 +374,14 @@
     <string name="remember_shuffle_and_repeat">Пам’ятайте про перемішування та повторення</string>
     <string name="remember_shuffle_and_repeat_desc">Запам\'ятайте режим випадкового відтворення та повтору під час перезапуску програми</string>
     <string name="lyrics_offset">Текст пісні Offset</string>
+    <string name="about_artist">Про нас</string>
+    <string name="show_more">Показати більше</string>
+    <string name="show_less">Показати менше</string>
+    <string name="artist_page_settings">Сторінка виконавця</string>
+    <string name="show_artist_description">Показати опис виконавця</string>
+    <string name="show_artist_subscriber_count">Показати кількість підписників</string>
+    <string name="show_artist_monthly_listeners">Показати щомісячні слухачі</string>
+    <string name="skip_silence_desc">Перемотування вперед тихих частин пісень</string>
+    <string name="skip_silence_instant">Миттєво пропустити тишу</string>
+    <string name="skip_silence_instant_desc">Перемотуйте вперед під час тихих моментів замість прискорення відтворення</string>
 </resources>
