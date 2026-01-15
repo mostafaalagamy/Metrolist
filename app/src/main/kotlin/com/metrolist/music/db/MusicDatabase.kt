@@ -93,7 +93,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 28,
+    version = 29,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -122,6 +122,7 @@ class MusicDatabase(
         AutoMigration(from = 25, to = 26),
         AutoMigration(from = 26, to = 27),
         AutoMigration(from = 27, to = 28),
+        AutoMigration(from = 28, to = 29, spec = Migration28To29::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -651,3 +652,24 @@ val MIGRATION_24_25 =
             }
         }
     }
+
+class Migration28To29: AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // Add provider column to lyrics table if it doesn't exist
+        var columnExists = false
+        db.query("PRAGMA table_info(lyrics)").use { cursor ->
+            val nameIndex = cursor.getColumnIndex("name")
+            while (cursor.moveToNext()) {
+                if (cursor.getString(nameIndex) == "provider") {
+                    columnExists = true
+                    break
+                }
+            }
+        }
+
+        if (!columnExists) {
+            // Add the provider column with a default value of "Unknown"
+            db.execSQL("ALTER TABLE lyrics ADD COLUMN provider TEXT NOT NULL DEFAULT 'Unknown'")
+        }
+    }
+}
