@@ -356,4 +356,17 @@
     <string name="widget_description">带播放控制的音乐播放器小部件</string>
     <string name="turntable_widget_description">快速访问你最近播放过的曲目</string>
     <string name="queue_widget_description">带队列预览的音乐播放器</string>
+    <string name="about_artist">关于</string>
+    <string name="show_more">查看更多</string>
+    <string name="show_less">收起</string>
+    <string name="artist_page_settings">艺术家页</string>
+    <string name="show_artist_description">展示艺术家简介</string>
+    <string name="show_artist_subscriber_count">显示订阅者数量</string>
+    <string name="show_artist_monthly_listeners">每月听众人数</string>
+    <string name="skip_silence_desc">快进跳过歌曲的静音部分</string>
+    <string name="skip_silence_instant">立即跳过静音</string>
+    <string name="skip_silence_instant_desc">在安静的片段中快进播放 而不是加快播放速度</string>
+    <string name="remember_shuffle_and_repeat">记住随机与循环设置</string>
+    <string name="remember_shuffle_and_repeat_desc">重启应用时 记住随机和重复设置</string>
+    <string name="lyrics_offset">歌词偏移</string>
 </resources>
