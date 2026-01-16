@@ -29,6 +29,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
+import kotlin.collections.emptyList
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -155,6 +156,36 @@ constructor(
                     artist -> check.any { check -> artist.id == check.id } // Filter by artistId
                 }
 
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val filteredArtists = combine(
+        mostPlayedArtists, // Unfiltered list of artists
+        snapshotFlow { selectedArtists.toList() } // Selected artists
+    ) { artists, selected ->
+        val check = selectedArtists
+        if (check.isEmpty()) {
+            artists // No filtering; return all artists
+        } else {
+            artists.filter { artist ->
+                check.any { selectedArtist -> artist.artist.id == selectedArtist.id }
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val filteredAlbums = combine(
+        mostPlayedAlbums, // Unfiltered list of albums
+        snapshotFlow { selectedArtists.toList() } // Selected artists
+    ) { albums, selected ->
+        val check = selectedArtists
+        if (check.isEmpty()) {
+            albums // No filtering; return all albums
+        } else {
+            albums.filter { album ->
+                album.artists.any { artist ->
+                    check.any { selectedArtist -> artist.id == selectedArtist.id }
+                }
             }
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())

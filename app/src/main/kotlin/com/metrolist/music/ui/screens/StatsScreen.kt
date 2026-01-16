@@ -83,8 +83,9 @@ fun StatsScreen(
     val indexChips by viewModel.indexChips.collectAsState()
     val mostPlayedSongs by viewModel.mostPlayedSongs.collectAsState()
     val mostPlayedSongsStats by viewModel.filteredSongs.collectAsState()
-    val mostPlayedArtists by viewModel.mostPlayedArtists.collectAsState()
-    val mostPlayedAlbums by viewModel.mostPlayedAlbums.collectAsState()
+    val mostPlayedArtists by viewModel.filteredArtists.collectAsState()
+    val mostPlayedAlbums by viewModel.filteredAlbums.collectAsState()
+    val allArtists by viewModel.mostPlayedArtists.collectAsState()
     val firstEvent by viewModel.firstEvent.collectAsState()
     val currentDate = LocalDateTime.now()
 
@@ -235,7 +236,7 @@ fun StatsScreen(
 
             item(key = "artistSelectionDropdown") {
                 ArtistSelectionDropdownMenu(
-                    artists = mostPlayedArtists.map { artistWrapper ->
+                    artists = allArtists.map { artistWrapper ->
                         Artist(
                             id = artistWrapper.artist.id,
                             name = artistWrapper.artist.name,
