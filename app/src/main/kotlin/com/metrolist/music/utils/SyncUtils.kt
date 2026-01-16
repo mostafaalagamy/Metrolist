@@ -181,15 +181,19 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remoteSongs.map { it.id }.toSet()
                 val localSongs = database.likedSongsByNameAsc().first()
 
-                // Process local songs not in remote - with batching
-                localSongs.filterNot { it.id in remoteIds }.chunked(10).forEach { batch ->
-                    batch.forEach {
-                        try {
-                            database.transaction { update(it.song.localToggleLike()) }
-                        } catch (e: Exception) { e.printStackTrace() }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteSongs.isNotEmpty()) {
+                    // Process local songs not in remote - with batching
+                    localSongs.filterNot { it.id in remoteIds }.chunked(10).forEach { batch ->
+                        batch.forEach {
+                            try {
+                                database.transaction { update(it.song.localToggleLike()) }
+                            } catch (e: Exception) { e.printStackTrace() }
+                        }
+                        delay(SYNC_ITEM_DELAY_MS)
+                        yield()
                     }
-                    delay(SYNC_ITEM_DELAY_MS)
-                    yield()
                 }
 
                 // Process remote songs - with batching
@@ -235,16 +239,20 @@ class SyncUtils @Inject constructor(
                 val localSongs = database.songsByNameAsc().first()
                 val feedbackTokens = mutableListOf<String>()
 
-                localSongs.filterNot { it.id in remoteIds }.forEach {
-                    if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
-                        feedbackTokens.add(it.song.libraryAddToken)
-                    } else {
-                        try {
-                            database.transaction { update(it.song.toggleLibrary()) }
-                        } catch (e: Exception) { e.printStackTrace() }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteSongs.isNotEmpty()) {
+                    localSongs.filterNot { it.id in remoteIds }.forEach {
+                        if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
+                            feedbackTokens.add(it.song.libraryAddToken)
+                        } else {
+                            try {
+                                database.transaction { update(it.song.toggleLibrary()) }
+                            } catch (e: Exception) { e.printStackTrace() }
+                        }
                     }
+                    feedbackTokens.chunked(20).forEach { YouTube.feedback(it) }
                 }
-                feedbackTokens.chunked(20).forEach { YouTube.feedback(it) }
 
                 // Process in reverse order so oldest songs get earliest timestamps
                 val totalSongs = remoteSongs.size
@@ -283,7 +291,11 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remoteSongs.map { it.id }.toSet()
                 val localSongs = database.uploadedSongsByNameAsc().first()
 
-                localSongs.filterNot { it.id in remoteIds }.forEach { database.update(it.song.toggleUploaded()) }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteSongs.isNotEmpty()) {
+                    localSongs.filterNot { it.id in remoteIds }.forEach { database.update(it.song.toggleUploaded()) }
+                }
 
                 remoteSongs.forEach { song ->
                     val dbSong = database.song(song.id).firstOrNull()
@@ -312,7 +324,11 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remoteAlbums.map { it.id }.toSet()
                 val localAlbums = database.albumsLikedByNameAsc().first()
 
-                localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.localToggleLike()) }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteAlbums.isNotEmpty()) {
+                    localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.localToggleLike()) }
+                }
 
                 remoteAlbums.forEach { album ->
                     val dbAlbum = database.album(album.id).firstOrNull()
@@ -344,7 +360,11 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remoteAlbums.map { it.id }.toSet()
                 val localAlbums = database.albumsUploadedByNameAsc().first()
 
-                localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.toggleUploaded()) }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteAlbums.isNotEmpty()) {
+                    localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.toggleUploaded()) }
+                }
 
                 remoteAlbums.forEach { album ->
                     val dbAlbum = database.album(album.id).firstOrNull()
@@ -376,7 +396,11 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remoteArtists.map { it.id }.toSet()
                 val localArtists = database.artistsBookmarkedByNameAsc().first()
 
-                localArtists.filterNot { it.id in remoteIds }.forEach { database.update(it.artist.localToggleLike()) }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remoteArtists.isNotEmpty()) {
+                    localArtists.filterNot { it.id in remoteIds }.forEach { database.update(it.artist.localToggleLike()) }
+                }
 
                 remoteArtists.forEach { artist ->
                     val dbArtist = database.artist(artist.id).firstOrNull()
@@ -443,7 +467,11 @@ class SyncUtils @Inject constructor(
                 val remoteIds = remotePlaylists.map { it.id }.toSet()
                 val localPlaylists = database.playlistsByNameAsc().first()
 
-                localPlaylists.filterNot { it.playlist.browseId in remoteIds }.filterNot { it.playlist.browseId == null }.forEach { database.update(it.playlist.localToggleLike()) }
+                // Safety check: don't remove local items if remote list is empty
+                // This prevents data loss when API parsing fails
+                if (remotePlaylists.isNotEmpty()) {
+                    localPlaylists.filterNot { it.playlist.browseId in remoteIds }.filterNot { it.playlist.browseId == null }.forEach { database.update(it.playlist.localToggleLike()) }
+                }
 
                 remotePlaylists.forEach { playlist ->
                     var playlistEntity = localPlaylists.find { it.playlist.browseId == playlist.id }?.playlist
