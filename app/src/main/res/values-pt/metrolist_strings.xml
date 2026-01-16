@@ -341,7 +341,6 @@
     <string name="copied_artist">Artista copiado</string>
     <string name="error_playing">Erro de reprodução</string>
     <string name="failed_to_parse_proxy">Falha ao processar o URL do proxy.</string>
-    <string name="enable_squiggly_slider">Habilitar o slider ondulado</string>
     <plurals name="profiles_count">
         <item quantity="one">%d perfil</item>
         <item quantity="many">%d perfis</item>

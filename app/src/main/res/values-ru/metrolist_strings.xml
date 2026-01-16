@@ -356,7 +356,6 @@
     <string name="error_file_read">Не удалось прочитать файл</string>
     <string name="error_file_open">Не удалось открыть файл: %1$s</string>
     <string name="import_error_title">Ошибка импорта</string>
-    <string name="enable_squiggly_slider">Включить извилистый ползунок</string>
     <string name="pause_music_when_media_is_muted">Приостанавливать музыку при отключении звука</string>
     <string name="enable_simpmusic">Включить SimpMusic Lyrics</string>
     <string name="enable_simpmusic_desc">Использовать SimpMusic Lyrics для синхронизации текстов</string>

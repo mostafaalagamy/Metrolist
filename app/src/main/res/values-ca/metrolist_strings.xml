@@ -351,5 +351,4 @@
     <string name="error_file_read">No s\'ha pogut llegir l\'arxiu</string>
     <string name="error_file_open">No s\'ha pogut obrir l\'arxiu: %1$s</string>
     <string name="import_error_title">Error d\'Importació</string>
-    <string name="enable_squiggly_slider">Activar lliscador ondulat</string>
 </resources>

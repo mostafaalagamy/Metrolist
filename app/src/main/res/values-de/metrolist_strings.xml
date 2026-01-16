@@ -339,7 +339,6 @@
     <string name="error_file_read">Datei konnte nicht gelesen werden</string>
     <string name="error_file_open">Datei konnte nicht geöffnet werden: %1$s</string>
     <string name="import_error_title">Importfehler</string>
-    <string name="enable_squiggly_slider">Wellenförmigen Schieberegler aktivieren</string>
     <string name="enable_simpmusic">SimpMusic-Songtext-Anbieter aktivieren</string>
     <string name="enable_simpmusic_desc">Verwenden Sie den Anbieter SimpMusic-Lyrics für synchronisierte Songtexte.</string>
     <plurals name="profiles_count">
