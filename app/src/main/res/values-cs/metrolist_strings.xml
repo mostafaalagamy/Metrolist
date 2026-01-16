@@ -356,7 +356,6 @@
     <string name="import_error_title">Chyba importu</string>
     <string name="enable_wavy_slider">Povolit vlnitý posuvník</string>
     <string name="wavy">Vlnitý</string>
-    <string name="enable_squiggly_slider">Povolit vlnitou lištu</string>
     <string name="pause_music_when_media_is_muted">Pozastavit hudbu při ztlumení médií</string>
     <string name="enable_simpmusic">Povolit texty SimpMusic</string>
     <string name="enable_simpmusic_desc">Použít poskytovatele SimpMusic Lyrics pro synchronizované texty</string>

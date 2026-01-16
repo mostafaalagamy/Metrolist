@@ -356,7 +356,6 @@
     <string name="import_error_title">Помилка імпорту</string>
     <string name="enable_wavy_slider">Увімкнути хвилястий повзунок</string>
     <string name="wavy">Хвилястий</string>
-    <string name="enable_squiggly_slider">Увімкнути звивистий повзунок</string>
     <string name="pause_music_when_media_is_muted">Призупиняти музику, коли медіа вимкнено</string>
     <string name="enable_simpmusic">Увімкнути текст пісні SimpMusic</string>
     <string name="enable_simpmusic_desc">Використовуйте постачальника текстів пісень SimpMusic для синхронізованих текстів пісень</string>

@@ -342,7 +342,6 @@
     <string name="enable_wavy_slider">启用波浪滑块</string>
     <string name="wavy">波浪</string>
     <string name="pause_music_when_media_is_muted">在静音时暂停播放</string>
-    <string name="enable_squiggly_slider">启用波浪形滑块</string>
     <string name="enable_simpmusic">启用SimpMusic提供歌词</string>
     <string name="enable_simpmusic_desc">使用SimpMusic歌词服务以获取逐字同步的歌词</string>
     <string name="system_equalizer">系统均衡器</string>

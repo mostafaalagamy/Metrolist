@@ -363,7 +363,6 @@
     <string name="copied_artist">Kopierte artist</string>
     <string name="error_playing">Feil under avspeling</string>
     <string name="failed_to_parse_proxy">Mislukkast i å tolka mellomtenar-URL</string>
-    <string name="enable_squiggly_slider">Slå på snirklete glidebrytar</string>
     <string name="album_art">Albumkunst</string>
     <string name="no_song_playing">Ingen song vert spela av</string>
     <string name="tap_to_open">Trykk for å opna Metrolist</string>
