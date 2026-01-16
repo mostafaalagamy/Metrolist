@@ -69,4 +69,8 @@
     <string name="configure_app_language">앱 언어 설정</string>
     <string name="cached_playlist">캐시된 재생목록</string>
     <string name="open">열기</string>
+    <string name="apple_music_style">Apple Music</string>
+    <string name="lyrics_text_size">가사 글씨 크기</string>
+    <string name="lyrics_line_spacing">가사 줄간격</string>
+    <string name="karaoke">노래방</string>
 </resources>
