@@ -634,37 +634,16 @@ object YouTube {
         ).body<BrowseResponse>()
 
         val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs
-        val numTabs = tabs?.size ?: 0
 
-        // Determine which tab to use based on number of tabs (like ytmusicapi)
-        // Non-premium users have fewer tabs, so we need to adjust
-        val effectiveTabIndex = when {
-            numTabs == 0 -> 0
-            numTabs < 3 && tabIndex > 0 -> 1  // For non-premium: use tab 1 for library content
-            numTabs >= 3 && tabIndex > 0 -> 2  // For premium: use tab 2 for library content
-            else -> tabIndex
-        }
-
-        val sectionList = if (tabs != null && numTabs > effectiveTabIndex) {
-            tabs[effectiveTabIndex].tabRenderer.content?.sectionListRenderer
+        // Use the requested tabIndex directly, fallback to first tab if out of bounds
+        val contents = if (tabs != null && tabs.size > tabIndex) {
+            tabs[tabIndex].tabRenderer.content?.sectionListRenderer?.contents?.firstOrNull()
         } else {
-            // Fallback to first tab if effectiveTabIndex is out of bounds
-            tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer
+            tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
         }
-
-        val contents = sectionList?.contents?.firstOrNull()
 
         // Check for itemSectionRenderer pattern (2025/2026 API)
         val itemSectionContent = contents?.itemSectionRenderer?.contents?.firstOrNull()
-
-        // Try to find gridRenderer or musicShelfRenderer in various locations
-        val anyGridRenderer = contents?.gridRenderer
-            ?: itemSectionContent?.gridRenderer
-            ?: sectionList?.contents?.mapNotNull { it.gridRenderer }?.firstOrNull()
-
-        val anyMusicShelfRenderer = contents?.musicShelfRenderer
-            ?: itemSectionContent?.musicShelfRenderer
-            ?: sectionList?.contents?.mapNotNull { it.musicShelfRenderer }?.firstOrNull()
 
         when {
             // Direct gridRenderer in contents
@@ -704,26 +683,6 @@ object YouTube {
                         .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
                         .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
                     continuation = itemSectionContent.musicShelfRenderer.continuations?.getContinuation()
-                )
-            }
-
-            // Fallback: try any gridRenderer found in section list
-            anyGridRenderer != null -> {
-                LibraryPage(
-                    items = anyGridRenderer.items
-                        .mapNotNull (GridRenderer.Item::musicTwoRowItemRenderer)
-                        .mapNotNull { LibraryPage.fromMusicTwoRowItemRenderer(it) },
-                    continuation = anyGridRenderer.continuations?.getContinuation()
-                )
-            }
-
-            // Fallback: try any musicShelfRenderer found in section list
-            anyMusicShelfRenderer?.contents != null -> {
-                LibraryPage(
-                    items = anyMusicShelfRenderer.contents
-                        .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
-                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
-                    continuation = anyMusicShelfRenderer.continuations?.getContinuation()
                 )
             }
 
