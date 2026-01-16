@@ -45,6 +45,7 @@ fun WavySlider(
     onValueChangeFinished: (() -> Unit)? = null,
     colors: SliderColors = SliderDefaults.colors(),
     isPlaying: Boolean = true,
+    enabled: Boolean = true,
     strokeWidth: Dp = 4.dp,
     thumbRadius: Dp = 8.dp,
     wavelength: Dp = WavyProgressIndicatorDefaults.LinearDeterminateWavelength,
@@ -78,10 +79,12 @@ fun WavySlider(
     // Calculate container height to accommodate thumb
     val containerHeight = maxOf(WavyProgressIndicatorDefaults.LinearContainerHeight, thumbRadius * 2)
     
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(containerHeight)
+    val baseModifier = modifier
+        .fillMaxWidth()
+        .height(containerHeight)
+
+    val interactiveModifier = if (enabled) {
+        baseModifier
             .pointerInput(valueRange) {
                 detectTapGestures { offset ->
                     val newValue = (offset.x / size.width).coerceIn(0f, 1f)
@@ -111,7 +114,13 @@ fun WavySlider(
                         onValueChange(mappedValue)
                     }
                 )
-            },
+            }
+    } else {
+        baseModifier
+    }
+
+    Box(
+        modifier = interactiveModifier,
         contentAlignment = Alignment.Center
     ) {
         LinearWavyProgressIndicator(
