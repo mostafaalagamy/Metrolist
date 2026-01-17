@@ -468,7 +468,7 @@ object YouTube {
                 songCountText = header.secondSubtitle?.runs?.firstOrNull()?.text,
                 thumbnail = header.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url!!,
                 playEndpoint = null,
-                shuffleEndpoint = header.buttons?.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
+                shuffleEndpoint = header.buttons.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
                 radioEndpoint = header.buttons.getOrNull(2)?.menuRenderer?.items?.find {
                     it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
                 }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
@@ -494,7 +494,7 @@ object YouTube {
         ).body<BrowseResponse>()
 
         val mainContents = response.continuationContents?.sectionListContinuation?.contents
-            ?.flatMap { it.musicPlaylistShelfRenderer?.contents.orEmpty() }
+            ?.flatMap { content -> content.musicPlaylistShelfRenderer?.contents.orEmpty().toList() }
             ?: emptyList()
 
         val appendedContents = response.onResponseReceivedActions
@@ -506,8 +506,8 @@ object YouTube {
         val allContents = mainContents + appendedContents
 
         val songs = allContents
-            .mapNotNull { it.musicResponsiveListItemRenderer }
-            .mapNotNull { PlaylistPage.fromMusicResponsiveListItemRenderer(it) }
+            .mapNotNull { content -> content.musicResponsiveListItemRenderer }
+            .mapNotNull { renderer -> PlaylistPage.fromMusicResponsiveListItemRenderer(renderer) }
 
         val nextContinuation = if (songs.isEmpty()) null else {
             response.continuationContents
