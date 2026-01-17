@@ -240,4 +240,9 @@
     <string name="listen_on_youtube_music">Luister op YouTube Music</string>
     <string name="play_pause">Afspelen/Pauzeer</string>
     <string name="lyrics_animation_style">Woord-voor-woord animatie stijl</string>
+    <string name="lyrics_glow_effect_desc">Voegt gloeiende animatie en stuiter effecten toe aan actieve songtekst</string>
+    <string name="none">Geen</string>
+    <string name="fade">Vervagen</string>
+    <string name="glow">Gloei</string>
+    <string name="slide">Schuiven</string>
 </resources>

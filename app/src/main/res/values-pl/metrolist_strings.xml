@@ -356,5 +356,4 @@
     <string name="copied_artist">Skopiowano wykonawcę</string>
     <string name="error_playing">Błąd odtwarzania</string>
     <string name="failed_to_parse_proxy">Nie udało się przetworzyć adresu URL proxy.</string>
-    <string name="enable_squiggly_slider">Włącz falisty suwak</string>
 </resources>

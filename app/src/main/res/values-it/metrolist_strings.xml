@@ -351,7 +351,6 @@
     <string name="import_error_title">Errore di importazione</string>
     <string name="wavy">Ondulato</string>
     <string name="enable_wavy_slider">Attiva lo slider ondulato</string>
-    <string name="enable_squiggly_slider">Abilita slider ondulato</string>
     <string name="pause_music_when_media_is_muted">Metti la musica in pausa quando il media è mutato</string>
     <string name="enable_simpmusic_desc">Usa SimpMusic Lyrics come fornitore di testi sincronizzati</string>
     <string name="enable_simpmusic">Attiva SimpMusic Lyrics</string>
@@ -368,4 +367,15 @@
     <string name="queue_widget_description">Lettore musicale con anteprima della coda</string>
     <string name="remember_shuffle_and_repeat">Ricorda le opzioni di ripeti e shuffle</string>
     <string name="remember_shuffle_and_repeat_desc">Ricorda le modalità di ripetizione e di mescolamento quando l\'app viene riavviata</string>
+    <string name="about_artist">Informazioni</string>
+    <string name="show_more">Mostra altro</string>
+    <string name="show_less">Visualizza meno</string>
+    <string name="artist_page_settings">Pagina dell\'artista</string>
+    <string name="show_artist_description">Mostra la descrizione dell\'artista</string>
+    <string name="show_artist_subscriber_count">Mostra il numero di iscritti</string>
+    <string name="show_artist_monthly_listeners">Mostra il numero di ascoltatori mensili</string>
+    <string name="skip_silence_desc">Avanza rapidamente attraverso le parti silenziose delle canzoni</string>
+    <string name="skip_silence_instant">Salta il silenzio istantaneamente</string>
+    <string name="skip_silence_instant_desc">Salta avanti durante i momenti di silenzio invece di velocizzare la riproduzione</string>
+    <string name="lyrics_offset">Ritardo/anticipo dei testi</string>
 </resources>

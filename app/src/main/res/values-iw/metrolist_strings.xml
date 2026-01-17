@@ -39,4 +39,9 @@
     <string name="more_options">אפשרויות נוספות</string>
     <string name="text_color">צבע טקסט</string>
     <string name="secondary_text_color">צבע טקסט משני</string>
+    <string name="other_results">תוצאות אחרות</string>
+    <string name="sync_playlist_desc">סנכרן את הפלייליסט עם YouTube Music</string>
+    <string name="description">תיאור</string>
+    <string name="lyrics">מילות השיר</string>
+    <string name="close">סגור</string>
 </resources>
