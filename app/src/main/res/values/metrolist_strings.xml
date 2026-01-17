@@ -186,6 +186,8 @@
     <string name="audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Enable similar content</string>
     <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
+    <string name="persistent_shuffle_title">Persistent shuffle</string>
+    <string name="persistent_shuffle_desc">Keep shuffle enabled when starting new songs or playlists</string>
     <string name="remember_shuffle_and_repeat">Remember shuffle and repeat</string>
     <string name="remember_shuffle_and_repeat_desc">Remember shuffle and repeat mode when restarting the app</string>
     <string name="min_playback_duration_title">Minimum playback duration</string>

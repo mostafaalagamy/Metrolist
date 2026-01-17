@@ -110,6 +110,7 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRad
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.PersistentQueueKey
+import com.metrolist.music.constants.PersistentShuffleAcrossQueuesKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.RepeatModeKey
@@ -947,7 +948,11 @@ class MusicService :
         if (!scope.isActive) scope = CoroutineScope(Dispatchers.Main) + Job()
         currentQueue = queue
         queueTitle = null
-        player.shuffleModeEnabled = false
+        val persistShuffleAcrossQueues = dataStore.get(PersistentShuffleAcrossQueuesKey, false)
+        val previousShuffleEnabled = player.shuffleModeEnabled
+        if (!persistShuffleAcrossQueues) {
+            player.shuffleModeEnabled = false
+        }
         // Reset original queue size when starting a new queue
         originalQueueSize = 0
         if (queue.preloadItem != null) {
@@ -994,6 +999,11 @@ class MusicService :
                 )
                 player.prepare()
                 player.playWhenReady = playWhenReady
+            }
+
+            // Rebuild shuffle order when persisting shuffle across queues is enabled
+            if (persistShuffleAcrossQueues && previousShuffleEnabled) {
+                onShuffleModeEnabledChanged(true)
             }
         }
     }
