@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.ui.Alignment
@@ -377,6 +379,7 @@ private fun OnlinePlaylistHeader(
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
     val menuState = LocalMenuState.current
+    val syncUtils = LocalSyncUtils.current
 
     Column(
         modifier = modifier
@@ -442,18 +445,40 @@ private fun OnlinePlaylistHeader(
             // Like Button - Smaller secondary button
             Surface(
                 onClick = {
-                    database.query {
-                        if (dbPlaylist != null) {
-                            update(dbPlaylist.playlist.toggleLike())
-                        } else {
-                            insert(
-                                PlaylistEntity(
-                                    id = playlist.id,
-                                    name = playlist.title,
-                                    browseId = playlist.id,
-                                    bookmarkedAt = LocalDateTime.now()
-                                )
-                            )
+                    if (dbPlaylist != null) {
+                        database.transaction {
+                            val currentPlaylist = dbPlaylist.playlist
+                            update(currentPlaylist, playlist)
+                            update(currentPlaylist.toggleLike())
+                        }
+                    } else {
+                        database.transaction {
+                            val playlistEntity = PlaylistEntity(
+                                name = playlist.title,
+                                browseId = playlist.id,
+                                thumbnailUrl = playlist.thumbnail,
+                                isEditable = playlist.isEditable,
+                                remoteSongCount = playlist.songCountText?.let {
+                                    Regex("""\d+""").find(it)?.value?.toIntOrNull()
+                                },
+                                playEndpointParams = playlist.playEndpoint?.params,
+                                shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                                radioEndpointParams = playlist.radioEndpoint?.params
+                            ).toggleLike()
+                            insert(playlistEntity)
+                            coroutineScope.launch(Dispatchers.IO) {
+                                songs.map { it.toMediaMetadata() }
+                                    .onEach(::insert)
+                                    .mapIndexed { index, song ->
+                                        PlaylistSongMap(
+                                            songId = song.id,
+                                            playlistId = playlistEntity.id,
+                                            position = index,
+                                            setVideoId = song.setVideoId
+                                        )
+                                    }
+                                    .forEach(::insert)
+                            }
                         }
                     }
                 },
