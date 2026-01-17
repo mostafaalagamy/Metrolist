@@ -281,22 +281,6 @@ class MainActivity : ComponentActivity() {
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // Force high refresh rate (120Hz) for smooth animations
-        // Filter modes by current resolution to avoid DPI changes on Android 16+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val display = display ?: windowManager.defaultDisplay
-            val currentMode = display.mode
-            val supportedModes = display.supportedModes
-            val highRefreshRateMode = supportedModes
-                .filter { it.physicalWidth == currentMode.physicalWidth && it.physicalHeight == currentMode.physicalHeight }
-                .maxByOrNull { it.refreshRate }
-            highRefreshRateMode?.let { mode ->
-                window.attributes = window.attributes.also { params ->
-                    params.preferredDisplayModeId = mode.modeId
-                }
-            }
-        }
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             val locale = dataStore[AppLanguageKey]
                 ?.takeUnless { it == SYSTEM_DEFAULT }
