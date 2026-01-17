@@ -19,8 +19,8 @@
     <string name="continuous">বিরতিহীন</string>
     <string name="liked">পছন্দ</string>
     <string name="offline">ডাউনলোডেড</string>
-    <string name="my_top">আমার সর্বোত্তম</string>
-    <string name="cached_playlist">ক্যাশড</string>
+    <string name="my_top">শীর্ষ গান</string>
+    <string name="cached_playlist">জমাকৃত</string>
     <string name="uploaded_playlist">আপলোডেড</string>
     <string name="filter_uploaded">আপলোডেড</string>
     <string name="sync_playlist">প্লেলিস্ট সমন্বয়</string>
@@ -35,4 +35,21 @@
     <string name="share_as_image">ছবি হিসেবে শেয়ার</string>
     <string name="max_selection_limit">সর্বোচ্চ নির্বাচন সংখ্যা</string>
     <string name="share_selected">নির্বাচিতগুলো শেয়ার</string>
+    <string name="top_result">শীর্ষ ফলাফল</string>
+    <string name="other_results">অন্যান্য</string>
+    <string name="customize_colors">রঙ পরিবর্তন</string>
+    <string name="more_options">আরো অপসন</string>
+    <string name="text_color">লিখার রঙ</string>
+    <string name="secondary_text_color">লিখার রঙ (গৌণ)</string>
+    <string name="background_color">ব্যাকগ্রাউন্ড এর রঙ</string>
+    <string name="added_to_play_next">পরবর্তীতে চালু হবে</string>
+    <string name="added_to_queue">গানের তালিকায় যুক্ত করা হয়েছে</string>
+    <string name="remove_from_cache">জমা থেকে মুছে ফেলা হয়েছে</string>
+    <string name="about_artist">উদ্দেশ্য</string>
+    <string name="empty_playlist">গানের তালিকা শুন্য</string>
+    <string name="empty_playlist_desc">এই গানের তালিকায় কোনো গান নেই</string>
+    <plurals name="seconds">
+        <item quantity="one">%d সেকেন্ড</item>
+        <item quantity="other">%d সেকেন্ড</item>
+    </plurals>
 </resources>

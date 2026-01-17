@@ -346,7 +346,6 @@
     <string name="error_file_read">Dosya okunamadı</string>
     <string name="error_file_open">Dosya açılamadı: %1$s</string>
     <string name="import_error_title">İçe Aktarma Hatası</string>
-    <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştirin</string>
     <string name="pause_music_when_media_is_muted">Medya sesi kapatıldığında müziği duraklat</string>
     <string name="enable_simpmusic">SimpMusic\'in şarkı sözlerini etkinleştir</string>
     <string name="enable_simpmusic_desc">Eşitlenmiş sözcükler için SimpMusic sağlayıcısını etkinleştir</string>

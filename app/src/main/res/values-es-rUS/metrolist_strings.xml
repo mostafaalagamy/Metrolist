@@ -265,4 +265,11 @@
     <string name="add_to_queue_desc">Añadir al final de la cola</string>
     <string name="add_to_library_desc">Guardar en tu biblioteca</string>
     <string name="download_desc">Hacer disponible para reproducir sin conexión</string>
+    <string name="show_less">Mostrar menos</string>
+    <string name="show_more">Mostrar más</string>
+    <string name="about_artist">Acerca</string>
+    <string name="artist_page_settings">Página del artista</string>
+    <string name="show_artist_description">Mostrar descripción del artista</string>
+    <string name="show_artist_monthly_listeners">Mostrar oyentes mensuales</string>
+    <string name="show_artist_subscriber_count">Mostrar cantidad de suscriptores</string>
 </resources>
