@@ -147,7 +147,7 @@ fun YouTubePlaylistMenu(
                                     name = playlist.title,
                                     browseId = playlist.id,
                                     thumbnailUrl = playlist.thumbnail,
-                                    isEditable = false,
+                                    isEditable = playlist.isEditable,
                                     remoteSongCount = playlist.songCountText?.let {
                                         Regex("""\d+""").find(it)?.value?.toIntOrNull()
                                     },
@@ -166,7 +166,8 @@ fun YouTubePlaylistMenu(
                                             PlaylistSongMap(
                                                 songId = song.id,
                                                 playlistId = playlistEntity.id,
-                                                position = index
+                                                position = index,
+                                                setVideoId = song.setVideoId
                                             )
                                         }
                                         .forEach(::insert)
@@ -174,7 +175,6 @@ fun YouTubePlaylistMenu(
                             }
                         } else {
                             database.transaction {
-                                // Update playlist information including thumbnail before toggling like
                                 val currentPlaylist = dbPlaylist!!.playlist
                                 update(currentPlaylist, playlist)
                                 update(currentPlaylist.toggleLike())
