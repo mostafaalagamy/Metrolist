@@ -9,14 +9,19 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.MyTopFilter
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.utils.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -34,8 +39,13 @@ constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topSongs =
-        topPeriod
-            .flatMapLatest { period ->
-                database.mostPlayedSongs(period.toTimeMillis(), top.toInt())
+        combine(
+            topPeriod,
+            context.dataStore.data.map { it[HideVideoSongsKey] ?: false }.distinctUntilChanged()
+        ) { period, hideVideoSongs -> period to hideVideoSongs }
+            .flatMapLatest { (period, hideVideoSongs) ->
+                database.mostPlayedSongs(period.toTimeMillis(), top.toInt()).map { songs ->
+                    if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
+                }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }

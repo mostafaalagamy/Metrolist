@@ -93,6 +93,7 @@ import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.CastConnectionHandler
 import com.metrolist.music.playback.PlayerConnection
+import com.metrolist.music.ui.component.Icon as MIcon
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.rememberEnumPreference
@@ -142,11 +143,7 @@ fun MiniPlayer(
         Box(modifier = modifier.fillMaxWidth()) {
             LegacyMiniPlayer(
                 progressState = progressState,
-                modifier = if (isTabletLandscape) {
-                    Modifier.align(Alignment.CenterEnd)
-                } else {
-                    Modifier.align(Alignment.Center)
-                }
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
@@ -281,7 +278,7 @@ private fun NewMiniPlayer(
     ) {
         Box(
             modifier = Modifier
-                .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.CenterEnd) else Modifier.fillMaxWidth())
+                .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.Center) else Modifier.fillMaxWidth())
                 .height(64.dp)
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
@@ -475,16 +472,21 @@ private fun NewMiniPlayerSongInfo(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
             )
-
-            if (metadata.artists.any { it.name.isNotBlank() }) {
-                Text(
-                    text = metadata.artists.joinToString { it.name },
-                    color = onSurfaceColor.copy(alpha = 0.7f),
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
-                )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (metadata.explicit) MIcon.Explicit()
+                if (metadata.artists.any { it.name.isNotBlank() }) {
+                    Text(
+                        text = metadata.artists.joinToString { it.name },
+                        color = onSurfaceColor.copy(alpha = 0.7f),
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
+                    )
+                }
             }
 
             AnimatedVisibility(visible = error != null, enter = fadeIn(), exit = fadeOut()) {

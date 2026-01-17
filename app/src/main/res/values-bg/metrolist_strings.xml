@@ -109,7 +109,6 @@
     <string name="sync_disabled">Синхронизирането е изключено</string>
     <string name="max_selection_limit">Максимален лимит за избиране</string>
     <string name="added_to_play_next">Добавено към следващи за изпълнение</string>
-    <string name="enable_squiggly_slider">Активиране на подвижния плъзгач</string>
     <string name="enable_swipe_thumbnail">Разреши плъзгането за смяна на песента</string>
     <string name="swipe_song_to_add">Плъзнете песента наляво, за да я добавите към опашката, или надясно, за да я пуснете следваща</string>
     <string name="slim">Тесен</string>

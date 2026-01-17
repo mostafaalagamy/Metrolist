@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">استكشاف</string>
+    <string name="explore">Explore</string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
@@ -62,7 +62,6 @@
     <string name="player_buttons_style">ألوان أزرار المشغل</string>
     <string name="default_style">افتراضي</string>
     <string name="secondary_color_style">اللون الثانوي للتطبيق</string>
-    <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
     <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
     <string name="swipe_song_to_add">مرر الأغنية إلى اليسار لإضافتها إلى قائمة الانتظار أو إلى اليمين لتشغيلها بعد الأغنية الحالية</string>
     <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>
@@ -288,7 +287,7 @@
     <string name="shuffle_playlist_first_desc">عند تشغيل الأغاني عشوائياً، قم بتشغيل جميع الأغاني من قائمة التشغيل/الألبوم الأصلي أولاً، ثم المحتوى المشابه</string>
     <string name="show_wrapped_card">عرض البطاقة المغلفة</string>
     <string name="album_art_for">غلاف ألبوم لـ %s</string>
-    <string name="wrapped_total_albums_title">لقد استمعت إلى</string>
+    <string name="wrapped_total_albums_title">استمعت إلى</string>
     <string name="wrapped_total_albums_subtitle">ألبومات فريدة</string>
     <string name="wrapped_top_album_title">ألبومك المفضل هو</string>
     <string name="wrapped_playlist_ready">قائمة التشغيل الشخصية الخاصة بك جاهزة</string>
@@ -300,11 +299,11 @@
     <string name="wrapped_artist_image_content_description">صورة الفنان</string>
     <string name="wrapped_artist_listening_time">%d دقيقة</string>
     <string name="wrapped_top_5_songs_title">أفضل أغاني السنة</string>
-    <string name="wrapped_top_song_album_art_content_description">غلاف الألبوم</string>
+    <string name="wrapped_top_song_album_art_content_description">صورة الألبوم</string>
     <string name="wrapped_top_artist_title">فنانك المفضل لهذا العام هو</string>
-    <string name="wrapped_total_artists_title">لقد استمعت إلى</string>
+    <string name="wrapped_total_artists_title">انت استمعت إلى</string>
     <string name="wrapped_total_artists_subtitle">فنانون فريدون</string>
-    <string name="wrapped_total_songs_title">لقد استمعت إلى</string>
+    <string name="wrapped_total_songs_title">انت استمعت إلى</string>
     <string name="wrapped_total_songs_subtitle">أغاني فريدة</string>
     <string name="wrapped_intro_subtitle">حان الوقت لمعرفة ما كنت تستمع إليه</string>
     <string name="wrapped_intro_button">هيا بنا!</string>
@@ -317,7 +316,7 @@
     <string name="wrapped_ready_title">ملخصك السنوي جاهز!</string>
     <string name="wrapped_ready_subtitle">حان الوقت لمعرفة ما أحببته في هذا السنة.</string>
     <string name="wrapped_thank_you">شكرًا لاستماعكم</string>
-    <string name="wrapped_special_thanks">شكر خاص لـ MO Agamy\nلإنشاء Metrolist</string>
+    <string name="wrapped_special_thanks">شكر خاص لمصطفي العجمي لإنشاء متروليست</string>
     <string name="wrapped_close">اغلاق ملخص السنة</string>
     <string name="wrapped_top_artist_image_content_description">صورة الفنان الرئيسي</string>
     <string name="wrapped_top_artist_listening_time">لقد استمعت إليهم لمدة %d دقيقة</string>
@@ -340,4 +339,59 @@
     <string name="error_playing">حدث خطأ أثناء التشغيل</string>
     <string name="lyrics_glow_effect">تفعيل تأثير الكلمات المتوهجة</string>
     <string name="lyrics_glow_effect_desc">أضف تأثيرات متحركة متوهجة وارتدادية إلى كلمات الأغاني المتحركه</string>
+    <string name="enable_wavy_slider">تفعيل شريط التمرير المتموج</string>
+    <string name="wavy">متموج</string>
+    <plurals name="profiles_count">
+        <item quantity="zero">%d ملف تعريف</item>
+        <item quantity="one">%d ملف تعريف</item>
+        <item quantity="two">%d ملفا تعريف</item>
+        <item quantity="few">%d ملفات تعريف</item>
+        <item quantity="many">%d ملف تعريف</item>
+        <item quantity="other">%d ملف تعريف</item>
+    </plurals>
+    <string name="equalizer_header">مُعادل</string>
+    <string name="no_profiles">لا توجد ملفات تعريف للمعادل</string>
+    <string name="import_profile">ملف تعريف الاستيراد</string>
+    <string name="eq_disabled">معطّل</string>
+    <plurals name="band_count">
+        <item quantity="zero">%d نطاق</item>
+        <item quantity="one">%d نطاق</item>
+        <item quantity="two">%d نطاقين</item>
+        <item quantity="few">%d نطاقات</item>
+        <item quantity="many">%d نطاقًا</item>
+        <item quantity="other">%d نطاق</item>
+    </plurals>
+    <string name="delete_profile_desc">حذف الملف الشخصي</string>
+    <string name="delete_profile_confirmation">هل أنت متأكد من رغبتك في حذف %1$s؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="error_file_read">تعذر قراءة الملف</string>
+    <string name="error_file_open">فشل فتح الملف: %1$s</string>
+    <string name="import_error_title">خطأ في الاستيراد</string>
+    <string name="enable_squiggly_slider">تفعيل شريط التمرير المتعرج</string>
+    <string name="pause_music_when_media_is_muted">أوقف تشغيل الموسيقى مؤقتًا عند كتم صوت الوسائط</string>
+    <string name="enable_simpmusic">تفعيل كلمات أغاني SimpMusic</string>
+    <string name="enable_simpmusic_desc">استخدم موفر كلمات SimpMusic لمزامنة الكلمات</string>
+    <string name="about_artist">حول</string>
+    <string name="show_more">عرض المزيد</string>
+    <string name="show_less">عرض القليل</string>
+    <string name="artist_page_settings">صفحة الفنان</string>
+    <string name="show_artist_description">عرض وصف الفنان</string>
+    <string name="show_artist_subscriber_count">عرض عدد المشتركين</string>
+    <string name="show_artist_monthly_listeners">عدد المستمعين الشهريين</string>
+    <string name="skip_silence_desc">قم بتخطي الأجزاء الصامتة من الأغاني</string>
+    <string name="skip_silence_instant">تجاوز الصمت فوراً</string>
+    <string name="skip_silence_instant_desc">قم بتخطي اللحظات الصامتة بدلاً من تسريع التشغيل</string>
+    <string name="remember_shuffle_and_repeat">تذكر خلط الاغاني و تكرار الأغنية</string>
+    <string name="remember_shuffle_and_repeat_desc">تذكر وضع خلط الاغاني و تكرار الاغنية بعد إعادة تشغيل التطبيق</string>
+    <string name="lyrics_offset">ازاحة كلمات الأغنية</string>
+    <string name="system_equalizer">معادل النظام</string>
+    <string name="album_art">صورة الالبوم</string>
+    <string name="no_song_playing">لا اغنية حاليا</string>
+    <string name="tap_to_open">اضغط لفتح تطبيق متروليست</string>
+    <string name="previous">السابق</string>
+    <string name="play_pause">تشغيل\\ايقاف مؤقت</string>
+    <string name="next">التالي</string>
+    <string name="like">اعجاب</string>
+    <string name="widget_description">أداة تشغيل الموسيقى مع عناصر تحكم التشغيل</string>
+    <string name="turntable_widget_description">الوصول السريع الى اخر مسيقى تم الاستماع اليها</string>
+    <string name="queue_widget_description">مشغل موسيقى مع معاينة قائمة التشغيل</string>
 </resources>

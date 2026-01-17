@@ -8,14 +8,14 @@
 package com.metrolist.music.playback
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.core.graphics.drawable.toBitmap
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.toBitmap
 import kotlinx.coroutines.launch
-import com.metrolist.music.widget.HelloWidget
+import com.metrolist.music.widget.MusicWidget
+import com.metrolist.music.widget.MusicWidgetActions
+import com.metrolist.music.widget.TurntableWidget
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -108,12 +108,16 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMo
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.PauseListenHistoryKey
+import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
+import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.ShuffleModeKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.SimilarContent
+import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
@@ -146,6 +150,7 @@ import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.playback.queues.filterVideoSongs
+import com.metrolist.music.playback.audio.SilenceDetectorAudioProcessor
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
 import com.metrolist.music.utils.NetworkConnectivityObserver
@@ -177,12 +182,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 import okhttp3.OkHttpClient
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+
+private const val INSTANT_SILENCE_SKIP_STEP_MS = 15_000L
+private const val INSTANT_SILENCE_SKIP_SETTLE_MS = 350L
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -215,6 +224,8 @@ class MusicService :
     private var wasPlayingBeforeAudioFocusLoss = false
     private var hasAudioFocus = false
     private var reentrantFocusGain = false
+    private var wasPlayingBeforeVolumeMute = false
+    private var isPausedByVolumeMute = false
 
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
@@ -257,6 +268,10 @@ class MusicService :
 
     // Custom Audio Processor
     private val customEqualizerAudioProcessor = CustomEqualizerAudioProcessor()
+    private val silenceDetectorAudioProcessor =
+        SilenceDetectorAudioProcessor { handleLongSilenceDetected() }
+
+    private val instantSilenceSkipEnabled = MutableStateFlow(false)
 
     private var isAudioEffectSessionOpened = false
     private var loudnessEnhancer: LoudnessEnhancer? = null
@@ -275,6 +290,7 @@ class MusicService :
     private var consecutivePlaybackErr = 0
     private var retryJob: Job? = null
     private var retryCount = 0
+    private var silenceSkipJob: Job? = null
     
     // Google Cast support
     var castConnectionHandler: CastConnectionHandler? = null
@@ -342,6 +358,7 @@ class MusicService :
                     false,
                 ).setSeekBackIncrementMs(5000)
                 .setSeekForwardIncrementMs(5000)
+                .setDeviceVolumeControlEnabled(true)
                 .build()
                 .apply {
                     addListener(this@MusicService)
@@ -372,6 +389,11 @@ class MusicService :
                 ).setBitmapLoader(CoilBitmapLoader(this, scope))
                 .build()
         player.repeatMode = dataStore.get(RepeatModeKey, REPEAT_MODE_OFF)
+        
+        // Restore shuffle mode if remember option is enabled
+        if (dataStore.get(RememberShuffleAndRepeatKey, true)) {
+            player.shuffleModeEnabled = dataStore.get(ShuffleModeKey, false)
+        }
 
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, MusicService::class.java))
@@ -414,9 +436,13 @@ class MusicService :
                 if (isConnected && waitingForNetworkConnection.value) {
                     triggerRetry()
                 }
+                // Update Discord RPC when network becomes available
                 if (isConnected && discordRpc != null && player.isPlaying) {
-                    currentSong.value?.let { song ->
-                        discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                    val mediaId = player.currentMetadata?.id
+                    if (mediaId != null) {
+                        database.song(mediaId).first()?.let { song ->
+                            discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                        }
                     }
                 }
             }
@@ -435,11 +461,6 @@ class MusicService :
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
             updateWidgetUI(player.isPlaying)
-            if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
-            } else {
-                discordRpc?.closeRPC()
-            }
         }
 
         combine(
@@ -464,10 +485,19 @@ class MusicService :
         }
 
         dataStore.data
-            .map { it[SkipSilenceKey] ?: false }
+            .map { (it[SkipSilenceKey] ?: false) to (it[SkipSilenceInstantKey] ?: false) }
             .distinctUntilChanged()
-            .collectLatest(scope) {
-                player.skipSilenceEnabled = it
+            .collectLatest(scope) { (skipSilence, instantSkip) ->
+                player.skipSilenceEnabled = skipSilence
+
+                val enableInstant = skipSilence && instantSkip
+                instantSilenceSkipEnabled.value = enableInstant
+                silenceDetectorAudioProcessor.instantModeEnabled = enableInstant
+
+                if (!enableInstant) {
+                    silenceDetectorAudioProcessor.resetTracking()
+                    silenceSkipJob?.cancel()
+                }
             }
 
         combine(
@@ -876,7 +906,19 @@ class MusicService :
             ?: -1
         database.query {
             if (song == null) insert(mediaMetadata.copy(duration = duration))
-            else if (song.song.duration == -1) update(song.song.copy(duration = duration))
+            else {
+                var updatedSong = song.song
+                if (song.song.duration == -1) {
+                    updatedSong = updatedSong.copy(duration = duration)
+                }
+                // Update isVideo flag if it's different from the current value
+                if (song.song.isVideo != mediaMetadata.isVideoSong) {
+                    updatedSong = updatedSong.copy(isVideo = mediaMetadata.isVideoSong)
+                }
+                if (updatedSong != song.song) {
+                    update(updatedSong)
+                }
+            }
         }
         if (!database.hasRelatedSongs(mediaId)) {
             val relatedEndpoint =
@@ -1043,7 +1085,7 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        if (dataStore[SimilarContent] == true &&
+        if (dataStore.get(SimilarContent, true) &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
                 try {
@@ -1292,7 +1334,7 @@ class MusicService :
                     withContext(Dispatchers.Main) {
                         if (loudness != null) {
                             val loudnessDb = loudness.toFloat()
-                            val targetGain = (-loudnessDb * 100).toInt() + 400
+                            val targetGain = (-loudnessDb * 100).toInt()
                             val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
                             
                             Log.d(TAG, "Calculated raw normalization gain: $targetGain mB (from loudness: $loudnessDb)")
@@ -1394,7 +1436,7 @@ class MusicService :
             }
         }
 
-        // Auto load more songs
+        // Auto load more songs from queue
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
             player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
@@ -1422,8 +1464,8 @@ class MusicService :
     override fun onPlaybackStateChanged(
         @Player.State playbackState: Int,
     ) {
-        // Save state when playback state changes
-        if (dataStore.get(PersistentQueueKey, true)) {
+        // Save state when playback state changes (but not during silence skipping)
+        if (dataStore.get(PersistentQueueKey, true) && !isSilenceSkipping) {
             saveQueueToDisk()
         }
 
@@ -1445,7 +1487,17 @@ class MusicService :
             player.pause()
             return
         }
-        
+
+        if (reason == Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST) {
+            if (playWhenReady) {
+                isPausedByVolumeMute = false
+            }
+
+            if (!playWhenReady && !isPausedByVolumeMute) {
+                wasPlayingBeforeVolumeMute = false
+            }
+        }
+
         if (playWhenReady) {
             setupLoudnessEnhancer()
         }
@@ -1476,21 +1528,24 @@ class MusicService :
         }
 
         // Discord RPC updates
-
-        // Update the Discord RPC activity if the player is playing
         if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
             updateWidgetUI(player.isPlaying)
-            if (player.isPlaying) {
-                currentSong.value?.let { song ->
-                    scope.launch {
-                        discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
-                    }
-                }
-            }
-            // Send empty activity to the Discord RPC if the player is not playing
-            else if (!events.containsAny(Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_ITEM_TRANSITION)){
+            if (!player.isPlaying && !events.containsAny(Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_ITEM_TRANSITION)) {
                 scope.launch {
                     discordRpc?.close()
+                }
+            }
+        }
+
+        // Update Discord RPC when media item changes or playback starts
+        if (events.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION, Player.EVENT_IS_PLAYING_CHANGED) && player.isPlaying) {
+            val mediaId = player.currentMetadata?.id
+            if (mediaId != null) {
+                scope.launch {
+                    // Fetch song from database to get full info
+                    database.song(mediaId).first()?.let { song ->
+                        discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                    }
                 }
             }
         }
@@ -1548,6 +1603,15 @@ class MusicService :
                 shuffledIndices[shuffledIndices.indexOf(currentIndex)] = shuffledIndices[0]
                 shuffledIndices[0] = currentIndex
                 player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
+            }
+        }
+
+        // Save shuffle mode to preferences
+        if (dataStore.get(RememberShuffleAndRepeatKey, true)) {
+            scope.launch {
+                dataStore.edit { settings ->
+                    settings[ShuffleModeKey] = shuffleModeEnabled
+                }
             }
         }
 
@@ -1620,6 +1684,25 @@ class MusicService :
         }
     }
 
+    override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
+        super.onDeviceVolumeChanged(volume, muted)
+        val pauseOnMute = dataStore.get(PauseOnMute, false)
+
+        if ((volume == 0 || muted) && pauseOnMute) {
+            if (player.isPlaying) {
+                wasPlayingBeforeVolumeMute = true
+                isPausedByVolumeMute = true
+                player.pause()
+            }
+        } else if (volume > 0 && !muted && pauseOnMute) {
+            if (wasPlayingBeforeVolumeMute && !player.isPlaying && castConnectionHandler?.isCasting?.value != true) {
+                wasPlayingBeforeVolumeMute = false
+                isPausedByVolumeMute = false
+                player.play()
+            }
+        }
+    }
+
     private fun createCacheDataSource(): CacheDataSource.Factory =
         CacheDataSource
             .Factory()
@@ -1648,6 +1731,50 @@ class MusicService :
                     ),
             ).setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+
+    // Flag to prevent queue saving during silence skip operations
+    private var isSilenceSkipping = false
+
+    private fun handleLongSilenceDetected() {
+        if (!instantSilenceSkipEnabled.value) return
+        if (silenceSkipJob?.isActive == true) return
+
+        silenceSkipJob = scope.launch {
+            // Debounce so short fades or transitions do not trigger a jump.
+            delay(200)
+            performInstantSilenceSkip()
+        }
+    }
+
+    private suspend fun performInstantSilenceSkip() {
+        val duration = player.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: return
+        if (duration <= INSTANT_SILENCE_SKIP_STEP_MS) return
+
+        isSilenceSkipping = true
+        try {
+            var hops = 0
+            while (coroutineContext.isActive && instantSilenceSkipEnabled.value && silenceDetectorAudioProcessor.isCurrentlySilent()) {
+                val current = player.currentPosition
+                val target = (current + INSTANT_SILENCE_SKIP_STEP_MS).coerceAtMost(duration - 500)
+
+                if (target <= current) break
+
+                // Reset silence tracking before seeking to prevent immediate re-trigger
+                silenceDetectorAudioProcessor.resetTracking()
+                player.seekTo(target)
+                hops++
+
+                if (hops >= 80 || target >= duration - 500) break
+
+                delay(INSTANT_SILENCE_SKIP_SETTLE_MS)
+            }
+            if (hops > 0) {
+                Log.d(TAG, "Silence skip: jumped $hops times")
+            }
+        } finally {
+            isSilenceSkipping = false
+        }
+    }
 
     private fun createDataSourceFactory(): DataSource.Factory {
         val songUrlCache = HashMap<String, Pair<String, Long>>()
@@ -1765,7 +1892,10 @@ class MusicService :
                 .setAudioProcessorChain(
                     DefaultAudioSink.DefaultAudioProcessorChain(
                         // 2. Inject processor into audio pipeline
-                        arrayOf(customEqualizerAudioProcessor),
+                        arrayOf(
+                            customEqualizerAudioProcessor,
+                            silenceDetectorAudioProcessor,
+                        ),
                         SilenceSkippingAudioProcessor(2_000_000, 20_000, 256),
                         SonicAudioProcessor(),
                     ),
@@ -1920,22 +2050,28 @@ class MusicService :
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Intercept Widget Commands
+        // Intercept Widget Commands (both legacy and Glance widgets use same actions)
         when (intent?.action) {
-            HelloWidget.ACTION_PLAY_PAUSE -> {
+            MusicWidgetActions.ACTION_PLAY_PAUSE -> {
                 if (player.isPlaying) player.pause() else player.play()
                 updateWidgetUI(player.isPlaying) // Instant UI update
             }
-            HelloWidget.ACTION_NEXT -> {
+            MusicWidgetActions.ACTION_NEXT -> {
                 player.seekToNext()
                 updateWidgetUI(player.isPlaying)
             }
-            HelloWidget.ACTION_PREV -> {
+            MusicWidgetActions.ACTION_PREV -> {
                 player.seekToPrevious()
                 updateWidgetUI(player.isPlaying)
             }
-            HelloWidget.ACTION_LIKE -> {
+            MusicWidgetActions.ACTION_LIKE -> {
                 toggleLike()
+                updateWidgetUI(player.isPlaying)
+            }
+            MusicWidgetActions.ACTION_SHARE -> {
+                shareSong()
+            }
+            MusicWidgetActions.ACTION_UPDATE_WIDGET -> {
                 updateWidgetUI(player.isPlaying)
             }
         }
@@ -1948,85 +2084,58 @@ class MusicService :
     private fun updateWidgetUI(isPlaying: Boolean) {
         try {
             val context = this
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, HelloWidget::class.java))
-            if (ids.isEmpty()) return
 
             scope.launch(Dispatchers.IO) {
-                val song = currentSong.value?.song
-                val songTitle = song?.title ?: "No Song Playing"
+                val songData = currentSong.value
+                val song = songData?.song
+                val songTitle = song?.title ?: getString(R.string.no_song_playing)
+                val artistName = songData?.artists?.joinToString(", ") { it.name } ?: getString(R.string.tap_to_open)
+                val isLiked = songData?.song?.liked == true
 
-                val views = RemoteViews(packageName, R.layout.widget_hello)
-                views.setTextViewText(R.id.txt_song_title, songTitle)
-
-                val playIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
-                views.setImageViewResource(R.id.btn_play, playIcon)
-
-                // --- COIL 3 IMAGE LOADING (SAFE MODE) ---
-                if (song?.thumbnailUrl != null) {
-                    try {
-                        val loader = ImageLoader(context)
-                        val request = ImageRequest.Builder(context)
-                            .data(song.thumbnailUrl)
-                            .size(300, 300)
-                            .build()
-
-                        val result = loader.execute(request)
-
-                        if (result is SuccessResult) {
-                            val originalBitmap = result.image.toBitmap()
-                            val safeBitmap = if (originalBitmap.config == Bitmap.Config.HARDWARE) {
-                                originalBitmap.copy(Bitmap.Config.ARGB_8888, false)
-                            } else {
-                                originalBitmap
-                            }
-                            views.setImageViewBitmap(R.id.img_album_art, safeBitmap)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    views.setImageViewResource(R.id.img_album_art, android.R.drawable.ic_menu_gallery)
+                // Update Music Widget
+                try {
+                    MusicWidget.updateWidget(
+                        context = context,
+                        title = songTitle,
+                        artist = artistName,
+                        isPlaying = isPlaying,
+                        albumArtUrl = song?.thumbnailUrl,
+                        isLiked = isLiked
+                    )
+                } catch (e: Exception) {
+                    // Glance widget may not be added
                 }
 
-                // --- FIXED: Renamed 'flags' to 'piFlags' to avoid conflict ---
-                val piFlags = if (android.os.Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-
-                fun getPending(action: String): PendingIntent {
-                    val i = Intent(context, MusicService::class.java).apply { this.action = action }
-                    return if (android.os.Build.VERSION.SDK_INT >= 26) {
-                        PendingIntent.getForegroundService(context, 0, i, piFlags)
-                    } else {
-                        PendingIntent.getService(context, 0, i, piFlags)
-                    }
+                // Update Turntable Widget
+                try {
+                    TurntableWidget.updateWidget(
+                        context = context,
+                        isPlaying = isPlaying,
+                        albumArtUrl = song?.thumbnailUrl,
+                        isLiked = isLiked
+                    )
+                } catch (e: Exception) {
+                    // Turntable widget may not be added
                 }
-
-                views.setOnClickPendingIntent(R.id.btn_prev, getPending(HelloWidget.ACTION_PREV))
-                views.setOnClickPendingIntent(R.id.btn_play, getPending(HelloWidget.ACTION_PLAY_PAUSE))
-                views.setOnClickPendingIntent(R.id.btn_next, getPending(HelloWidget.ACTION_NEXT))
-                views.setOnClickPendingIntent(R.id.btn_like, getPending(HelloWidget.ACTION_LIKE))
-
-                // --- APP OPEN LOGIC ---
-                val openAppIntent = Intent(context, MainActivity::class.java).apply {
-                    // Now this works because 'flags' refers to the Intent, not the variable above
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }
-
-                val openAppPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    openAppIntent,
-                    piFlags // Use the renamed variable here
-                )
-
-                views.setOnClickPendingIntent(R.id.img_album_art, openAppPendingIntent)
-
-                appWidgetManager.updateAppWidget(ids, views)
             }
         } catch (e: Exception) {
             // Fail silently on Wear OS or other platforms without widget support
             reportException(e)
         }
+    }
+
+    private fun shareSong() {
+        val songData = currentSong.value
+        val songId = songData?.song?.id ?: return
+        
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=$songId")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(Intent.createChooser(shareIntent, null).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
     }
 
     /**
@@ -2070,6 +2179,7 @@ class MusicService :
         const val ARTIST = "artist"
         const val ALBUM = "album"
         const val PLAYLIST = "playlist"
+        const val YOUTUBE_PLAYLIST = "youtube_playlist"
         const val SEARCH = "search"
 
         const val CHANNEL_ID = "music_channel_01"
@@ -2082,8 +2192,8 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
         const val MAX_RETRY_COUNT = 10
         // Constants for audio normalization
-        private const val MAX_GAIN_MB = 1000 // Maximum gain in millibels (8 dB)
-        private const val MIN_GAIN_MB = -1000 // Minimum gain in millibels (-8 dB)
+        private const val MAX_GAIN_MB = 300 // Maximum gain in millibels (3 dB)
+        private const val MIN_GAIN_MB = -1500 // Minimum gain in millibels (-15 dB)
 
         private const val TAG = "MusicService"
     }

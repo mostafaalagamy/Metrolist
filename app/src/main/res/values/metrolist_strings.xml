@@ -50,7 +50,16 @@
     <string name="added_to_play_next">Added to play next</string>
     <string name="added_to_queue">Added to the queue</string>
     <string name="remove_from_cache">Remove from cache</string>
-    
+
+    <!-- Artist about section -->
+    <string name="about_artist">About</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+    <string name="artist_page_settings">Artist page</string>
+    <string name="show_artist_description">Show artist description</string>
+    <string name="show_artist_subscriber_count">Show subscriber count</string>
+    <string name="show_artist_monthly_listeners">Show monthly listeners</string>
+
     <!-- Menu descriptions -->
     <string name="download_playlist_desc">Download all songs for offline playback</string>
     <string name="remove_download_playlist_desc">Remove all downloaded songs from this playlist</string>
@@ -119,6 +128,8 @@
     <string name="lyrics_glow_effect_desc">Add glowing animation and bounce effect to active lyrics</string>
     <string name="enable_better_lyrics">Enable Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Use Better Lyrics provider for word-by-word synced lyrics</string>
+    <string name="enable_simpmusic">Enable SimpMusic Lyrics</string>
+    <string name="enable_simpmusic_desc">Use SimpMusic Lyrics provider for synced lyrics</string>
     <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
@@ -131,6 +142,9 @@
     <string name="shuffle_playlist_first">Shuffle playlist/album first</string>
     <string name="shuffle_playlist_first_desc">When shuffling, play all songs from the original playlist/album first, then similar content</string>
     <string name="show_wrapped_card">Show Wrapped card</string>
+    <string name="skip_silence_desc">Fast forward through silent parts of songs</string>
+    <string name="skip_silence_instant">Instantly skip silence</string>
+    <string name="skip_silence_instant_desc">Jump ahead during silent moments instead of speeding up playback</string>
 
     <string name="google">Google</string>
     <string name="discord">Discord</string>
@@ -172,6 +186,8 @@
     <string name="audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Enable similar content</string>
     <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
+    <string name="remember_shuffle_and_repeat">Remember shuffle and repeat</string>
+    <string name="remember_shuffle_and_repeat_desc">Remember shuffle and repeat mode when restarting the app</string>
     <string name="min_playback_duration_title">Minimum playback duration</string>
     <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
     <string name="percentage_format">%d%%</string>
@@ -230,6 +246,7 @@
     <!-- Player Settings -->
     <string name="disable_load_more_when_repeat_all">Disable load more when repeat all</string>
     <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
+    <string name="pause_music_when_media_is_muted">Pause music when media is muted</string>
 
     <!-- Romanization Settings -->
     <string name="lyrics_romanization_cyrillic">Cyrillic</string>
@@ -251,6 +268,9 @@
     <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
     <string name="line_by_line_dialog_enable">Enable</string>
     <string name="romanize_current_track">Romanize current track</string>
+
+    <!-- Lyrics Offset Settings -->
+    <string name="lyrics_offset">Lyrics Offset</string>
 
     <!-- Material 3 Settings Sections -->
     <string name="settings_section_ui">Interface</string>
@@ -281,6 +301,7 @@
     <string name="integrations">Integrations</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+
     <!-- Last.fm -->
     <string name="lastfm_integration">Last.fm Integration</string>
     <string name="enable_scrobbling">Enable scrobbling</string>
@@ -375,6 +396,7 @@
     <string name="equalizer_header">Equalizer</string>
     <string name="no_profiles">No equalizer profiles</string>
     <string name="import_profile">Import Profile</string>
+    <string name="system_equalizer">System Equalizer</string>
     <string name="eq_disabled">Disabled</string>
     <plurals name="band_count">
         <item quantity="one">%d band</item>
@@ -400,5 +422,16 @@
     <string name="copied_artist">Copied Artist</string>
     <string name="error_playing">Error playing</string>
     <string name="failed_to_parse_proxy">Failed to parse proxy url.</string>
-    <string name="enable_squiggly_slider">Enable squiggly slider</string>
+
+    <!-- Widget strings -->
+    <string name="album_art">Album art</string>
+    <string name="no_song_playing">No song playing</string>
+    <string name="tap_to_open">Tap to open Metrolist</string>
+    <string name="previous">Previous</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="next">Next</string>
+    <string name="like">Like</string>
+    <string name="widget_description">Music player widget with playback controls</string>
+    <string name="turntable_widget_description">Quick access to your most recently played track</string>
+    <string name="queue_widget_description">Music player with queue preview</string>
 </resources>

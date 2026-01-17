@@ -136,12 +136,12 @@ open class KizzyRPC(token: String) {
     companion object {
         suspend fun getUserInfo(token: String): Result<UserInfo> = runCatching {
             val client = HttpClient()
-            val response = client.get("https://discord.com/api/v9/users/@me") {
+            val response = client.get("https://discord.com/api/v10/users/@me") {
                 header("Authorization", token)
             }.bodyAsText()
             val json = JSONObject(response)
             val username = json.getString("username")
-            val name = json.getString("global_name")
+            val name = json.optString("global_name", username)
             client.close()
 
             UserInfo(username, name)

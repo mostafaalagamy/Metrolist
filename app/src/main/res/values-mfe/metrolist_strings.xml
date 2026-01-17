@@ -84,7 +84,6 @@
     <string name="player_buttons_style">Kouler bouton dan lekter</string>
     <string name="default_style">Defaut</string>
     <string name="secondary_color_style">Secondaire</string>
-    <string name="enable_squiggly_slider">Aktiv slider vag</string>
     <string name="enable_swipe_thumbnail">Aktiv swipe pu sanz lamizik</string>
     <string name="swipe_song_to_add">Swipe dan gos pou azout dan queue ou drwat pu zwé li apre</string>
     <string name="swipe_song_to_remove">Swipe lamizk pu tir li dan playlist</string>
@@ -114,4 +113,22 @@
     <string name="remove_custom_image">Tir zimaz personalizé</string>
     <string name="general">Zeneral</string>
     <string name="proxy">Proxy</string>
+    <string name="top_result">Bann meyer rezilta</string>
+    <string name="other_results">Lezot</string>
+    <string name="download_playlist_desc">Download tou sante pu zwe offline</string>
+    <string name="remove_download_playlist_desc">Tir tou sante inn download depi sa playlist la</string>
+    <string name="download_in_progress_desc">Pe Download</string>
+    <string name="share_playlist_desc">Partaz sa playlist la ek lezot</string>
+    <string name="delete_playlist_desc">Retir sa playlist la net</string>
+    <string name="sync_playlist_desc">Senkroniz playlist ek Youtube Music</string>
+    <string name="primary_color_style">Kouler primaire</string>
+    <string name="tertiary_color_style">Kouler tertiaire</string>
+    <string name="lyrics_glow_effect">Aktiv glowing effect pu bann paroles</string>
+    <string name="lyrics_glow_effect_desc">Azout animation glowing ek effet bounce lor bann paroles aktif</string>
+    <string name="enable_better_lyrics">Aktiv Better Lyrics</string>
+    <string name="enable_better_lyrics_desc">Servi Better Lyrics pu paroles senkronize mot par mot</string>
+    <string name="auto_scroll">Re-senkronize</string>
+    <string name="shuffle_playlist_first">Zwe playlist/album en aleatoire en premie</string>
+    <string name="shuffle_playlist_first_desc">Kan en aleatoire, zwe tou sante depi playlist/album orizinal en premie, apre zwe bann cki similaire</string>
+    <string name="show_wrapped_card">Montre Résumé</string>
 </resources>

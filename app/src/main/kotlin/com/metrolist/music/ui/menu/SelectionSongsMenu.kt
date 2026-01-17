@@ -9,8 +9,10 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -336,55 +338,65 @@ fun SelectionSongMenu(
                             }
                         )
                     )
-                    // COMMENTED OUT: Library add/remove option
-                    // Material3MenuItemData(
-                    //     title = {
-                    //         Text(
-                    //             text = stringResource(
-                    //                 if (allInLibrary) R.string.remove_from_library else R.string.add_to_library
-                    //             )
-                    //         )
-                    //     },
-                    //     icon = {
-                    //         Icon(
-                    //             painter = painterResource(
-                    //                 if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
-                    //             ),
-                    //             contentDescription = null,
-                    //         )
-                    //     },
-                    //     onClick = {
-                    //         if (allInLibrary) {
-                    //             database.query {
-                    //                 songSelection.forEach { song ->
-                    //                     inLibrary(song.id, null)
-                    //                 }
-                    //             }
-                    //             coroutineScope.launch {
-                    //                 val tokens =
-                    //                     songSelection.mapNotNull { it.song.libraryRemoveToken }
-                    //                 tokens.chunked(20).forEach {
-                    //                     YouTube.feedback(it)
-                    //                 }
-                    //             }
-                    //         } else {
-                    //             database.transaction {
-                    //                 songSelection.forEach { song ->
-                    //                     insert(song.toMediaMetadata())
-                    //                     inLibrary(song.id, LocalDateTime.now())
-                    //                 }
-                    //             }
-                    //             coroutineScope.launch {
-                    //                 val tokens =
-                    //                     songSelection.filter { it.song.inLibrary == null }
-                    //                         .mapNotNull { it.song.libraryAddToken }
-                    //                 tokens.chunked(20).forEach {
-                    //                     YouTube.feedback(it)
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // ),
+                    add(
+                        Material3MenuItemData(
+                            title = {
+                                Text(
+                                    text = stringResource(
+                                        if (allInLibrary) R.string.remove_from_library else R.string.add_to_library
+                                    )
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(
+                                        if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
+                                    ),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                if (allInLibrary) {
+                                    database.query {
+                                        songSelection.forEach { song ->
+                                            inLibrary(song.id, null)
+                                        }
+                                    }
+                                    coroutineScope.launch {
+                                        val tokens =
+                                            songSelection.mapNotNull { it.song.libraryRemoveToken }
+                                        tokens.chunked(20).forEach {
+                                            YouTube.feedback(it)
+                                        }
+                                    }
+                                } else {
+                                    database.transaction {
+                                        songSelection.forEach { song ->
+                                            insert(song.toMediaMetadata())
+                                            inLibrary(song.id, LocalDateTime.now())
+                                        }
+                                    }
+                                    coroutineScope.launch {
+                                        val tokens =
+                                            songSelection.filter { it.song.inLibrary == null }
+                                                .mapNotNull { it.song.libraryAddToken }
+                                        tokens.chunked(20).forEach {
+                                            YouTube.feedback(it)
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    )
+                }
+            )
+        }
+
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            Material3MenuGroup(
+                items = buildList {
                     add(
                         when (downloadState) {
                             Download.STATE_COMPLETED -> {
@@ -726,6 +738,15 @@ fun SelectionMediaMetadataMenu(
                             }
                         )
                     )
+                }
+            )
+        }
+
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            Material3MenuGroup(
+                items = buildList {
                     add(
                         Material3MenuItemData(
                             title = {

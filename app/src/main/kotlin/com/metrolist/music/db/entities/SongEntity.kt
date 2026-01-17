@@ -13,7 +13,6 @@ import androidx.room.PrimaryKey
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -47,12 +46,16 @@ data class SongEntity(
     val isLocal: Boolean = false,
     val libraryAddToken: String? = null,
     val libraryRemoveToken: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val lyricsOffset: Int = 0,
     @ColumnInfo(defaultValue = true.toString())
     val romanizeLyrics: Boolean = true,
     @ColumnInfo(defaultValue = "0")
     val isDownloaded: Boolean = false,
     @ColumnInfo(name = "isUploaded", defaultValue = false.toString())
-    val isUploaded: Boolean = false
+    val isUploaded: Boolean = false,
+    @ColumnInfo(name = "isVideo", defaultValue = false.toString())
+    val isVideo: Boolean = false
 ) {
     fun localToggleLike() = copy(
         liked = !liked,
@@ -66,7 +69,6 @@ data class SongEntity(
     ).also {
         CoroutineScope(Dispatchers.IO).launch {
             YouTube.likeVideo(id, !liked)
-            this.cancel()
         }
     }
 

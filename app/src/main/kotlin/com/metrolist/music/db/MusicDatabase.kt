@@ -27,8 +27,8 @@ import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.LyricsEntity
-import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlayCountEntity
+import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.PlaylistSongMapPreview
 import com.metrolist.music.db.entities.RelatedSongMap
@@ -67,6 +67,17 @@ class MusicDatabase(
             }
         }
 
+    suspend fun withTransaction(block: suspend MusicDatabase.() -> Unit) =
+        with(delegate) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                runInTransaction {
+                    kotlinx.coroutines.runBlocking {
+                        block(this@MusicDatabase)
+                    }
+                }
+            }
+        }
+
     fun close() = delegate.close()
 }
 
@@ -93,7 +104,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 26,
+    version = 29,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -119,7 +130,10 @@ class MusicDatabase(
         AutoMigration(from = 22, to = 23, spec = Migration22To23::class),
         AutoMigration(from = 23, to = 24, spec = Migration23To24::class),
         AutoMigration(from = 24, to = 25),
-        AutoMigration(from = 25, to = 26)
+        AutoMigration(from = 25, to = 26),
+        AutoMigration(from = 26, to = 27),
+        AutoMigration(from = 27, to = 28),
+        AutoMigration(from = 28, to = 29),
     ],
 )
 @TypeConverters(Converters::class)

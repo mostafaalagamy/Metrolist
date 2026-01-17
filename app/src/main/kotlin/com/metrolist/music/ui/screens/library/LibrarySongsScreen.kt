@@ -8,7 +8,6 @@ package com.metrolist.music.ui.screens.library
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
@@ -27,16 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +52,7 @@ import com.metrolist.music.constants.SongFilterKey
 import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.ChipsRow
@@ -70,8 +64,6 @@ import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibrarySongsViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -92,26 +84,21 @@ fun LibrarySongsScreen(
     )
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val songs by viewModel.allSongs.collectAsState()
 
     var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
 
-    // Pull-to-refresh state
-    val coroutineScope = rememberCoroutineScope()
-    var isRefreshing by remember { mutableStateOf(false) }
-    val pullRefreshState = rememberPullToRefreshState()
-
-    val onRefresh: () -> Unit = {
-        coroutineScope.launch(Dispatchers.IO) {
-            isRefreshing = true
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
             when (filter) {
                 SongFilter.LIKED -> viewModel.syncLikedSongs()
+                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
                 SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
-                else -> {}
+                else -> return@LaunchedEffect
             }
-            isRefreshing = false
         }
     }
 
@@ -134,15 +121,8 @@ fun LibrarySongsScreen(
         songs
     }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullToRefresh(
-                state = pullRefreshState,
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh
-            ),
-        contentAlignment = Alignment.TopStart
+    Box(
+        modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
             state = lazyListState,
@@ -171,8 +151,7 @@ fun LibrarySongsScreen(
                         chips =
                         listOf(
                             SongFilter.LIKED to stringResource(R.string.filter_liked),
-                            // COMMENTED OUT: Library filter option
-                            // SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                            SongFilter.LIBRARY to stringResource(R.string.filter_library),
                             SongFilter.UPLOADED to stringResource(R.string.filter_uploaded),
                             SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                         ),
@@ -232,7 +211,7 @@ fun LibrarySongsScreen(
                     showInLibraryIcon = true,
                     isActive = song.id == mediaMetadata?.id,
                     isPlaying = isPlaying,
-                    showLikedIcon = filter != SongFilter.LIKED,
+                    showLikedIcon = true,
                     showDownloadIcon = filter != SongFilter.DOWNLOADED,
                     trailingContent = {
                         IconButton(
@@ -285,14 +264,6 @@ fun LibrarySongsScreen(
                     ),
                 )
             },
-        )
-
-        Indicator(
-            isRefreshing = isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
         )
     }
 }

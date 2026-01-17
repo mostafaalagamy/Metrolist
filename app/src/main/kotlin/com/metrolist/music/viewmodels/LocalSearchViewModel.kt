@@ -5,19 +5,24 @@
 
 package com.metrolist.music.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
+import com.metrolist.music.utils.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -29,15 +34,20 @@ import javax.inject.Inject
 class LocalSearchViewModel
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     database: MusicDatabase,
 ) : ViewModel() {
     val query = MutableStateFlow("")
     val filter = MutableStateFlow(LocalFilter.ALL)
 
     val result =
-        combine(query, filter) { query, filter ->
-            query to filter
-        }.flatMapLatest { (query, filter) ->
+        combine(
+            query,
+            filter,
+            context.dataStore.data.map { it[HideVideoSongsKey] ?: false }.distinctUntilChanged()
+        ) { query, filter, hideVideoSongs ->
+            Triple(query, filter, hideVideoSongs)
+        }.flatMapLatest { (query, filter, hideVideoSongs) ->
             if (query.isEmpty()) {
                 flowOf(LocalSearchResult("", filter, emptyMap()))
             } else {
@@ -49,10 +59,13 @@ constructor(
                             database.searchArtists(query, PREVIEW_SIZE),
                             database.searchPlaylists(query, PREVIEW_SIZE),
                         ) { songs, albums, artists, playlists ->
-                            songs + albums + artists + playlists
+                            val filteredSongs = if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
+                            filteredSongs + albums + artists + playlists
                         }
 
-                    LocalFilter.SONG -> database.searchSongs(query)
+                    LocalFilter.SONG -> database.searchSongs(query).map { songs ->
+                        if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
+                    }
                     LocalFilter.ALBUM -> database.searchAlbums(query)
                     LocalFilter.ARTIST -> database.searchArtists(query)
                     LocalFilter.PLAYLIST -> database.searchPlaylists(query)

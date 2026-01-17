@@ -110,10 +110,6 @@ Thank you very much for helping to make Metrolist accessible to many people worl
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
 3. Enable "Unknown sources"
 
-### Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM?
-
-Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
-
 <div align="center">
 <h1>Development Setup</h1>
 </div>
@@ -170,6 +166,8 @@ Credits:
 [**Kizzy**](https://github.com/dead8309/Kizzy) – for the Discord Rich Presence implementation and inspiration.
 
 [**Better Lyrics**](https://better-lyrics.boidu.dev) – for beautiful time-synced lyrics with word-by-word highlighting, and seamless YouTube Music integration.
+
+[**SimpMusic Lyrics**](https://github.com/maxrave-dev/SimpMusic) – for providing lyrics data through the SimpMusic Lyrics API.
 
 The open-source community for tools, libraries, and APIs that make this project possible.
 

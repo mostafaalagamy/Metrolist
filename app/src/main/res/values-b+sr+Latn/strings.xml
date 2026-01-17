@@ -287,4 +287,5 @@
     <string name="action_logout">Izloguj se</string>
     <string name="use_login_for_browse">Koristite prijavu za pregledanje sadržaja</string>
     <string name="use_login_for_browse_desc">Ovo može uticati na sadržaj koji vidite i, na primer, prikazivati albume koji su dostupni samo za Premium korisnike ako ste prijavljeni sa Premium nalogom</string>
+    <string name="action_login">Uloguj se</string>
 </resources>

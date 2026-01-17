@@ -10,11 +10,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.filterExplicit
+import com.metrolist.music.extensions.filterVideoSongs
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
@@ -46,37 +48,36 @@ constructor(
     val likedSongs =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
                     it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE) to (it[SongSortDescendingKey]
                         ?: true),
-                    it[HideExplicitKey] ?: false
+                    it[HideExplicitKey] ?: false,
+                    it[HideVideoSongsKey] ?: false
                 )
             }
             .distinctUntilChanged()
-            .flatMapLatest { (sortDesc, hideExplicit) ->
+            .flatMapLatest { (sortDesc, hideExplicit, hideVideoSongs) ->
                 val (sortType, descending) = sortDesc
                 when (playlist) {
                     "liked" -> database.likedSongs(sortType, descending)
-                        .map { it.filterExplicit(hideExplicit) }
+                        .map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
 
                     "downloaded" -> database.downloadedSongs(sortType, descending)
-                        .map { it.filterExplicit(hideExplicit) }
+                        .map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
 
                     "uploaded" -> database.uploadedSongs(sortType, descending)
-                        .map { it.filterExplicit(hideExplicit) }
+                        .map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
 
                     else -> kotlinx.coroutines.flow.flowOf(emptyList())
                 }
             }
             .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedSongs() {
-        syncUtils.syncLikedSongs()
+    fun syncLikedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncUploadedSongs() {
-        syncUtils.syncUploadedSongs()
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }

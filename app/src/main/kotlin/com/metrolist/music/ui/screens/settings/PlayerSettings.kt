@@ -45,12 +45,15 @@ import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.EnableGoogleCastKey
+import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
+import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.ui.component.EnumDialog
 import com.metrolist.music.ui.component.IconButton
@@ -77,6 +80,10 @@ fun PlayerSettings(
     )
     val (skipSilence, onSkipSilenceChange) = rememberPreference(
         SkipSilenceKey,
+        defaultValue = false
+    )
+    val (skipSilenceInstant, onSkipSilenceInstantChange) = rememberPreference(
+        SkipSilenceInstantKey,
         defaultValue = false
     )
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
@@ -119,12 +126,20 @@ fun PlayerSettings(
         AutoSkipNextOnErrorKey,
         defaultValue = false
     )
+    val (rememberShuffleAndRepeat, onRememberShuffleAndRepeatChange) = rememberPreference(
+        RememberShuffleAndRepeatKey,
+        defaultValue = true
+    )
     val (shufflePlaylistFirst, onShufflePlaylistFirstChange) = rememberPreference(
         ShufflePlaylistFirstKey,
         defaultValue = false
     )
     val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(
         StopMusicOnTaskClearKey,
+        defaultValue = false
+    )
+    val (pauseOnMute, onPauseOnMuteChange) = rememberPreference(
+        PauseOnMute,
         defaultValue = false
     )
     val (historyDuration, onHistoryDurationChange) = rememberPreference(
@@ -208,6 +223,7 @@ fun PlayerSettings(
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.fast_forward),
                     title = { Text(stringResource(R.string.skip_silence)) },
+                    description = { Text(stringResource(R.string.skip_silence_desc)) },
                     trailingContent = {
                         Switch(
                             checked = skipSilence,
@@ -224,6 +240,28 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onSkipSilenceChange(!skipSilence) }
+                ))
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.skip_next),
+                    title = { Text(stringResource(R.string.skip_silence_instant)) },
+                    description = { Text(stringResource(R.string.skip_silence_instant_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = skipSilenceInstant,
+                            onCheckedChange = { onSkipSilenceInstantChange(it) },
+                            enabled = skipSilence,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (skipSilenceInstant) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { if (skipSilence) onSkipSilenceInstantChange(!skipSilenceInstant) }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.volume_up),
@@ -426,6 +464,27 @@ fun PlayerSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.shuffle),
+                    title = { Text(stringResource(R.string.remember_shuffle_and_repeat)) },
+                    description = { Text(stringResource(R.string.remember_shuffle_and_repeat_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = rememberShuffleAndRepeat,
+                            onCheckedChange = onRememberShuffleAndRepeatChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (rememberShuffleAndRepeat) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onRememberShuffleAndRepeatChange(!rememberShuffleAndRepeat) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.shuffle),
                     title = { Text(stringResource(R.string.shuffle_playlist_first)) },
                     description = { Text(stringResource(R.string.shuffle_playlist_first_desc)) },
                     trailingContent = {
@@ -493,6 +552,26 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onStopMusicOnTaskClearChange(!stopMusicOnTaskClear) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.volume_off_pause),
+                    title = { Text(stringResource(R.string.pause_music_when_media_is_muted)) },
+                    trailingContent = {
+                        Switch(
+                            checked = pauseOnMute,
+                            onCheckedChange = onPauseOnMuteChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (pauseOnMute) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onPauseOnMuteChange(!pauseOnMute) }
                 )
             )
         )

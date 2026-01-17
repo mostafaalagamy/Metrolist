@@ -12,7 +12,6 @@ import androidx.room.PrimaryKey
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
 import java.time.LocalDateTime
@@ -34,7 +33,9 @@ data class PlaylistEntity(
     val shuffleEndpointParams: String? = null,
     val radioEndpointParams: String? = null,
     @ColumnInfo(name = "isLocal", defaultValue = false.toString())
-    val isLocal: Boolean = false
+    val isLocal: Boolean = false,
+    @ColumnInfo(name = "isAutoSync", defaultValue = false.toString())
+    val isAutoSync: Boolean = false
 ) {
     companion object {
         const val LIKED_PLAYLIST_ID = "LP_LIKED"
@@ -58,7 +59,6 @@ data class PlaylistEntity(
         CoroutineScope(Dispatchers.IO).launch {
             if (browseId != null)
                 YouTube.likePlaylist(browseId, bookmarkedAt == null)
-            this.cancel()
         }
     }
 }

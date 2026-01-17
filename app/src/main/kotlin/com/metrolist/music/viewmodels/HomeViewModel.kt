@@ -27,13 +27,13 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Song
+import com.metrolist.music.extensions.filterVideoSongs
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.SyncUtils
-import com.metrolist.music.utils.syncCoroutine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.metrolist.music.constants.ShowWrappedCardKey
@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
 	val showWrappedCard: StateFlow<Boolean> = context.dataStore.data.map { prefs ->
         val showWrappedPref = prefs[ShowWrappedCardKey] ?: false
         val seen = prefs[WrappedSeenKey] ?: false
-        val isBeforeDate = LocalDate.now().isBefore(LocalDate.of(2026, 1, 10))
+        val isBeforeDate = LocalDate.now().isBefore(LocalDate.of(2026, 2, 1))
 
         isBeforeDate && (!seen || showWrappedPref)
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
@@ -110,10 +110,11 @@ class HomeViewModel @Inject constructor(
     private var isProcessingAccountData = false
 
     private suspend fun getQuickPicks() {
+        val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
         when (quickPicksEnum.first()) {
             QuickPicks.QUICK_PICKS -> {
-                val relatedSongs = database.quickPicks().first()
-                val forgotten = database.forgottenFavorites().first().take(8)
+                val relatedSongs = database.quickPicks().first().filterVideoSongs(hideVideoSongs)
+                val forgotten = database.forgottenFavorites().first().filterVideoSongs(hideVideoSongs).take(8)
                 
                 // Get similar songs from YouTube based on recent listening
                 val recentSong = database.events().first().firstOrNull()?.song
@@ -126,7 +127,9 @@ class HomeViewModel @Inject constructor(
                             // Convert YouTube songs to local Song format if they exist in database
                             page.songs.take(10).forEach { ytSong ->
                                 database.song(ytSong.id).first()?.let { localSong ->
-                                    ytSimilarSongs.add(localSong)
+                                    if (!hideVideoSongs || !localSong.song.isVideo) {
+                                        ytSimilarSongs.add(localSong)
+                                    }
                                 }
                             }
                         }
@@ -144,7 +147,7 @@ class HomeViewModel @Inject constructor(
             QuickPicks.LAST_LISTEN -> {
                 val song = database.events().first().firstOrNull()?.song
                 if (song != null && database.hasRelatedSongs(song.id)) {
-                    quickPicks.value = database.getRelatedSongs(song.id).first().shuffled().take(20)
+                    quickPicks.value = database.getRelatedSongs(song.id).first().filterVideoSongs(hideVideoSongs).shuffled().take(20)
                 }
             }
         }
@@ -156,10 +159,10 @@ class HomeViewModel @Inject constructor(
         val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
 
         getQuickPicks()
-        forgottenFavorites.value = database.forgottenFavorites().first().shuffled().take(20)
+        forgottenFavorites.value = database.forgottenFavorites().first().filterVideoSongs(hideVideoSongs).shuffled().take(20)
 
         val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
-        val keepListeningSongs = database.mostPlayedSongs(fromTimeStamp, limit = 15, offset = 5).first().shuffled().take(10)
+        val keepListeningSongs = database.mostPlayedSongs(fromTimeStamp, limit = 15, offset = 5).first().filterVideoSongs(hideVideoSongs).shuffled().take(10)
         val keepListeningAlbums = database.mostPlayedAlbums(fromTimeStamp, limit = 8, offset = 2).first().filter { it.album.thumbnailUrl != null }.shuffled().take(5)
         val keepListeningArtists = database.mostPlayedArtists(fromTimeStamp).first().filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }.shuffled().take(5)
         keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
@@ -311,7 +314,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val hideExplicit = context.dataStore.get(HideExplicitKey, false)
             val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
-            val nextSections = YouTube.home(params = chip?.endpoint?.params).getOrNull() ?: return@launch
+            val nextSections = YouTube.home(params = chip.endpoint?.params).getOrNull() ?: return@launch
 
             homePage.value = nextSections.copy(
                 chips = homePage.value?.chips,
@@ -331,7 +334,7 @@ class HomeViewModel @Inject constructor(
             isRefreshing.value = false
         }
         // Run sync when user manually refreshes
-        viewModelScope.launch(syncCoroutine) {
+        viewModelScope.launch(Dispatchers.IO) {
             syncUtils.tryAutoSync()
         }
     }
@@ -348,7 +351,7 @@ class HomeViewModel @Inject constructor(
         }
         
         // Run sync in separate coroutine with cooldown to avoid blocking UI
-        viewModelScope.launch(syncCoroutine) {
+        viewModelScope.launch(Dispatchers.IO) {
             syncUtils.tryAutoSync()
         }
 

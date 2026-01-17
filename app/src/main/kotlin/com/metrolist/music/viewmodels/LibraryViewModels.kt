@@ -20,6 +20,8 @@ import com.metrolist.music.constants.AlbumFilterKey
 import com.metrolist.music.constants.AlbumSortDescendingKey
 import com.metrolist.music.constants.AlbumSortType
 import com.metrolist.music.constants.AlbumSortTypeKey
+import com.metrolist.music.constants.ArtistFilter
+import com.metrolist.music.constants.ArtistFilterKey
 import com.metrolist.music.constants.ArtistSongSortDescendingKey
 import com.metrolist.music.constants.ArtistSongSortType
 import com.metrolist.music.constants.ArtistSongSortTypeKey
@@ -27,6 +29,7 @@ import com.metrolist.music.constants.ArtistSortDescendingKey
 import com.metrolist.music.constants.ArtistSortType
 import com.metrolist.music.constants.ArtistSortTypeKey
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.constants.PlaylistSortDescendingKey
 import com.metrolist.music.constants.PlaylistSortType
@@ -40,6 +43,7 @@ import com.metrolist.music.constants.TopSize
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.filterExplicit
 import com.metrolist.music.extensions.filterExplicitAlbums
+import com.metrolist.music.extensions.filterVideoSongs
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.playback.DownloadUtil
@@ -76,38 +80,36 @@ constructor(
     val allSongs =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
                     Triple(
                         it[SongFilterKey].toEnum(SongFilter.LIKED),
                         it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
                         (it[SongSortDescendingKey] ?: true),
                     ),
-                    it[HideExplicitKey] ?: false
+                    it[HideExplicitKey] ?: false,
+                    it[HideVideoSongsKey] ?: false
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (filterSort, hideExplicit) ->
+            .flatMapLatest { (filterSort, hideExplicit, hideVideoSongs) ->
                 val (filter, sortType, descending) = filterSort
                 when (filter) {
-                    SongFilter.LIBRARY -> database.songs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.DOWNLOADED -> database.downloadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
+                    SongFilter.LIBRARY -> database.songs(sortType, descending).map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
+                    SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
+                    SongFilter.DOWNLOADED -> database.downloadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
+                    SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedSongs() {
-        syncUtils.syncLikedSongs()
+    fun syncLikedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
 
-    // COMMENTED OUT: Library sync function - disabled to save resources
-    // suspend fun syncLibrarySongs() {
-    //     syncUtils.syncLibrarySongs()
-    // }
+    fun syncLibrarySongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+    }
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncUploadedSongs() {
-        syncUtils.syncUploadedSongs()
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }
 
@@ -122,18 +124,21 @@ constructor(
     val allArtists =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
+                    it[ArtistFilterKey].toEnum(ArtistFilter.LIKED),
                     it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
                     it[ArtistSortDescendingKey] ?: true,
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (sortType, descending) ->
-                database.artistsBookmarked(sortType, descending)
+            .flatMapLatest { (filter, sortType, descending) ->
+                when (filter) {
+                    ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+                    ArtistFilter.LIBRARY -> database.artists(sortType, descending)
+                }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun syncLikedArtists() {
-        syncUtils.syncArtistsSubscriptions()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
     }
 
     init {
@@ -182,18 +187,13 @@ constructor(
                 val (filter, sortType, descending) = filterSort
                 when (filter) {
                     AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                     AlbumFilter.UPLOADED -> database.albumsUploaded(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete - syncs liked albums
-    suspend fun syncLikedAlbums() {
-        syncUtils.syncLikedAlbums()
-    }
-
-    // Suspend function that waits for sync to complete - syncs uploaded albums
-    suspend fun syncUploadedAlbums() {
-        syncUtils.syncUploadedAlbums()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
     }
 
     init {
@@ -241,9 +241,8 @@ constructor(
                 database.playlists(sortType, descending)
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Suspend function that waits for sync to complete
-    suspend fun sync() {
-        syncUtils.syncSavedPlaylists()
+    fun sync() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
     }
 
     val topValue =
@@ -269,15 +268,16 @@ constructor(
     val songs =
         context.dataStore.data
             .map {
-                Pair(
+                Triple(
                     it[ArtistSongSortTypeKey].toEnum(ArtistSongSortType.CREATE_DATE) to (it[ArtistSongSortDescendingKey]
                         ?: true),
-                    it[HideExplicitKey] ?: false
+                    it[HideExplicitKey] ?: false,
+                    it[HideVideoSongsKey] ?: false
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (sortDesc, hideExplicit) ->
+            .flatMapLatest { (sortDesc, hideExplicit, hideVideoSongs) ->
                 val (sortType, descending) = sortDesc
-                database.artistSongs(artistId, sortType, descending).map { it.filterExplicit(hideExplicit) }
+                database.artistSongs(artistId, sortType, descending).map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
 
@@ -289,14 +289,10 @@ constructor(
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
-    // Suspend function that waits for all syncs to complete
-    suspend fun syncAllLibrary() {
-        syncUtils.syncLikedSongs()
-        // COMMENTED OUT: Library sync
-        // syncUtils.syncLibrarySongs()
-        syncUtils.syncArtistsSubscriptions()
-        syncUtils.syncLikedAlbums()
-        syncUtils.syncSavedPlaylists()
+    val syncAllLibrary = {
+         viewModelScope.launch(Dispatchers.IO) {
+             syncUtils.tryAutoSync()
+         }
     }
     val topValue =
         context.dataStore.data

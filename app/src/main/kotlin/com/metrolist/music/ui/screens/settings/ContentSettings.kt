@@ -92,6 +92,9 @@ fun ContentSettings(
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (hideVideoSongs, onHideVideoSongsChange) = rememberPreference(key = HideVideoSongsKey, defaultValue = false)
+    val (showArtistDescription, onShowArtistDescriptionChange) = rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
+    val (showArtistSubscriberCount, onShowArtistSubscriberCountChange) = rememberPreference(key = ShowArtistSubscriberCountKey, defaultValue = true)
+    val (showMonthlyListeners, onShowMonthlyListenersChange) = rememberPreference(key = ShowMonthlyListenersKey, defaultValue = true)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
@@ -100,6 +103,7 @@ fun ContentSettings(
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
     val (enableBetterLyrics, onEnableBetterLyricsChange) = rememberPreference(key = EnableBetterLyricsKey, defaultValue = true)
+    val (enableSimpMusic, onEnableSimpMusicChange) = rememberPreference(key = EnableSimpMusicKey, defaultValue = true)
     val (preferredProvider, onPreferredProviderChange) =
         rememberEnumPreference(
             key = PreferredLyricsProviderKey,
@@ -311,6 +315,7 @@ fun ContentSettings(
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
                     PreferredLyricsProvider.BETTER_LYRICS -> "Better Lyrics"
+                    PreferredLyricsProvider.SIMPMUSIC -> "SimpMusic"
                 }
             }
         )
@@ -445,6 +450,74 @@ fun ContentSettings(
                         )
                     },
                     onClick = { onHideVideoSongsChange(!hideVideoSongs) }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(27.dp))
+
+        Material3SettingsGroup(
+            title = stringResource(R.string.artist_page_settings),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.info),
+                    title = { Text(stringResource(R.string.show_artist_description)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showArtistDescription,
+                            onCheckedChange = onShowArtistDescriptionChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showArtistDescription) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowArtistDescriptionChange(!showArtistDescription) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.person),
+                    title = { Text(stringResource(R.string.show_artist_subscriber_count)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showArtistSubscriberCount,
+                            onCheckedChange = onShowArtistSubscriberCountChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showArtistSubscriberCount) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowArtistSubscriberCountChange(!showArtistSubscriberCount) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.person),
+                    title = { Text(stringResource(R.string.show_artist_monthly_listeners)) },
+                    trailingContent = {
+                        Switch(
+                            checked = showMonthlyListeners,
+                            onCheckedChange = onShowMonthlyListenersChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showMonthlyListeners) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onShowMonthlyListenersChange(!showMonthlyListeners) }
                 )
             )
         )
@@ -589,6 +662,27 @@ fun ContentSettings(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
+                    title = { Text(stringResource(R.string.enable_simpmusic)) },
+                    description = { Text(stringResource(R.string.enable_simpmusic_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = enableSimpMusic,
+                            onCheckedChange = onEnableSimpMusicChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (enableSimpMusic) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onEnableSimpMusicChange(!enableSimpMusic) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
                     description = {
                         Text(
@@ -596,6 +690,7 @@ fun ContentSettings(
                                 PreferredLyricsProvider.LRCLIB -> "LrcLib"
                                 PreferredLyricsProvider.KUGOU -> "KuGou"
                                 PreferredLyricsProvider.BETTER_LYRICS -> "Better Lyrics"
+                                PreferredLyricsProvider.SIMPMUSIC -> "SimpMusic"
                             }
                         )
                     },

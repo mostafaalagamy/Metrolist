@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.ui.Alignment
@@ -59,7 +61,7 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.YouTubePlaylistQueue
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.menu.*
 import com.metrolist.music.ui.utils.backToMain
@@ -168,6 +170,7 @@ fun OnlinePlaylistScreen(
                                 dbPlaylist = dbPlaylist,
                                 navController = navController,
                                 coroutineScope = coroutineScope,
+                                continuation = viewModel.continuation,
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -197,9 +200,11 @@ fun OnlinePlaylistScreen(
                                             playerConnection.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = playlist.title,
-                                                    items = filteredSongs.map { it.second.toMediaItem() },
+                                                YouTubePlaylistQueue(
+                                                    playlistId = playlist.id,
+                                                    playlistTitle = playlist.title,
+                                                    initialSongs = filteredSongs.map { it.second },
+                                                    initialContinuation = viewModel.continuation,
                                                     startIndex = index
                                                 )
                                             )
@@ -368,11 +373,13 @@ private fun OnlinePlaylistHeader(
     dbPlaylist: Playlist?,
     navController: NavController,
     coroutineScope: CoroutineScope,
+    continuation: String?,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
     val menuState = LocalMenuState.current
+    val syncUtils = LocalSyncUtils.current
 
     Column(
         modifier = modifier
@@ -438,18 +445,40 @@ private fun OnlinePlaylistHeader(
             // Like Button - Smaller secondary button
             Surface(
                 onClick = {
-                    database.query {
-                        if (dbPlaylist != null) {
-                            update(dbPlaylist.playlist.toggleLike())
-                        } else {
-                            insert(
-                                PlaylistEntity(
-                                    id = playlist.id,
-                                    name = playlist.title,
-                                    browseId = playlist.id,
-                                    bookmarkedAt = LocalDateTime.now()
-                                )
-                            )
+                    if (dbPlaylist != null) {
+                        database.transaction {
+                            val currentPlaylist = dbPlaylist.playlist
+                            update(currentPlaylist, playlist)
+                            update(currentPlaylist.toggleLike())
+                        }
+                    } else {
+                        database.transaction {
+                            val playlistEntity = PlaylistEntity(
+                                name = playlist.title,
+                                browseId = playlist.id,
+                                thumbnailUrl = playlist.thumbnail,
+                                isEditable = playlist.isEditable,
+                                remoteSongCount = playlist.songCountText?.let {
+                                    Regex("""\d+""").find(it)?.value?.toIntOrNull()
+                                },
+                                playEndpointParams = playlist.playEndpoint?.params,
+                                shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                                radioEndpointParams = playlist.radioEndpoint?.params
+                            ).toggleLike()
+                            insert(playlistEntity)
+                            coroutineScope.launch(Dispatchers.IO) {
+                                songs.map { it.toMediaMetadata() }
+                                    .onEach(::insert)
+                                    .mapIndexed { index, song ->
+                                        PlaylistSongMap(
+                                            songId = song.id,
+                                            playlistId = playlistEntity.id,
+                                            position = index,
+                                            setVideoId = song.setVideoId
+                                        )
+                                    }
+                                    .forEach(::insert)
+                            }
                         }
                     }
                 },
@@ -479,7 +508,14 @@ private fun OnlinePlaylistHeader(
             Surface(
                 onClick = {
                     if (songs.isNotEmpty()) {
-                        playerConnection.playQueue(ListQueue(playlist.title, songs.map { it.toMediaItem() }))
+                        playerConnection.playQueue(
+                            YouTubePlaylistQueue(
+                                playlistId = playlist.id,
+                                playlistTitle = playlist.title,
+                                initialSongs = songs,
+                                initialContinuation = continuation
+                            )
+                        )
                     }
                 },
                 color = MaterialTheme.colorScheme.primary,

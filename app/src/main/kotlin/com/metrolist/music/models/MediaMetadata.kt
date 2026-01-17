@@ -57,7 +57,8 @@ data class MediaMetadata(
             likedDate = likedDate,
             inLibrary = inLibrary,
             libraryAddToken = libraryAddToken,
-            libraryRemoveToken = libraryRemoveToken
+            libraryRemoveToken = libraryRemoveToken,
+            isVideo = isVideoSong
         )
 }
 
@@ -86,7 +87,9 @@ fun Song.toMediaMetadata() =
                 title = song.albumName.orEmpty(),
             )
         },
-        musicVideoType = null,
+        explicit = song.explicit,
+        // Use a non-ATV type if isVideo is true to indicate it's a video song
+        musicVideoType = if (song.isVideo) "MUSIC_VIDEO_TYPE_OMV" else null,
     )
 
 fun SongItem.toMediaMetadata() =

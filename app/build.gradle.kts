@@ -23,8 +23,8 @@ android {
         applicationId = "com.metrolist.music"
         minSdk = 26
         targetSdk = 36
-        versionCode = 131
-        versionName = "12.8.1"
+        versionCode = 133
+        versionName = "12.10.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -236,8 +236,14 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.kuromoji.ipadic)
     implementation(libs.tinypinyin)
+    implementation(libs.squigglyslider)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
+    // Glance for Material 3 Expressive Widgets
+    implementation(libs.glance)
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
 
     implementation(libs.apache.lang3)
 
@@ -251,6 +257,7 @@ dependencies {
     implementation(project(":kizzy"))
     implementation(project(":lastfm"))
     implementation(project(":betterlyrics"))
+    implementation(project(":simpmusic"))
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)
@@ -258,7 +265,4 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
-
-    // Icons
-    implementation(libs.androidx.material.icons.extended)
 }

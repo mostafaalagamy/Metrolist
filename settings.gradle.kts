@@ -24,6 +24,7 @@ include(":lrclib")
 include(":kizzy")
 include(":lastfm")
 include(":betterlyrics")
+include(":simpmusic")
 
 // Use a local copy of MetroExtractor by uncommenting the lines below.
 // We assume, that Metrolist and MetroExtractor have the same parent directory.

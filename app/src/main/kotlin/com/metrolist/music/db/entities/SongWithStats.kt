@@ -15,4 +15,5 @@ data class SongWithStats(
     val thumbnailUrl: String,
     val songCountListened: Int,
     val timeListened: Long?,
+    val isVideo: Boolean = false,
 )
