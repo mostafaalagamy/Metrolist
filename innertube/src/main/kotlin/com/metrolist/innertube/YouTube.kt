@@ -493,11 +493,12 @@ object YouTube {
             setLogin = true
         ).body<BrowseResponse>()
 
-        val mainContents = response.continuationContents?.sectionListContinuation?.contents
-            ?.flatMap { content -> content.musicPlaylistShelfRenderer?.contents.orEmpty().toList() }
+        val mainContents: List<MusicShelfRenderer.Content> = response.continuationContents?.sectionListContinuation?.contents
+            ?.mapNotNull { content: SectionListRenderer.Content -> content.musicPlaylistShelfRenderer?.contents }
+            ?.flatten()
             ?: emptyList()
 
-        val appendedContents = response.onResponseReceivedActions
+        val appendedContents: List<MusicShelfRenderer.Content> = response.onResponseReceivedActions
             ?.firstOrNull()
             ?.appendContinuationItemsAction
             ?.continuationItems
@@ -506,7 +507,7 @@ object YouTube {
         val allContents = mainContents + appendedContents
 
         val songs = allContents
-            .mapNotNull { content -> content.musicResponsiveListItemRenderer }
+            .mapNotNull { content: MusicShelfRenderer.Content -> content.musicResponsiveListItemRenderer }
             .mapNotNull { renderer -> PlaylistPage.fromMusicResponsiveListItemRenderer(renderer) }
 
         val nextContinuation = if (songs.isEmpty()) null else {
