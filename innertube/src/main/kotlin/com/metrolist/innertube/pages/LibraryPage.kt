@@ -19,9 +19,11 @@ data class LibraryPage(
 ) {
     companion object {
         fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
+            val browseId = renderer.navigationEndpoint.browseEndpoint?.browseId
+            
             return when {
                 renderer.isAlbum -> {
-                    val browseId = renderer.navigationEndpoint.browseEndpoint?.browseId ?: return null
+                    val albumBrowseId = browseId ?: return null
                     // Try to get playlistId from multiple sources
                     val playlistId = renderer.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content
                         ?.musicPlayButtonRenderer?.playNavigationEndpoint
@@ -31,10 +33,10 @@ data class LibraryPage(
                             ?.menuNavigationItemRenderer?.navigationEndpoint
                             ?.watchPlaylistEndpoint?.playlistId
                         // Fallback: derive from browseId (albums typically have browseId starting with "MPREb_")
-                        ?: browseId.removePrefix("MPREb_").let { "OLAK5uy_$it" }
+                        ?: albumBrowseId.removePrefix("MPREb_").let { "OLAK5uy_$it" }
                     
                     AlbumItem(
-                        browseId = browseId,
+                        browseId = albumBrowseId,
                         playlistId = playlistId,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                         artists = parseArtists(renderer.subtitle?.runs),
@@ -48,9 +50,14 @@ data class LibraryPage(
                 }
 
                 renderer.isPlaylist -> PlaylistItem(
-                    id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
+                    id = browseId?.removePrefix("VL") ?: return null,
                     title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                    author = null,
+                    author = renderer.subtitle?.runs?.firstOrNull()?.let {
+                        Artist(
+                            name = it.text,
+                            id = it.navigationEndpoint?.browseEndpoint?.browseId
+                        )
+                    },
                     songCountText = renderer.subtitle?.runs?.lastOrNull()?.text,
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     playEndpoint = renderer.thumbnailOverlay
@@ -69,7 +76,7 @@ data class LibraryPage(
                 )
 
                 renderer.isArtist -> ArtistItem(
-                    id = renderer.navigationEndpoint.browseEndpoint?.browseId ?: return null,
+                    id = browseId ?: return null,
                     title = renderer.title.runs?.lastOrNull()?.text ?: return null,
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     shuffleEndpoint = renderer.menu?.menuRenderer?.items?.find {

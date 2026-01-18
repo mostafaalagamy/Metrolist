@@ -445,43 +445,115 @@ object YouTube {
     }
 
     suspend fun playlist(playlistId: String): Result<PlaylistPage> = runCatching {
+        // Handle different playlist ID formats
+        val browseId = when {
+            playlistId.startsWith("VL") -> playlistId
+            else -> "VL$playlistId"
+        }
+        
         val response = innerTube.browse(
             client = WEB_REMIX,
-            browseId = "VL$playlistId",
+            browseId = browseId,
             setLogin = true
         ).body<BrowseResponse>()
-        val base = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
-        val header = base?.musicResponsiveHeaderRenderer ?: base?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+        
+        // Try twoColumnBrowseResultsRenderer first (most common for playlists)
+        val twoColumnBase = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+        val twoColumnHeader = twoColumnBase?.musicResponsiveHeaderRenderer ?: twoColumnBase?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+        
+        // Try singleColumnBrowseResultsRenderer as fallback (for some user playlists)
+        val singleColumnBase = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+        val singleColumnHeader = singleColumnBase?.musicResponsiveHeaderRenderer ?: singleColumnBase?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+        
+        // Try header from response.header (for some playlist types)
+        val responseHeader = response.header?.musicDetailHeaderRenderer
+        val responseEditableHeader = response.header?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+        
+        // Determine which header to use
+        val header = twoColumnHeader ?: singleColumnHeader ?: responseEditableHeader
+        val editable = twoColumnBase?.musicEditablePlaylistDetailHeaderRenderer != null || 
+                       singleColumnBase?.musicEditablePlaylistDetailHeaderRenderer != null ||
+                       response.header?.musicEditablePlaylistDetailHeaderRenderer != null
 
-        val editable = base?.musicEditablePlaylistDetailHeaderRenderer != null
+        // Get songs from different possible locations
+        val songsFromTwoColumn = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+            ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getItems()?.mapNotNull {
+                PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+            }
+        
+        val songsFromSingleColumn = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicPlaylistShelfRenderer?.contents?.getItems()?.mapNotNull {
+                PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+            }
+        
+        val songsFromMusicShelf = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicShelfRenderer?.contents?.getItems()?.mapNotNull {
+                PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+            }
+        
+        val songs = songsFromTwoColumn ?: songsFromSingleColumn ?: songsFromMusicShelf ?: emptyList()
+        
+        // Get continuation from different possible locations
+        val continuationFromTwoColumn = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+            ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation()
+            ?: response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+                ?.continuations?.getContinuation()
+        
+        val continuationFromSingleColumn = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicPlaylistShelfRenderer?.contents?.getContinuation()
+            ?: response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+        
+        val songsContinuation = continuationFromTwoColumn ?: continuationFromSingleColumn
+        
+        // Build playlist item with fallbacks for missing data
+        val title = header?.title?.runs?.firstOrNull()?.text 
+            ?: responseHeader?.title?.runs?.firstOrNull()?.text 
+            ?: "Unknown Playlist"
+        
+        val thumbnail = header?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url
+            ?: responseHeader?.thumbnail?.croppedSquareThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url
+            ?: ""
+        
+        val shuffleEndpoint = header?.buttons?.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint
+            ?: responseHeader?.menu?.menuRenderer?.topLevelButtons?.firstOrNull()?.buttonRenderer?.navigationEndpoint?.watchPlaylistEndpoint
+        
+        val radioEndpoint = header?.buttons?.getOrNull(2)?.menuRenderer?.items?.find {
+            it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
+        }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint
+            ?: responseHeader?.menu?.menuRenderer?.items?.find {
+                it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
+            }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint
 
         PlaylistPage(
             playlist = PlaylistItem(
-                id = playlistId,
-                title = header?.title?.runs?.firstOrNull()?.text!!,
-                author = header.straplineTextOne?.runs?.firstOrNull()?.let {
+                id = playlistId.removePrefix("VL"),
+                title = title,
+                author = header?.straplineTextOne?.runs?.firstOrNull()?.let {
+                    Artist(
+                        name = it.text,
+                        id = it.navigationEndpoint?.browseEndpoint?.browseId
+                    )
+                } ?: responseHeader?.subtitle?.runs?.firstOrNull()?.let {
                     Artist(
                         name = it.text,
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
                 },
-                songCountText = header.secondSubtitle?.runs?.firstOrNull()?.text,
-                thumbnail = header.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url!!,
+                songCountText = header?.secondSubtitle?.runs?.firstOrNull()?.text
+                    ?: responseHeader?.secondSubtitle?.runs?.firstOrNull()?.text,
+                thumbnail = thumbnail,
                 playEndpoint = null,
-                shuffleEndpoint = header.buttons.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
-                radioEndpoint = header.buttons.getOrNull(2)?.menuRenderer?.items?.find {
-                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
-                }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
+                shuffleEndpoint = shuffleEndpoint,
+                radioEndpoint = radioEndpoint,
                 isEditable = editable
             ),
-            songs = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getItems()?.mapNotNull {
-                    PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                } ?: emptyList(),
-            songsContinuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation(),
-            continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.continuations?.getContinuation()
+            songs = songs,
+            songsContinuation = songsContinuation,
+            continuation = songsContinuation
         )
     }
 
