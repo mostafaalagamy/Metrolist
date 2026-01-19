@@ -362,7 +362,13 @@ class SyncUtils @Inject constructor(
             executeSyncLibrarySongs()
             delay(DB_OPERATION_DELAY_MS)
 
+            executeSyncUploadedSongs()
+            delay(DB_OPERATION_DELAY_MS)
+
             executeSyncLikedAlbums()
+            delay(DB_OPERATION_DELAY_MS)
+
+            executeSyncUploadedAlbums()
             delay(DB_OPERATION_DELAY_MS)
 
             executeSyncArtistsSubscriptions()
@@ -542,7 +548,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedSongs = SyncStatus.Syncing, currentOperation = "Syncing uploaded songs") }
 
         withRetry {
-            YouTube.library("FEmusic_library_privately_owned_tracks", tabIndex = 1).completed()
+            YouTube.libraryUploaded("FEmusic_library_privately_owned_tracks").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {
@@ -661,7 +667,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedAlbums = SyncStatus.Syncing, currentOperation = "Syncing uploaded albums") }
 
         withRetry {
-            YouTube.library("FEmusic_library_privately_owned_releases", tabIndex = 1).completed()
+            YouTube.libraryUploaded("FEmusic_library_privately_owned_releases").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {
