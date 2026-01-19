@@ -362,7 +362,13 @@ class SyncUtils @Inject constructor(
             executeSyncLibrarySongs()
             delay(DB_OPERATION_DELAY_MS)
 
+            executeSyncUploadedSongs()
+            delay(DB_OPERATION_DELAY_MS)
+
             executeSyncLikedAlbums()
+            delay(DB_OPERATION_DELAY_MS)
+
+            executeSyncUploadedAlbums()
             delay(DB_OPERATION_DELAY_MS)
 
             executeSyncArtistsSubscriptions()
