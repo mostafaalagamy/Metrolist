@@ -16,9 +16,23 @@ object NewPipeUtils {
     private const val TAG = "NewPipeUtils"
     private const val DEBUG = false
     private const val API_TIMEOUT_MS = 10000L
+    
+    // Cache TTL: 30 minutes (player info doesn't change frequently)
+    private const val CACHE_TTL_MS = 30 * 60 * 1000L
 
     @Volatile
     private var cachedPlayer: Pair<String, Int>? = null
+    
+    @Volatile
+    private var cacheTimestamp: Long = 0L
+    
+    // Cache for decrypted values to avoid repeated API calls
+    private val decryptionCache = object : LinkedHashMap<String, String>(100, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, String>?): Boolean {
+            return size > 500 // Keep max 500 entries
+        }
+    }
+    private val decryptionCacheLock = Any()
     
     private val playerLock = Any()
 
@@ -28,22 +42,34 @@ object NewPipeUtils {
 
     /**
      * Gets the current YouTube player information (player ID and signature timestamp).
-     * Results are cached to avoid unnecessary API calls.
+     * Results are cached with TTL to avoid unnecessary API calls.
      * Thread-safe.
      *
      * @return Pair of (player ID, signature timestamp) or null if unavailable
      */
     private fun getPlayer(): Pair<String, Int>? {
-        cachedPlayer?.let { return it }
+        val now = System.currentTimeMillis()
+        
+        // Check if cache is valid
+        cachedPlayer?.let { cached ->
+            if (now - cacheTimestamp < CACHE_TTL_MS) {
+                return cached
+            }
+        }
         
         return synchronized(playerLock) {
             // Double-check after acquiring lock
-            cachedPlayer?.let { return it }
+            cachedPlayer?.let { cached ->
+                if (now - cacheTimestamp < CACHE_TTL_MS) {
+                    return cached
+                }
+            }
             
             log("Fetching latest player from API...")
             val player = YouTubeDecryptionHelper.getLatestPlayer()
             log("Got player: ${player?.first}, sts: ${player?.second}")
             cachedPlayer = player
+            cacheTimestamp = now
             player
         }
     }
@@ -55,6 +81,28 @@ object NewPipeUtils {
     fun clearCache() {
         synchronized(playerLock) {
             cachedPlayer = null
+            cacheTimestamp = 0L
+        }
+        synchronized(decryptionCacheLock) {
+            decryptionCache.clear()
+        }
+    }
+    
+    /**
+     * Gets a cached decrypted value or null if not cached.
+     */
+    private fun getCachedDecryption(key: String): String? {
+        synchronized(decryptionCacheLock) {
+            return decryptionCache[key]
+        }
+    }
+    
+    /**
+     * Caches a decrypted value.
+     */
+    private fun cacheDecryption(key: String, value: String) {
+        synchronized(decryptionCacheLock) {
+            decryptionCache[key] = value
         }
     }
 
@@ -147,7 +195,7 @@ object NewPipeUtils {
     }
     
     /**
-     * Decrypts cipher values using the PipePipe API.
+     * Decrypts cipher values using the PipePipe API with caching.
      *
      * @param nValues List of encrypted 'n' parameter values
      * @param sigValues List of encrypted signature values
@@ -164,10 +212,56 @@ object NewPipeUtils {
             return emptyMap()
         }
         
-        return try {
-            withTimeout(API_TIMEOUT_MS) {
-                YouTubeDecryptionHelper.batchDecryptCiphers(nValues, sigValues, player)
+        val result = mutableMapOf<String, String>()
+        val uncachedNValues = mutableListOf<String>()
+        val uncachedSigValues = mutableListOf<String>()
+        
+        // Check cache first
+        for (n in nValues) {
+            val cached = getCachedDecryption("n:$n")
+            if (cached != null) {
+                result[n] = cached
+            } else {
+                uncachedNValues.add(n)
             }
+        }
+        
+        for (sig in sigValues) {
+            val cached = getCachedDecryption("sig:$sig")
+            if (cached != null) {
+                result[sig] = cached
+            } else {
+                uncachedSigValues.add(sig)
+            }
+        }
+        
+        // If all values were cached, return immediately
+        if (uncachedNValues.isEmpty() && uncachedSigValues.isEmpty()) {
+            log("All values found in cache")
+            return result
+        }
+        
+        // Decrypt uncached values
+        return try {
+            val decrypted = withTimeout(API_TIMEOUT_MS) {
+                YouTubeDecryptionHelper.batchDecryptCiphers(uncachedNValues, uncachedSigValues, player)
+            }
+            
+            // Cache the newly decrypted values
+            for (n in uncachedNValues) {
+                decrypted[n]?.let { 
+                    cacheDecryption("n:$n", it)
+                    result[n] = it
+                }
+            }
+            for (sig in uncachedSigValues) {
+                decrypted[sig]?.let { 
+                    cacheDecryption("sig:$sig", it)
+                    result[sig] = it
+                }
+            }
+            
+            result
         } catch (e: Exception) {
             log("Decryption failed: ${e.message}")
             throw IllegalStateException("Failed to decrypt stream parameters: ${e.message}", e)
