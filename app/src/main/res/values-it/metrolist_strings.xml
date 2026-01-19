@@ -378,4 +378,6 @@
     <string name="skip_silence_instant">Salta il silenzio istantaneamente</string>
     <string name="skip_silence_instant_desc">Salta avanti durante i momenti di silenzio invece di velocizzare la riproduzione</string>
     <string name="lyrics_offset">Ritardo/anticipo dei testi</string>
+    <string name="persistent_shuffle_title">Riproduzione casuale persistente</string>
+    <string name="persistent_shuffle_desc">Mantieni la riproduzione casuale attiva quando avvii nuovi brani o playlist</string>
 </resources>
