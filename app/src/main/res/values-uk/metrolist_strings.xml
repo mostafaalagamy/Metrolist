@@ -383,4 +383,6 @@
     <string name="skip_silence_desc">Перемотування вперед тихих частин пісень</string>
     <string name="skip_silence_instant">Миттєво пропустити тишу</string>
     <string name="skip_silence_instant_desc">Перемотуйте вперед під час тихих моментів замість прискорення відтворення</string>
+    <string name="persistent_shuffle_title">Постійне перемішування</string>
+    <string name="persistent_shuffle_desc">Увімкніть випадкове перемішування під час запуску нових пісень або списків відтворення</string>
 </resources>
