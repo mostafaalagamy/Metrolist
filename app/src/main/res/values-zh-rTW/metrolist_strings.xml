@@ -207,7 +207,7 @@
     <string name="update_channel_name">應用程式更新</string>
     <string name="update_channel_desc">新版本更新通知</string>
     <string name="audio_offload">啟動音訊卸載</string>
-    <string name="audio_offload_description">使用音訊卸載來播放音訊。關閉這個選項可能會增加耗電，不過可以解決一些播放或後處理的問題。</string>
+    <string name="audio_offload_description">使用卸載音訊路徑進行播放。停用此功能可能會增加耗電量，但若您遇到音訊播放或後處理問題，建議將其關閉</string>
     <string name="lyrics_romanize_macedonian">羅馬化馬其頓語歌詞</string>
     <string name="integrations">整合</string>
     <string name="username">使用者名稱</string>
@@ -247,4 +247,18 @@
     <string name="edit_desc">更改標題或藝術家</string>
     <string name="start_radio_desc">基於此歌曲創造一個電台</string>
     <string name="play_next_desc">添加到列表頂部</string>
+    <string name="show_more">顯示更多</string>
+    <string name="show_less">顯示更少</string>
+    <string name="about_artist">關於</string>
+    <string name="artist_page_settings">藝人頁面</string>
+    <string name="show_artist_description">顯示藝人的資訊</string>
+    <string name="show_artist_subscriber_count">顯示訂閱人數</string>
+    <string name="show_artist_monthly_listeners">顯示每月聽眾人數</string>
+    <string name="download_desc">設定為可離線播放</string>
+    <string name="add_to_library_desc">新增至媒體庫</string>
+    <string name="delete_desc">永久刪除此項目</string>
+    <string name="import_error_title">匯入時發生錯誤</string>
+    <string name="copied_artist">複製藝人</string>
+    <string name="error_playing">撥放時發生錯誤</string>
+    <string name="failed_to_parse_proxy">無法解析 proxy</string>
 </resources>
