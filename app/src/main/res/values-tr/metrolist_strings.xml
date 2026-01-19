@@ -373,4 +373,6 @@
     <string name="show_artist_description">Sanatçının açıklamasını göster</string>
     <string name="show_artist_subscriber_count">Abone sayısını göster</string>
     <string name="show_artist_monthly_listeners">Aylık dinleyicileri göster</string>
+    <string name="persistent_shuffle_title">Sürekli karıştırma</string>
+    <string name="persistent_shuffle_desc">Yeni şarkılar veya çalma listeleri başlatırken karışık çalma özelliğini açık tutun</string>
 </resources>
