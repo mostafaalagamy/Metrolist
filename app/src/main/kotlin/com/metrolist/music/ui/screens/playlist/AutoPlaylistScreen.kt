@@ -46,6 +46,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -298,8 +301,24 @@ fun AutoPlaylistScreen(
 
     val state = rememberLazyListState()
 
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val pullRefreshState = rememberPullToRefreshState()
+    val canRefresh = playlistType == PlaylistType.LIKE || playlistType == PlaylistType.UPLOADED
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(
+                if (canRefresh) {
+                    Modifier.pullToRefresh(
+                        state = pullRefreshState,
+                        isRefreshing = isRefreshing,
+                        onRefresh = viewModel::refresh
+                    )
+                } else {
+                    Modifier
+                }
+            ),
     ) {
         LazyColumn(
             state = state,
@@ -439,6 +458,16 @@ fun AutoPlaylistScreen(
             scrollState = state,
             headerItems = 2
         )
+
+        if (canRefresh) {
+            Indicator(
+                isRefreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
+            )
+        }
 
         TopAppBar(
             title = {
