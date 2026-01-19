@@ -35,16 +35,16 @@ import java.util.concurrent.TimeUnit
 object YTPlayerUtils {
     private const val logTag = "YTPlayerUtils"
     
-    // Timeout for parallel client requests (ms)
-    private const val PARALLEL_REQUEST_TIMEOUT_MS = 5000L
+    // Timeout for parallel client requests (ms) - reduced for faster playback start
+    private const val PARALLEL_REQUEST_TIMEOUT_MS = 3000L
     
-    // Number of clients to try in parallel for fallback
-    private const val PARALLEL_BATCH_SIZE = 3
+    // Number of clients to try in parallel for fallback - increased for faster results
+    private const val PARALLEL_BATCH_SIZE = 4
 
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
-        .connectTimeout(3, TimeUnit.SECONDS)
-        .readTimeout(3, TimeUnit.SECONDS)
+        .connectTimeout(2, TimeUnit.SECONDS)
+        .readTimeout(2, TimeUnit.SECONDS)
         .build()
     /**
      * The main client is used for metadata and initial streams.
@@ -97,11 +97,6 @@ object YTPlayerUtils {
      * Custom player response intended to use for playback.
      * Metadata like audioConfig and videoDetails are from [MAIN_CLIENT].
      * Format & stream can be from [MAIN_CLIENT] or [STREAM_FALLBACK_CLIENTS].
-     * 
-     * Optimizations:
-     * - Removed validateStatus() calls to reduce latency
-     * - Parallel fallback client requests
-     * - Better caching in NewPipeUtils
      */
     suspend fun playerResponseForPlayback(
         videoId: String,
@@ -255,8 +250,9 @@ object YTPlayerUtils {
     
     /**
      * Try to extract stream data from a player response.
+     * This is a suspend function to allow async stream URL decryption.
      */
-    private fun tryGetStreamFromResponse(
+    private suspend fun tryGetStreamFromResponse(
         client: YouTubeClient,
         response: PlayerResponse,
         videoId: String,
@@ -274,7 +270,7 @@ object YTPlayerUtils {
             return null
         }
         
-        val streamUrl = findUrlOrNull(format, videoId)
+        val streamUrl = findUrlOrNullAsync(format, videoId)
         if (streamUrl == null) {
             Timber.tag(logTag).d("Stream URL not found for ${client.clientName}")
             return null
@@ -348,6 +344,24 @@ object YTPlayerUtils {
             .onSuccess { Timber.tag(logTag).d("Stream URL obtained successfully") }
             .onFailure {
                 Timber.tag(logTag).e(it, "Failed to get stream URL")
+                reportException(it)
+            }
+            .getOrNull()
+    }
+    
+    /**
+     * Async version of [findUrlOrNull] for better performance in coroutine contexts.
+     * Wrapper around [NewPipeUtils.getStreamUrlAsync] which reports exceptions.
+     */
+    private suspend fun findUrlOrNullAsync(
+        format: PlayerResponse.StreamingData.Format,
+        videoId: String
+    ): String? {
+        Timber.tag(logTag).d("Finding stream URL async for format: ${format.mimeType}, videoId: $videoId")
+        return NewPipeUtils.getStreamUrlAsync(format, videoId)
+            .onSuccess { Timber.tag(logTag).d("Stream URL obtained successfully (async)") }
+            .onFailure {
+                Timber.tag(logTag).e(it, "Failed to get stream URL (async)")
                 reportException(it)
             }
             .getOrNull()
