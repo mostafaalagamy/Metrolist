@@ -1,12 +1,14 @@
 package com.metrolist.innertube
 
 import com.metrolist.innertube.models.response.PlayerResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import project.pipepipe.extractor.services.youtube.YouTubeDecryptionHelper
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Utility object for handling YouTube stream URL decryption using MetroExtractor/PipePipe API.
@@ -15,10 +17,24 @@ import java.util.concurrent.TimeUnit
 object NewPipeUtils {
     private const val TAG = "NewPipeUtils"
     private const val DEBUG = false
-    private const val API_TIMEOUT_MS = 10000L
+    // Reduced timeout for faster failure detection
+    private const val API_TIMEOUT_MS = 4000L
+    
+    // Cache TTL: 30 minutes (player info doesn't change frequently)
+    private const val CACHE_TTL_MS = 30 * 60 * 1000L
 
     @Volatile
     private var cachedPlayer: Pair<String, Int>? = null
+    
+    @Volatile
+    private var cacheTimestamp: Long = 0L
+    
+    // Use ConcurrentHashMap for better concurrent performance
+    private val decryptionCache = ConcurrentHashMap<String, String>(256)
+    // Track insertion order for LRU-like eviction
+    @Volatile
+    private var cacheInsertionCount = 0L
+    private const val MAX_CACHE_SIZE = 500
     
     private val playerLock = Any()
 
@@ -28,22 +44,34 @@ object NewPipeUtils {
 
     /**
      * Gets the current YouTube player information (player ID and signature timestamp).
-     * Results are cached to avoid unnecessary API calls.
+     * Results are cached with TTL to avoid unnecessary API calls.
      * Thread-safe.
      *
      * @return Pair of (player ID, signature timestamp) or null if unavailable
      */
     private fun getPlayer(): Pair<String, Int>? {
-        cachedPlayer?.let { return it }
+        val now = System.currentTimeMillis()
+        
+        // Check if cache is valid
+        cachedPlayer?.let { cached ->
+            if (now - cacheTimestamp < CACHE_TTL_MS) {
+                return cached
+            }
+        }
         
         return synchronized(playerLock) {
             // Double-check after acquiring lock
-            cachedPlayer?.let { return it }
+            cachedPlayer?.let { cached ->
+                if (now - cacheTimestamp < CACHE_TTL_MS) {
+                    return cached
+                }
+            }
             
             log("Fetching latest player from API...")
             val player = YouTubeDecryptionHelper.getLatestPlayer()
             log("Got player: ${player?.first}, sts: ${player?.second}")
             cachedPlayer = player
+            cacheTimestamp = now
             player
         }
     }
@@ -55,7 +83,28 @@ object NewPipeUtils {
     fun clearCache() {
         synchronized(playerLock) {
             cachedPlayer = null
+            cacheTimestamp = 0L
         }
+        decryptionCache.clear()
+    }
+    
+    /**
+     * Gets a cached decrypted value or null if not cached.
+     */
+    private fun getCachedDecryption(key: String): String? {
+        return decryptionCache[key]
+    }
+    
+    /**
+     * Caches a decrypted value with simple size management.
+     */
+    private fun cacheDecryption(key: String, value: String) {
+        // Simple eviction: clear half the cache when it gets too big
+        if (decryptionCache.size >= MAX_CACHE_SIZE) {
+            val keysToRemove = decryptionCache.keys.take(MAX_CACHE_SIZE / 2)
+            keysToRemove.forEach { decryptionCache.remove(it) }
+        }
+        decryptionCache[key] = value
     }
 
     /**
@@ -147,7 +196,7 @@ object NewPipeUtils {
     }
     
     /**
-     * Decrypts cipher values using the PipePipe API.
+     * Decrypts cipher values using the PipePipe API with caching.
      *
      * @param nValues List of encrypted 'n' parameter values
      * @param sigValues List of encrypted signature values
@@ -159,15 +208,61 @@ object NewPipeUtils {
         nValues: List<String>,
         sigValues: List<String>,
         player: String
-    ): Map<String, String> {
+    ): Map<String, String> = withContext(Dispatchers.IO) {
         if (nValues.isEmpty() && sigValues.isEmpty()) {
-            return emptyMap()
+            return@withContext emptyMap()
         }
         
-        return try {
-            withTimeout(API_TIMEOUT_MS) {
-                YouTubeDecryptionHelper.batchDecryptCiphers(nValues, sigValues, player)
+        val result = mutableMapOf<String, String>()
+        val uncachedNValues = mutableListOf<String>()
+        val uncachedSigValues = mutableListOf<String>()
+        
+        // Check cache first (fast path)
+        for (n in nValues) {
+            val cached = getCachedDecryption("n:$n")
+            if (cached != null) {
+                result[n] = cached
+            } else {
+                uncachedNValues.add(n)
             }
+        }
+        
+        for (sig in sigValues) {
+            val cached = getCachedDecryption("sig:$sig")
+            if (cached != null) {
+                result[sig] = cached
+            } else {
+                uncachedSigValues.add(sig)
+            }
+        }
+        
+        // If all values were cached, return immediately
+        if (uncachedNValues.isEmpty() && uncachedSigValues.isEmpty()) {
+            log("All values found in cache")
+            return@withContext result
+        }
+        
+        // Decrypt uncached values
+        try {
+            val decrypted = withTimeout(API_TIMEOUT_MS) {
+                YouTubeDecryptionHelper.batchDecryptCiphers(uncachedNValues, uncachedSigValues, player)
+            }
+            
+            // Cache the newly decrypted values
+            for (n in uncachedNValues) {
+                decrypted[n]?.let { 
+                    cacheDecryption("n:$n", it)
+                    result[n] = it
+                }
+            }
+            for (sig in uncachedSigValues) {
+                decrypted[sig]?.let { 
+                    cacheDecryption("sig:$sig", it)
+                    result[sig] = it
+                }
+            }
+            
+            result
         } catch (e: Exception) {
             log("Decryption failed: ${e.message}")
             throw IllegalStateException("Failed to decrypt stream parameters: ${e.message}", e)
@@ -203,12 +298,14 @@ object NewPipeUtils {
     /**
      * Gets the decrypted stream URL for a given format and video.
      * Handles both direct URLs with encrypted 'n' parameters and signatureCipher formats.
+     * 
+     * This is a suspend function for better performance in coroutine contexts.
      *
      * @param format The format object containing URL or signatureCipher
      * @param videoId The video ID (for logging purposes)
      * @return Result containing the decrypted stream URL or an error
      */
-    fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String): Result<String> =
+    suspend fun getStreamUrlAsync(format: PlayerResponse.StreamingData.Format, videoId: String): Result<String> =
         runCatching {
             require(videoId.isNotBlank()) { "Video ID cannot be blank" }
             
@@ -225,9 +322,7 @@ object NewPipeUtils {
                 if (nParam != null && nParam.isNotBlank()) {
                     log("Found n parameter (length: ${nParam.length})")
                     
-                    val decrypted = runBlocking {
-                        decryptCiphers(listOf(nParam), emptyList(), player)
-                    }
+                    val decrypted = decryptCiphers(listOf(nParam), emptyList(), player)
                     
                     val decryptedN = decrypted[nParam]
                         ?: throw IllegalStateException("Failed to decrypt 'n' parameter")
@@ -253,13 +348,15 @@ object NewPipeUtils {
                     ?: throw IllegalArgumentException("Missing 'url' parameter in signatureCipher")
 
                 log("Cipher - sp: $signatureParam, s length: ${obfuscatedSignature.length}")
-
-                // Decrypt the signature
-                val sigDecrypted = runBlocking {
-                    decryptCiphers(emptyList(), listOf(obfuscatedSignature), player)
-                }
                 
-                val decryptedSig = sigDecrypted[obfuscatedSignature]
+                // Get n parameter early for potential batch decryption
+                val nParam = getQueryParam(baseUrl, "n")
+                
+                // Batch decrypt both signature and n parameter together for efficiency
+                val nValues = if (nParam != null && nParam.isNotBlank()) listOf(nParam) else emptyList()
+                val allDecrypted = decryptCiphers(nValues, listOf(obfuscatedSignature), player)
+                
+                val decryptedSig = allDecrypted[obfuscatedSignature]
                     ?: throw IllegalStateException("Failed to decrypt signature")
 
                 log("Successfully decrypted signature (length: ${decryptedSig.length})")
@@ -267,16 +364,9 @@ object NewPipeUtils {
                 // Build URL with decrypted signature
                 var finalUrl = "$baseUrl&$signatureParam=${URLEncoder.encode(decryptedSig, "UTF-8")}"
                 
-                // Check if base URL also has an 'n' parameter that needs decryption
-                val nParam = getQueryParam(baseUrl, "n")
+                // Apply decrypted n parameter if it was present
                 if (nParam != null && nParam.isNotBlank()) {
-                    log("Base URL has n parameter, decrypting...")
-                    
-                    val nDecrypted = runBlocking {
-                        decryptCiphers(listOf(nParam), emptyList(), player)
-                    }
-                    
-                    nDecrypted[nParam]?.let { decryptedN ->
+                    allDecrypted[nParam]?.let { decryptedN ->
                         log("Successfully decrypted base URL n parameter")
                         finalUrl = replaceQueryParam(finalUrl, "n", decryptedN)
                     }
@@ -289,6 +379,21 @@ object NewPipeUtils {
             throw IllegalArgumentException("Format has neither 'url' nor 'signatureCipher' field")
         }.onFailure { error ->
             log("Stream URL extraction failed: ${error.message}")
+        }
+    
+    /**
+     * Gets the decrypted stream URL for a given format and video (blocking version).
+     * Handles both direct URLs with encrypted 'n' parameters and signatureCipher formats.
+     * 
+     * Prefer using [getStreamUrlAsync] in coroutine contexts for better performance.
+     *
+     * @param format The format object containing URL or signatureCipher
+     * @param videoId The video ID (for logging purposes)
+     * @return Result containing the decrypted stream URL or an error
+     */
+    fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String): Result<String> =
+        runBlocking(Dispatchers.IO) {
+            getStreamUrlAsync(format, videoId)
         }
 
 }
