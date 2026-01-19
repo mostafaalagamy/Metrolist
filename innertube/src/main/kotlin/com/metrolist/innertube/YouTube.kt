@@ -677,6 +677,91 @@ object YouTube {
         }
     }
 
+    /**
+     * Fetch uploaded content (songs/albums) from YouTube Music library.
+     * This function handles the tab selection logic for uploaded content which may vary
+     * between premium and non-premium users.
+     */
+    suspend fun libraryUploaded(browseId: String) = runCatching {
+        val response = innerTube.browse(
+            client = WEB_REMIX,
+            browseId = browseId,
+            setLogin = true
+        ).body<BrowseResponse>()
+
+        val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs
+        val numTabs = tabs?.size ?: 0
+
+        // Determine which tab to use based on number of tabs (like ytmusicapi)
+        // Non-premium users have fewer tabs, so we need to adjust
+        val effectiveTabIndex = when {
+            numTabs == 0 -> 0
+            numTabs < 3 -> 1  // For non-premium: use tab 1 for uploaded content
+            else -> 2  // For premium: use tab 2 for uploaded content
+        }
+
+        val sectionList = if (tabs != null && numTabs > effectiveTabIndex) {
+            tabs[effectiveTabIndex].tabRenderer.content?.sectionListRenderer
+        } else {
+            // Fallback to first tab if effectiveTabIndex is out of bounds
+            tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer
+        }
+
+        val contents = sectionList?.contents?.firstOrNull()
+
+        // Check for itemSectionRenderer pattern (2025/2026 API)
+        val itemSectionContent = contents?.itemSectionRenderer?.contents?.firstOrNull()
+
+        when {
+            // Direct gridRenderer in contents
+            contents?.gridRenderer != null -> {
+                LibraryPage(
+                    items = contents.gridRenderer.items.orEmpty()
+                        .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicTwoRowItemRenderer(it) },
+                    continuation = contents.gridRenderer.continuations?.getContinuation()
+                )
+            }
+
+            // Direct musicShelfRenderer in contents
+            contents?.musicShelfRenderer?.contents != null -> {
+                LibraryPage(
+                    items = contents.musicShelfRenderer.contents
+                        .mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    continuation = contents.musicShelfRenderer.continuations?.getContinuation()
+                )
+            }
+
+            // itemSectionRenderer with gridRenderer (2025/2026 API pattern)
+            itemSectionContent?.gridRenderer != null -> {
+                LibraryPage(
+                    items = itemSectionContent.gridRenderer.items.orEmpty()
+                        .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicTwoRowItemRenderer(it) },
+                    continuation = itemSectionContent.gridRenderer.continuations?.getContinuation()
+                )
+            }
+
+            // itemSectionRenderer with musicShelfRenderer (2025/2026 API pattern)
+            itemSectionContent?.musicShelfRenderer?.contents != null -> {
+                LibraryPage(
+                    items = itemSectionContent.musicShelfRenderer.contents
+                        .mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    continuation = itemSectionContent.musicShelfRenderer.continuations?.getContinuation()
+                )
+            }
+
+            else -> {
+                LibraryPage(
+                    items = emptyList(),
+                    continuation = null
+                )
+            }
+        }
+    }
+
     suspend fun libraryContinuation(continuation: String) = runCatching {
         val response = innerTube.browse(
             client = WEB_REMIX,
