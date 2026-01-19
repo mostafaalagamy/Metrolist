@@ -289,11 +289,23 @@ constructor(
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
+    private val _isRefreshing = kotlinx.coroutines.flow.MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     val syncAllLibrary = {
          viewModelScope.launch(Dispatchers.IO) {
              syncUtils.tryAutoSync()
          }
     }
+
+    fun refresh() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isRefreshing.value = true
+            syncUtils.performFullSyncSuspend()
+            _isRefreshing.value = false
+        }
+    }
+
     val topValue =
         context.dataStore.data
             .map { it[TopSize] ?: "50" }
