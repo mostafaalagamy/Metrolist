@@ -30,10 +30,20 @@ object Updater {
     fun getLatestDownloadUrl(): String {
         val baseUrl = "https://github.com/mostafaalagamy/Metrolist/releases/latest/download/"
         val architecture = BuildConfig.ARCHITECTURE
+        val isGmsVariant = BuildConfig.CAST_AVAILABLE
+        
         return if (architecture == "universal") {
-            baseUrl + "Metrolist.apk"
+            if (isGmsVariant) {
+                baseUrl + "Metrolist-with-Google-Cast.apk"
+            } else {
+                baseUrl + "Metrolist.apk"
+            }
         } else {
-            baseUrl + "app-${architecture}-release.apk"
+            if (isGmsVariant) {
+                baseUrl + "app-${architecture}-with-Google-Cast.apk"
+            } else {
+                baseUrl + "app-${architecture}-release.apk"
+            }
         }
     }
 }
