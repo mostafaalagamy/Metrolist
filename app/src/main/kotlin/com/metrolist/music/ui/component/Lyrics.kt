@@ -665,6 +665,21 @@ fun Lyrics(
                 if (isSeeking || isSelectionModeActive) deferredCurrentLineIndex else currentLineIndex
             }
 
+            // Show lyrics provider at the top, scrolling with content
+            if (lyricsEntity?.provider != null && lyricsEntity?.provider != "Unknown" && !isSelectionModeActive) {
+                item {
+                    Text(
+                        text = "Lyrics from ${lyricsEntity?.provider}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+            }
+
             if (lyrics == null) {
                 item {
                     ShimmerHost {
