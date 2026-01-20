@@ -111,7 +111,7 @@ jobs:
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
       - name: Build Universal Debug APK and Run Lint
-        run: ./gradlew --console=plain assembleUniversal${{ matrix.variant == 'foss' && 'FOSS' || 'GMS' }}Debug :app:lintUniversal${{ matrix.variant == 'foss' && 'FOSS' || 'GMS' }}Debug --warning-mode summary
+        run: ./gradlew --console=plain assembleUniversal${{ matrix.variant == 'foss' && 'Foss' || 'Gms' }}Debug :app:lintUniversal${{ matrix.variant == 'foss' && 'Foss' || 'Gms' }}Debug --warning-mode summary
         env:
           PULL_REQUEST: "false"
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -122,4 +122,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.variant == 'gms' && 'app-universal-debug-gms' || 'app-universal-debug' }}
-          path: app/build/outputs/apk/universal${{ matrix.variant == 'foss' && 'FOSS' || 'GMS' }}/debug/*.apk
+          path: app/build/outputs/apk/universal${{ matrix.variant == 'foss' && 'Foss' || 'Gms' }}/debug/*.apk
