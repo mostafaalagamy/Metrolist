@@ -425,6 +425,12 @@
     <string name="error_playing">Error playing</string>
     <string name="failed_to_parse_proxy">Failed to parse proxy url.</string>
 
+    <!-- Playback errors -->
+    <string name="error_playback_failed">Playback failed</string>
+    <string name="error_copied">Error info copied to clipboard</string>
+    <string name="copy_error">Copy error</string>
+    <string name="error_copy_hint">Copy error info to help developers debug the issue</string>
+
     <!-- Widget strings -->
     <string name="album_art">Album art</string>
     <string name="no_song_playing">No song playing</string>
