@@ -152,7 +152,7 @@ fun BackupAndRestore(
                     title = { Text(stringResource(R.string.import_csv)) },
                     icon = painterResource(R.drawable.playlist_add),
                     onClick = {
-                        importPlaylistFromCsv.launch(arrayOf("text/csv"))
+                        importPlaylistFromCsv.launch(arrayOf("text/csv", "text/comma-separated-values", "application/csv", "text/plain"))
                     }
                 )
             )
