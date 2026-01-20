@@ -55,6 +55,7 @@ import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
@@ -292,6 +293,9 @@ class MusicService :
     private var retryJob: Job? = null
     private var retryCount = 0
     private var silenceSkipJob: Job? = null
+    
+    // URL cache for stream URLs - class-level so it can be invalidated on 403 errors
+    private val songUrlCache = HashMap<String, Pair<String, Long>>()
     
     // Google Cast support
     var castConnectionHandler: CastConnectionHandler? = null
@@ -1664,7 +1668,35 @@ class MusicService :
         }
     }
 
+    /**
+     * Extracts the HTTP response code from an error's cause chain.
+     * Returns null if no HTTP response code is found.
+     */
+    private fun getHttpResponseCode(error: PlaybackException): Int? {
+        var cause: Throwable? = error.cause
+        while (cause != null) {
+            if (cause is HttpDataSource.InvalidResponseCodeException) {
+                return cause.responseCode
+            }
+            cause = cause.cause
+        }
+        return null
+    }
+    
+    /**
+     * Checks if the error is caused by an expired/forbidden URL (HTTP 403).
+     * This typically happens when a YouTube stream URL expires.
+     */
+    private fun isExpiredUrlError(error: PlaybackException): Boolean {
+        val responseCode = getHttpResponseCode(error)
+        return responseCode == 403
+    }
+
     private fun isNetworkRelatedError(error: PlaybackException): Boolean {
+        // Don't treat 403 (expired URL) as a network error - it needs URL refresh, not network wait
+        if (isExpiredUrlError(error)) {
+            return false
+        }
         return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
                 error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
                 error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
@@ -1680,6 +1712,13 @@ class MusicService :
         Log.w(TAG, "Player error occurred: ${error.message}", error)
         reportException(error)
         
+        // Check for expired URL (403 error) - needs immediate URL refresh
+        if (isExpiredUrlError(error)) {
+            Log.d(TAG, "Expired URL detected (403), refreshing stream URL")
+            handleExpiredUrlError()
+            return
+        }
+        
         if (!isNetworkConnected.value || isNetworkRelatedError(error)) {
             Log.d(TAG, "Network-related error detected, waiting for connection")
             waitOnNetworkError()
@@ -1693,6 +1732,24 @@ class MusicService :
             Log.d(TAG, "Stopping playback due to error")
             stopOnError()
         }
+    }
+    
+    /**
+     * Handles expired URL errors by clearing the cached URL and immediately retrying.
+     */
+    private fun handleExpiredUrlError() {
+        val mediaId = player.currentMediaItem?.mediaId
+        if (mediaId != null) {
+            // Clear the cached URL so it will be refreshed on next request
+            songUrlCache.remove(mediaId)
+            Log.d(TAG, "Cleared cached URL for $mediaId")
+        }
+        
+        // Seek to current position to force URL re-resolution
+        val currentPosition = player.currentPosition
+        player.seekTo(player.currentMediaItemIndex, currentPosition)
+        player.prepare()
+        // Let playWhenReady handle playback resume
     }
 
     override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
@@ -1788,7 +1845,6 @@ class MusicService :
     }
 
     private fun createDataSourceFactory(): DataSource.Factory {
-        val songUrlCache = HashMap<String, Pair<String, Long>>()
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
 

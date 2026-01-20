@@ -80,17 +80,16 @@ class InnerTube {
                 // Connection pool settings for better connection reuse
                 connectionPool(
                     okhttp3.ConnectionPool(
-                        15, // maxIdleConnections - increased for more concurrent requests
+                        10, // maxIdleConnections
                         5, // keepAliveDuration
                         java.util.concurrent.TimeUnit.MINUTES
                     )
                 )
                 
-                // Reduced timeout configurations for faster playback start
-                // These are aggressive but help detect failures quickly
-                connectTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
-                readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
-                writeTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                // Timeout configurations
+                connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
                 
                 // Enable HTTP/2 for better performance
                 protocols(listOf(okhttp3.Protocol.HTTP_2, okhttp3.Protocol.HTTP_1_1))
@@ -122,11 +121,11 @@ class InnerTube {
             }
         }
 
-        // Request timeout configuration - reduced for faster failure detection
+        // Request timeout configuration
         install(HttpTimeout) {
-            requestTimeoutMillis = 20000
-            connectTimeoutMillis = 8000
-            socketTimeoutMillis = 15000
+            requestTimeoutMillis = 60000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 60000
         }
 
         defaultRequest {
