@@ -378,4 +378,6 @@
     <string name="widget_description">Widget pentru playerul muzical cu controale pentru redare</string>
     <string name="turntable_widget_description">Acces rapid la cea mai recentă piesă redată</string>
     <string name="queue_widget_description">Player de muzică cu previzualizare pentru coadă</string>
+    <string name="persistent_shuffle_title">Amestecare persistentă</string>
+    <string name="persistent_shuffle_desc">Menține modul de amestecare activat atunci când redai melodii sau playlisturi noi</string>
 </resources>
