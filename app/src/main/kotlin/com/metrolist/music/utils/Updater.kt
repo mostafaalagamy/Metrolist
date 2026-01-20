@@ -16,6 +16,34 @@ object Updater {
     var lastCheckTime = -1L
         private set
 
+    /**
+     * Compares two version strings.
+     * Returns: 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+     */
+    private fun compareVersions(v1: String, v2: String): Int {
+        val v1Parts = v1.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
+        val v2Parts = v2.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
+        val maxLength = maxOf(v1Parts.size, v2Parts.size)
+        
+        for (i in 0 until maxLength) {
+            val part1 = v1Parts.getOrNull(i) ?: 0
+            val part2 = v2Parts.getOrNull(i) ?: 0
+            when {
+                part1 > part2 -> return 1
+                part1 < part2 -> return -1
+            }
+        }
+        return 0
+    }
+
+    /**
+     * Checks if the latest version is newer than the current version.
+     * Returns true if an update is available (latestVersion > currentVersion)
+     */
+    fun isUpdateAvailable(currentVersion: String, latestVersion: String): Boolean {
+        return compareVersions(latestVersion, currentVersion) > 0
+    }
+
     suspend fun getLatestVersionName(): Result<String> =
         runCatching {
             val response =

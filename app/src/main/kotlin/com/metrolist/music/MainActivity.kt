@@ -339,7 +339,7 @@ class MainActivity : ComponentActivity() {
                         if (!updatesEnabled) return@withContext
                         Updater.getLatestVersionName().onSuccess {
                             onLatestVersionNameChange(it)
-                            if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                            if (Updater.isUpdateAvailable(BuildConfig.VERSION_NAME, it) && notifEnabled) {
                                 val downloadUrl = Updater.getLatestDownloadUrl()
                                 val intent = Intent(Intent.ACTION_VIEW, downloadUrl.toUri())
 
