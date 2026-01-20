@@ -3,7 +3,7 @@ name: Build PR
 on:
   pull_request:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: 21
-          distribution: 'temurin'
+          distribution: "temurin"
 
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew --console=plain assembleUniversalFossDebug :app:lintUniversalFossDebug --warning-mode summary
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          PULL_REQUEST: 'true'
+          PULL_REQUEST: "true"
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 

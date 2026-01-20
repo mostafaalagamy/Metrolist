@@ -3,14 +3,14 @@ name: Build APKs
 on:
   workflow_dispatch:
   push:
-    branches: [ '**' ]
+    branches: ["**"]
     paths-ignore:
-      - 'README.md'
-      - 'fastlane/**'
-      - 'assets/**'
-      - '.github/**/*.md'
-      - '.github/FUNDING.yml'
-      - '.github/ISSUE_TEMPLATE/**'
+      - "README.md"
+      - "fastlane/**"
+      - "assets/**"
+      - ".github/**/*.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE/**"
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        variant: [ 'foss', 'gms' ]
+        variant: ["foss", "gms"]
 
     steps:
       - uses: actions/checkout@v6
@@ -32,8 +32,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: "21"
+          distribution: "temurin"
 
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -51,7 +51,7 @@ jobs:
       - name: Build Universal Debug APK and Run Lint
         run: ./gradlew --console=plain assembleUniversal${{ matrix.variant == 'foss' && 'FOSS' || 'GMS' }}Debug :app:lintUniversal${{ matrix.variant == 'foss' && 'FOSS' || 'GMS' }}Debug --warning-mode summary
         env:
-          PULL_REQUEST: 'false'
+          PULL_REQUEST: "false"
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
