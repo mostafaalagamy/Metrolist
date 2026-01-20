@@ -383,4 +383,6 @@
     <string name="skip_silence_desc">Zrychlit tichá místa skladeb</string>
     <string name="skip_silence_instant">Okamžitě přeskočit ticho</string>
     <string name="skip_silence_instant_desc">Přeskočit vpřed během tichých momentů namísto zrychlení přehrávání</string>
+    <string name="persistent_shuffle_title">Perzistentní náhodné přehrávání</string>
+    <string name="persistent_shuffle_desc">Ponechat náhodné přehrávání povolené po spuštění nové skladby nebo playlistu</string>
 </resources>
