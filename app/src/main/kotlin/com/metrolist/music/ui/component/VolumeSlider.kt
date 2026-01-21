@@ -128,13 +128,13 @@ fun VolumeSlider(
                 enabled = enabled,
                 thumbTrackGapSize = VolumeSliderDefaults.ThumbTrackGapSize,
                 trackCornerSize = VolumeSliderDefaults.TrackCornerRadius,
-                drawStopIndicator = { offset ->
+                drawStopIndicator = if (value < 0.90f) { offset ->
                     drawCircle(
                         color = stopIndicatorColor,
                         radius = VolumeSliderDefaults.StopIndicatorRadius.toPx(),
                         center = offset
                     )
-                }
+                } else null
             )
         }
     )
