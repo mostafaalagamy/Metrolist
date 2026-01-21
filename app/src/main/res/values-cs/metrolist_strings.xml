@@ -385,4 +385,8 @@
     <string name="skip_silence_instant_desc">Přeskočit vpřed během tichých momentů namísto zrychlení přehrávání</string>
     <string name="persistent_shuffle_title">Perzistentní náhodné přehrávání</string>
     <string name="persistent_shuffle_desc">Ponechat náhodné přehrávání povolené po spuštění nové skladby nebo playlistu</string>
+    <string name="error_playback_failed">Přehrávání selhalo</string>
+    <string name="error_copied">Informace o chybě zkopírovány do schránky</string>
+    <string name="copy_error">Kopírovat chybu</string>
+    <string name="error_copy_hint">Kopírovat informace o chybě a pomoci tak vývojářům opravit chybu</string>
 </resources>
