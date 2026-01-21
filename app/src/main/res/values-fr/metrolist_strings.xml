@@ -380,4 +380,8 @@
     <string name="skip_silence_instant_desc">Avancez pendant les silences au lieu d\'accélérer la lecture</string>
     <string name="persistent_shuffle_desc">Gardez la lecture aléatoire activée lorsque vous démarrez de nouveaux titres ou playlists.</string>
     <string name="persistent_shuffle_title">Lecture aléatoire continue</string>
+    <string name="error_playback_failed">Échec de la lecture</string>
+    <string name="error_copied">Informations sur l\'erreur copiées dans le presse-papiers</string>
+    <string name="copy_error">Erreur de copie</string>
+    <string name="error_copy_hint">Copier les informations d\'erreur pour aider les développeurs à déboguer le problème</string>
 </resources>
