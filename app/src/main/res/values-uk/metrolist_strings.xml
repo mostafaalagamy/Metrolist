@@ -385,4 +385,8 @@
     <string name="skip_silence_instant_desc">Перемотуйте вперед під час тихих моментів замість прискорення відтворення</string>
     <string name="persistent_shuffle_title">Постійне перемішування</string>
     <string name="persistent_shuffle_desc">Увімкніть випадкове перемішування під час запуску нових пісень або списків відтворення</string>
+    <string name="error_playback_failed">Помилка відтворення</string>
+    <string name="error_copied">Інформацію про помилку скопійовано в буфер обміну</string>
+    <string name="copy_error">Помилка копіювання</string>
+    <string name="error_copy_hint">Скопіюйте інформацію про помилку, щоб допомогти розробникам налагодити проблему</string>
 </resources>
