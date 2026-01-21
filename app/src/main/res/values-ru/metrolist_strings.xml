@@ -385,4 +385,8 @@
     <string name="show_artist_monthly_listeners">Показывать количество слушателей за месяц</string>
     <string name="persistent_shuffle_title">Постоянное перемешивание</string>
     <string name="persistent_shuffle_desc">Сохранять режим перемешивания при воспроизведении новых треков или плейлистов</string>
+    <string name="error_playback_failed">Не удалось воспроизвести</string>
+    <string name="error_copied">Сведения об ошибке скопированы в буфер обмена</string>
+    <string name="copy_error">Копировать ошибку</string>
+    <string name="error_copy_hint">Скопируйте сведения об ошибке, чтобы помочь разработчикам отладить проблему</string>
 </resources>
