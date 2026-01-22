@@ -50,7 +50,9 @@
     <string name="details">Detaylar</string>
     <string name="edit">Düzenle</string>
     <string name="start_radio">Radyo başlat</string>
-    <string name="play">Çal</string>
+    <string name="play">Oynat</string>
+    <string name="pause">Duraklat</string>
+    <string name="play_pause">Oynat/Duraklat</string>
     <string name="play_next">Bir sonra çal</string>
     <string name="add_to_queue">Sıraya ekle</string>
     <string name="add_to_library">Kütüphaneye ekle</string>
