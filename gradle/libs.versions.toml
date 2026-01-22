@@ -33,8 +33,7 @@ junit = "4.13.2"
 timber = "5.0.1"
 materialKolor = "4.1.0"
 kuromojiIpadic = "0.9.0"
-extractor = "e30358b"
-metrolistshared = "966d3e5"
+extractor = "2d2d9ed"
 tinypinyin = "2.0.3"
 squigglyslider = "1.0.0"
 glance = "1.1.1"
@@ -112,8 +111,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 #newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor", version = "70abbdb" }
 #newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version = "dev-SNAPSHOT" }
-extractor = { module = "com.github.mostafaalagamy:MetroExtractor", version.ref = "extractor" }
-metrolistshared = { module = "com.github.mostafaalagamy.MetrolistShared:shared-jvm", version.ref = "metrolistshared" }
+extractor = { module = "com.github.mostafaalagamy:MetrolistExtractor", version.ref = "extractor" }
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 tinypinyin = { module = "com.github.promeG:tinypinyin", version.ref = "tinypinyin" }

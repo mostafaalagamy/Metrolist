@@ -60,28 +60,7 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
-## Rules for PipePipeExtractor
--keep class project.pipepipe.extractor.** { *; }
--keep class project.pipepipe.shared.** { *; }
-
-## Netty rules (used by PipePipeExtractor dependencies)
--dontwarn io.netty.**
--dontwarn org.apache.log4j.**
--dontwarn org.apache.logging.log4j.**
--dontwarn reactor.blockhound.**
--dontwarn io.micrometer.context.**
--dontwarn javax.enterprise.inject.**
-
-## Lettuce (Redis client used by PipePipeExtractor)
--dontwarn io.lettuce.core.**
-
-## Reactor
--dontwarn reactor.util.context.**
-
-## Keep Wire protobuf classes
--keep class com.squareup.wire.** { *; }
-
-## Legacy NewPipeExtractor rules (kept for compatibility)
+## Rules for NewPipeExtractor
 -keep class org.schabi.newpipe.extractor.services.youtube.protos.** { *; }
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
