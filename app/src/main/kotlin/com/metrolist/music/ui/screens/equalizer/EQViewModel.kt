@@ -69,15 +69,22 @@ class EQViewModel @Inject constructor(
                 // Apply the selected profile
                 val profile = _state.value.profiles.find { it.id == profileId }
                 if (profile != null) {
-                    val success = equalizerService.applyProfile(profile)
-                    if (success) {
+                    val result = equalizerService.applyProfile(profile)
+                    result.onSuccess {
                         eqProfileRepository.setActiveProfile(profileId)
-                    } else {
-                        // TODO: Show error message
+                    }.onFailure { e ->
+                        _state.update { it.copy(error = e.message ?: "Unknown error") }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Clear error message
+     */
+    fun clearError() {
+        _state.update { it.copy(error = null) }
     }
 
     /**

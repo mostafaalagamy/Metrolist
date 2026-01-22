@@ -411,6 +411,8 @@
     <string name="error_file_read">Could not read file</string>
     <string name="error_file_open">Failed to open file: %1$s</string>
     <string name="import_error_title">Import Error</string>
+    <string name="error_title">Error</string>
+    <string name="error_eq_apply_failed">Failed to apply EQ profile: %1$s</string>
 
     <!-- Hardcoded strings -->
     <string name="casting_to">Casting to %s</string>

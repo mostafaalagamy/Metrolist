@@ -55,14 +55,14 @@ class EqualizerService @Inject constructor() {
      * If audio processor is not set, stores as pending profile
      */
     @OptIn(UnstableApi::class)
-    fun applyProfile(profile: SavedEQProfile): Boolean {
+    fun applyProfile(profile: SavedEQProfile): Result<Unit> {
         val processor = audioProcessor
         if (processor == null) {
             Timber.tag(TAG)
                 .w("Audio processor not set yet. Storing profile as pending: ${profile.name}")
             pendingProfile = profile
             shouldDisable = false
-            return true
+            return Result.success(Unit)
         }
 
         try {
@@ -79,10 +79,10 @@ class EqualizerService @Inject constructor() {
             processor.applyProfile(parametricEQ)
             Timber.tag(TAG)
                 .d("Applied EQ profile: ${profile.name} with ${profile.bands.size} bands and ${profile.preamp} dB preamp")
-            return true
+            return Result.success(Unit)
         } catch (e: Exception) {
             Timber.tag(TAG).e("Failed to apply profile: ${e.message}")
-            return false
+            return Result.failure(e)
         }
     }
 

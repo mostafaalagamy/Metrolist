@@ -417,8 +417,8 @@ class MusicService :
         scope.launch {
             eqProfileRepository.activeProfile.collect { profile ->
                 if (profile != null) {
-                    val applied = equalizerService.applyProfile(profile)
-                    if (applied && player.playbackState == Player.STATE_READY && player.isPlaying) {
+                    val result = equalizerService.applyProfile(profile)
+                    if (result.isSuccess && player.playbackState == Player.STATE_READY && player.isPlaying) {
                         // Instant update: flush buffers and seek slightly to re-process audio
                         customEqualizerAudioProcessor.flush()
                         // Small seek to force re-buffer through the new EQ settings
