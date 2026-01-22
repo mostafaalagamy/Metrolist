@@ -81,6 +81,7 @@ fun EqScreen(
                         },
                         onError = { error ->
                             Timber.d("Error: Unable to import Custom EQ profile: $fileName")
+                            showError = context.getString(R.string.import_error_title) + ": " + error.message
                         })
                 } else {
                     showError = context.getString(R.string.error_file_read)
@@ -135,6 +136,24 @@ fun EqScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showError = null }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            }
+        )
+    }
+
+    // Error dialog for apply failure
+    if (state.error != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            title = {
+                Text(stringResource(R.string.error_title))
+            },
+            text = {
+                Text(stringResource(R.string.error_eq_apply_failed, state.error ?: ""))
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
                     Text(stringResource(android.R.string.ok))
                 }
             }
