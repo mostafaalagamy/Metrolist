@@ -380,4 +380,8 @@
     <string name="queue_widget_description">Reproductor de música con vista previa de la cola</string>
     <string name="progress_percent">Progreso %s%%</string>
     <string name="mini_player_outline">Contorno del mini reproductor</string>
+    <string name="error_playback_failed">Error de reproducción</string>
+    <string name="error_copied">Información del error copiada al portapapeles</string>
+    <string name="copy_error">Copiar error</string>
+    <string name="error_copy_hint">Copia la información del error para ayudar a los desarrolladores a solucionarlo</string>
 </resources>
