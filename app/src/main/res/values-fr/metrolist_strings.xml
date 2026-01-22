@@ -384,4 +384,6 @@
     <string name="error_copied">Informations sur l\'erreur copiées dans le presse-papiers</string>
     <string name="copy_error">Erreur de copie</string>
     <string name="error_copy_hint">Copier les informations d\'erreur pour aider les développeurs à déboguer le problème</string>
+    <string name="error_title">Erreur</string>
+    <string name="error_eq_apply_failed">Échec de l\'application du profil d\'égalisation : %1$s</string>
 </resources>
