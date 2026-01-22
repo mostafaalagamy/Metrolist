@@ -61,9 +61,9 @@
     <string name="months">Месяцы</string>
     <string name="years">Годы</string>
     <string name="liked">Понравившиеся</string>
-    <string name="offline">Скачанное</string>
+    <string name="offline">Скачанные</string>
     <string name="my_top">Мой топ</string>
-    <string name="cached_playlist">Кэшированное</string>
+    <string name="cached_playlist">Кэшированные</string>
     <string name="sync_playlist">Синхронизировать плейлист</string>
     <string name="sync_disabled">Синхронизация выключена</string>
     <string name="elements_selected">%1$d элементов выбрано</string>
@@ -110,9 +110,9 @@
     <string name="lyrics_romanize_korean">Романизировать корейский текст</string>
     <string name="auto_playlists">Автоплейлисты</string>
     <string name="show_liked_playlist">Показать плейлист \"Понравившиеся\"</string>
-    <string name="show_downloaded_playlist">Показать плейлист \"Скачанное\"</string>
+    <string name="show_downloaded_playlist">Показать плейлист \"Скачанные\"</string>
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
-    <string name="show_cached_playlist">Показать плейлист \"Кэшированное\"</string>
+    <string name="show_cached_playlist">Показать плейлист \"Кэшированные\"</string>
     <string name="advanced_login">Вход в систему с помощью токена</string>
     <string name="yt_sync">Автосинхронизация с аккаунтом</string>
     <string name="more_content">Доп. контент</string>
@@ -205,9 +205,9 @@
     <string name="choose_from_library">Выбрать из библиотеки</string>
     <string name="audio_offload">Включить аппаратное ускорение аудио</string>
     <string name="audio_offload_description">Использовать аппаратный путь воспроизведения аудио. Отключение этой функции может увеличить расход энергии, но может быть полезным, если у вас возникают проблемы с воспроизведением или постобработкой звука</string>
-    <string name="uploaded_playlist">Загруженное</string>
+    <string name="uploaded_playlist">Загруженные</string>
     <string name="filter_uploaded">Загруженные</string>
-    <string name="show_uploaded_playlist">Показать плейлист \"Загруженное\"</string>
+    <string name="show_uploaded_playlist">Показать плейлист \"Загруженные\"</string>
     <string name="lyrics_romanize_macedonian">Романизировать македонский текст</string>
     <string name="updater">Обновления</string>
     <string name="check_for_updates">Автоматически проверять наличие обновлений</string>
@@ -260,7 +260,7 @@
     <string name="logging_in">Выполняется вход…</string>
     <string name="top_result">Лучший результат</string>
     <string name="other_results">Остальные</string>
-    <string name="download_playlist_desc">Скачать все треки для офлайн-прослушивания</string>
+    <string name="download_playlist_desc">Скачать все треки для офлайн воспроизведения</string>
     <string name="remove_download_playlist_desc">Удалить все скачанные треки из этого плейлиста</string>
     <string name="download_in_progress_desc">Идёт скачивание</string>
     <string name="share_playlist_desc">Поделиться этим плейлистом с другими</string>
