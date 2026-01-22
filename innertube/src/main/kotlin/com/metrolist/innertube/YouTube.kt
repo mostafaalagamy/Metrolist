@@ -468,7 +468,7 @@ object YouTube {
                 songCountText = header.secondSubtitle?.runs?.firstOrNull()?.text,
                 thumbnail = header.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url!!,
                 playEndpoint = null,
-                shuffleEndpoint = header.buttons.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
+                shuffleEndpoint = header.buttons?.lastOrNull()?.menuRenderer?.items?.firstOrNull()?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
                 radioEndpoint = header.buttons.getOrNull(2)?.menuRenderer?.items?.find {
                     it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
                 }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
@@ -493,9 +493,8 @@ object YouTube {
             setLogin = true
         ).body<BrowseResponse>()
 
-        val mainContents: List<MusicShelfRenderer.Content> = response.continuationContents?.sectionListContinuation?.contents
-            ?.mapNotNull { content: SectionListRenderer.Content -> content.musicPlaylistShelfRenderer?.contents }
-            ?.flatten()
+        val mainContents = response.continuationContents?.sectionListContinuation?.contents
+            ?.flatMap { it.musicPlaylistShelfRenderer?.contents.orEmpty() }
             ?: emptyList()
 
         val appendedContents: List<MusicShelfRenderer.Content> = response.onResponseReceivedActions
@@ -507,8 +506,8 @@ object YouTube {
         val allContents = mainContents + appendedContents
 
         val songs = allContents
-            .mapNotNull { content: MusicShelfRenderer.Content -> content.musicResponsiveListItemRenderer }
-            .mapNotNull { renderer -> PlaylistPage.fromMusicResponsiveListItemRenderer(renderer) }
+            .mapNotNull { it.musicResponsiveListItemRenderer }
+            .mapNotNull { PlaylistPage.fromMusicResponsiveListItemRenderer(it) }
 
         val nextContinuation = if (songs.isEmpty()) null else {
             response.continuationContents
