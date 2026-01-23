@@ -374,4 +374,6 @@
     <string name="error_copied">Informasi error disalin ke papan klip</string>
     <string name="copy_error">Salin error</string>
     <string name="error_copy_hint">Salin informasi error untuk membantu pengembang menelusuri masalah ini</string>
+    <string name="error_title">Error</string>
+    <string name="error_eq_apply_failed">Gagal menerapkan profil ekualiser: %1$s</string>
 </resources>
