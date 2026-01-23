@@ -6,10 +6,12 @@
 package com.metrolist.music.ui.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ fun <T> EnumDialog(
     current: T,
     values: List<T>,
     valueText: @Composable (T) -> String,
+    valueDescription: (@Composable (T) -> String)? = null,
 ) {
     ListDialog(
         onDismiss = onDismiss,
@@ -45,10 +48,20 @@ fun <T> EnumDialog(
                     onClick = null,
                 )
 
-                Text(
-                    text = valueText(value),
+                Column(
                     modifier = Modifier.padding(start = 16.dp),
-                )
+                ) {
+                    Text(
+                        text = valueText(value),
+                    )
+                    if (valueDescription != null) {
+                        Text(
+                            text = valueDescription(value),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
     }

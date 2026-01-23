@@ -46,6 +46,8 @@ import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.EnableGoogleCastKey
 import com.metrolist.music.constants.PersistentShuffleAcrossQueuesKey
+import com.metrolist.music.constants.PlayerClient
+import com.metrolist.music.constants.PlayerClientKey
 import com.metrolist.music.constants.RememberShuffleAndRepeatKey
 import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.PersistentQueueKey
@@ -74,6 +76,10 @@ fun PlayerSettings(
     val (audioQuality, onAudioQualityChange) = rememberEnumPreference(
         AudioQualityKey,
         defaultValue = AudioQuality.AUTO
+    )
+    val (playerClient, onPlayerClientChange) = rememberEnumPreference(
+        PlayerClientKey,
+        defaultValue = PlayerClient.ANDROID_VR
     )
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(
         PersistentQueueKey,
@@ -156,6 +162,10 @@ fun PlayerSettings(
         mutableStateOf(false)
     }
 
+    var showPlayerClientDialog by remember {
+        mutableStateOf(false)
+    }
+
     if (showAudioQualityDialog) {
         EnumDialog(
             onDismiss = { showAudioQualityDialog = false },
@@ -171,6 +181,31 @@ fun PlayerSettings(
                     AudioQuality.AUTO -> stringResource(R.string.audio_quality_auto)
                     AudioQuality.HIGH -> stringResource(R.string.audio_quality_high)
                     AudioQuality.LOW -> stringResource(R.string.audio_quality_low)
+                }
+            }
+        )
+    }
+
+    if (showPlayerClientDialog) {
+        EnumDialog(
+            onDismiss = { showPlayerClientDialog = false },
+            onSelect = {
+                onPlayerClientChange(it)
+                showPlayerClientDialog = false
+            },
+            title = stringResource(R.string.player_client),
+            current = playerClient,
+            values = PlayerClient.values().toList(),
+            valueText = {
+                when (it) {
+                    PlayerClient.ANDROID_VR -> stringResource(R.string.player_client_android_vr)
+                    PlayerClient.WEB_REMIX -> stringResource(R.string.player_client_web_remix)
+                }
+            },
+            valueDescription = {
+                when (it) {
+                    PlayerClient.ANDROID_VR -> stringResource(R.string.player_client_android_vr_desc)
+                    PlayerClient.WEB_REMIX -> stringResource(R.string.player_client_web_remix_desc)
                 }
             }
         )
@@ -210,6 +245,19 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { showAudioQualityDialog = true }
+                ))
+                add(Material3SettingsItem(
+                    icon = painterResource(R.drawable.play),
+                    title = { Text(stringResource(R.string.player_client)) },
+                    description = {
+                        Text(
+                            when (playerClient) {
+                                PlayerClient.ANDROID_VR -> stringResource(R.string.player_client_android_vr)
+                                PlayerClient.WEB_REMIX -> stringResource(R.string.player_client_web_remix)
+                            }
+                        )
+                    },
+                    onClick = { showPlayerClientDialog = true }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.history),

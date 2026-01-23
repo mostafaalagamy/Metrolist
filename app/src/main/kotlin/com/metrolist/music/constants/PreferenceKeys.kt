@@ -69,6 +69,14 @@ enum class AudioQuality {
     HIGH,
     LOW,
 }
+
+val PlayerClientKey = stringPreferencesKey("playerClient")
+
+enum class PlayerClient {
+    ANDROID_VR,
+    WEB_REMIX,
+}
+
 val AudioOffload = booleanPreferencesKey("enableOffload")
 
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")

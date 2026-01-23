@@ -8,6 +8,7 @@ package com.metrolist.music.utils
 import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.metrolist.music.constants.AudioQuality
+import com.metrolist.music.constants.PlayerClient
 import com.metrolist.innertube.NewPipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
@@ -15,6 +16,7 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_43_32
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_61_48
+import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.IPADOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
@@ -32,31 +34,52 @@ object YTPlayerUtils {
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
+
     /**
-     * The main client is used for metadata and initial streams.
-     * Do not use other clients for this because it can result in inconsistent metadata.
-     * For example other clients can have different normalization targets (loudnessDb).
-     *
-     * [com.metrolist.innertube.models.YouTubeClient.WEB_REMIX] should be preferred here because currently it is the only client which provides:
-     * - the correct metadata (like loudnessDb)
-     * - premium formats
+     * Get the YouTubeClient for the given PlayerClient setting.
+     * ANDROID_VR is fast (direct URLs), WEB_REMIX is slow (requires JS signature decryption).
      */
-    private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
+    private fun getMainClient(playerClient: PlayerClient): YouTubeClient {
+        return when (playerClient) {
+            PlayerClient.ANDROID_VR -> ANDROID_VR_1_43_32
+            PlayerClient.WEB_REMIX -> WEB_REMIX
+        }
+    }
+
     /**
-     * Clients used for fallback streams in case the streams of the main client do not work.
+     * Get fallback clients based on the selected main client.
+     * If WEB_REMIX is main, put ANDROID_VR first in fallbacks.
+     * If ANDROID_VR is main, put WEB_REMIX after other VR clients.
      */
-    private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        ANDROID_VR_1_61_48,
-        ANDROID_VR_1_43_32,
-        ANDROID_CREATOR,
-        IPADOS,
-        ANDROID_VR_NO_AUTH,
-        MOBILE,
-        TVHTML5,
-        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
-        WEB,
-        WEB_CREATOR
-    )
+    private fun getFallbackClients(playerClient: PlayerClient): Array<YouTubeClient> {
+        return when (playerClient) {
+            PlayerClient.ANDROID_VR -> arrayOf(
+                ANDROID_VR_1_61_48,
+                WEB_REMIX,
+                ANDROID_CREATOR,
+                IPADOS,
+                ANDROID_VR_NO_AUTH,
+                MOBILE,
+                TVHTML5,
+                TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                WEB,
+                WEB_CREATOR
+            )
+            PlayerClient.WEB_REMIX -> arrayOf(
+                ANDROID_VR_1_43_32,
+                ANDROID_VR_1_61_48,
+                ANDROID_CREATOR,
+                IPADOS,
+                ANDROID_VR_NO_AUTH,
+                MOBILE,
+                TVHTML5,
+                TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                WEB,
+                WEB_CREATOR
+            )
+        }
+    }
+
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
         val videoDetails: PlayerResponse.VideoDetails?,
@@ -67,16 +90,20 @@ object YTPlayerUtils {
     )
     /**
      * Custom player response intended to use for playback.
-     * Metadata like audioConfig and videoDetails are from [MAIN_CLIENT].
-     * Format & stream can be from [MAIN_CLIENT] or [STREAM_FALLBACK_CLIENTS].
+     * Metadata like audioConfig and videoDetails are from the selected main client.
+     * Format & stream can be from main client or fallback clients.
      */
     suspend fun playerResponseForPlayback(
         videoId: String,
         playlistId: String? = null,
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
+        playerClient: PlayerClient = PlayerClient.ANDROID_VR,
     ): Result<PlaybackData> = runCatching {
-        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId")
+        val mainClient = getMainClient(playerClient)
+        val fallbackClients = getFallbackClients(playerClient)
+        
+        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId, client: ${mainClient.clientName}")
         /**
          * This is required for some clients to get working streams however
          * it should not be forced for the [MAIN_CLIENT] because the response of the [MAIN_CLIENT]
@@ -97,9 +124,9 @@ object YTPlayerUtils {
             }
         Timber.tag(logTag).d("Session authentication status: ${if (isLoggedIn) "Logged in" else "Not logged in"}")
 
-        Timber.tag(logTag).d("Attempting to get player response using MAIN_CLIENT: ${MAIN_CLIENT.clientName}")
+        Timber.tag(logTag).d("Attempting to get player response using main client: ${mainClient.clientName}")
         val mainPlayerResponse =
-            YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
+            YouTube.player(videoId, playlistId, mainClient, signatureTimestamp).getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
         val videoDetails = mainPlayerResponse.videoDetails
         val playbackTracking = mainPlayerResponse.playbackTracking
@@ -108,7 +135,7 @@ object YTPlayerUtils {
         var streamExpiresInSeconds: Int? = null
         var streamPlayerResponse: PlayerResponse? = null
 
-        for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
+        for (clientIndex in (-1 until fallbackClients.size)) {
             // reset for each client
             format = null
             streamUrl = null
@@ -118,13 +145,13 @@ object YTPlayerUtils {
             val client: YouTubeClient
             if (clientIndex == -1) {
                 // try with streams from main client first
-                client = MAIN_CLIENT
+                client = mainClient
                 streamPlayerResponse = mainPlayerResponse
-                Timber.tag(logTag).d("Trying stream from MAIN_CLIENT: ${client.clientName}")
+                Timber.tag(logTag).d("Trying stream from main client: ${client.clientName}")
             } else {
                 // after main client use fallback clients
-                client = STREAM_FALLBACK_CLIENTS[clientIndex]
-                Timber.tag(logTag).d("Trying fallback client ${clientIndex + 1}/${STREAM_FALLBACK_CLIENTS.size}: ${client.clientName}")
+                client = fallbackClients[clientIndex]
+                Timber.tag(logTag).d("Trying fallback client ${clientIndex + 1}/${fallbackClients.size}: ${client.clientName}")
 
                 if (client.loginRequired && !isLoggedIn && YouTube.cookie == null) {
                     // skip client if it requires login but user is not logged in
@@ -139,7 +166,7 @@ object YTPlayerUtils {
 
             // process current client response
             if (streamPlayerResponse?.playabilityStatus?.status == "OK") {
-                Timber.tag(logTag).d("Player response status OK for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                Timber.tag(logTag).d("Player response status OK for client: ${if (clientIndex == -1) mainClient.clientName else fallbackClients[clientIndex].clientName}")
 
                 format =
                     findFormat(
@@ -149,7 +176,7 @@ object YTPlayerUtils {
                     )
 
                 if (format == null) {
-                    Timber.tag(logTag).d("No suitable format found for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                    Timber.tag(logTag).d("No suitable format found for client: ${if (clientIndex == -1) mainClient.clientName else fallbackClients[clientIndex].clientName}")
                     continue
                 }
 
@@ -169,18 +196,25 @@ object YTPlayerUtils {
 
                 Timber.tag(logTag).d("Stream expires in: $streamExpiresInSeconds seconds")
 
-                if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1) {
+                // Skip validation for main client - it almost always works and
+                // skipping the HEAD request saves ~300-500ms on initial playback
+                if (clientIndex == -1) {
+                    Timber.tag(logTag).d("Using main client directly without validation for faster playback")
+                    break
+                }
+
+                if (clientIndex == fallbackClients.size - 1) {
                     /** skip [validateStatus] for last client */
-                    Timber.tag(logTag).d("Using last fallback client without validation: ${STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                    Timber.tag(logTag).d("Using last fallback client without validation: ${fallbackClients[clientIndex].clientName}")
                     break
                 }
 
                 if (validateStatus(streamUrl)) {
                     // working stream found
-                    Timber.tag(logTag).d("Stream validated successfully with client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                    Timber.tag(logTag).d("Stream validated successfully with client: ${if (clientIndex == -1) mainClient.clientName else fallbackClients[clientIndex].clientName}")
                     break
                 } else {
-                    Timber.tag(logTag).d("Stream validation failed for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                    Timber.tag(logTag).d("Stream validation failed for client: ${if (clientIndex == -1) mainClient.clientName else fallbackClients[clientIndex].clientName}")
                 }
             } else {
                 Timber.tag(logTag).d("Player response status not OK: ${streamPlayerResponse?.playabilityStatus?.status}, reason: ${streamPlayerResponse?.playabilityStatus?.reason}")
@@ -235,7 +269,7 @@ object YTPlayerUtils {
         videoId: String,
         playlistId: String? = null,
     ): Result<PlayerResponse> {
-        Timber.tag(logTag).d("Fetching metadata-only player response for videoId: $videoId using MAIN_CLIENT: ${MAIN_CLIENT.clientName}")
+        Timber.tag(logTag).d("Fetching metadata-only player response for videoId: $videoId using WEB_REMIX client")
         return YouTube.player(videoId, playlistId, client = WEB_REMIX) // ANDROID_VR does not work with history
             .onSuccess { Timber.tag(logTag).d("Successfully fetched metadata") }
             .onFailure { Timber.tag(logTag).e(it, "Failed to fetch metadata") }
