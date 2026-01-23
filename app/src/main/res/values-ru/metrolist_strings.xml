@@ -389,4 +389,6 @@
     <string name="error_copied">Сведения об ошибке скопированы в буфер обмена</string>
     <string name="copy_error">Копировать ошибку</string>
     <string name="error_copy_hint">Скопируйте сведения об ошибке, чтобы помочь разработчикам отладить проблему</string>
+    <string name="error_title">Ошибка</string>
+    <string name="error_eq_apply_failed">Не удалось применить профиль эквалайзера: %1$s</string>
 </resources>
