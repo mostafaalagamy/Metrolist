@@ -692,14 +692,8 @@ class MainActivity : ComponentActivity() {
                         topBar = {
                             AnimatedVisibility(
                                 visible = shouldShowTopBar,
-                                enter = slideInHorizontally(
-                                    initialOffsetX = { -it / 4 },
-                                    animationSpec = tween(durationMillis = 100)
-                                ) + fadeIn(animationSpec = tween(durationMillis = 100)),
-                                exit = slideOutHorizontally(
-                                    targetOffsetX = { -it / 4 },
-                                    animationSpec = tween(durationMillis = 100)
-                                ) + fadeOut(animationSpec = tween(durationMillis = 100))
+                                enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 200))
                             ) {
                                 Row {
                                     TopAppBar(
