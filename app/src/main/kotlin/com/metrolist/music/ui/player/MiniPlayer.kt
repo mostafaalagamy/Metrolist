@@ -102,6 +102,13 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
+import android.os.Build                                    
+import androidx.compose.ui.draw.blur                   
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Brush
+
+
 /**
  * Stable wrapper for progress state - reads values only during draw phase
  * This prevents recomposition when position/duration change
@@ -117,6 +124,24 @@ class ProgressState(
             return if (duration > 0) (positionState.longValue.toFloat() / duration).coerceIn(0f, 1f) else 0f
         }
 }
+
+fun Modifier.glassEffect(
+    blurRadius: Dp = 24.dp,
+    alpha: Float = 0.75f
+  ): Modifier = this.then(
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        Modifier
+            .graphicsLayer {
+                this.alpha = alpha
+                clip = true
+            }
+            .blur(blurRadius)
+    } else {
+        Modifier.graphicsLayer {
+            this.alpha = alpha
+        }
+    }
+)
 
 @Composable
 fun MiniPlayer(
@@ -276,15 +301,55 @@ private fun NewMiniPlayer(
                 } else baseModifier
             }
     ) {
+
+        val glassColor = if (useDarkTheme) {
+                         Color.Black.copy(alpha = 0.35f)
+                       } else {
+                         MaterialTheme.colorScheme.surface.copy(alpha = 0.55f)
+                      }
         Box(
             modifier = Modifier
                 .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.Center) else Modifier.fillMaxWidth())
                 .height(64.dp)
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
-                .background(color = backgroundColor)
-                .border(1.dp, outlineColor.copy(alpha = 0.3f), RoundedCornerShape(32.dp))
+                 .background(Color.Transparent)
+                 .border(
+                         width = 1.dp,
+                         color = Color.White.copy(alpha = if (useDarkTheme) 0.12f else 0.25f),
+                         shape = RoundedCornerShape(32.dp)
+                       )
         ) {
+           Box(
+            modifier = Modifier
+            .matchParentSize()
+            .clip(RoundedCornerShape(32.dp))
+            .glassEffect(
+                       blurRadius = 42.dp,
+                       alpha = 1f
+             )
+           )
+           Box(
+               modifier = Modifier
+               .matchParentSize()
+               .background(
+               glassColor.copy(alpha = 0.65f),
+               shape = RoundedCornerShape(32.dp)
+               )
+             )
+           Box(
+               modifier = Modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                    colors = listOf(
+                    Color.White.copy(alpha = 0.08f),
+                    Color.Transparent
+                )
+            ),
+             shape = RoundedCornerShape(32.dp)
+             ) 
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 8.dp),
@@ -357,8 +422,8 @@ private fun NewMiniPlayerPlayButton(
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
     
-    val trackColor = outlineColor.copy(alpha = 0.2f)
-    val strokeWidth = 3.dp
+    val trackColor = outlineColor.copy(alpha = 0.3f)
+    val strokeWidth = 3.5.dp
 
     Box(
         contentAlignment = Alignment.Center,
@@ -402,6 +467,7 @@ private fun NewMiniPlayerPlayButton(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.15f), CircleShape)
                 .border(1.dp, outlineColor.copy(alpha = 0.3f), CircleShape)
                 .clickable {
                     if (isCasting) {
@@ -465,7 +531,7 @@ private fun NewMiniPlayerSongInfo(
         mediaMetadata?.let { metadata ->
             Text(
                 text = metadata.title,
-                color = onSurfaceColor,
+                color = onSurfaceColor.copy(alpha = 0.95f),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
@@ -480,7 +546,7 @@ private fun NewMiniPlayerSongInfo(
                 if (metadata.artists.any { it.name.isNotBlank() }) {
                     Text(
                         text = metadata.artists.joinToString { it.name },
-                        color = onSurfaceColor.copy(alpha = 0.7f),
+                        color = onSurfaceColor.copy(alpha = 0.8f),
                         fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -854,7 +920,7 @@ private fun SubscribeButton(
         Icon(
             painter = painterResource(if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe),
             contentDescription = null,
-            tint = if (isSubscribed) primaryColor else onSurfaceColor.copy(alpha = 0.7f),
+            tint = if (isSubscribed) primaryColor else onSurfaceColor.copy(alpha = 0.85f),
             modifier = Modifier.size(20.dp)
         )
     }
@@ -890,7 +956,7 @@ private fun FavoriteButton(songId: String) {
         Icon(
             painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
             contentDescription = null,
-            tint = if (isLiked) errorColor else onSurfaceColor.copy(alpha = 0.7f),
+            tint = if (isLiked) errorColor else onSurfaceColor.copy(alpha = 0.85f),
             modifier = Modifier.size(20.dp)
         )
     }
