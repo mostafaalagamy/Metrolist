@@ -55,6 +55,7 @@ import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.PauseOnMute
+import com.metrolist.music.constants.KeepScreenOn
 import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.ui.component.EnumDialog
 import com.metrolist.music.ui.component.IconButton
@@ -145,6 +146,10 @@ fun PlayerSettings(
     )
     val (pauseOnMute, onPauseOnMuteChange) = rememberPreference(
         PauseOnMute,
+        defaultValue = false
+    )
+    val (keepScreenOn, onKeepScreenOnChange) = rememberPreference(
+        KeepScreenOn,
         defaultValue = false
     )
     val (historyDuration, onHistoryDurationChange) = rememberPreference(
@@ -598,6 +603,26 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onPauseOnMuteChange(!pauseOnMute) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.screenshot),
+                    title = { Text(stringResource(R.string.keep_screen_on_when_player_is_expanded)) },
+                    trailingContent = {
+                        Switch(
+                            checked = keepScreenOn,
+                            onCheckedChange = onKeepScreenOnChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (keepScreenOn) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onKeepScreenOnChange(!keepScreenOn) }
                 )
             )
         )
