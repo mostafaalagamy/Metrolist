@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">Verkennen</string>
+    <string name="explore">Verken</string>
     <string name="charts">Hitlijsten</string>
     <string name="back_button_desc">Terug</string>
     <string name="no_title">Geen titel</string>
@@ -73,16 +73,16 @@
     <string name="top_result">Topresultaat</string>
     <string name="other_results">Andere</string>
     <string name="uploaded_playlist">Geüpload</string>
-    <string name="added_to_play_next">Toegevoegd aan afspeellijst</string>
-    <string name="added_to_queue">Toegevoegd aan wachtlijst</string>
+    <string name="added_to_play_next">Toegevoegd om als volgende af te spelen</string>
+    <string name="added_to_queue">Toegevoegd aan de wachtrij</string>
     <string name="unknown_item_type">Onbekend voorwerp soort</string>
     <string name="filter_uploaded">Geüpload</string>
     <string name="remove_from_cache">Verwijder van cache</string>
     <string name="copy_link">Kopieer link</string>
     <string name="starting_radio">Radio starten</string>
     <string name="close">Afsluiten</string>
-    <string name="similar_content">Vergelijkbare muziek</string>
-    <string name="player_background_blur">Wazig</string>
+    <string name="similar_content">Gelijkaardige inhoud</string>
+    <string name="player_background_blur">Vervagen</string>
     <string name="player_buttons_style">Kleuren spelerknoppen</string>
     <string name="enable_swipe_thumbnail">Vegen om lied te veranderen</string>
     <string name="swipe_song_to_add">Naar links vegen om lied in de afspeellijst te zetten of naar rechts om als volgende te spelen</string>
@@ -245,4 +245,10 @@
     <string name="fade">Vervagen</string>
     <string name="glow">Gloei</string>
     <string name="slide">Schuiven</string>
+    <string name="crop_album_art">Albumhoes bijsnijden</string>
+    <string name="enable_simpmusic">SimpMusic Lyrics aanzetten</string>
+    <string name="open_supported_links">Open standaard ondersteunde link</string>
+    <string name="remember_shuffle_and_repeat">Behoud de shuffle- en herhaalmodus</string>
+    <string name="remember_shuffle_and_repeat_desc">Behoud de shuffle- en herhaalmodus bij het opnieuw opstarten van de app</string>
+    <string name="min_playback_duration_title">Minimum afspeelduur</string>
 </resources>
