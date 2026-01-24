@@ -8,6 +8,7 @@ if (localPropertiesFile.exists()) {
 }
 plugins {
     id("com.android.application")
+    kotlin("android")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
