@@ -25,6 +25,7 @@ object MessageTypes {
     const val PING = "ping"
     const val CHAT = "chat"
     const val REQUEST_SYNC = "request_sync"
+    const val RECONNECT = "reconnect"
 
     // Server -> Client
     const val ROOM_CREATED = "room_created"
@@ -43,6 +44,9 @@ object MessageTypes {
     const val HOST_CHANGED = "host_changed"
     const val KICKED = "kicked"
     const val SYNC_STATE = "sync_state"
+    const val RECONNECTED = "reconnected"
+    const val USER_RECONNECTED = "user_reconnected"
+    const val USER_DISCONNECTED = "user_disconnected"
 }
 
 /**
@@ -160,7 +164,8 @@ data class ChatPayload(
 @Serializable
 data class RoomCreatedPayload(
     @SerialName("room_code") val roomCode: String,
-    @SerialName("user_id") val userId: String
+    @SerialName("user_id") val userId: String,
+    @SerialName("session_token") val sessionToken: String
 )
 
 @Serializable
@@ -173,6 +178,7 @@ data class JoinRequestPayload(
 data class JoinApprovedPayload(
     @SerialName("room_code") val roomCode: String,
     @SerialName("user_id") val userId: String,
+    @SerialName("session_token") val sessionToken: String,
     val state: RoomState
 )
 
@@ -238,4 +244,31 @@ data class SyncStatePayload(
     @SerialName("is_playing") val isPlaying: Boolean,
     val position: Long,
     @SerialName("last_update") val lastUpdate: Long
+)
+
+// Reconnection payloads
+
+@Serializable
+data class ReconnectPayload(
+    @SerialName("session_token") val sessionToken: String
+)
+
+@Serializable
+data class ReconnectedPayload(
+    @SerialName("room_code") val roomCode: String,
+    @SerialName("user_id") val userId: String,
+    val state: RoomState,
+    @SerialName("is_host") val isHost: Boolean
+)
+
+@Serializable
+data class UserReconnectedPayload(
+    @SerialName("user_id") val userId: String,
+    val username: String
+)
+
+@Serializable
+data class UserDisconnectedPayload(
+    @SerialName("user_id") val userId: String,
+    val username: String
 )

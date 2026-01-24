@@ -291,6 +291,79 @@ class ListenTogetherManager @Inject constructor(
             
             is ListenTogetherEvent.Disconnected -> {
                 Log.d(TAG, "Disconnected from server")
+                // Don't cleanup on disconnect - we might reconnect
+                // cleanup() is called when leaving room intentionally or when kicked
+            }
+            
+            is ListenTogetherEvent.Reconnecting -> {
+                Log.d(TAG, "Reconnecting: attempt ${event.attempt}/${event.maxAttempts}")
+            }
+            
+            is ListenTogetherEvent.Reconnected -> {
+                Log.d(TAG, "Reconnected to room: ${event.roomCode}, isHost: ${event.isHost}")
+                // Re-register player listener
+                playerConnection?.player?.let { player ->
+                    if (!playerListenerRegistered) {
+                        player.addListener(playerListener)
+                        playerListenerRegistered = true
+                        Log.d(TAG, "Re-added player listener after reconnect")
+                    }
+                }
+                
+                // Sync state based on role
+                if (event.isHost) {
+                    // Host: send current track info to server to sync others
+                    lastSyncedIsPlaying = playerConnection?.player?.playWhenReady
+                    lastSyncedTrackId = playerConnection?.player?.currentMediaItem?.mediaId
+                    playerConnection?.player?.currentMetadata?.let { metadata ->
+                        Log.d(TAG, "Reconnected as host, sending current track: ${metadata.title}")
+                        sendTrackChangeInternal(metadata)
+                    }
+                } else {
+                    // Guest: sync to host's state
+                    if (event.state.currentTrack != null) {
+                        val currentTrackId = playerConnection?.player?.currentMediaItem?.mediaId
+                        if (currentTrackId != event.state.currentTrack.id) {
+                            Log.d(TAG, "Reconnected as guest, syncing to track: ${event.state.currentTrack.title}")
+                            syncToTrack(event.state.currentTrack, event.state.isPlaying, event.state.position)
+                        } else {
+                            // Same track, just sync position/play state
+                            isSyncing = true
+                            if (kotlin.math.abs((playerConnection?.player?.currentPosition ?: 0) - event.state.position) > 1000) {
+                                playerConnection?.seekTo(event.state.position)
+                            }
+                            if (event.state.isPlaying) {
+                                playerConnection?.play()
+                            } else {
+                                playerConnection?.pause()
+                            }
+                            scope.launch {
+                                delay(200)
+                                isSyncing = false
+                            }
+                        }
+                    }
+                }
+            }
+            
+            is ListenTogetherEvent.UserReconnected -> {
+                Log.d(TAG, "User reconnected: ${event.username}")
+                // If host, send current state to the reconnected user
+                if (isHost) {
+                    playerConnection?.player?.currentMetadata?.let { metadata ->
+                        Log.d(TAG, "Sending current track to reconnected user: ${metadata.title}")
+                        sendTrackChangeInternal(metadata)
+                    }
+                }
+            }
+            
+            is ListenTogetherEvent.UserDisconnected -> {
+                Log.d(TAG, "User temporarily disconnected: ${event.username}")
+                // User might reconnect, no action needed
+            }
+            
+            is ListenTogetherEvent.ConnectionError -> {
+                Log.e(TAG, "Connection error: ${event.error}")
                 cleanup()
             }
             
