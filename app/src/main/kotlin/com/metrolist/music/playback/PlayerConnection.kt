@@ -92,6 +92,13 @@ class PlayerConnection(
 
     val error = MutableStateFlow<PlaybackException?>(null)
     val waitingForNetworkConnection = service.waitingForNetworkConnection
+    
+    // Callback to check if playback changes should be blocked (e.g., Listen Together guest)
+    var shouldBlockPlaybackChanges: (() -> Boolean)? = null
+    
+    // Flag to allow internal sync operations to bypass blocking (set by ListenTogetherManager)
+    @Volatile
+    var allowInternalSync: Boolean = false
 
     init {
         player.addListener(this)
@@ -108,22 +115,42 @@ class PlayerConnection(
     }
 
     fun playQueue(queue: Queue) {
+        // Block if Listen Together guest (but allow internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "playQueue blocked - Listen Together guest")
+            return
+        }
         service.playQueue(queue)
     }
 
     fun startRadioSeamlessly() {
+        // Block if Listen Together guest
+        if (shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "startRadioSeamlessly blocked - Listen Together guest")
+            return
+        }
         service.startRadioSeamlessly()
     }
 
     fun playNext(item: MediaItem) = playNext(listOf(item))
 
     fun playNext(items: List<MediaItem>) {
+        // Block if Listen Together guest
+        if (shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "playNext blocked - Listen Together guest")
+            return
+        }
         service.playNext(items)
     }
 
     fun addToQueue(item: MediaItem) = addToQueue(listOf(item))
 
     fun addToQueue(items: List<MediaItem>) {
+        // Block if Listen Together guest
+        if (shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "addToQueue blocked - Listen Together guest")
+            return
+        }
         service.addToQueue(items)
     }
 

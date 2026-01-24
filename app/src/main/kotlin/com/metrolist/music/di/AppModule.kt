@@ -15,6 +15,8 @@ import com.metrolist.music.constants.MaxSongCacheSizeKey
 import com.metrolist.music.db.InternalDatabase
 import com.metrolist.music.db.MIGRATION_1_2
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.listentogether.ListenTogetherClient
+import com.metrolist.music.listentogether.ListenTogetherManager
 import androidx.room.Room
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
@@ -96,4 +98,16 @@ object AppModule {
             databaseProvider
         )
     }
+
+    @Singleton
+    @Provides
+    fun provideListenTogetherClient(
+        @ApplicationContext context: Context,
+    ): ListenTogetherClient = ListenTogetherClient(context)
+
+    @Singleton
+    @Provides
+    fun provideListenTogetherManager(
+        client: ListenTogetherClient,
+    ): ListenTogetherManager = ListenTogetherManager(client)
 }

@@ -125,6 +125,7 @@ import coil3.request.allowHardware
 import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
+import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -266,6 +267,12 @@ fun BottomSheetPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val squigglySlider by rememberPreference(SquigglySliderKey, defaultValue = false)
+    
+    // Listen Together state
+    val listenTogetherManager = LocalListenTogetherManager.current
+    val isInListenTogether = listenTogetherManager?.isInRoom ?: false
+    val isListenTogetherHost = listenTogetherManager?.isHost ?: false
+    val isListenTogetherGuest = isInListenTogether && !isListenTogetherHost
     
     // Cast state
     val castHandler = playerConnection.service.castConnectionHandler
@@ -787,6 +794,34 @@ fun BottomSheetPlayer(
                             ,
                         )
                     }
+                    
+                    // Listen Together indicator
+                    if (isInListenTogether) {
+                        Spacer(Modifier.height(4.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.share),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = if (isListenTogetherHost) "Hosting Listen Together" else "Listening Together",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
 
                     Spacer(Modifier.height(6.dp))
 
@@ -1105,20 +1140,25 @@ fun BottomSheetPlayer(
                         value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
-                            sliderPosition = it.toLong()
+                            if (!isListenTogetherGuest) {
+                                sliderPosition = it.toLong()
+                            }
                         },
                         onValueChangeFinished = {
-                            sliderPosition?.let {
-                                if (isCasting) {
-                                    castHandler?.seekTo(it)
-                                    lastManualSeekTime = System.currentTimeMillis()
-                                } else {
-                                    playerConnection.player.seekTo(it)
+                            if (!isListenTogetherGuest) {
+                                sliderPosition?.let {
+                                    if (isCasting) {
+                                        castHandler?.seekTo(it)
+                                        lastManualSeekTime = System.currentTimeMillis()
+                                    } else {
+                                        playerConnection.player.seekTo(it)
+                                    }
+                                    position = it
                                 }
-                                position = it
+                                sliderPosition = null
                             }
-                            sliderPosition = null
                         },
+                        enabled = !isListenTogetherGuest,
                         colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                     )
@@ -1181,20 +1221,25 @@ fun BottomSheetPlayer(
                         value = (sliderPosition ?: effectivePosition).toFloat(),
                         valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                         onValueChange = {
-                            sliderPosition = it.toLong()
+                            if (!isListenTogetherGuest) {
+                                sliderPosition = it.toLong()
+                            }
                         },
                         onValueChangeFinished = {
-                            sliderPosition?.let {
-                                if (isCasting) {
-                                    castHandler?.seekTo(it)
-                                    lastManualSeekTime = System.currentTimeMillis()
-                                } else {
-                                    playerConnection.player.seekTo(it)
+                            if (!isListenTogetherGuest) {
+                                sliderPosition?.let {
+                                    if (isCasting) {
+                                        castHandler?.seekTo(it)
+                                        lastManualSeekTime = System.currentTimeMillis()
+                                    } else {
+                                        playerConnection.player.seekTo(it)
+                                    }
+                                    position = it
                                 }
-                                position = it
+                                sliderPosition = null
                             }
-                            sliderPosition = null
                         },
+                        enabled = !isListenTogetherGuest,
                         thumb = { Spacer(modifier = Modifier.size(0.dp)) },
                         track = { sliderState ->
                             PlayerSliderTrack(
@@ -1287,7 +1332,7 @@ fun BottomSheetPlayer(
 
                             FilledIconButton(
                                 onClick = playerConnection::seekToPrevious,
-                                enabled = canSkipPrevious,
+                                enabled = canSkipPrevious && !isListenTogetherGuest,
                                 shape = RoundedCornerShape(50),
                                 interactionSource = backInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -1309,6 +1354,18 @@ fun BottomSheetPlayer(
 
                             FilledIconButton(
                                 onClick = {
+                                    if (isListenTogetherGuest) {
+                                        // Guest: if paused, sync; if playing, allow pause
+                                        val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != STATE_ENDED
+                                        if (!isCurrentlyPlaying) {
+                                            // Currently paused - request sync when unpausing
+                                            listenTogetherManager.requestSync()
+                                        } else {
+                                            // Currently playing - allow pause
+                                            playerConnection.pause()
+                                        }
+                                        return@FilledIconButton
+                                    }
                                     if (isCasting) {
                                         if (castIsPlaying) {
                                             castHandler?.pause()
@@ -1355,7 +1412,7 @@ fun BottomSheetPlayer(
 
                             FilledIconButton(
                                 onClick = playerConnection::seekToNext,
-                                enabled = canSkipNext,
+                                enabled = canSkipNext && !isListenTogetherGuest,
                                 shape = RoundedCornerShape(50),
                                 interactionSource = nextInteractionSource,
                                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -1422,6 +1479,18 @@ fun BottomSheetPlayer(
                                     .clip(RoundedCornerShape(playPauseRoundness))
                                     .background(textButtonColor)
                                     .clickable {
+                                        if (isListenTogetherGuest) {
+                                            // Guest: if paused, sync; if playing, allow pause
+                                            val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != STATE_ENDED
+                                            if (!isCurrentlyPlaying) {
+                                                // Currently paused - request sync when unpausing
+                                                listenTogetherManager.requestSync()
+                                            } else {
+                                                // Currently playing - allow pause
+                                                playerConnection.pause()
+                                            }
+                                            return@clickable
+                                        }
                                         if (isCasting) {
                                             if (castIsPlaying) {
                                                 castHandler?.pause()
@@ -1536,7 +1605,8 @@ fun BottomSheetPlayer(
                                     sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.animateContentSize(),
                                     isPlayerExpanded = isExpandedProvider,
-                                    isLandscape = true
+                                    isLandscape = true,
+                                    isListenTogetherGuest = isListenTogetherGuest
                                 )
                             }
                         }
@@ -1596,7 +1666,8 @@ fun BottomSheetPlayer(
                                 Thumbnail(
                                     sliderPositionProvider = sliderPositionProvider,
                                     modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
-                                    isPlayerExpanded = isExpandedProvider
+                                    isPlayerExpanded = isExpandedProvider,
+                                    isListenTogetherGuest = isListenTogetherGuest
                                 )
                             }
                         }

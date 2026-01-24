@@ -198,6 +198,7 @@ fun Thumbnail(
     modifier: Modifier = Modifier,
     isPlayerExpanded: () -> Boolean = { true },
     isLandscape: Boolean = false,
+    isListenTogetherGuest: Boolean = false,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -211,7 +212,9 @@ fun Thumbnail(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
     // Preferences - computed once
-    val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
+    // Disable swipe for Listen Together guests
+    val swipeThumbnailPref by rememberPreference(SwipeThumbnailKey, true)
+    val swipeThumbnail = swipeThumbnailPref && !isListenTogetherGuest
     val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     val playerBackground by rememberEnumPreference(
