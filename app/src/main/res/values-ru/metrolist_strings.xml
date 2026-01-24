@@ -126,7 +126,7 @@
     <string name="import_online">Импортировать плейлисты \"m3u\"</string>
     <string name="import_csv">Импортировать плейлисты \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Примечание: добавление локальных композиций в синхронизированные/удаленные плейлисты не поддерживается. Любая другая комбинация допустима</string>
-    <string name="auto_download_on_like">Автозагрузка по понравившимся</string>
+    <string name="auto_download_on_like">Автоскачивание по понравившимся</string>
     <string name="auto_download_on_like_desc">Автоматически скачивать треки, отмечаемые как понравившиеся</string>
     <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все закэшированные треки?</string>
     <string name="clear_downloads_dialog">Вы уверены, что хотите очистить все скачанные?</string>
@@ -396,4 +396,6 @@
     <string name="player_client_android_vr_desc">Самый быстрый вариант. Прямые ссылки на поток без расшифровки подписи. Рекомендуется большинству пользователей.</string>
     <string name="player_client_web_remix">Web Remix</string>
     <string name="player_client_web_remix_desc">Медленнее, но поддерживает премиум-форматы. Использует расшифровку подписи через JavaScript, что задерживает начало воспроизведения на ~5–10 секунд.</string>
+    <string name="crop_album_art">Обрезать обложку альбома</string>
+    <string name="crop_album_art_desc">Принудительно использовать квадратное соотношение сторон, обрезая миниатюры видео</string>
 </resources>
