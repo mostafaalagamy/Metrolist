@@ -93,7 +93,8 @@ data class TrackInfo(
 data class UserInfo(
     @SerialName("user_id") val userId: String,
     val username: String,
-    @SerialName("is_host") val isHost: Boolean
+    @SerialName("is_host") val isHost: Boolean,
+    @SerialName("is_connected") val isConnected: Boolean = true
 )
 
 /**

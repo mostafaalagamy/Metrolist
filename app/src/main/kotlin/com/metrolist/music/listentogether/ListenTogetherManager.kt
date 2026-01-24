@@ -632,16 +632,19 @@ class ListenTogetherManager @Inject constructor(
     private fun sendTrackChangeInternal(metadata: MediaMetadata) {
         if (!isHost) return
         
+        // Use a default duration of 3 minutes if duration is 0 or negative
+        val durationMs = if (metadata.duration > 0) metadata.duration.toLong() * 1000 else 180000L
+        
         val trackInfo = TrackInfo(
             id = metadata.id,
             title = metadata.title,
             artist = metadata.artists.joinToString(", ") { it.name },
             album = metadata.album?.title,
-            duration = metadata.duration.toLong() * 1000,
+            duration = durationMs,
             thumbnail = metadata.thumbnailUrl
         )
         
-        Log.d(TAG, "Sending track change: ${trackInfo.title}")
+        Log.d(TAG, "Sending track change: ${trackInfo.title}, duration: $durationMs")
         client.sendPlaybackAction(
             PlaybackActions.CHANGE_TRACK,
             trackInfo = trackInfo

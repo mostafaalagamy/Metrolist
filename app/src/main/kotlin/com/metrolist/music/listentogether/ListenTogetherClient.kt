@@ -6,7 +6,9 @@
 package com.metrolist.music.listentogether
 
 import android.content.Context
+import android.os.PowerManager
 import android.util.Log
+import androidx.core.content.getSystemService
 import com.metrolist.music.constants.ListenTogetherServerUrlKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
@@ -170,6 +172,9 @@ class ListenTogetherClient @Inject constructor(
     
     // Pending actions to execute when connected
     private var pendingAction: PendingAction? = null
+    
+    // Wake lock to keep connection alive when in a room
+    private var wakeLock: PowerManager.WakeLock? = null
 
     // State flows
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
@@ -302,6 +307,7 @@ class ListenTogetherClient @Inject constructor(
      */
     fun disconnect() {
         log(LogLevel.INFO, "Disconnecting from server")
+        releaseWakeLock() // Release wake lock when disconnecting
         pingJob?.cancel()
         pingJob = null
         webSocket?.close(1000, "User disconnected")
@@ -326,6 +332,29 @@ class ListenTogetherClient @Inject constructor(
                 delay(PING_INTERVAL_MS)
                 sendMessageNoPayload(MessageTypes.PING)
             }
+        }
+    }
+    
+    @Suppress("DEPRECATION")
+    private fun acquireWakeLock() {
+        if (wakeLock == null) {
+            val powerManager = context.getSystemService<PowerManager>()
+            wakeLock = powerManager?.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "Metrolist:ListenTogether"
+            )
+        }
+        if (wakeLock?.isHeld == false) {
+            // Acquire with timeout of 30 minutes - will be re-acquired if still in room
+            wakeLock?.acquire(30 * 60 * 1000L)
+            log(LogLevel.DEBUG, "Wake lock acquired")
+        }
+    }
+    
+    private fun releaseWakeLock() {
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+            log(LogLevel.DEBUG, "Wake lock released")
         }
     }
 
@@ -398,6 +427,7 @@ class ListenTogetherClient @Inject constructor(
                         position = 0,
                         lastUpdate = System.currentTimeMillis()
                     )
+                    acquireWakeLock() // Keep connection alive while in room
                     log(LogLevel.INFO, "Room created", "Code: ${payload.roomCode}")
                     scope.launch { _events.emit(ListenTogetherEvent.RoomCreated(payload.roomCode, payload.userId)) }
                 }
@@ -415,6 +445,7 @@ class ListenTogetherClient @Inject constructor(
                     _role.value = RoomRole.GUEST
                     sessionToken = payload.sessionToken
                     _roomState.value = payload.state
+                    acquireWakeLock() // Keep connection alive while in room
                     log(LogLevel.INFO, "Joined room", "Code: ${payload.roomCode}")
                     scope.launch { _events.emit(ListenTogetherEvent.JoinApproved(payload.roomCode, payload.userId, payload.state)) }
                 }
@@ -462,6 +493,8 @@ class ListenTogetherClient @Inject constructor(
                 MessageTypes.KICKED -> {
                     val payload = json.decodeFromJsonElement<KickedPayload>(message.payload!!)
                     log(LogLevel.WARNING, "Kicked from room", payload.reason)
+                    releaseWakeLock() // Release wake lock when kicked
+                    sessionToken = null
                     _roomState.value = null
                     _role.value = RoomRole.NONE
                     scope.launch { _events.emit(ListenTogetherEvent.Kicked(payload.reason)) }
@@ -550,18 +583,31 @@ class ListenTogetherClient @Inject constructor(
                     _userId.value = payload.userId
                     _role.value = if (payload.isHost) RoomRole.HOST else RoomRole.GUEST
                     _roomState.value = payload.state
+                    acquireWakeLock() // Re-acquire wake lock after reconnection
                     log(LogLevel.INFO, "Reconnected to room", "Code: ${payload.roomCode}, isHost: ${payload.isHost}")
                     scope.launch { _events.emit(ListenTogetherEvent.Reconnected(payload.roomCode, payload.userId, payload.state, payload.isHost)) }
                 }
                 
                 MessageTypes.USER_RECONNECTED -> {
                     val payload = json.decodeFromJsonElement<UserReconnectedPayload>(message.payload!!)
+                    // Mark user as connected in the room state
+                    _roomState.value = _roomState.value?.copy(
+                        users = _roomState.value!!.users.map { user ->
+                            if (user.userId == payload.userId) user.copy(isConnected = true) else user
+                        }
+                    )
                     log(LogLevel.INFO, "User reconnected", payload.username)
                     scope.launch { _events.emit(ListenTogetherEvent.UserReconnected(payload.userId, payload.username)) }
                 }
                 
                 MessageTypes.USER_DISCONNECTED -> {
                     val payload = json.decodeFromJsonElement<UserDisconnectedPayload>(message.payload!!)
+                    // Mark user as disconnected in the room state
+                    _roomState.value = _roomState.value?.copy(
+                        users = _roomState.value!!.users.map { user ->
+                            if (user.userId == payload.userId) user.copy(isConnected = false) else user
+                        }
+                    )
                     log(LogLevel.INFO, "User temporarily disconnected", payload.username)
                     scope.launch { _events.emit(ListenTogetherEvent.UserDisconnected(payload.userId, payload.username)) }
                 }
