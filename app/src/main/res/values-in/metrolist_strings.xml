@@ -126,7 +126,7 @@
     <string name="minimum_playback_duration">Durasi pemutaran minimum</string>
     <string name="import_online">Impor playlist \"m3u\"</string>
     <string name="import_csv">Impor playlist \"csv\"</string>
-    <string name="playlist_add_local_to_synced_note">Catatan: Menambahkan lagu lokal ke playlist yang tersinkron/daring tidak didukung. Kombinasi lainnya tetap valid</string>
+    <string name="playlist_add_local_to_synced_note">Catatan: Menambahkan lagu lokal ke playlist yang tersinkron/online tidak didukung. Kombinasi lainnya tetap valid</string>
     <string name="auto_download_on_like">Unduh otomatis saat disukai</string>
     <string name="auto_download_on_like_desc">Unduh lagu secara otomatis saat Anda menyukainya</string>
     <string name="swipe_sensitivity">Sensitivitas geser pemutar mini</string>
@@ -139,7 +139,7 @@
     <string name="top_length">Panjang daftar Teratas Saya</string>
     <string name="subscribers">Subskriber</string>
     <string name="subscribe">Subscribe</string>
-    <string name="subscribed">Subscribed</string>
+    <string name="subscribed">Disubscribe</string>
     <plurals name="seconds">
         <item quantity="other">%d detik</item>
     </plurals>
@@ -370,4 +370,10 @@
     <string name="skip_silence_instant_desc">Lompat ke depan saat momen hening daripada mempercepat pemutaran</string>
     <string name="persistent_shuffle_title">Acak persisten</string>
     <string name="persistent_shuffle_desc">Pertahankan acak yang sedang aktif saat memulai lagu atau playlist baru</string>
+    <string name="error_playback_failed">Pemutaran gagal</string>
+    <string name="error_copied">Informasi error disalin ke papan klip</string>
+    <string name="copy_error">Salin error</string>
+    <string name="error_copy_hint">Salin informasi error untuk membantu pengembang menelusuri masalah ini</string>
+    <string name="error_title">Error</string>
+    <string name="error_eq_apply_failed">Gagal menerapkan profil ekualiser: %1$s</string>
 </resources>

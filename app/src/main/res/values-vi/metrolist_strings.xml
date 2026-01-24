@@ -234,4 +234,11 @@
     <string name="username">Tên người dùng</string>
     <string name="password">Mật khẩu</string>
     <string name="lastfm_integration">Tích hợp Last.fm</string>
+    <string name="about_artist">Giới thiệu nghệ sĩ</string>
+    <string name="show_more">Hiển thị thêm</string>
+    <string name="show_less">Hiện ít hơn</string>
+    <string name="artist_page_settings">Trang nghệ sĩ</string>
+    <string name="show_artist_description">Hiển thị mô tả nghệ sĩ</string>
+    <string name="show_artist_subscriber_count">Hiện số lượng người đăng ký</string>
+    <string name="show_artist_monthly_listeners">Hiển thị số lượt nghe hằng tháng</string>
 </resources>
