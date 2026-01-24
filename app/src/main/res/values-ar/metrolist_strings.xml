@@ -393,4 +393,17 @@
     <string name="widget_description">أداة تشغيل الموسيقى مع عناصر تحكم التشغيل</string>
     <string name="turntable_widget_description">الوصول السريع الى اخر مسيقى تم الاستماع اليها</string>
     <string name="queue_widget_description">مشغل موسيقى مع معاينة قائمة التشغيل</string>
+    <string name="persistent_shuffle_title">التشغيل العشوائي المستمر</string>
+    <string name="persistent_shuffle_desc">الإبقاء على التشغيل العشوائي مفعّلًا عند بدء أغانٍي أو قوائم تشغيل جديدة</string>
+    <string name="error_title">خطأ</string>
+    <string name="error_eq_apply_failed">فشل تطبيق ملف تعريف المعادل الصوتي : EQ %1$s</string>
+    <string name="error_playback_failed">فشل التشغيل</string>
+    <string name="error_copied">تم نسخ بيانات الخطأ إلى الحافظة</string>
+    <string name="copy_error">خطأ في النسخ</string>
+    <string name="error_copy_hint">نسخ معلومات الخطأ لمساعدة المطورين في تصحيح المشكلة</string>
+    <string name="player_client">واجهة المشغّل</string>
+    <string name="player_client_android_vr">الواقع الافتراضي لنظام أندرويد</string>
+    <string name="player_client_android_vr_desc">الخيار الأسرع. روابط بث مباشرة دون فك تشفير التوقيع. موصى به لمعظم المستخدمين.</string>
+    <string name="player_client_web_remix">ريميكس الويب</string>
+    <string name="player_client_web_remix_desc">أبطأ، لكنه يدعم الصيغ المميزة. يستخدم فك تشفير التوقيع عبر JavaScript، مما يضيف حوالي 5–10 ثوانٍ لبدء التشغيل.</string>
 </resources>

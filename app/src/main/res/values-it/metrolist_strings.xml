@@ -380,4 +380,15 @@
     <string name="lyrics_offset">Ritardo/anticipo dei testi</string>
     <string name="persistent_shuffle_title">Riproduzione casuale persistente</string>
     <string name="persistent_shuffle_desc">Mantieni la riproduzione casuale attiva quando avvii nuovi brani o playlist</string>
+    <string name="error_title">Errore</string>
+    <string name="error_eq_apply_failed">Impossibile applicare il profilo EQ: %1$s</string>
+    <string name="error_playback_failed">Riproduzione non riuscita</string>
+    <string name="error_copied">Informazioni sull’errore copiate negli appunti</string>
+    <string name="copy_error">Copia errore</string>
+    <string name="error_copy_hint">Copia le informazioni sull’errore per aiutare gli sviluppatori a risolvere il problema</string>
+    <string name="player_client_android_vr">Android VR</string>
+    <string name="player_client_android_vr_desc">Opzione più veloce. URL di streaming diretti senza decifratura della firma. Consigliata per la maggior parte degli utenti.</string>
+    <string name="player_client_web_remix">Remix Web</string>
+    <string name="player_client_web_remix_desc">Più lenta ma supporta i formati premium. Utilizza JavaScript per la decifratura della firma, che aggiunge circa 5-10 secondi all’avvio della riproduzione.</string>
+    <string name="player_client">Client di riproduzione</string>
 </resources>

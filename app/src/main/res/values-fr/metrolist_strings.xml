@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="liked">Favoris</string>
-    <string name="offline">Téléchargé</string>
+    <string name="offline">Hors-Ligne</string>
     <string name="my_top">Mon Top</string>
     <string name="select">Tout sélectionner</string>
     <string name="like_all">Tout aimer</string>
@@ -84,7 +84,7 @@
     <string name="slim">Subtil</string>
     <string name="auto_playlists">Playlists Automatiques</string>
     <string name="show_liked_playlist">Afficher la playlist « Favoris »</string>
-    <string name="show_downloaded_playlist">Afficher la playlist « Téléchargé »</string>
+    <string name="show_downloaded_playlist">Afficher la playlist « Hors-Ligne »</string>
     <string name="advanced_login">Connexion avec un jeton</string>
     <string name="token_hidden">Cliquer pour afficher le jeton</string>
     <string name="token_shown">Cliquer encore pour copier ou éditer</string>
@@ -202,9 +202,9 @@
     <string name="remove_custom_image">Supprimer l\'image personnalisée</string>
     <string name="audio_offload">Activer le déchargement</string>
     <string name="audio_offload_description">Utilisez le chemin audio de déchargement pour la lecture audio. Désactiver cette option peut augmenter la consommation d\'énergie, mais peut s\'avérer utile en cas de problèmes de lecture audio ou de post-traitement</string>
-    <string name="show_uploaded_playlist">Afficher la playlist « Téléversé »</string>
-    <string name="uploaded_playlist">Téléversé</string>
-    <string name="filter_uploaded">Téléversé</string>
+    <string name="show_uploaded_playlist">Afficher la playlist « Téléchargés »</string>
+    <string name="uploaded_playlist">Téléchargés</string>
+    <string name="filter_uploaded">Téléchargés</string>
     <string name="updater">Mise à jour</string>
     <string name="check_for_updates">Vérifier automatiquement les mises à jour</string>
     <string name="lyrics_romanize_macedonian">Romaniser les paroles en macédonien</string>
@@ -378,6 +378,17 @@
     <string name="skip_silence_desc">Avance rapide pendant les parties silencieuses des titres</string>
     <string name="skip_silence_instant">Ignorer instantanément les silences</string>
     <string name="skip_silence_instant_desc">Avancez pendant les silences au lieu d\'accélérer la lecture</string>
-    <string name="persistent_shuffle_desc">Gardez la lecture aléatoire activée lorsque vous démarrez de nouveaux titres ou playlists.</string>
+    <string name="persistent_shuffle_desc">Gardez la lecture aléatoire activée lorsque vous démarrez de nouveaux titres ou playlists</string>
     <string name="persistent_shuffle_title">Lecture aléatoire continue</string>
+    <string name="error_playback_failed">Échec de la lecture</string>
+    <string name="error_copied">Informations sur l\'erreur copiées dans le presse-papiers</string>
+    <string name="copy_error">Erreur de copie</string>
+    <string name="error_copy_hint">Copier les informations d\'erreur pour aider les développeurs à déboguer le problème</string>
+    <string name="error_title">Erreur</string>
+    <string name="error_eq_apply_failed">Échec de l\'application du profil d\'égalisation : %1$s</string>
+    <string name="player_client_android_vr">Android VR</string>
+    <string name="player_client_android_vr_desc">Option la plus rapide. URL de flux directes sans décryptage de signature. Recommandé pour la plupart des utilisateurs.</string>
+    <string name="player_client_web_remix">Remix Web</string>
+    <string name="player_client_web_remix_desc">Plus lent, mais prend en charge les formats haut de gamme. Utilise le décryptage de signature JavaScript, ce qui ajoute environ 5 à 10 secondes au démarrage de la lecture.</string>
+    <string name="player_client">Lecteur client</string>
 </resources>

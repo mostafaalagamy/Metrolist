@@ -235,7 +235,7 @@
     <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词服务以获取逐字同步的歌词</string>
     <string name="auto_scroll">重新同步</string>
     <string name="shuffle_playlist_first">随机播放列表或专辑</string>
-    <string name="shuffle_playlist_first_desc">随机播放时,先播放原播放列表/专辑中的所有歌曲,然后再播放内容相似的歌曲</string>
+    <string name="shuffle_playlist_first_desc">随机播放时，先播放原播放列表/专辑中的所有歌曲，然后再播放内容相似的歌曲</string>
     <string name="show_wrapped_card">展示年度播放卡片</string>
     <string name="lyrics_romanize_chinese">使用中文（罗马音）</string>
     <string name="google_cast">Google Cast</string>
@@ -366,6 +366,19 @@
     <string name="skip_silence_instant">立即跳过静音</string>
     <string name="skip_silence_instant_desc">在安静的片段中快进播放 而不是加快播放速度</string>
     <string name="remember_shuffle_and_repeat">记住随机与循环设置</string>
-    <string name="remember_shuffle_and_repeat_desc">重启应用时 记住随机和重复设置</string>
+    <string name="remember_shuffle_and_repeat_desc">重启应用时，记住随机播放和重复播放模式</string>
     <string name="lyrics_offset">歌词偏移</string>
+    <string name="persistent_shuffle_title">持续随机播放</string>
+    <string name="persistent_shuffle_desc">开始播放新歌曲或播放列表时，保持随机播放功能开启</string>
+    <string name="error_playback_failed">播放失败</string>
+    <string name="error_copied">错误信息已复制到剪贴板</string>
+    <string name="copy_error">复制错误信息</string>
+    <string name="error_copy_hint">复制错误信息以帮助开发者调试问题</string>
+    <string name="error_eq_apply_failed">无法应用均衡器配置：%1$s</string>
+    <string name="error_title">错误</string>
+    <string name="player_client">播放客户端</string>
+    <string name="player_client_android_vr">安卓VR</string>
+    <string name="player_client_android_vr_desc">速度最快. 直接传输流媒体 URL,无需解密签名 推荐给大多数用户.</string>
+    <string name="player_client_web_remix">网络混音</string>
+    <string name="player_client_web_remix_desc">速度较慢. 但支持高级格式. 使用 JavaScript 签名解密, 这会使播放开始时间增加约 5-10 秒.</string>
 </resources>

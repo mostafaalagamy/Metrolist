@@ -367,4 +367,17 @@
     <string name="widget_description">Widget do tocador com controles de reprodução</string>
     <string name="turntable_widget_description">Acesso rápido a sua música tocada mais recente</string>
     <string name="queue_widget_description">Tocador de música com prévia da fila</string>
+    <string name="about_artist">Sobre</string>
+    <string name="show_more">Mostrar mais</string>
+    <string name="show_less">Mostrar menos</string>
+    <string name="artist_page_settings">Página do artista</string>
+    <string name="show_artist_description">Mostrar descrição do artista</string>
+    <string name="show_artist_subscriber_count">Mostrar quantidade de inscritos</string>
+    <string name="show_artist_monthly_listeners">Mostrar ouvintes mensais</string>
+    <string name="skip_silence_desc">Avançar rapidamente a partes silenciosas das músicas</string>
+    <string name="skip_silence_instant">Pular silêncio instantâneamente</string>
+    <string name="skip_silence_instant_desc">Em momentos de silêncio, avançar para a próxima tela em vez de acelerar a reprodução</string>
+    <string name="persistent_shuffle_title">Modo aleatório persistente</string>
+    <string name="persistent_shuffle_desc">Manter o modo aleatório ativado quando começar novas músicas ou playlists</string>
+    <string name="lyrics_offset">Atraso da letra</string>
 </resources>
