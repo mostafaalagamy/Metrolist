@@ -406,4 +406,7 @@
     <string name="player_client_android_vr_desc">الخيار الأسرع. روابط بث مباشرة دون فك تشفير التوقيع. موصى به لمعظم المستخدمين.</string>
     <string name="player_client_web_remix">ريميكس الويب</string>
     <string name="player_client_web_remix_desc">أبطأ، لكنه يدعم الصيغ المميزة. يستخدم فك تشفير التوقيع عبر JavaScript، مما يضيف حوالي 5–10 ثوانٍ لبدء التشغيل.</string>
+    <string name="crop_album_art">اقتصاص صورة غلاف الألبوم</string>
+    <string name="crop_album_art_desc">فرض نسبة عرض إلى ارتفاع مربعة عن طريق اقتصاص صور معاينة الفيديو</string>
+    <string name="keep_screen_on_when_player_is_expanded">إبقاء الشاشة مفتوحة عند توسيع مشغل الفيديو</string>
 </resources>
