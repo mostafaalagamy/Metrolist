@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -711,8 +712,15 @@ fun ListenTogetherDialog(
     
     // Load saved username
     var savedUsername by rememberPreference(com.metrolist.music.constants.ListenTogetherUsernameKey, "")
-    var roomCodeInput by remember { mutableStateOf("") }
-    var usernameInput by remember { mutableStateOf(savedUsername) }
+    var roomCodeInput by rememberSaveable { mutableStateOf("") }
+    var usernameInput by rememberSaveable { mutableStateOf(savedUsername) }
+    
+    // Sync usernameInput when savedUsername changes
+    LaunchedEffect(savedUsername) {
+        if (usernameInput.isBlank() && savedUsername.isNotBlank()) {
+            usernameInput = savedUsername
+        }
+    }
     
     // Check if already in a room
     val isInRoom = listenTogetherManager.isInRoom

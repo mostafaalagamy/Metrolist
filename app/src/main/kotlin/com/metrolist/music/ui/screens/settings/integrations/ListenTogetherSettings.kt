@@ -115,7 +115,7 @@ fun ListenTogetherSettings(
     val bufferingUsers by viewModel.bufferingUsers.collectAsState()
     val logs by viewModel.logs.collectAsState()
     
-    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "ws://localhost:8080/ws")
+    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "ws://metroserver.meowery.eu/ws")
     var username by rememberPreference(ListenTogetherUsernameKey, "")
     
     var showServerUrlDialog by rememberSaveable { mutableStateOf(false) }
@@ -179,9 +179,11 @@ fun ListenTogetherSettings(
             onDismissRequest = { showCreateRoomDialog = false },
             title = { Text(stringResource(R.string.listen_together_create_room)) },
             text = {
-                Column {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Text(stringResource(R.string.listen_together_create_room_desc))
-                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
@@ -217,7 +219,10 @@ fun ListenTogetherSettings(
             onDismissRequest = { showJoinRoomDialog = false },
             title = { Text(stringResource(R.string.listen_together_join_room)) },
             text = {
-                Column {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
@@ -225,10 +230,9 @@ fun ListenTogetherSettings(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = roomCodeInput,
-                        onValueChange = { roomCodeInput = it.uppercase().take(6) },
+                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(6) },
                         label = { Text(stringResource(R.string.listen_together_room_code)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
