@@ -26,18 +26,18 @@ include(":lastfm")
 include(":betterlyrics")
 include(":simpmusic")
 
-// Use a local copy of NewPipe Extractor by uncommenting the lines below.
-// We assume, that Metrolist and NewPipe Extractor have the same parent directory.
+// Use a local copy of MetroExtractor by uncommenting the lines below.
+// We assume, that Metrolist and MetroExtractor have the same parent directory.
 // If this is not the case, please change the path in includeBuild().
 //
 // For this to work you also need to change the implementation in innertube/build.gradle.kts
 // to one which does not specify a version.
 // From:
-//      implementation(libs.newpipe.extractor)
+//      implementation(libs.extractor)
 // To:
-//      implementation("com.github.teamnewpipe:NewPipeExtractor")
-//includeBuild("../NewPipeExtractor") {
+//      implementation("com.github.mostafaalagamy:MetroExtractor")
+//includeBuild("../MetroExtractor") {
 //    dependencySubstitution {
-//        substitute(module("com.github.teamnewpipe:NewPipeExtractor")).using(project(":extractor"))
+//        substitute(module("com.github.mostafaalagamy:MetroExtractor")).using(project(":extractor"))
 //    }
 //}
