@@ -82,6 +82,8 @@
     <string name="maximum_volume">Maximum Volume</string>
     <string name="hide_player_thumbnail">Hide Player Thumbnail</string>
     <string name="hide_player_thumbnail_desc">Replace album artwork with app logo in player</string>
+    <string name="crop_album_art">Crop Album Art</string>
+    <string name="crop_album_art_desc">Force a square aspect ratio by cropping video thumbnails</string>
 
     <string name="already_in_playlist">Already in playlist:</string>
 

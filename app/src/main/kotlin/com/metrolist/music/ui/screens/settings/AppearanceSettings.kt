@@ -112,6 +112,7 @@ import kotlinx.coroutines.launch
 import android.content.Intent
 import android.app.Activity
 import androidx.compose.material3.SnackbarHostState
+import com.metrolist.music.constants.CropAlbumArtKey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,6 +165,10 @@ fun AppearanceSettings(
     )
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(
         HidePlayerThumbnailKey,
+        defaultValue = false
+    )
+    val (cropAlbumArt, onCropAlbumArtChange) = rememberPreference(
+        CropAlbumArtKey,
         defaultValue = false
     )
     val (playerBackground, onPlayerBackgroundChange) =
@@ -1012,6 +1017,27 @@ fun AppearanceSettings(
                         )
                     },
                     onClick = { onHidePlayerThumbnailChange(!hidePlayerThumbnail) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.crop),
+                    title = { Text(stringResource(R.string.crop_album_art)) },
+                    description = { Text(stringResource(R.string.crop_album_art_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = cropAlbumArt,
+                            onCheckedChange = onCropAlbumArtChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (cropAlbumArt) R.drawable.check else R.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onCropAlbumArtChange(!cropAlbumArt) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.palette),

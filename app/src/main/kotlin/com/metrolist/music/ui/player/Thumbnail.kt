@@ -44,7 +44,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +71,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
@@ -213,6 +213,7 @@ fun Thumbnail(
     // Preferences - computed once
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
     val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     val playerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
         defaultValue = PlayerBackgroundStyle.DEFAULT
@@ -386,6 +387,7 @@ fun Thumbnail(
                                 item = item,
                                 dimensions = dimensions,
                                 hidePlayerThumbnail = hidePlayerThumbnail,
+                                cropAlbumArt = cropAlbumArt,
                                 textBackgroundColor = textBackgroundColor,
                                 layoutDirection = layoutDirection,
                                 onSeek = onSeekCallback,
@@ -467,6 +469,7 @@ private fun ThumbnailItem(
     item: MediaItem,
     dimensions: ThumbnailDimensions,
     hidePlayerThumbnail: Boolean,
+    cropAlbumArt: Boolean,
     textBackgroundColor: Color,
     layoutDirection: LayoutDirection,
     onSeek: (String, Boolean) -> Unit,
@@ -534,7 +537,10 @@ private fun ThumbnailItem(
             if (hidePlayerThumbnail) {
                 HiddenThumbnailPlaceholder(textBackgroundColor = textBackgroundColor)
             } else {
-                ThumbnailImage(artworkUri = item.mediaMetadata.artworkUri?.toString())
+                ThumbnailImage(
+                    artworkUri = item.mediaMetadata.artworkUri?.toString(),
+                    cropArtwork = cropAlbumArt
+                )
             }
             
             // Cast button at top-right corner of thumbnail
@@ -577,6 +583,7 @@ private fun HiddenThumbnailPlaceholder(
 @Composable
 private fun ThumbnailImage(
     artworkUri: String?,
+    cropArtwork: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -596,7 +603,7 @@ private fun ThumbnailImage(
                 .networkCachePolicy(CachePolicy.ENABLED)
                 .build(),
             contentDescription = null,
-            contentScale = ContentScale.Fit,
+            contentScale = if (cropArtwork) ContentScale.Crop else ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
         )
     }
