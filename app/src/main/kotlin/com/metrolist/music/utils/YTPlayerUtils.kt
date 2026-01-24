@@ -13,6 +13,7 @@ import com.metrolist.innertube.NewPipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_NO_SDK
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_43_32
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_61_48
@@ -21,6 +22,7 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.IPADOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
+import com.metrolist.innertube.models.YouTubeClient.Companion.VISIONOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
@@ -55,11 +57,14 @@ object YTPlayerUtils {
         return when (playerClient) {
             PlayerClient.ANDROID_VR -> arrayOf(
                 ANDROID_VR_1_61_48,
+                ANDROID_NO_SDK,
                 WEB_REMIX,
                 ANDROID_CREATOR,
                 IPADOS,
+                VISIONOS,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
+                IOS,
                 TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
                 WEB,
@@ -68,10 +73,13 @@ object YTPlayerUtils {
             PlayerClient.WEB_REMIX -> arrayOf(
                 ANDROID_VR_1_43_32,
                 ANDROID_VR_1_61_48,
+                ANDROID_NO_SDK,
                 ANDROID_CREATOR,
                 IPADOS,
+                VISIONOS,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
+                IOS,
                 TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
                 WEB,
