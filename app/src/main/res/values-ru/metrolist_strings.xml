@@ -382,7 +382,7 @@
     <string name="artist_page_settings">Страница исполнителя</string>
     <string name="show_artist_description">Показывать описание исполнителя</string>
     <string name="show_artist_subscriber_count">Показывать количество подписчиков</string>
-    <string name="show_artist_monthly_listeners">Показывать количество слушателей за месяц</string>
+    <string name="show_artist_monthly_listeners">Показывать количество слушателей в месяц</string>
     <string name="persistent_shuffle_title">Постоянное перемешивание</string>
     <string name="persistent_shuffle_desc">Сохранять режим перемешивания при воспроизведении новых треков или плейлистов</string>
     <string name="error_playback_failed">Не удалось воспроизвести</string>
