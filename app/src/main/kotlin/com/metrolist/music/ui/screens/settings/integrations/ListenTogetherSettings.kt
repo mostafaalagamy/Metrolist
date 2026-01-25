@@ -64,7 +64,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
+
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,7 +75,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -105,7 +105,6 @@ fun ListenTogetherSettings(
     viewModel: ListenTogetherViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     
     val connectionState by viewModel.connectionState.collectAsState()
@@ -394,7 +393,9 @@ fun ListenTogetherSettings(
                         }
                         IconButton(
                             onClick = {
-                                clipboardManager.setText(AnnotatedString(state.roomCode))
+                                val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                val clip = android.content.ClipData.newPlainText("Room Code", state.roomCode)
+                                cm.setPrimaryClip(clip)
                                 Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                             },
                             onLongClick = {}

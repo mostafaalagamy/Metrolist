@@ -419,7 +419,7 @@ private fun NewMiniPlayerPlayButton(
                         val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != Player.STATE_ENDED
                         if (!isCurrentlyPlaying) {
                             // Currently paused - request sync when unpausing
-                            listenTogetherManager?.requestSync()
+                            listenTogetherManager.requestSync()
                         } else {
                             // Currently playing - allow pause
                             playerConnection.pause()
@@ -729,7 +729,7 @@ private fun LegacyPlayPauseButton(
                 val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != Player.STATE_ENDED
                 if (!isCurrentlyPlaying) {
                     // Currently paused - request sync when unpausing
-                    listenTogetherManager?.requestSync()
+                    listenTogetherManager.requestSync()
                 } else {
                     // Currently playing - allow pause
                     playerConnection.pause()

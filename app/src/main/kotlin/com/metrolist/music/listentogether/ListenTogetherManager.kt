@@ -234,12 +234,12 @@ class ListenTogetherManager @Inject constructor(
                 Log.d(TAG, "Join approved for room: ${event.roomCode}")
                 // Only sync if host is actively playing (not paused or empty)
                 if (event.state.isPlaying && event.state.currentTrack != null) {
-                    val track = event.state.currentTrack!!
+                    val track = event.state.currentTrack
                     Log.d(TAG, "Host is playing: ${track.title} - syncing immediately")
                     syncToTrack(track, true, event.state.position)
                 } else if (event.state.currentTrack != null) {
                     // Track exists but paused - load but don't play
-                    val track = event.state.currentTrack!!
+                    val track = event.state.currentTrack
                     Log.d(TAG, "Host has track paused: ${track.title} - loading but not playing")
                     syncToTrack(track, false, event.state.position)
                 } else {
@@ -496,7 +496,7 @@ class ListenTogetherManager @Inject constructor(
                             var removeIndex = -1
                             val total = player.mediaItemCount
                             for (i in startIndex until total) {
-                                val id = player.getMediaItemAt(i)?.mediaId
+                                val id = player.getMediaItemAt(i).mediaId
                                 if (id == removeId) { removeIndex = i; break }
                             }
                             if (removeIndex >= 0) {

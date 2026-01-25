@@ -396,7 +396,7 @@ fun SongMenu(
         item {
             Material3MenuGroup(
                 items = listOfNotNull(
-                    if (listenTogetherManager?.isInRoom == true && listenTogetherManager?.isHost == false) {
+                    if (listenTogetherManager != null && listenTogetherManager.isInRoom && !listenTogetherManager.isHost) {
                         Material3MenuItemData(
                             title = { Text(text = stringResource(R.string.suggest_to_host)) },
                             icon = {
@@ -415,7 +415,7 @@ fun SongMenu(
                                     duration = durationMs,
                                     thumbnail = song.thumbnailUrl
                                 )
-                                listenTogetherManager?.suggestTrack(trackInfo)
+                                listenTogetherManager.suggestTrack(trackInfo)
                                 onDismiss()
                             }
                         )
