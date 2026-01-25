@@ -396,7 +396,7 @@ fun SongMenu(
         item {
             Material3MenuGroup(
                 items = listOfNotNull(
-                    if (listenTogetherManager.isInRoom == true && listenTogetherManager.isHost == false) {
+                    if (listenTogetherManager?.isInRoom == true && listenTogetherManager?.isHost == false) {
                         Material3MenuItemData(
                             title = { Text(text = stringResource(R.string.suggest_to_host)) },
                             icon = {
