@@ -52,20 +52,23 @@ object YTPlayerUtils {
      * Get fallback clients based on the selected main client.
      * If WEB_REMIX is main, put ANDROID_VR first in fallbacks.
      * If ANDROID_VR is main, put WEB_REMIX after other VR clients.
+     * 
+     * Note: TVHTML5 and TVHTML5_SIMPLY_EMBEDDED_PLAYER are placed earlier in the fallback
+     * order as they tend to provide more stable streams for problematic videos.
      */
     private fun getFallbackClients(playerClient: PlayerClient): Array<YouTubeClient> {
         return when (playerClient) {
             PlayerClient.ANDROID_VR -> arrayOf(
                 ANDROID_VR_1_61_48,
-                ANDROID_NO_SDK,
                 WEB_REMIX,
                 ANDROID_CREATOR,
                 IPADOS,
+                TVHTML5,
                 VISIONOS,
+                ANDROID_NO_SDK,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
                 IOS,
-                TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
                 WEB,
                 WEB_CREATOR
@@ -73,14 +76,14 @@ object YTPlayerUtils {
             PlayerClient.WEB_REMIX -> arrayOf(
                 ANDROID_VR_1_43_32,
                 ANDROID_VR_1_61_48,
-                ANDROID_NO_SDK,
                 ANDROID_CREATOR,
                 IPADOS,
+                TVHTML5,
                 VISIONOS,
+                ANDROID_NO_SDK,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
                 IOS,
-                TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
                 WEB,
                 WEB_CREATOR
