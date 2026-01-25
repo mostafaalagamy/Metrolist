@@ -251,4 +251,6 @@
     <string name="remember_shuffle_and_repeat">Behoud de shuffle- en herhaalmodus</string>
     <string name="remember_shuffle_and_repeat_desc">Behoud de shuffle- en herhaalmodus bij het opnieuw opstarten van de app</string>
     <string name="min_playback_duration_title">Minimum afspeelduur</string>
+    <string name="crop_album_art_desc">Dwing een vierkante beeldverhouding door videominiaturen bij te snijden</string>
+    <string name="enable_simpmusic_desc">Gebruik SimpMusic songtekst provider voor gesynchroniseerde teksten</string>
 </resources>
