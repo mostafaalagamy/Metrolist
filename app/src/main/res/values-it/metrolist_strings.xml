@@ -392,5 +392,5 @@
     <string name="player_client_web_remix_desc">Più lenta ma supporta i formati premium. Utilizza JavaScript per la decifratura della firma, che aggiunge circa 5-10 secondi all’avvio della riproduzione.</string>
     <string name="player_client">Client di riproduzione</string>
     <string name="crop_album_art">Ritaglia Copertina Album</string>
-    <string name="crop_album_art_desc">Forza proporzioni quadrate ritagliando le miniature dei video</string>
+    <string name="crop_album_art_desc">Forza un aspect ratio quadrato ritagliando le miniature dei video</string>
 </resources>
