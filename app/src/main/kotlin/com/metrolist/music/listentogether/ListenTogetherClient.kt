@@ -195,6 +195,10 @@ class ListenTogetherClient @Inject constructor(
     private val _bufferingUsers = MutableStateFlow<List<String>>(emptyList())
     val bufferingUsers: StateFlow<List<String>> = _bufferingUsers.asStateFlow()
 
+    // Suggestions: pending items visible to host
+    private val _pendingSuggestions = MutableStateFlow<List<SuggestionReceivedPayload>>(emptyList())
+    val pendingSuggestions: StateFlow<List<SuggestionReceivedPayload>> = _pendingSuggestions.asStateFlow()
+
     private val _logs = MutableStateFlow<List<LogEntry>>(emptyList())
     val logs: StateFlow<List<LogEntry>> = _logs.asStateFlow()
 
@@ -530,6 +534,27 @@ class ListenTogetherClient @Inject constructor(
                                 position = 0
                             )
                         }
+                        PlaybackActions.QUEUE_ADD -> {
+                            val ti = payload.trackInfo
+                            if (ti != null) {
+                                val currentQueue = _roomState.value?.queue ?: emptyList()
+                                _roomState.value = _roomState.value?.copy(
+                                    queue = if (payload.insertNext == true) listOf(ti) + currentQueue else currentQueue + ti
+                                )
+                            }
+                        }
+                        PlaybackActions.QUEUE_REMOVE -> {
+                            val id = payload.trackId
+                            if (!id.isNullOrEmpty()) {
+                                val currentQueue = _roomState.value?.queue ?: emptyList()
+                                _roomState.value = _roomState.value?.copy(
+                                    queue = currentQueue.filter { it.id != id }
+                                )
+                            }
+                        }
+                        PlaybackActions.QUEUE_CLEAR -> {
+                            _roomState.value = _roomState.value?.copy(queue = emptyList())
+                        }
                     }
                     
                     scope.launch { _events.emit(ListenTogetherEvent.PlaybackSync(payload)) }
@@ -566,6 +591,27 @@ class ListenTogetherClient @Inject constructor(
                             payload.timestamp
                         ))
                     }
+                }
+
+                MessageTypes.SUGGESTION_RECEIVED -> {
+                    val payload = json.decodeFromJsonElement<SuggestionReceivedPayload>(message.payload!!)
+                    // Only host should receive suggestions
+                    if (_role.value == RoomRole.HOST) {
+                        _pendingSuggestions.value = _pendingSuggestions.value + payload
+                        log(LogLevel.INFO, "Suggestion received", "${payload.fromUsername}: ${payload.trackInfo.title}")
+                    }
+                }
+
+                MessageTypes.SUGGESTION_APPROVED -> {
+                    val payload = json.decodeFromJsonElement<SuggestionApprovedPayload>(message.payload!!)
+                    log(LogLevel.INFO, "Suggestion approved", payload.trackInfo.title)
+                    // For guests, optionally notify via events; UI can react if needed
+                }
+
+                MessageTypes.SUGGESTION_REJECTED -> {
+                    val payload = json.decodeFromJsonElement<SuggestionRejectedPayload>(message.payload!!)
+                    log(LogLevel.WARNING, "Suggestion rejected", payload.reason ?: "")
+                    // For guests, optionally notify via events
                 }
                 
                 MessageTypes.ERROR -> {
@@ -742,12 +788,12 @@ class ListenTogetherClient @Inject constructor(
     /**
      * Send a playback action (host only)
      */
-    fun sendPlaybackAction(action: String, trackId: String? = null, position: Long? = null, trackInfo: TrackInfo? = null) {
+    fun sendPlaybackAction(action: String, trackId: String? = null, position: Long? = null, trackInfo: TrackInfo? = null, insertNext: Boolean? = null) {
         if (_role.value != RoomRole.HOST) {
             log(LogLevel.ERROR, "Cannot control playback", "Not host")
             return
         }
-        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo))
+        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo, insertNext))
     }
 
     /**
@@ -766,6 +812,46 @@ class ListenTogetherClient @Inject constructor(
             return
         }
         sendMessage(MessageTypes.CHAT, ChatPayload(message))
+    }
+
+    /**
+     * Suggest a track to the host (guest only)
+     */
+    fun suggestTrack(trackInfo: TrackInfo) {
+        if (!isInRoom) {
+            log(LogLevel.ERROR, "Cannot suggest track", "Not in room")
+            return
+        }
+        if (_role.value == RoomRole.HOST) {
+            log(LogLevel.WARNING, "Host should not suggest tracks")
+            return
+        }
+        sendMessage(MessageTypes.SUGGEST_TRACK, SuggestTrackPayload(trackInfo))
+    }
+
+    /**
+     * Approve a suggestion (host only)
+     */
+    fun approveSuggestion(suggestionId: String) {
+        if (_role.value != RoomRole.HOST) {
+            log(LogLevel.ERROR, "Cannot approve suggestion", "Not host")
+            return
+        }
+        sendMessage(MessageTypes.APPROVE_SUGGESTION, ApproveSuggestionPayload(suggestionId))
+        // Remove locally from pending list
+        _pendingSuggestions.value = _pendingSuggestions.value.filter { it.suggestionId != suggestionId }
+    }
+
+    /**
+     * Reject a suggestion (host only)
+     */
+    fun rejectSuggestion(suggestionId: String, reason: String? = null) {
+        if (_role.value != RoomRole.HOST) {
+            log(LogLevel.ERROR, "Cannot reject suggestion", "Not host")
+            return
+        }
+        sendMessage(MessageTypes.REJECT_SUGGESTION, RejectSuggestionPayload(suggestionId, reason))
+        _pendingSuggestions.value = _pendingSuggestions.value.filter { it.suggestionId != suggestionId }
     }
 
     /**

@@ -507,6 +507,8 @@
     <string name="hosting_room">Hosting Room</string>
     <string name="in_room">In Room</string>
     <string name="pending_requests">Pending Requests</string>
+    <string name="pending_suggestions">Pending Suggestions</string>
+    <string name="suggest_to_host">Suggest to host</string>
     <string name="kick_user">Kick</string>
     <string name="host_label">Host</string>
     <string name="you_label">You</string>

@@ -26,6 +26,10 @@ object MessageTypes {
     const val CHAT = "chat"
     const val REQUEST_SYNC = "request_sync"
     const val RECONNECT = "reconnect"
+    // Suggestions (Client -> Server)
+    const val SUGGEST_TRACK = "suggest_track"
+    const val APPROVE_SUGGESTION = "approve_suggestion"
+    const val REJECT_SUGGESTION = "reject_suggestion"
 
     // Server -> Client
     const val ROOM_CREATED = "room_created"
@@ -47,6 +51,10 @@ object MessageTypes {
     const val RECONNECTED = "reconnected"
     const val USER_RECONNECTED = "user_reconnected"
     const val USER_DISCONNECTED = "user_disconnected"
+    // Suggestions (Server -> Client)
+    const val SUGGESTION_RECEIVED = "suggestion_received"
+    const val SUGGESTION_APPROVED = "suggestion_approved"
+    const val SUGGESTION_REJECTED = "suggestion_rejected"
 }
 
 /**
@@ -141,7 +149,8 @@ data class PlaybackActionPayload(
     val action: String,
     @SerialName("track_id") val trackId: String? = null,
     val position: Long? = null, // milliseconds
-    @SerialName("track_info") val trackInfo: TrackInfo? = null
+    @SerialName("track_info") val trackInfo: TrackInfo? = null,
+    @SerialName("insert_next") val insertNext: Boolean? = null
 )
 
 @Serializable
@@ -158,6 +167,44 @@ data class KickUserPayload(
 @Serializable
 data class ChatPayload(
     val message: String
+)
+
+// Suggestions payloads
+
+@Serializable
+data class SuggestTrackPayload(
+    @SerialName("track_info") val trackInfo: TrackInfo
+)
+
+@Serializable
+data class SuggestionReceivedPayload(
+    @SerialName("suggestion_id") val suggestionId: String,
+    @SerialName("from_user_id") val fromUserId: String,
+    @SerialName("from_username") val fromUsername: String,
+    @SerialName("track_info") val trackInfo: TrackInfo
+)
+
+@Serializable
+data class ApproveSuggestionPayload(
+    @SerialName("suggestion_id") val suggestionId: String
+)
+
+@Serializable
+data class RejectSuggestionPayload(
+    @SerialName("suggestion_id") val suggestionId: String,
+    val reason: String? = null
+)
+
+@Serializable
+data class SuggestionApprovedPayload(
+    @SerialName("suggestion_id") val suggestionId: String,
+    @SerialName("track_info") val trackInfo: TrackInfo
+)
+
+@Serializable
+data class SuggestionRejectedPayload(
+    @SerialName("suggestion_id") val suggestionId: String,
+    val reason: String? = null
 )
 
 // Response payloads

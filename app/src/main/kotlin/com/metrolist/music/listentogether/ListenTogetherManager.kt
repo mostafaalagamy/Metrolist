@@ -13,6 +13,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.extensions.currentMetadata
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.playback.queues.YouTubeQueue
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +63,7 @@ class ListenTogetherManager @Inject constructor(
     val bufferingUsers = client.bufferingUsers
     val logs = client.logs
     val events = client.events
+    val pendingSuggestions = client.pendingSuggestions
 
     val isInRoom: Boolean get() = client.isInRoom
     val isHost: Boolean get() = client.isHost
@@ -248,7 +250,12 @@ class ListenTogetherManager @Inject constructor(
             
             is ListenTogetherEvent.PlaybackSync -> {
                 Log.d(TAG, "PlaybackSync received: ${event.action.action}")
-                if (!isHost) {
+                // Guests handle all sync actions. Host should also apply queue ops.
+                val actionType = event.action.action
+                val isQueueOp = actionType == PlaybackActions.QUEUE_ADD ||
+                        actionType == PlaybackActions.QUEUE_REMOVE ||
+                        actionType == PlaybackActions.QUEUE_CLEAR
+                if (!isHost || isQueueOp) {
                     handlePlaybackSync(event.action)
                 }
             }
@@ -444,6 +451,75 @@ class ListenTogetherManager @Inject constructor(
                 PlaybackActions.SKIP_PREV -> {
                     Log.d(TAG, "Guest: SKIP_PREV")
                     playerConnection?.seekToPrevious()
+                }
+
+                PlaybackActions.QUEUE_ADD -> {
+                    val track = action.trackInfo
+                    if (track == null) {
+                        Log.w(TAG, "QUEUE_ADD missing trackInfo")
+                    } else {
+                        Log.d(TAG, "Guest: QUEUE_ADD ${track.title}, insertNext=${action.insertNext == true}")
+                        scope.launch(Dispatchers.IO) {
+                            // Fetch MediaItem via YouTube metadata
+                            com.metrolist.innertube.YouTube.queue(listOf(track.id)).onSuccess { list ->
+                                val mediaItem = list.firstOrNull()?.toMediaMetadata()?.toMediaItem()
+                                if (mediaItem != null) {
+                                    launch(Dispatchers.Main) {
+                                        // Allow internal sync to bypass guest restrictions
+                                        playerConnection?.allowInternalSync = true
+                                        if (action.insertNext == true) {
+                                            playerConnection?.playNext(mediaItem)
+                                        } else {
+                                            playerConnection?.addToQueue(mediaItem)
+                                        }
+                                        playerConnection?.allowInternalSync = false
+                                    }
+                                } else {
+                                    Log.w(TAG, "QUEUE_ADD failed to resolve media item for ${track.id}")
+                                }
+                            }.onFailure {
+                                Log.e(TAG, "QUEUE_ADD metadata fetch failed", it)
+                            }
+                        }
+                    }
+                }
+
+                PlaybackActions.QUEUE_REMOVE -> {
+                    val removeId = action.trackId
+                    if (removeId.isNullOrEmpty()) {
+                        Log.w(TAG, "QUEUE_REMOVE missing trackId")
+                    } else {
+                        val player = playerConnection?.player
+                        if (player != null) {
+                            // Find first queue item with matching mediaId after current index
+                            val startIndex = player.currentMediaItemIndex + 1
+                            var removeIndex = -1
+                            val total = player.mediaItemCount
+                            for (i in startIndex until total) {
+                                val id = player.getMediaItemAt(i)?.mediaId
+                                if (id == removeId) { removeIndex = i; break }
+                            }
+                            if (removeIndex >= 0) {
+                                Log.d(TAG, "Guest: QUEUE_REMOVE index=$removeIndex id=$removeId")
+                                player.removeMediaItem(removeIndex)
+                            } else {
+                                Log.w(TAG, "QUEUE_REMOVE id not found in queue: $removeId")
+                            }
+                        }
+                    }
+                }
+
+                PlaybackActions.QUEUE_CLEAR -> {
+                    val player = playerConnection?.player
+                    if (player != null) {
+                        val currentIndex = player.currentMediaItemIndex
+                        val count = player.mediaItemCount
+                        val itemsAfter = count - (currentIndex + 1)
+                        if (itemsAfter > 0) {
+                            Log.d(TAG, "Guest: QUEUE_CLEAR removing $itemsAfter items after current")
+                            player.removeMediaItems(currentIndex + 1, count - (currentIndex + 1))
+                        }
+                    }
                 }
             }
         } finally {
@@ -681,4 +757,25 @@ class ListenTogetherManager @Inject constructor(
      * Clear logs
      */
     fun clearLogs() = client.clearLogs()
+
+    // Suggestions API
+
+    /**
+     * Suggest the given track to the host (guest only)
+     */
+    fun suggestTrack(track: TrackInfo) = client.suggestTrack(track)
+
+    /**
+     * Approve a suggestion (host only)
+     */
+    fun approveSuggestion(suggestionId: String) {
+        if (!isHost) return
+        // Send approval; server will insert-next and broadcast once
+        client.approveSuggestion(suggestionId)
+    }
+
+    /**
+     * Reject a suggestion (host only)
+     */
+    fun rejectSuggestion(suggestionId: String, reason: String? = null) = client.rejectSuggestion(suggestionId, reason)
 }

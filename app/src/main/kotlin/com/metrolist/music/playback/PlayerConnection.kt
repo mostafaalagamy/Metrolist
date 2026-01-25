@@ -135,8 +135,8 @@ class PlayerConnection(
     fun playNext(item: MediaItem) = playNext(listOf(item))
 
     fun playNext(items: List<MediaItem>) {
-        // Block if Listen Together guest
-        if (shouldBlockPlaybackChanges?.invoke() == true) {
+        // Block if Listen Together guest (unless internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
             android.util.Log.d("PlayerConnection", "playNext blocked - Listen Together guest")
             return
         }
@@ -146,8 +146,8 @@ class PlayerConnection(
     fun addToQueue(item: MediaItem) = addToQueue(listOf(item))
 
     fun addToQueue(items: List<MediaItem>) {
-        // Block if Listen Together guest
-        if (shouldBlockPlaybackChanges?.invoke() == true) {
+        // Block if Listen Together guest (unless internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
             android.util.Log.d("PlayerConnection", "addToQueue blocked - Listen Together guest")
             return
         }
