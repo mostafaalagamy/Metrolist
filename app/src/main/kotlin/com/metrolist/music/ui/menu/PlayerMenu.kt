@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -145,6 +146,9 @@ fun PlayerMenu(
     var showListenTogetherDialog by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val listenTogetherManager = LocalListenTogetherManager.current
+    val pendingSuggestions by listenTogetherManager?.pendingSuggestions?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
@@ -488,11 +492,30 @@ fun PlayerMenu(
                         Material3MenuItemData(
                             title = { Text(text = stringResource(R.string.listen_together)) },
                             icon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.group),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
+                                // Show a small badge when there are pending suggestions
+                                Box {
+                                    Icon(
+                                        painter = painterResource(R.drawable.group),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    if (pendingSuggestions.isNotEmpty()) {
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier
+                                                .offset(x = 8.dp, y = (-6).dp)
+                                                .align(Alignment.TopEnd)
+                                        ) {
+                                            Text(
+                                                text = pendingSuggestions.size.toString(),
+                                                color = MaterialTheme.colorScheme.onPrimary,
+                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                                style = MaterialTheme.typography.labelSmall
+                                            )
+                                        }
+                                    }
+                                }
                             },
                             onClick = { showListenTogetherDialog = true }
                         )
@@ -1052,67 +1075,38 @@ fun ListenTogetherDialog(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     
-                    // Only show username field if not saved
-                    if (savedUsername.isBlank()) {
-                        OutlinedTextField(
-                            value = usernameInput,
-                            onValueChange = { usernameInput = it },
-                            label = { Text(stringResource(R.string.username)) },
-                            placeholder = { Text(stringResource(R.string.enter_username)) },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.person),
-                                    contentDescription = null
-                                )
-                            },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        // Show saved username with edit option
-                        Surface(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.padding(12.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
+                    // Username input — always visible and editable. Persist on every change.
+                    OutlinedTextField(
+                        value = usernameInput,
+                        onValueChange = {
+                            usernameInput = it
+                            // Persist trimmed username to preference on every change
+                            savedUsername = it.trim()
+                        },
+                        label = { Text(stringResource(R.string.username)) },
+                        placeholder = { Text(stringResource(R.string.enter_username)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.person),
+                                contentDescription = null
+                            )
+                        },
+                        trailingIcon = {
+                            if (usernameInput.isNotBlank()) {
+                                IconButton(onClick = {
+                                    usernameInput = ""
+                                    savedUsername = ""
+                                }) {
                                     Icon(
-                                        painter = painterResource(R.drawable.person),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null
                                     )
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.username),
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                                        )
-                                        Text(
-                                            text = savedUsername,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                                TextButton(
-                                    onClick = {
-                                        savedUsername = ""
-                                        usernameInput = ""
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.change))
                                 }
                             }
-                        }
-                    }
+                        },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     

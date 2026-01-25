@@ -508,6 +508,8 @@
     <string name="in_room">In Room</string>
     <string name="pending_requests">Pending Requests</string>
     <string name="pending_suggestions">Pending Suggestions</string>
+    <string name="listen_together_suggestion_received">%1$s requested &quot;%2$s&quot;</string>
+    <string name="listen_together_room_created">Room created: %s</string>
     <string name="suggest_to_host">Suggest to host</string>
     <string name="kick_user">Kick</string>
     <string name="host_label">Host</string>

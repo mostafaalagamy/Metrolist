@@ -30,6 +30,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import okhttp3.OkHttpClient
+import android.widget.Toast
+import com.metrolist.music.R
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -434,6 +436,14 @@ class ListenTogetherClient @Inject constructor(
                     acquireWakeLock() // Keep connection alive while in room
                     log(LogLevel.INFO, "Room created", "Code: ${payload.roomCode}")
                     scope.launch { _events.emit(ListenTogetherEvent.RoomCreated(payload.roomCode, payload.userId)) }
+                    // Global toast for room creation so the host sees it regardless of UI
+                    scope.launch(Dispatchers.Main) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.listen_together_room_created, payload.roomCode),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
                 
                 MessageTypes.JOIN_REQUEST -> {
@@ -599,6 +609,14 @@ class ListenTogetherClient @Inject constructor(
                     if (_role.value == RoomRole.HOST) {
                         _pendingSuggestions.value = _pendingSuggestions.value + payload
                         log(LogLevel.INFO, "Suggestion received", "${payload.fromUsername}: ${payload.trackInfo.title}")
+                        // Show a global toast to the host so they get notified regardless of UI
+                        scope.launch(Dispatchers.Main) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.listen_together_suggestion_received, payload.fromUsername, payload.trackInfo.title),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
 

@@ -129,7 +129,7 @@ fun ListenTogetherSettings(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is ListenTogetherEvent.RoomCreated -> {
-                    Toast.makeText(context, "Room created: ${event.roomCode}", Toast.LENGTH_LONG).show()
+                    // Room created toast is shown globally by the client
                 }
                 is ListenTogetherEvent.JoinApproved -> {
                     Toast.makeText(context, "Joined room: ${event.roomCode}", Toast.LENGTH_SHORT).show()
@@ -294,36 +294,17 @@ fun ListenTogetherSettings(
             )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .clip(CircleShape)
-                            .background(
-                                when (connectionState) {
-                                    ConnectionState.CONNECTED -> Color(0xFF4CAF50)
-                                    ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> Color(0xFFFFC107)
-                                    ConnectionState.ERROR -> Color(0xFFF44336)
-                                    ConnectionState.DISCONNECTED -> Color.Gray
-                                }
-                            )
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = when (connectionState) {
-                            ConnectionState.CONNECTED -> stringResource(R.string.listen_together_connected)
-                            ConnectionState.CONNECTING -> stringResource(R.string.listen_together_connecting)
-                            ConnectionState.RECONNECTING -> stringResource(R.string.listen_together_reconnecting)
-                            ConnectionState.ERROR -> stringResource(R.string.listen_together_error)
-                            ConnectionState.DISCONNECTED -> stringResource(R.string.listen_together_disconnected)
-                        },
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Text(
+                    text = when (connectionState) {
+                        ConnectionState.CONNECTED -> stringResource(R.string.listen_together_connected)
+                        ConnectionState.CONNECTING -> stringResource(R.string.listen_together_connecting)
+                        ConnectionState.RECONNECTING -> stringResource(R.string.listen_together_reconnecting)
+                        ConnectionState.ERROR -> stringResource(R.string.listen_together_error)
+                        ConnectionState.DISCONNECTED -> stringResource(R.string.listen_together_disconnected)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
                 
                 if (connectionState == ConnectionState.CONNECTING || connectionState == ConnectionState.RECONNECTING) {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -344,7 +325,7 @@ fun ListenTogetherSettings(
                             Text(stringResource(R.string.connect))
                         }
                     } else {
-                        OutlinedButton(
+                        Button(
                             onClick = { viewModel.disconnect() },
                             modifier = Modifier.weight(1f)
                         ) {
