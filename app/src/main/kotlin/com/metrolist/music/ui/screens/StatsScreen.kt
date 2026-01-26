@@ -557,7 +557,7 @@ fun StatsScreen(
         }
 
         // FAB to shuffle most played songs
-        if (mostPlayedSongs.isNotEmpty() && !isSearching) {
+        if (mostPlayedSongsStats.isNotEmpty() && !isSearching) {
             HideOnScrollFAB(
                 visible = true,
                 lazyListState = lazyListState,
@@ -574,18 +574,6 @@ fun StatsScreen(
         }
 
         TopAppBar(
-            /*title = { Text(stringResource(R.string.stats)) },
-            navigationIcon = {
-                IconButton(
-                    onClick = navController::navigateUp,
-                    onLongClick = navController::backToMain,
-                ) {
-                    Icon(
-                        painterResource(R.drawable.arrow_back),
-                        contentDescription = null,
-                    )
-                }
-            },*/
             title = {
                 if (inSelectMode) {
                     Text(pluralStringResource(R.plurals.n_selected, selection.size, selection.size))
