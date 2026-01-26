@@ -263,7 +263,7 @@
     <string name="share_playlist_desc">Partager cette playlist avec d\'autres personnes</string>
     <string name="delete_playlist_desc">Supprimer définitivement cette playlist</string>
     <string name="sync_playlist_desc">Synchroniser la playlist avec YouTube Music</string>
-    <string name="enable_better_lyrics">Activer de meilleures paroles</string>
+    <string name="enable_better_lyrics">Activer Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Utiliser le fournisseur Better Lyrics pour des paroles synchronisées mot à mot</string>
     <string name="lyrics_animation_style">Style d\'animation mot à mot</string>
     <string name="none">Aucun</string>
@@ -333,9 +333,9 @@
     <string name="enable_wavy_slider">Activer le curseur ondulé</string>
     <string name="wavy">Ondulé</string>
     <plurals name="profiles_count">
-        <item quantity="one">%d Profile</item>
-        <item quantity="many">%d Profiles</item>
-        <item quantity="other">%d Profiles</item>
+        <item quantity="one">%d Profil</item>
+        <item quantity="many">%d Profils</item>
+        <item quantity="other">%d Profils</item>
     </plurals>
     <string name="equalizer_header">Égaliseur</string>
     <string name="no_profiles">Aucun profil d\'égaliseur</string>
