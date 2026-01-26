@@ -73,6 +73,7 @@ class ListenTogetherManager @Inject constructor(
 
     val isInRoom: Boolean get() = client.isInRoom
     val isHost: Boolean get() = client.isHost
+    val hasPersistedSession: Boolean get() = client.hasPersistedSession
     
     private val playerListener = object : Player.Listener {
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -353,27 +354,19 @@ class ListenTogetherManager @Inject constructor(
                         }
                     }
                 } else {
-                    // Guest: sync to host's state
+                    // Guest: ALWAYS sync to host's state after reconnection
+                    Log.d(TAG, "Reconnected as guest, syncing to host's current state")
                     if (event.state.currentTrack != null) {
-                        val currentTrackId = playerConnection?.player?.currentMediaItem?.mediaId
-                        if (currentTrackId != event.state.currentTrack.id) {
-                            Log.d(TAG, "Reconnected as guest, syncing to track: ${event.state.currentTrack.title}")
-                            syncToTrack(event.state.currentTrack, event.state.isPlaying, event.state.position)
-                        } else {
-                            // Same track, just sync position/play state
-                            isSyncing = true
-                            if (kotlin.math.abs((playerConnection?.player?.currentPosition ?: 0) - event.state.position) > 1000) {
-                                playerConnection?.seekTo(event.state.position)
-                            }
-                            if (event.state.isPlaying) {
-                                playerConnection?.play()
-                            } else {
-                                playerConnection?.pause()
-                            }
-                            scope.launch {
-                                delay(200)
-                                isSyncing = false
-                            }
+                        // Load the track (even if it appears to be the same - position/play state may differ)
+                        syncToTrack(event.state.currentTrack, event.state.isPlaying, event.state.position)
+                    } else {
+                        // No track in room, just ensure player is paused
+                        Log.d(TAG, "No track in room after reconnect, pausing player")
+                        isSyncing = true
+                        playerConnection?.pause()
+                        scope.launch {
+                            delay(300)
+                            isSyncing = false
                         }
                     }
                 }
@@ -857,4 +850,22 @@ class ListenTogetherManager @Inject constructor(
      * Reject a suggestion (host only)
      */
     fun rejectSuggestion(suggestionId: String, reason: String? = null) = client.rejectSuggestion(suggestionId, reason)
+    
+    /**
+     * Force reconnection to server (for manual recovery)
+     */
+    fun forceReconnect() {
+        Log.d(TAG, "Forcing reconnection")
+        client.forceReconnect()
+    }
+    
+    /**
+     * Get persisted room code if available
+     */
+    fun getPersistedRoomCode(): String? = client.getPersistedRoomCode()
+    
+    /**
+     * Get current session age
+     */
+    fun getSessionAge(): Long = client.getSessionAge()
 }

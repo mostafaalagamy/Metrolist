@@ -10,8 +10,14 @@ import android.os.PowerManager
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.metrolist.music.constants.ListenTogetherServerUrlKey
+import com.metrolist.music.constants.ListenTogetherSessionTokenKey
+import com.metrolist.music.constants.ListenTogetherRoomCodeKey
+import com.metrolist.music.constants.ListenTogetherUserIdKey
+import com.metrolist.music.constants.ListenTogetherIsHostKey
+import com.metrolist.music.constants.ListenTogetherSessionTimestampKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
+import androidx.datastore.preferences.core.edit
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -144,10 +150,12 @@ class ListenTogetherClient @Inject constructor(
     companion object {
         private const val TAG = "ListenTogether"
         private const val DEFAULT_SERVER_URL = "https://metroserver.meowery.eu/ws"
-        private const val MAX_RECONNECT_ATTEMPTS = 5
-        private const val RECONNECT_DELAY_MS = 2000L
+        private const val MAX_RECONNECT_ATTEMPTS = 15  // Increased from 5 to 15
+        private const val INITIAL_RECONNECT_DELAY_MS = 1000L  // Start at 1 second
+        private const val MAX_RECONNECT_DELAY_MS = 120000L  // Cap at 2 minutes
         private const val PING_INTERVAL_MS = 25000L
         private const val MAX_LOG_ENTRIES = 500
+        private const val SESSION_GRACE_PERIOD_MS = 10 * 60 * 1000L  // 10 minutes
 
         // Notification constants
         private const val NOTIFICATION_CHANNEL_ID = "listen_together_channel"
@@ -172,6 +180,79 @@ class ListenTogetherClient @Inject constructor(
     init {
         setInstance(this)
         ensureNotificationChannel()
+        // Load persisted session info asynchronously after construction to avoid calling log() before flows are initialized
+        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+            loadPersistedSession()
+        }
+    }
+    
+    /**
+     * Load persisted session information from storage
+     */
+    private fun loadPersistedSession() {
+        try {
+            val token = context.dataStore.get(ListenTogetherSessionTokenKey, "")
+            val roomCode = context.dataStore.get(ListenTogetherRoomCodeKey, "")
+            val userId = context.dataStore.get(ListenTogetherUserIdKey, "")
+            val isHost = context.dataStore.get(ListenTogetherIsHostKey, false)
+            val timestamp = context.dataStore.get(ListenTogetherSessionTimestampKey, 0L)
+            
+            // Check if session is still valid (within grace period)
+            if (token.isNotEmpty() && roomCode.isNotEmpty() && 
+                (System.currentTimeMillis() - timestamp < SESSION_GRACE_PERIOD_MS)) {
+                sessionToken = token
+                storedRoomCode = roomCode
+                _userId.value = userId.ifEmpty { null }
+                wasHost = isHost
+                sessionStartTime = timestamp
+                log(LogLevel.INFO, "Loaded persisted session", "Room: $roomCode, Host: $isHost")
+            } else if (token.isNotEmpty()) {
+                log(LogLevel.WARNING, "Session expired", "Age: ${System.currentTimeMillis() - timestamp}ms")
+                clearPersistedSession()
+            }
+        } catch (e: Exception) {
+            log(LogLevel.ERROR, "Failed to load persisted session", e.message)
+        }
+    }
+    
+    /**
+     * Save current session information to persistent storage
+     */
+    private fun savePersistedSession() {
+        try {
+            scope.launch {
+                context.dataStore.edit { preferences ->
+                    if (sessionToken != null) {
+                        preferences[ListenTogetherSessionTokenKey] = sessionToken!!
+                        preferences[ListenTogetherRoomCodeKey] = storedRoomCode ?: ""
+                        preferences[ListenTogetherUserIdKey] = _userId.value ?: ""
+                        preferences[ListenTogetherIsHostKey] = wasHost
+                        preferences[ListenTogetherSessionTimestampKey] = System.currentTimeMillis()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            log(LogLevel.ERROR, "Failed to save persisted session", e.message)
+        }
+    }
+    
+    /**
+     * Clear persisted session information
+     */
+    private fun clearPersistedSession() {
+        try {
+            scope.launch {
+                context.dataStore.edit { preferences ->
+                    preferences.remove(ListenTogetherSessionTokenKey)
+                    preferences.remove(ListenTogetherRoomCodeKey)
+                    preferences.remove(ListenTogetherUserIdKey)
+                    preferences.remove(ListenTogetherIsHostKey)
+                    preferences.remove(ListenTogetherSessionTimestampKey)
+                }
+            }
+        } catch (e: Exception) {
+            log(LogLevel.ERROR, "Failed to clear persisted session", e.message)
+        }
     }
 
     private val json = Json { 
@@ -188,6 +269,9 @@ class ListenTogetherClient @Inject constructor(
     // Session info for reconnection
     private var sessionToken: String? = null
     private var storedUsername: String? = null
+    private var storedRoomCode: String? = null
+    private var wasHost: Boolean = false
+    private var sessionStartTime: Long = 0
     
     // Pending actions to execute when connected
     private var pendingAction: PendingAction? = null
@@ -235,6 +319,17 @@ class ListenTogetherClient @Inject constructor(
     private fun getServerUrl(): String {
         return context.dataStore.get(ListenTogetherServerUrlKey, DEFAULT_SERVER_URL)
     }
+    
+    /**
+     * Calculate exponential backoff delay with jitter
+     */
+    private fun calculateBackoffDelay(attempt: Int): Long {
+        val exponentialDelay = INITIAL_RECONNECT_DELAY_MS * (2 shl (minOf(attempt - 1, 4)))
+        val cappedDelay = minOf(exponentialDelay, MAX_RECONNECT_DELAY_MS)
+        // Add 0-20% jitter to prevent thundering herd
+        val jitter = (cappedDelay * 0.2 * Math.random()).toLong()
+        return cappedDelay + jitter
+    }
 
     private fun log(level: LogLevel, message: String, details: String? = null) {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"))
@@ -278,9 +373,9 @@ class ListenTogetherClient @Inject constructor(
                 reconnectAttempts = 0
                 startPingJob()
                 
-                // Try to reconnect to previous session if we have one
-                if (sessionToken != null && _roomState.value != null) {
-                    log(LogLevel.INFO, "Attempting to reconnect to previous session")
+                // Try to reconnect to previous session if we have a valid token
+                if (sessionToken != null && storedRoomCode != null) {
+                    log(LogLevel.INFO, "Attempting to reconnect to previous session", "Room: $storedRoomCode")
                     sendMessage(MessageTypes.RECONNECT, ReconnectPayload(sessionToken!!))
                 } else {
                     // Execute any pending action
@@ -336,8 +431,10 @@ class ListenTogetherClient @Inject constructor(
         webSocket?.close(1000, "User disconnected")
         webSocket = null
         _connectionState.value = ConnectionState.DISCONNECTED
-        // Clear session info on explicit disconnect
+        
+        // Clear session and state on explicit disconnect
         sessionToken = null
+        storedRoomCode = null
         storedUsername = null
         pendingAction = null
         _roomState.value = null
@@ -345,6 +442,11 @@ class ListenTogetherClient @Inject constructor(
         _userId.value = null
         _pendingJoinRequests.value = emptyList()
         _bufferingUsers.value = emptyList()
+        
+        // Clear from persistent storage
+        clearPersistedSession()
+        reconnectAttempts = 0
+        
         scope.launch { _events.emit(ListenTogetherEvent.Disconnected) }
     }
 
@@ -484,28 +586,53 @@ class ListenTogetherClient @Inject constructor(
         pingJob?.cancel()
         pingJob = null
         
-        // Always try to reconnect if we have a session token (means we were in a room)
+        // Always try to reconnect if we have a session token or pending action
         val shouldReconnect = sessionToken != null || _roomState.value != null || pendingAction != null
         
         if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS && shouldReconnect) {
             reconnectAttempts++
             _connectionState.value = ConnectionState.RECONNECTING
-            log(LogLevel.INFO, "Attempting reconnect", "Attempt $reconnectAttempts/$MAX_RECONNECT_ATTEMPTS")
+            
+            val delayMs = calculateBackoffDelay(reconnectAttempts)
+            val delaySeconds = delayMs / 1000
+            
+            log(LogLevel.INFO, "Attempting reconnect", 
+                "Attempt $reconnectAttempts/$MAX_RECONNECT_ATTEMPTS, waiting ${delaySeconds}s, reason: ${t.message}")
             
             scope.launch {
                 _events.emit(ListenTogetherEvent.Reconnecting(reconnectAttempts, MAX_RECONNECT_ATTEMPTS))
-                delay(RECONNECT_DELAY_MS * reconnectAttempts)
-                connect()
+                delay(delayMs)
+                
+                // Check if we're still supposed to be reconnecting
+                if (_connectionState.value == ConnectionState.RECONNECTING || _connectionState.value == ConnectionState.DISCONNECTED) {
+                    log(LogLevel.INFO, "Reconnecting after backoff", "Delay was ${delaySeconds}s")
+                    connect()
+                }
             }
         } else {
             _connectionState.value = ConnectionState.ERROR
-            // Clear session on final failure
-            sessionToken = null
-            storedUsername = null
-            _roomState.value = null
-            _role.value = RoomRole.NONE
-            scope.launch { 
-                _events.emit(ListenTogetherEvent.ConnectionError(t.message ?: "Unknown error"))
+            
+            // If we had a session, notify user but keep session data for manual retry
+            if (sessionToken != null) {
+                log(LogLevel.ERROR, "Reconnection failed", 
+                    "Max attempts reached, but session preserved for manual reconnect")
+                scope.launch { 
+                    _events.emit(ListenTogetherEvent.ConnectionError(
+                        "Connection failed after $MAX_RECONNECT_ATTEMPTS attempts. ${t.message ?: "Unknown error"}"
+                    ))
+                }
+            } else {
+                // No session, so clear everything
+                sessionToken = null
+                storedRoomCode = null
+                storedUsername = null
+                _roomState.value = null
+                _role.value = RoomRole.NONE
+                clearPersistedSession()
+                
+                scope.launch { 
+                    _events.emit(ListenTogetherEvent.ConnectionError(t.message ?: "Unknown error"))
+                }
             }
         }
     }
@@ -522,6 +649,10 @@ class ListenTogetherClient @Inject constructor(
                     _userId.value = payload.userId
                     _role.value = RoomRole.HOST
                     sessionToken = payload.sessionToken
+                    storedRoomCode = payload.roomCode
+                    wasHost = true
+                    sessionStartTime = System.currentTimeMillis()
+                    
                     _roomState.value = RoomState(
                         roomCode = payload.roomCode,
                         hostId = payload.userId,
@@ -530,6 +661,10 @@ class ListenTogetherClient @Inject constructor(
                         position = 0,
                         lastUpdate = System.currentTimeMillis()
                     )
+                    
+                    // Save session to persistent storage
+                    savePersistedSession()
+                    
                     acquireWakeLock() // Keep connection alive while in room
                     log(LogLevel.INFO, "Room created", "Code: ${payload.roomCode}")
                     scope.launch { _events.emit(ListenTogetherEvent.RoomCreated(payload.roomCode, payload.userId)) }
@@ -559,7 +694,15 @@ class ListenTogetherClient @Inject constructor(
                     _userId.value = payload.userId
                     _role.value = RoomRole.GUEST
                     sessionToken = payload.sessionToken
+                    storedRoomCode = payload.roomCode
+                    wasHost = false
+                    sessionStartTime = System.currentTimeMillis()
+                    
                     _roomState.value = payload.state
+                    
+                    // Save session to persistent storage
+                    savePersistedSession()
+                    
                     acquireWakeLock() // Keep connection alive while in room
                     log(LogLevel.INFO, "Joined room", "Code: ${payload.roomCode}")
                     scope.launch { _events.emit(ListenTogetherEvent.JoinApproved(payload.roomCode, payload.userId, payload.state)) }
@@ -730,6 +873,33 @@ class ListenTogetherClient @Inject constructor(
                 MessageTypes.ERROR -> {
                     val payload = json.decodeFromJsonElement<ErrorPayload>(message.payload!!)
                     log(LogLevel.ERROR, "Server error", "${payload.code}: ${payload.message}")
+                    
+                    // Handle specific error cases
+                    when (payload.code) {
+                        "session_not_found" -> {
+                            // Session expired on server, try to rejoin the room
+                            if (storedRoomCode != null && storedUsername != null && !wasHost) {
+                                log(LogLevel.WARNING, "Session expired on server", 
+                                    "Attempting automatic rejoin to room: $storedRoomCode")
+                                // Try rejoining as a guest
+                                scope.launch {
+                                    delay(500) // Small delay before rejoin attempt
+                                    joinRoom(storedRoomCode!!, storedUsername!!)
+                                }
+                            } else if (storedRoomCode != null && storedUsername != null && wasHost) {
+                                // Host session expired - would need to create new room
+                                log(LogLevel.WARNING, "Host session expired", 
+                                    "Room: $storedRoomCode - manual intervention may be needed")
+                                clearPersistedSession()
+                                sessionToken = null
+                            } else {
+                                clearPersistedSession()
+                                sessionToken = null
+                            }
+                        }
+                        else -> {}
+                    }
+                    
                     scope.launch { _events.emit(ListenTogetherEvent.ServerError(payload.code, payload.message)) }
                 }
                 
@@ -742,8 +912,18 @@ class ListenTogetherClient @Inject constructor(
                     _userId.value = payload.userId
                     _role.value = if (payload.isHost) RoomRole.HOST else RoomRole.GUEST
                     _roomState.value = payload.state
+                    
+                    // Update persisted session info
+                    wasHost = payload.isHost
+                    sessionStartTime = System.currentTimeMillis()
+                    savePersistedSession()
+                    
+                    // Reset reconnection attempts on successful reconnection
+                    reconnectAttempts = 0
+                    
                     acquireWakeLock() // Re-acquire wake lock after reconnection
-                    log(LogLevel.INFO, "Reconnected to room", "Code: ${payload.roomCode}, isHost: ${payload.isHost}")
+                    log(LogLevel.INFO, "Successfully reconnected to room", 
+                        "Code: ${payload.roomCode}, isHost: ${payload.isHost}, attempt was $reconnectAttempts")
                     scope.launch { _events.emit(ListenTogetherEvent.Reconnected(payload.roomCode, payload.userId, payload.state, payload.isHost)) }
                 }
                 
@@ -854,14 +1034,22 @@ class ListenTogetherClient @Inject constructor(
      */
     fun leaveRoom() {
         sendMessageNoPayload(MessageTypes.LEAVE_ROOM)
+        
         // Clear session info on intentional leave
         sessionToken = null
+        storedRoomCode = null
         storedUsername = null
         pendingAction = null
         _roomState.value = null
         _role.value = RoomRole.NONE
+        _userId.value = null
         _pendingJoinRequests.value = emptyList()
         _bufferingUsers.value = emptyList()
+        
+        // Clear from persistent storage
+        clearPersistedSession()
+        
+        releaseWakeLock()
     }
 
     /**
@@ -990,4 +1178,49 @@ class ListenTogetherClient @Inject constructor(
      */
     val isHost: Boolean
         get() = _role.value == RoomRole.HOST
+    
+    /**
+     * Force reconnection to server (useful for manual recovery)
+     */
+    fun forceReconnect() {
+        log(LogLevel.INFO, "Forcing reconnection to server")
+        reconnectAttempts = 0  // Reset attempts to retry from start
+        
+        if (webSocket != null) {
+            try {
+                webSocket?.close(1000, "Forcing reconnection")
+            } catch (e: Exception) {
+                log(LogLevel.DEBUG, "Error closing WebSocket", e.message)
+            }
+            webSocket = null
+        }
+        
+        _connectionState.value = ConnectionState.DISCONNECTED
+        
+        // Attempt connection with reset backoff
+        scope.launch {
+            delay(500)
+            connect()
+        }
+    }
+    
+    /**
+     * Check if there's a persisted session available for recovery
+     */
+    val hasPersistedSession: Boolean
+        get() = sessionToken != null && storedRoomCode != null
+    
+    /**
+     * Get the persisted room code if available
+     */
+    fun getPersistedRoomCode(): String? = storedRoomCode
+    
+    /**
+     * Get current session age in milliseconds
+     */
+    fun getSessionAge(): Long = if (sessionStartTime > 0) {
+        System.currentTimeMillis() - sessionStartTime
+    } else {
+        0L
+    }
 }

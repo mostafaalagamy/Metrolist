@@ -28,6 +28,7 @@ class ListenTogetherViewModel @Inject constructor(
     val bufferingUsers = manager.bufferingUsers
     val logs = manager.logs
     val events = manager.events
+    val hasPersistedSession = manager.hasPersistedSession
 
     init {
         manager.initialize()
@@ -72,4 +73,12 @@ class ListenTogetherViewModel @Inject constructor(
     fun sendChat(message: String) {
         manager.sendChat(message)
     }
+    
+    fun forceReconnect() {
+        manager.forceReconnect()
+    }
+    
+    fun getPersistedRoomCode(): String? = manager.getPersistedRoomCode()
+    
+    fun getSessionAge(): Long = manager.getSessionAge()
 }
