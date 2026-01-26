@@ -126,6 +126,7 @@ import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalListenTogetherManager
+import com.metrolist.music.listentogether.RoomRole
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -268,11 +269,10 @@ fun BottomSheetPlayer(
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val squigglySlider by rememberPreference(SquigglySliderKey, defaultValue = false)
     
-    // Listen Together state
+    // Listen Together state (reactive)
     val listenTogetherManager = LocalListenTogetherManager.current
-    val isInListenTogether = listenTogetherManager?.isInRoom ?: false
-    val isListenTogetherHost = listenTogetherManager?.isHost ?: false
-    val isListenTogetherGuest = isInListenTogether && !isListenTogetherHost
+    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = RoomRole.NONE)
+    val isListenTogetherGuest = listenTogetherRoleState?.value == RoomRole.GUEST
     
     // Cast state
     val castHandler = playerConnection.service.castConnectionHandler
@@ -794,36 +794,6 @@ fun BottomSheetPlayer(
                             ,
                         )
                     }
-                    
-                    // Listen Together indicator
-                    if (isInListenTogether) {
-                        Spacer(Modifier.height(4.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.share),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(
-                                text = if (isListenTogetherHost) "Hosting Listen Together" else "Listening Together",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(6.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -1438,23 +1408,25 @@ fun BottomSheetPlayer(
                                 .fillMaxWidth()
                                 .padding(horizontal = PlayerHorizontalPadding),
                         ) {
-                            Box(modifier = Modifier.weight(1f)) {
-                                ResizableIconButton(
-                                    icon = when (repeatMode) {
-                                        Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                        Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                        else -> throw IllegalStateException()
-                                    },
-                                    color = TextBackgroundColor,
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .padding(4.dp)
-                                        .align(Alignment.Center)
-                                        .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
-                                    onClick = {
-                                        playerConnection.player.toggleRepeatMode()
-                                    },
-                                )
+                            if (!isListenTogetherGuest) {
+                                Box(modifier = Modifier.weight(1f)) {
+                                    ResizableIconButton(
+                                        icon = when (repeatMode) {
+                                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                            else -> throw IllegalStateException()
+                                        },
+                                        color = TextBackgroundColor,
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                            .padding(4.dp)
+                                            .align(Alignment.Center),
+                                        enabled = !isListenTogetherGuest,
+                                        onClick = {
+                                            playerConnection.player.toggleRepeatMode()
+                                        }
+                                    )
+                                }
                             }
 
                             Box(modifier = Modifier.weight(1f)) {
