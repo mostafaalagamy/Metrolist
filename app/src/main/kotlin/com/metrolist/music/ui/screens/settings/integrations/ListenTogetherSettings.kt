@@ -441,9 +441,10 @@ fun ListenTogetherSettings(
                     
                     Spacer(modifier = Modifier.height(12.dp))
                     
-                    // Users in room
+                    // Users in room (filter out disconnected users in grace period)
+                    val connectedUsers = state.users.filter { it.isConnected }
                     Text(
-                        text = stringResource(R.string.listen_together_users, state.users.size),
+                        text = stringResource(R.string.listen_together_users, connectedUsers.size),
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -452,7 +453,7 @@ fun ListenTogetherSettings(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.horizontalScroll(rememberScrollState())
                     ) {
-                        state.users.forEach { user ->
+                        connectedUsers.forEach { user ->
                             Surface(
                                 shape = RoundedCornerShape(20.dp),
                                 color = if (user.isHost) 

@@ -878,14 +878,18 @@ fun ListenTogetherDialog(
                             }
                         }
                         
-                        // Connected users
+                        // Connected users (filter out disconnected users in grace period)
+                        val connectedUsers = room.users.filter { it.isConnected }
                         Text(
-                            text = stringResource(R.string.connected_users, room.users.size),
+                            text = stringResource(R.string.connected_users, connectedUsers.size),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Medium
                         )
                         
                         room.users.forEach { user ->
+                            // Only show connected users in the UI
+                            if (!user.isConnected) return@forEach
+                            
                             Surface(
                                 color = if (user.isHost) {
                                     MaterialTheme.colorScheme.tertiaryContainer

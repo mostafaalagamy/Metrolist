@@ -278,6 +278,9 @@ class ListenTogetherClient @Inject constructor(
     
     // Wake lock to keep connection alive when in a room
     private var wakeLock: PowerManager.WakeLock? = null
+    
+    // Track notification IDs for join requests to dismiss them from both UI and notification actions
+    private val joinRequestNotifications = mutableMapOf<String, Int>()
 
     // State flows
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
@@ -503,6 +506,9 @@ class ListenTogetherClient @Inject constructor(
 
     private fun showJoinRequestNotification(payload: JoinRequestPayload) {
         val notifId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+        
+        // Store notification ID for this user so we can dismiss it from UI actions
+        joinRequestNotifications[payload.userId] = notifId
 
         val approveIntent = Intent(context, ListenTogetherActionReceiver::class.java).apply {
             action = ACTION_APPROVE_JOIN
@@ -720,6 +726,12 @@ class ListenTogetherClient @Inject constructor(
                         users = _roomState.value!!.users + UserInfo(payload.userId, payload.username, false)
                     )
                     _pendingJoinRequests.value = _pendingJoinRequests.value.filter { it.userId != payload.userId }
+                    
+                    // Dismiss notification if it exists
+                    joinRequestNotifications.remove(payload.userId)?.let { notifId ->
+                        NotificationManagerCompat.from(context).cancel(notifId)
+                    }
+                    
                     log(LogLevel.INFO, "User joined", payload.username)
                     scope.launch { _events.emit(ListenTogetherEvent.UserJoined(payload.userId, payload.username)) }
                 }
@@ -1061,6 +1073,11 @@ class ListenTogetherClient @Inject constructor(
             return
         }
         sendMessage(MessageTypes.APPROVE_JOIN, ApproveJoinPayload(userId))
+        
+        // Dismiss notification immediately when approved from UI
+        joinRequestNotifications.remove(userId)?.let { notifId ->
+            NotificationManagerCompat.from(context).cancel(notifId)
+        }
     }
 
     /**
@@ -1073,6 +1090,11 @@ class ListenTogetherClient @Inject constructor(
         }
         sendMessage(MessageTypes.REJECT_JOIN, RejectJoinPayload(userId, reason))
         _pendingJoinRequests.value = _pendingJoinRequests.value.filter { it.userId != userId }
+        
+        // Dismiss notification immediately when rejected from UI
+        joinRequestNotifications.remove(userId)?.let { notifId ->
+            NotificationManagerCompat.from(context).cancel(notifId)
+        }
     }
 
     /**
