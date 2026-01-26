@@ -16,12 +16,18 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.extensions.metadata
+import com.metrolist.music.models.MediaMetadata.Artist
+import com.metrolist.music.models.MediaMetadata.Album
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +47,7 @@ class ListenTogetherManager @Inject constructor(
     
     private var playerConnection: PlayerConnection? = null
     private var eventCollectorJob: Job? = null
+    private var queueObserverJob: Job? = null
     private var playerListenerRegistered = false
     
     // Whether we're currently syncing (to prevent feedback loops)
@@ -53,6 +60,9 @@ class ListenTogetherManager @Inject constructor(
     
     // Track ID being buffered
     private var bufferingTrackId: String? = null
+    
+    // Track active sync job to cancel it if a better update arrives
+    private var activeSyncJob: Job? = null
 
     // Pending sync to apply after buffering completes for guest
     private var pendingSyncState: SyncStatePayload? = null
@@ -193,6 +203,13 @@ class ListenTogetherManager @Inject constructor(
             playerListenerRegistered = true
             Log.d(TAG, "Added player listener for room sync")
         }
+
+        // Start/stop queue observation based on role
+        if (connection != null && isInRoom && isHost) {
+            startQueueSyncObservation()
+        } else {
+            stopQueueSyncObservation()
+        }
     }
 
     /**
@@ -243,24 +260,18 @@ class ListenTogetherManager @Inject constructor(
                         client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
                     }
                 }
+                startQueueSyncObservation()
             }
             
             is ListenTogetherEvent.JoinApproved -> {
                 Log.d(TAG, "Join approved for room: ${event.roomCode}")
-                // Only sync if host is actively playing (not paused or empty)
-                if (event.state.isPlaying && event.state.currentTrack != null) {
-                    val track = event.state.currentTrack
-                    Log.d(TAG, "Host is playing: ${track.title} - syncing immediately")
-                    syncToTrack(track, true, event.state.position)
-                } else if (event.state.currentTrack != null) {
-                    // Track exists but paused - load but don't play
-                    val track = event.state.currentTrack
-                    Log.d(TAG, "Host has track paused: ${track.title} - loading but not playing")
-                    syncToTrack(track, false, event.state.position)
-                } else {
-                    // No track - do nothing
-                    Log.d(TAG, "No current track in room - waiting for host action")
-                }
+                // Apply the full initial state including queue
+                applyPlaybackState(
+                    currentTrack = event.state.currentTrack,
+                    isPlaying = event.state.isPlaying,
+                    position = event.state.position,
+                    queue = event.state.queue
+                )
             }
             
             is ListenTogetherEvent.PlaybackSync -> {
@@ -441,15 +452,6 @@ class ListenTogetherManager @Inject constructor(
         bufferingTrackId = null
         pendingSyncState = null
         bufferCompleteReceivedForTrack = null
-
-        // Request a fresh authoritative sync after things settle, to correct any drift
-        scope.launch {
-            delay(1000)
-            if (!isHost) {
-                Log.d(TAG, "Requesting post-sync verification from host")
-                client.requestSync()
-            }
-        }
     }
 
     private fun handlePlaybackSync(action: PlaybackActionPayload) {
@@ -499,9 +501,21 @@ class ListenTogetherManager @Inject constructor(
                 
                 PlaybackActions.CHANGE_TRACK -> {
                     action.trackInfo?.let { track ->
-                        Log.d(TAG, "Guest: CHANGE_TRACK to ${track.title}")
-                        bufferingTrackId = track.id
-                        syncToTrack(track, false, 0)
+                        Log.d(TAG, "Guest: CHANGE_TRACK to ${track.title}, queue size=${action.queue?.size}")
+                        
+                        // If we have a queue, use it! This is the "smart" sync path.
+                        if (action.queue != null && action.queue.isNotEmpty()) {
+                            applyPlaybackState(
+                                currentTrack = track,
+                                isPlaying = false, // Will be updated by subsequent PLAY or pending sync
+                                position = 0,
+                                queue = action.queue
+                            )
+                        } else {
+                            // Fallback to old behavior (network fetch) if no queue provided
+                            bufferingTrackId = track.id
+                            syncToTrack(track, false, 0)
+                        }
                     }
                 }
                 
@@ -583,6 +597,47 @@ class ListenTogetherManager @Inject constructor(
                         }
                     }
                 }
+
+                PlaybackActions.SYNC_QUEUE -> {
+                    val queue = action.queue
+                    if (queue != null) {
+                        Log.d(TAG, "Guest: SYNC_QUEUE size=${queue.size}")
+                        // Cancel any pending "smart" sync (e.g. YouTube radio fetch) in favor of this authoritative queue
+                        activeSyncJob?.cancel()
+                        
+                        scope.launch(Dispatchers.Main) {
+                            val player = playerConnection?.player ?: return@launch
+                            
+                            // Map TrackInfo to MediaItems
+                            val mediaItems = queue.map { track ->
+                                track.toMediaMetadata().toMediaItem()
+                            }
+                            
+                            // Try to find current track in new queue to preserve playback state
+                            val currentId = player.currentMediaItem?.mediaId
+                            var newIndex = -1
+                            if (currentId != null) {
+                                newIndex = mediaItems.indexOfFirst { it.mediaId == currentId }
+                            }
+                            
+                            val currentPos = player.currentPosition
+                            val wasPlaying = player.isPlaying
+                            
+                            playerConnection?.allowInternalSync = true
+                            if (newIndex != -1) {
+                                player.setMediaItems(mediaItems, newIndex, currentPos)
+                            } else {
+                                player.setMediaItems(mediaItems)
+                            }
+                            playerConnection?.allowInternalSync = false
+                            
+                            // Restore playing state if needed
+                            if (wasPlaying && !player.isPlaying) {
+                                playerConnection?.play()
+                            }
+                        }
+                    }
+                }
             }
         } finally {
             // Minimal delay to prevent feedback loops
@@ -594,41 +649,107 @@ class ListenTogetherManager @Inject constructor(
     }
     
     private fun handleSyncState(state: SyncStatePayload) {
+        applyPlaybackState(
+            currentTrack = state.currentTrack,
+            isPlaying = state.isPlaying,
+            position = state.position,
+            queue = state.queue
+        )
+    }
+
+    private fun applyPlaybackState(
+        currentTrack: TrackInfo?,
+        isPlaying: Boolean,
+        position: Long,
+        queue: List<TrackInfo>?
+    ) {
         val player = playerConnection?.player
         if (player == null) {
-            Log.w(TAG, "Cannot handle sync state - no player connection")
+            Log.w(TAG, "Cannot apply playback state - no player")
             return
         }
-        
-        Log.d(TAG, "Handling sync state: track=${state.currentTrack?.id}, playing=${state.isPlaying}, pos=${state.position}")
-        
-        val currentTrackId = player.currentMediaItem?.mediaId
-        
-        // If track is different, load the new track
-        if (state.currentTrack != null && state.currentTrack.id != currentTrackId) {
-            Log.d(TAG, "Sync state: different track, loading ${state.currentTrack.title}")
-            bufferingTrackId = state.currentTrack.id
-            syncToTrack(state.currentTrack, state.isPlaying, state.position)
-        } else {
-            // Same track - just sync position and play state
-            isSyncing = true
-            
-            // Seek to position
-            if (kotlin.math.abs(player.currentPosition - state.position) > 500) {
-                Log.d(TAG, "Sync state: seeking to ${state.position}")
-                playerConnection?.seekTo(state.position)
-            }
-            
-            // Sync play state
-            if (state.isPlaying && !player.playWhenReady) {
-                Log.d(TAG, "Sync state: starting playback")
-                playerConnection?.play()
-            } else if (!state.isPlaying && player.playWhenReady) {
-                Log.d(TAG, "Sync state: pausing playback")
+
+        Log.d(TAG, "Applying playback state: track=${currentTrack?.id}, pos=$position, queue=${queue?.size}")
+
+        // Cancel any pending sync job
+        activeSyncJob?.cancel()
+
+        // If no track, just pause and clear/set queue
+        if (currentTrack == null) {
+            Log.d(TAG, "No track in state, pausing")
+            scope.launch(Dispatchers.Main) {
+                isSyncing = true
+                playerConnection?.allowInternalSync = true
+                if (queue != null && queue.isNotEmpty()) {
+                    val mediaItems = queue.map { it.toMediaMetadata().toMediaItem() }
+                    player.setMediaItems(mediaItems)
+                } else if (queue != null) {
+                    player.clearMediaItems()
+                }
                 playerConnection?.pause()
+                playerConnection?.allowInternalSync = false
+                isSyncing = false
             }
+            return
+        }
+
+        // We have a track.
+        bufferingTrackId = currentTrack.id
+        
+        scope.launch(Dispatchers.Main) {
+            isSyncing = true
+            playerConnection?.allowInternalSync = true
             
-            scope.launch {
+            try {
+                // Apply queue if available
+                if (queue != null && queue.isNotEmpty()) {
+                    val mediaItems = queue.map { it.toMediaMetadata().toMediaItem() }
+                    
+                    // Find index of current track
+                    var startIndex = mediaItems.indexOfFirst { it.mediaId == currentTrack.id }
+                    if (startIndex == -1) {
+                        Log.w(TAG, "Current track ${currentTrack.id} not found in queue, defaulting to 0")
+                        val singleItem = currentTrack.toMediaMetadata().toMediaItem()
+                        // Prepend or fallback? Let's just play the track alone if not in queue
+                        player.setMediaItems(listOf(singleItem), 0, position)
+                    } else {
+                        player.setMediaItems(mediaItems, startIndex, position)
+                    }
+                } else {
+                    // No queue provided, fallback to loading just the track (or radio) via syncToTrack logic
+                    // But we want to avoid double loading.
+                    // If queue is null, we might be in a state where we should fetch radio?
+                    // But here we assume authoritative state.
+                    Log.d(TAG, "No queue in state, loading single track")
+                    // Construct single item
+                    val item = currentTrack.toMediaMetadata().toMediaItem()
+                    player.setMediaItems(listOf(item), 0, position)
+                }
+                
+                // Important: Pause initially to wait for buffer signal (if we want strict sync)
+                // But setMediaItems might auto-play if playWhenReady was true? Default is usually false unless set.
+                playerConnection?.pause()
+                
+                // Store pending state for accurate sync
+                pendingSyncState = SyncStatePayload(
+                    currentTrack = currentTrack,
+                    isPlaying = isPlaying,
+                    position = position,
+                    lastUpdate = System.currentTimeMillis()
+                )
+                
+                // Initial check in case we are already ready (local cache?)
+                applyPendingSyncIfReady()
+                
+                // Signal ready
+                client.sendBufferReady(currentTrack.id)
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Error applying playback state", e)
+            } finally {
+                playerConnection?.allowInternalSync = false
+                // Keep isSyncing = true until buffering completes? 
+                // No, release it so we can process other messages, but buffer logic protects us.
                 delay(200)
                 isSyncing = false
             }
@@ -641,7 +762,8 @@ class ListenTogetherManager @Inject constructor(
         // Track which buffer-complete we expect for this load
         bufferingTrackId = track.id
         
-        scope.launch(Dispatchers.IO) {
+        activeSyncJob?.cancel()
+        activeSyncJob = scope.launch(Dispatchers.IO) {
             try {
                 // Use YouTube API to play the track by ID
                 YouTube.queue(listOf(track.id)).onSuccess { queue ->
@@ -793,9 +915,74 @@ class ListenTogetherManager @Inject constructor(
         )
         
         Log.d(TAG, "Sending track change: ${trackInfo.title}, duration: $durationMs")
+        
+        // Also grab current queue to send along with track change
+        val currentQueue = playerConnection?.queueWindows?.value?.map { it.toTrackInfo() }
+        
         client.sendPlaybackAction(
             PlaybackActions.CHANGE_TRACK,
-            trackInfo = trackInfo
+            trackInfo = trackInfo,
+            queue = currentQueue
+        )
+    }
+
+    private fun startQueueSyncObservation() {
+        if (queueObserverJob?.isActive == true) return
+        
+        Log.d(TAG, "Starting queue sync observation")
+        Log.d(TAG, "Starting queue sync observation")
+        queueObserverJob = scope.launch {
+            playerConnection?.queueWindows
+                ?.map { windows ->
+                    windows.map { it.toTrackInfo() }
+                }
+                ?.distinctUntilChanged()
+                ?.collectLatest { tracks ->
+                    if (!isHost || !isInRoom || isSyncing) return@collectLatest
+                    
+                    // Send immediately on first emission or significant change
+                    // Debounce is handled naturally by distinctUntilChanged + collectLatest if we wanted to add delay,
+                    // but for queue we want responsiveness. A small 500ms delay for stability is okay but 
+                    // should be skippable for first emit?
+                    // Let's rely on distinctUntilChanged to reduce noise.
+                    
+                    delay(500) // Debounce rapid playlist manipulations
+                    
+                    Log.d(TAG, "Sending SYNC_QUEUE with ${tracks.size} items")
+                    client.sendPlaybackAction(
+                        PlaybackActions.SYNC_QUEUE,
+                        queue = tracks
+                    )
+                }
+        }
+    }
+
+    private fun androidx.media3.common.Timeline.Window.toTrackInfo(): TrackInfo {
+        val metadata = mediaItem.metadata ?: return TrackInfo("unknown", "Unknown", "Unknown", "", 0, "")
+        val durationMs = if (metadata.duration > 0) metadata.duration.toLong() * 1000 else 180000L
+        return TrackInfo(
+            id = metadata.id,
+            title = metadata.title,
+            artist = metadata.artists.joinToString(", ") { it.name },
+            album = metadata.album?.title,
+            duration = durationMs,
+            thumbnail = metadata.thumbnailUrl
+        )
+    }
+
+    private fun stopQueueSyncObservation() {
+        queueObserverJob?.cancel()
+        queueObserverJob = null
+    }
+
+    private fun TrackInfo.toMediaMetadata(): MediaMetadata {
+        return MediaMetadata(
+            id = id,
+            title = title,
+            artists = listOf(Artist(id = "", name = artist)),
+            album = if (album != null) Album(id = "", title = album) else null,
+            duration = (duration / 1000).toInt(),
+            thumbnailUrl = thumbnail
         )
     }
 

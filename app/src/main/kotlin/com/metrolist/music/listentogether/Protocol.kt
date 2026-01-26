@@ -70,6 +70,7 @@ object PlaybackActions {
     const val QUEUE_ADD = "queue_add"
     const val QUEUE_REMOVE = "queue_remove"
     const val QUEUE_CLEAR = "queue_clear"
+    const val SYNC_QUEUE = "sync_queue"
 }
 
 /**
@@ -150,7 +151,8 @@ data class PlaybackActionPayload(
     @SerialName("track_id") val trackId: String? = null,
     val position: Long? = null, // milliseconds
     @SerialName("track_info") val trackInfo: TrackInfo? = null,
-    @SerialName("insert_next") val insertNext: Boolean? = null
+    @SerialName("insert_next") val insertNext: Boolean? = null,
+    val queue: List<TrackInfo>? = null
 )
 
 @Serializable
@@ -291,7 +293,8 @@ data class SyncStatePayload(
     @SerialName("current_track") val currentTrack: TrackInfo?,
     @SerialName("is_playing") val isPlaying: Boolean,
     val position: Long,
-    @SerialName("last_update") val lastUpdate: Long
+    @SerialName("last_update") val lastUpdate: Long,
+    val queue: List<TrackInfo>? = null
 )
 
 // Reconnection payloads

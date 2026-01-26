@@ -242,7 +242,6 @@ fun Queue(
     BottomSheet(
         state = state,
         modifier = modifier,
-        isExpandable = !isListenTogetherGuest,
         background = {
             Box(Modifier.fillMaxSize().background(Color.Unspecified))
         },
@@ -277,7 +276,6 @@ fun Queue(
                         icon = R.drawable.queue_music,
                         onClick = { state.expandSoft() },
                         isActive = false,
-                        enabled = !isListenTogetherGuest,
                         shape = queueShape,
                         modifier = Modifier.size(buttonSize),
                         textButtonColor = textButtonColor,
@@ -704,7 +702,7 @@ fun Queue(
                         var processedDismiss by remember { mutableStateOf(false) }
                         LaunchedEffect(dismissBoxState.currentValue) {
                             val dv = dismissBoxState.currentValue
-                            if (!processedDismiss && (
+                            if (!processedDismiss && !isListenTogetherGuest && (
                                     dv == SwipeToDismissBoxValue.StartToEnd ||
                                     dv == SwipeToDismissBoxValue.EndToStart
                                 )
@@ -760,8 +758,9 @@ fun Queue(
                                                 onCheckedChange = onCheckedChange
                                             )
                                         } else {
-                                            IconButton(
-                                                onClick = {
+                                            if (!isListenTogetherGuest) {
+                                                IconButton(
+                                                    onClick = {
                                                     menuState.show {
                                                         QueueMenu(
                                                             mediaMetadata = window.mediaItem.metadata!!,
@@ -777,14 +776,15 @@ fun Queue(
                                                             onDismiss = menuState::dismiss,
                                                         )
                                                     }
-                                                },
+                                                }
                                             ) {
                                                 Icon(
                                                     painter = painterResource(R.drawable.more_vert),
                                                     contentDescription = null,
                                                 )
                                             }
-                                            if (!locked) {
+                                        }
+                                            if (!locked && !isListenTogetherGuest) {
                                                 IconButton(
                                                     onClick = { },
                                                     modifier = Modifier.draggableHandle()

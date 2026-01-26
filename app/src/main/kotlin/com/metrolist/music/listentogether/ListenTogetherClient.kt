@@ -1006,6 +1006,12 @@ class ListenTogetherClient @Inject constructor(
      * If not connected, will queue the action and connect first.
      */
     fun createRoom(username: String) {
+        // Clear any existing session to ensure we create a new room instead of reconnecting
+        clearPersistedSession()
+        sessionToken = null
+        storedRoomCode = null
+        wasHost = false
+        
         storedUsername = username
         
         if (_connectionState.value == ConnectionState.CONNECTED) {
@@ -1026,6 +1032,12 @@ class ListenTogetherClient @Inject constructor(
      * If not connected, will queue the action and connect first.
      */
     fun joinRoom(roomCode: String, username: String) {
+        // Clear any existing session to ensure we join the new room instead of reconnecting
+        clearPersistedSession()
+        sessionToken = null
+        storedRoomCode = null
+        wasHost = false
+
         storedUsername = username
         
         if (_connectionState.value == ConnectionState.CONNECTED) {
@@ -1111,12 +1123,12 @@ class ListenTogetherClient @Inject constructor(
     /**
      * Send a playback action (host only)
      */
-    fun sendPlaybackAction(action: String, trackId: String? = null, position: Long? = null, trackInfo: TrackInfo? = null, insertNext: Boolean? = null) {
+    fun sendPlaybackAction(action: String, trackId: String? = null, position: Long? = null, trackInfo: TrackInfo? = null, insertNext: Boolean? = null, queue: List<TrackInfo>? = null) {
         if (_role.value != RoomRole.HOST) {
             log(LogLevel.ERROR, "Cannot control playback", "Not host")
             return
         }
-        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo, insertNext))
+        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo, insertNext, queue))
     }
 
     /**
