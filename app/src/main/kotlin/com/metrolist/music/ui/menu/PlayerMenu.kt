@@ -75,6 +75,7 @@ import androidx.core.net.toUri
 import android.content.Context
 import android.widget.Toast
 import com.metrolist.music.LocalListenTogetherManager
+import com.metrolist.music.listentogether.ListenTogetherEvent
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -748,14 +749,53 @@ fun ListenTogetherDialog(
     var savedUsername by rememberPreference(com.metrolist.music.constants.ListenTogetherUsernameKey, "")
     var roomCodeInput by rememberSaveable { mutableStateOf("") }
     var usernameInput by rememberSaveable { mutableStateOf(savedUsername) }
-    
+
+    // Local UI state for join/create actions
+    var isCreatingRoom by rememberSaveable { mutableStateOf(false) }
+    var isJoiningRoom by rememberSaveable { mutableStateOf(false) }
+    var joinErrorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // Localized helper strings
+    val waitingForApprovalText = stringResource(R.string.waiting_for_approval)
+    val invalidRoomCodeText = stringResource(R.string.invalid_room_code)
+    val joinRequestDeniedText = stringResource(R.string.join_request_denied)
+
     // Sync usernameInput when savedUsername changes
     LaunchedEffect(savedUsername) {
         if (usernameInput.isBlank() && savedUsername.isNotBlank()) {
             usernameInput = savedUsername
         }
     }
-    
+
+    // Listen to low level events to update UI state (join rejected, approved, room created)
+    LaunchedEffect(listenTogetherManager) {
+        listenTogetherManager.events.collect { event ->
+            when (event) {
+                is ListenTogetherEvent.JoinRejected -> {
+                    val reason = event.reason
+                    joinErrorMessage = when {
+                        reason == null -> joinRequestDeniedText
+                        reason.contains("invalid", ignoreCase = true) -> invalidRoomCodeText
+                        else -> "$joinRequestDeniedText: $reason"
+                    }
+                    isJoiningRoom = false
+                    isCreatingRoom = false
+                }
+
+                is ListenTogetherEvent.JoinApproved -> {
+                    isJoiningRoom = false
+                    joinErrorMessage = null
+                }
+
+                is ListenTogetherEvent.RoomCreated -> {
+                    isCreatingRoom = false
+                }
+
+                else -> { /* ignore other events here */ }
+            }
+        }
+    }
+
     // Check if already in a room
     val isInRoom = listenTogetherManager.isInRoom
     val isHost = roomState?.hostId == userId
@@ -1134,6 +1174,23 @@ fun ListenTogetherDialog(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
+
+                    // Show status messages for join/create
+                    if (isJoiningRoom) {
+                        Text(
+                            text = waitingForApprovalText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    joinErrorMessage?.let { msg ->
+                        Text(
+                            text = msg,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             }
         },
@@ -1170,9 +1227,12 @@ fun ListenTogetherDialog(
                                         context.getString(R.string.joining_room, roomCodeInput),
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    // Keep the dialog open while waiting for host approval
+                                    isJoiningRoom = true
+                                    isCreatingRoom = false
+                                    joinErrorMessage = null
                                     listenTogetherManager.connect()
                                     listenTogetherManager.joinRoom(roomCodeInput, username)
-                                    onDismiss()
                                 }
                             },
                             enabled = (usernameInput.isNotBlank() || savedUsername.isNotBlank())
@@ -1196,9 +1256,12 @@ fun ListenTogetherDialog(
                                     R.string.creating_room,
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                // Keep the dialog open while creating the room
+                                isCreatingRoom = true
+                                isJoiningRoom = false
+                                joinErrorMessage = null
                                 listenTogetherManager.connect()
                                 listenTogetherManager.createRoom(username)
-                                onDismiss()
                             }
                         },
                         enabled = (usernameInput.isNotBlank() || savedUsername.isNotBlank())

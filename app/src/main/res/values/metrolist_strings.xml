@@ -475,6 +475,9 @@
     <string name="listen_together_users">%d users in room</string>
     <string name="listen_together_buffering">Waiting for %d users to buffer</string>
     <string name="listen_together_join_requests">Join Requests</string>
+    <string name="waiting_for_approval">Waiting for approval from host</string>
+    <string name="invalid_room_code">Invalid room code</string>
+    <string name="join_request_denied">Join request denied</string>
     <string name="listen_together_view_logs">View Logs</string>
     <string name="listen_together_view_logs_desc">Debug connection and messages</string>
     <string name="listen_together_logs">Connection Logs</string>
