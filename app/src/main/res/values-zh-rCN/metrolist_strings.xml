@@ -381,4 +381,6 @@
     <string name="player_client_android_vr_desc">速度最快. 直接传输流媒体 URL,无需解密签名 推荐给大多数用户.</string>
     <string name="player_client_web_remix">网络混音</string>
     <string name="player_client_web_remix_desc">速度较慢. 但支持高级格式. 使用 JavaScript 签名解密, 这会使播放开始时间增加约 5-10 秒.</string>
+    <string name="crop_album_art">裁剪专辑封面</string>
+    <string name="crop_album_art_desc">通过裁剪视频缩略图强制使用正方形宽高比</string>
 </resources>
