@@ -512,6 +512,9 @@
     <string name="pending_requests">Pending Requests</string>
     <string name="pending_suggestions">Pending Suggestions</string>
     <string name="listen_together_suggestion_received">%1$s requested &quot;%2$s&quot;</string>
+    <string name="listen_together_join_request_notification">%1$s wants to join the room</string>
+    <string name="listen_together_notification_channel_name">Listen Together</string>
+    <string name="listen_together_notification_channel_desc">Notifications for Listen Together events</string>
     <string name="listen_together_room_created">Room created: %s</string>
     <string name="suggest_to_host">Suggest to host</string>
     <string name="kick_user">Kick</string>

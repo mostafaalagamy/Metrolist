@@ -12,6 +12,12 @@ import androidx.core.content.getSystemService
 import com.metrolist.music.constants.ListenTogetherServerUrlKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -142,7 +148,17 @@ class ListenTogetherClient @Inject constructor(
         private const val RECONNECT_DELAY_MS = 2000L
         private const val PING_INTERVAL_MS = 25000L
         private const val MAX_LOG_ENTRIES = 500
-        
+
+        // Notification constants
+        private const val NOTIFICATION_CHANNEL_ID = "listen_together_channel"
+        const val ACTION_APPROVE_JOIN = "com.metrolist.music.LISTEN_TOGETHER_APPROVE_JOIN"
+        const val ACTION_REJECT_JOIN = "com.metrolist.music.LISTEN_TOGETHER_REJECT_JOIN"
+        const val ACTION_APPROVE_SUGGESTION = "com.metrolist.music.LISTEN_TOGETHER_APPROVE_SUGGESTION"
+        const val ACTION_REJECT_SUGGESTION = "com.metrolist.music.LISTEN_TOGETHER_REJECT_SUGGESTION"
+        const val EXTRA_USER_ID = "extra_user_id"
+        const val EXTRA_SUGGESTION_ID = "extra_suggestion_id"
+        const val EXTRA_NOTIFICATION_ID = "extra_notification_id"
+
         @Volatile
         private var instance: ListenTogetherClient? = null
         
@@ -155,6 +171,7 @@ class ListenTogetherClient @Inject constructor(
     
     init {
         setInstance(this)
+        ensureNotificationChannel()
     }
 
     private val json = Json { 
@@ -364,6 +381,86 @@ class ListenTogetherClient @Inject constructor(
         }
     }
 
+    private fun ensureNotificationChannel() {
+        try {
+            val nm = context.getSystemService(NotificationManager::class.java)
+            val existing = nm?.getNotificationChannel(NOTIFICATION_CHANNEL_ID)
+            if (existing == null) {
+                val channel = NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    context.getString(R.string.listen_together_notification_channel_name),
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                channel.description = context.getString(R.string.listen_together_notification_channel_desc)
+                nm?.createNotificationChannel(channel)
+            }
+        } catch (e: Exception) {
+            log(LogLevel.WARNING, "Failed to create notification channel", e.message)
+        }
+    }
+
+    private fun showJoinRequestNotification(payload: JoinRequestPayload) {
+        val notifId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+
+        val approveIntent = Intent(context, ListenTogetherActionReceiver::class.java).apply {
+            action = ACTION_APPROVE_JOIN
+            putExtra(EXTRA_USER_ID, payload.userId)
+            putExtra(EXTRA_NOTIFICATION_ID, notifId)
+        }
+        val rejectIntent = Intent(context, ListenTogetherActionReceiver::class.java).apply {
+            action = ACTION_REJECT_JOIN
+            putExtra(EXTRA_USER_ID, payload.userId)
+            putExtra(EXTRA_NOTIFICATION_ID, notifId)
+        }
+
+        val approvePI = PendingIntent.getBroadcast(context, payload.userId.hashCode(), approveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val rejectPI = PendingIntent.getBroadcast(context, payload.userId.hashCode().inv(), rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val content = context.getString(R.string.listen_together_join_request_notification, payload.username)
+
+        val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.share)
+            .setContentTitle(context.getString(R.string.listen_together))
+            .setContentText(content)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .addAction(0, context.getString(R.string.approve), approvePI)
+            .addAction(0, context.getString(R.string.reject), rejectPI)
+
+        NotificationManagerCompat.from(context).notify(notifId, builder.build())
+    }
+
+    private fun showSuggestionNotification(payload: SuggestionReceivedPayload) {
+        val notifId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+
+        val approveIntent = Intent(context, ListenTogetherActionReceiver::class.java).apply {
+            action = ACTION_APPROVE_SUGGESTION
+            putExtra(EXTRA_SUGGESTION_ID, payload.suggestionId)
+            putExtra(EXTRA_NOTIFICATION_ID, notifId)
+        }
+        val rejectIntent = Intent(context, ListenTogetherActionReceiver::class.java).apply {
+            action = ACTION_REJECT_SUGGESTION
+            putExtra(EXTRA_SUGGESTION_ID, payload.suggestionId)
+            putExtra(EXTRA_NOTIFICATION_ID, notifId)
+        }
+
+        val approvePI = PendingIntent.getBroadcast(context, payload.suggestionId.hashCode(), approveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val rejectPI = PendingIntent.getBroadcast(context, payload.suggestionId.hashCode().inv(), rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val content = context.getString(R.string.listen_together_suggestion_received, payload.fromUsername, payload.trackInfo.title)
+
+        val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.share)
+            .setContentTitle(context.getString(R.string.listen_together))
+            .setContentText(content)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .addAction(0, context.getString(R.string.approve), approvePI)
+            .addAction(0, context.getString(R.string.reject), rejectPI)
+
+        NotificationManagerCompat.from(context).notify(notifId, builder.build())
+    }
+
     private fun handleDisconnect() {
         pingJob?.cancel()
         pingJob = null
@@ -450,6 +547,10 @@ class ListenTogetherClient @Inject constructor(
                     val payload = json.decodeFromJsonElement<JoinRequestPayload>(message.payload!!)
                     _pendingJoinRequests.value = _pendingJoinRequests.value + payload
                     log(LogLevel.INFO, "Join request received", "User: ${payload.username}")
+                    // Notify host with Approve/Reject actions
+                    if (_role.value == RoomRole.HOST) {
+                        showJoinRequestNotification(payload)
+                    }
                     scope.launch { _events.emit(ListenTogetherEvent.JoinRequestReceived(payload.userId, payload.username)) }
                 }
                 
@@ -609,14 +710,8 @@ class ListenTogetherClient @Inject constructor(
                     if (_role.value == RoomRole.HOST) {
                         _pendingSuggestions.value = _pendingSuggestions.value + payload
                         log(LogLevel.INFO, "Suggestion received", "${payload.fromUsername}: ${payload.trackInfo.title}")
-                        // Show a global toast to the host so they get notified regardless of UI
-                        scope.launch(Dispatchers.Main) {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.listen_together_suggestion_received, payload.fromUsername, payload.trackInfo.title),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        // Notify the host with actionable notification
+                        showSuggestionNotification(payload)
                     }
                 }
 
