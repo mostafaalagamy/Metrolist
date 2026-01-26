@@ -473,7 +473,6 @@
     <string name="listen_together_you_are_host">You are the host</string>
     <string name="listen_together_you_are_guest">You are a guest</string>
     <string name="listen_together_users">%d users in room</string>
-    <string name="listen_together_buffering">Waiting for %d users to buffer</string>
     <string name="listen_together_join_requests">Join Requests</string>
     <string name="waiting_for_approval">Waiting for approval from host</string>
     <string name="invalid_room_code">Invalid room code</string>
@@ -482,14 +481,8 @@
     <string name="listen_together_view_logs_desc">Debug connection and messages</string>
     <string name="listen_together_logs">Connection Logs</string>
     <string name="listen_together_no_logs">No logs yet</string>
-    <string name="listen_together_start_party">Start Listening Party</string>
-    <string name="listen_together_waiting_for_approval">Waiting for host approval…</string>
-    <string name="listen_together_active">Listening Party Active</string>
     <string name="listen_together_description">Listen to music with friends in real-time. Create a room to host or join an existing room with a code.</string>
     <string name="join_existing_room">Join Existing Room</string>
-    <string name="room_code_display">Room: %s</string>
-    <string name="connected_users_count">%d users connected</string>
-    <string name="you_are_host">You are the host</string>
     <string name="room_code">Room Code</string>
     <string name="leave_room">Leave Room</string>
     <string name="join_room">Join</string>
@@ -523,7 +516,6 @@
     <string name="connected_users">Connected Users</string>
     <string name="enter_username">Enter Username</string>
     <string name="change">Change</string>
-    <string name="no_pending_requests">No pending requests</string>
     <string name="listen_together_cannot_edit_username_in_room">Cannot edit username while in a room</string>
     <string name="error_username_empty">Username is required.</string>
 </resources>

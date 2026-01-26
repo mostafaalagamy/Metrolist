@@ -482,23 +482,6 @@ fun ListenTogetherSettings(
                         }
                     }
                     
-                    // Buffering status
-                    if (bufferingUsers.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            LinearProgressIndicator(
-                                modifier = Modifier.weight(1f)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.listen_together_buffering, bufferingUsers.size),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
-                    
                     Spacer(modifier = Modifier.height(12.dp))
                     
                     // Leave room button
