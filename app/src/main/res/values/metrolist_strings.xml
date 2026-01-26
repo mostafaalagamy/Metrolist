@@ -521,4 +521,6 @@
     <string name="enter_username">Enter Username</string>
     <string name="change">Change</string>
     <string name="no_pending_requests">No pending requests</string>
+    <string name="listen_together_cannot_edit_username_in_room">Cannot edit username while in a room</string>
+    <string name="error_username_empty">Username is required.</string>
 </resources>

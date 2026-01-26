@@ -165,15 +165,51 @@ fun ListenTogetherSettings(
     }
     
     if (showUsernameDialog) {
-        TextFieldDialog(
+        var tempUsername by rememberSaveable(showUsernameDialog) { mutableStateOf(username) }
+
+        AlertDialog(
+            onDismissRequest = { showUsernameDialog = false },
             title = { Text(stringResource(R.string.listen_together_username)) },
-            initialTextFieldValue = TextFieldValue(username),
-            onDone = { username = it },
-            onDismiss = { showUsernameDialog = false }
+            text = {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = tempUsername,
+                        onValueChange = { tempUsername = it },
+                        label = { Text(stringResource(R.string.listen_together_username)) },
+                        leadingIcon = {
+                            Icon(painterResource(R.drawable.person), contentDescription = null)
+                        },
+                        trailingIcon = {
+                            if (tempUsername.isNotBlank()) {
+                                IconButton(onClick = { tempUsername = "" }, onLongClick = {}) {
+                                    Icon(painterResource(R.drawable.close), contentDescription = null)
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(onClick = { username = tempUsername.trim(); showUsernameDialog = false }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { username = ""; showUsernameDialog = false }) {
+                    Text(stringResource(R.string.reset))
+                }
+            }
         )
     }
     
     if (showCreateRoomDialog) {
+        var createUsername by rememberSaveable(showCreateRoomDialog) { mutableStateOf(username) }
+
         AlertDialog(
             onDismissRequest = { showCreateRoomDialog = false },
             title = { Text(stringResource(R.string.listen_together_create_room)) },
@@ -184,8 +220,8 @@ fun ListenTogetherSettings(
                 ) {
                     Text(stringResource(R.string.listen_together_create_room_desc))
                     OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
+                        value = createUsername,
+                        onValueChange = { createUsername = it },
                         label = { Text(stringResource(R.string.listen_together_username)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
@@ -195,12 +231,16 @@ fun ListenTogetherSettings(
             confirmButton = {
                 Button(
                     onClick = {
-                        if (username.isNotBlank()) {
-                            viewModel.createRoom(username)
+                        val finalUsername = createUsername.trim()
+                        if (finalUsername.isNotBlank()) {
+                            username = finalUsername
+                            viewModel.createRoom(finalUsername)
                             showCreateRoomDialog = false
+                        } else {
+                            Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
                     },
-                    enabled = username.isNotBlank()
+                    enabled = createUsername.trim().isNotBlank()
                 ) {
                     Text(stringResource(R.string.create))
                 }
@@ -214,6 +254,8 @@ fun ListenTogetherSettings(
     }
     
     if (showJoinRoomDialog) {
+        var joinUsername by rememberSaveable(showJoinRoomDialog) { mutableStateOf(username) }
+
         AlertDialog(
             onDismissRequest = { showJoinRoomDialog = false },
             title = { Text(stringResource(R.string.listen_together_join_room)) },
@@ -223,8 +265,8 @@ fun ListenTogetherSettings(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
+                        value = joinUsername,
+                        onValueChange = { joinUsername = it },
                         label = { Text(stringResource(R.string.listen_together_username)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
@@ -241,13 +283,17 @@ fun ListenTogetherSettings(
             confirmButton = {
                 Button(
                     onClick = {
-                        if (username.isNotBlank() && roomCodeInput.length == 6) {
-                            viewModel.joinRoom(roomCodeInput, username)
+                        val finalUsername = joinUsername.trim()
+                        if (finalUsername.isNotBlank() && roomCodeInput.length == 6) {
+                            username = finalUsername
+                            viewModel.joinRoom(roomCodeInput, finalUsername)
                             showJoinRoomDialog = false
                             roomCodeInput = ""
+                        } else {
+                            Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
                     },
-                    enabled = username.isNotBlank() && roomCodeInput.length == 6
+                    enabled = joinUsername.trim().isNotBlank() && roomCodeInput.length == 6
                 ) {
                     Text(stringResource(R.string.join))
                 }
@@ -583,7 +629,14 @@ fun ListenTogetherSettings(
             title = { Text(stringResource(R.string.listen_together_username)) },
             description = username.ifEmpty { stringResource(R.string.not_set) },
             icon = { Icon(painterResource(R.drawable.person), null) },
-            onClick = { showUsernameDialog = true }
+            onClick = {
+                if (roomState == null) {
+                    showUsernameDialog = true
+                } else {
+                    Toast.makeText(context, context.getString(R.string.listen_together_cannot_edit_username_in_room), Toast.LENGTH_SHORT).show()
+                }
+            },
+            isEnabled = roomState == null
         )
         
         PreferenceEntry(
@@ -627,6 +680,8 @@ fun LogsDialog(
         }
     }
     
+    val context = LocalContext.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.listen_together_logs)) },
@@ -664,8 +719,32 @@ fun LogsDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onClear) {
-                Text(stringResource(R.string.clear))
+            Row {
+                TextButton(
+                    onClick = {
+                        val textToCopy = logs.joinToString("\n") { log ->
+                            buildString {
+                                append(log.timestamp)
+                                append(" [")
+                                append(log.level.name)
+                                append("] ")
+                                append(log.message)
+                                log.details?.let { d -> append(" -- $d") }
+                            }
+                        }
+                        val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                        val clip = android.content.ClipData.newPlainText("ListenTogetherLogs", textToCopy)
+                        cm.setPrimaryClip(clip)
+                        Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                    },
+                    enabled = logs.isNotEmpty()
+                ) {
+                    Text(stringResource(R.string.copy))
+                }
+
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.clear))
+                }
             }
         }
     )
@@ -673,13 +752,16 @@ fun LogsDialog(
 
 @Composable
 fun LogEntryItem(log: LogEntry) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = log.timestamp,
@@ -710,6 +792,7 @@ fun LogEntryItem(log: LogEntry) {
                 )
             }
         }
+
         Text(
             text = log.message,
             style = MaterialTheme.typography.bodySmall,

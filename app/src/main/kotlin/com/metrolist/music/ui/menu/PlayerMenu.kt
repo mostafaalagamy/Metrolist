@@ -779,8 +779,8 @@ fun ListenTogetherDialog(
                 is ListenTogetherEvent.JoinRejected -> {
                     val reason = event.reason
                     joinErrorMessage = when {
-                        reason == null -> joinRequestDeniedText
-                        reason.contains("invalid", ignoreCase = true) -> invalidRoomCodeText
+                        reason.isNullOrBlank() -> joinRequestDeniedText
+                        reason.contains("invalid", ignoreCase = true) == true -> invalidRoomCodeText
                         else -> "$joinRequestDeniedText: $reason"
                     }
                     isJoiningRoom = false
@@ -1120,13 +1120,11 @@ fun ListenTogetherDialog(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     
-                    // Username input — always visible and editable. Persist on every change.
+                    // Username input - editable locally; persist only when user confirms join/create.
                     OutlinedTextField(
                         value = usernameInput,
                         onValueChange = {
                             usernameInput = it
-                            // Persist trimmed username to preference on every change
-                            savedUsername = it.trim()
                         },
                         label = { Text(stringResource(R.string.username)) },
                         placeholder = { Text(stringResource(R.string.enter_username)) },
@@ -1140,7 +1138,6 @@ fun ListenTogetherDialog(
                             if (usernameInput.isNotBlank()) {
                                 IconButton(onClick = {
                                     usernameInput = ""
-                                    savedUsername = ""
                                 }) {
                                     Icon(
                                         painter = painterResource(R.drawable.close),
@@ -1225,8 +1222,9 @@ fun ListenTogetherDialog(
                         Button(
                             onClick = {
                                 val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
-                                if (username.isNotBlank()) {
-                                    savedUsername = username
+                                val finalUsername = username.trim()
+                                if (finalUsername.isNotBlank()) {
+                                    savedUsername = finalUsername
                                     Toast.makeText(
                                         context,
                                         context.getString(R.string.joining_room, roomCodeInput),
@@ -1237,10 +1235,12 @@ fun ListenTogetherDialog(
                                     isCreatingRoom = false
                                     joinErrorMessage = null
                                     listenTogetherManager.connect()
-                                    listenTogetherManager.joinRoom(roomCodeInput, username)
+                                    listenTogetherManager.joinRoom(roomCodeInput, finalUsername)
+                                } else {
+                                    Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                                 }
                             },
-                            enabled = (usernameInput.isNotBlank() || savedUsername.isNotBlank())
+                            enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank())
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.login),
@@ -1254,8 +1254,9 @@ fun ListenTogetherDialog(
                     Button(
                         onClick = {
                             val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
-                            if (username.isNotBlank()) {
-                                savedUsername = username
+                            val finalUsername = username.trim()
+                            if (finalUsername.isNotBlank()) {
+                                savedUsername = finalUsername
                                 Toast.makeText(
                                     context,
                                     R.string.creating_room,
@@ -1266,10 +1267,12 @@ fun ListenTogetherDialog(
                                 isJoiningRoom = false
                                 joinErrorMessage = null
                                 listenTogetherManager.connect()
-                                listenTogetherManager.createRoom(username)
+                                listenTogetherManager.createRoom(finalUsername)
+                            } else {
+                                Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                             }
                         },
-                        enabled = (usernameInput.isNotBlank() || savedUsername.isNotBlank())
+                        enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank())
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.add),
