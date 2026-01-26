@@ -9,19 +9,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -71,46 +66,31 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.CONTENT_TYPE_ARTIST
-import com.metrolist.music.constants.CONTENT_TYPE_LIST
-import com.metrolist.music.constants.ListItemHeight
-import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.StatPeriod
-import com.metrolist.music.db.entities.Album
-import com.metrolist.music.db.entities.Playlist
-import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ArtistListItem
 import com.metrolist.music.ui.component.ChoiceChipsRow
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.LocalAlbumsGrid
 import com.metrolist.music.ui.component.LocalArtistsGrid
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.LocalSongsGrid
 import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.PlaylistListItem
-import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.ArtistMenu
-import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
-import com.metrolist.music.viewmodels.LocalFilter
 import com.metrolist.music.viewmodels.StatsViewModel
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -563,10 +543,11 @@ fun StatsScreen(
                 lazyListState = lazyListState,
                 icon = R.drawable.shuffle,
                 onClick = {
+                    val songIds = mostPlayedSongsStats.map { it.id }.toSet()
                     playerConnection.playQueue(
                         ListQueue(
                             title = context.getString(R.string.most_played_songs),
-                            items = mostPlayedSongs.map { it.toMediaMetadata().toMediaItem() }.shuffled()
+                            items = mostPlayedSongs.filter{song -> song.id in songIds}.map { it.toMediaMetadata().toMediaItem() }.shuffled()
                         )
                     )
                 }
