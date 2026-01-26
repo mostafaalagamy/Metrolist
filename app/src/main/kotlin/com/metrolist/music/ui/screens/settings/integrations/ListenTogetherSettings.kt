@@ -330,6 +330,7 @@ fun ListenTogetherSettings(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
                 containerColor = when (connectionState) {
                     ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primaryContainer
@@ -348,7 +349,7 @@ fun ListenTogetherSettings(
                         ConnectionState.ERROR -> stringResource(R.string.listen_together_error)
                         ConnectionState.DISCONNECTED -> stringResource(R.string.listen_together_disconnected)
                     },
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 
@@ -388,8 +389,12 @@ fun ListenTogetherSettings(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = if (role == RoomRole.HOST) 
+                        MaterialTheme.colorScheme.tertiaryContainer 
+                    else 
+                        MaterialTheme.colorScheme.secondaryContainer
                 )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -406,7 +411,7 @@ fun ListenTogetherSettings(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = stringResource(R.string.listen_together_room_code) + ": ${state.roomCode}",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
@@ -449,7 +454,7 @@ fun ListenTogetherSettings(
                     ) {
                         state.users.forEach { user ->
                             Surface(
-                                shape = RoundedCornerShape(16.dp),
+                                shape = RoundedCornerShape(20.dp),
                                 color = if (user.isHost) 
                                     MaterialTheme.colorScheme.primary 
                                 else 
@@ -511,6 +516,7 @@ fun ListenTogetherSettings(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     )
@@ -754,7 +760,7 @@ fun LogEntryItem(log: LogEntry) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Surface(
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(8.dp),
                 color = when (log.level) {
                     LogLevel.ERROR -> MaterialTheme.colorScheme.errorContainer
                     LogLevel.WARNING -> Color(0xFFFFF3CD)

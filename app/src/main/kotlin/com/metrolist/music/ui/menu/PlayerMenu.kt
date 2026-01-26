@@ -293,7 +293,7 @@ fun PlayerMenu(
                                 Icon(
                                     painter = painterResource(R.drawable.radio),
                                     contentDescription = null,
-                                    modifier = Modifier.size(28.dp),
+                                    modifier = Modifier.size(32.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             },
@@ -310,7 +310,7 @@ fun PlayerMenu(
                             Icon(
                                 painter = painterResource(R.drawable.playlist_add),
                                 contentDescription = null,
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(32.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
@@ -322,7 +322,7 @@ fun PlayerMenu(
                             Icon(
                                 painter = painterResource(R.drawable.link),
                                 contentDescription = null,
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(32.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
@@ -507,7 +507,7 @@ fun PlayerMenu(
                                     )
                                     if (pendingSuggestions.isNotEmpty()) {
                                         Surface(
-                                            shape = RoundedCornerShape(8.dp),
+                                            shape = RoundedCornerShape(12.dp),
                                             color = MaterialTheme.colorScheme.primary,
                                             modifier = Modifier
                                                 .offset(x = 8.dp, y = (-6).dp)
