@@ -297,6 +297,7 @@ fun Queue(
                             }
                         },
                         isActive = sleepTimerEnabled,
+                        enabled = !isListenTogetherGuest,
                         shape = middleShape,
                         modifier = Modifier.size(buttonSize),
                         textButtonColor = textButtonColor,
@@ -433,11 +434,14 @@ fun Queue(
                     }
 
                     TextButton(
+                        enabled = !isListenTogetherGuest,
                         onClick = {
-                            if (sleepTimerEnabled) {
-                                playerConnection.service.sleepTimer.clear()
-                            } else {
-                                showSleepTimerDialog = true
+                            if (!isListenTogetherGuest) {
+                                if (sleepTimerEnabled) {
+                                    playerConnection.service.sleepTimer.clear()
+                                } else {
+                                    showSleepTimerDialog = true
+                                }
                             }
                         },
                         modifier = Modifier.weight(1.2f)
