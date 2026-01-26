@@ -66,6 +66,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.LocalSyncUtils
+import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -107,6 +108,7 @@ fun YouTubeSongMenu(
     val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     val syncUtils = LocalSyncUtils.current
+    val listenTogetherManager = LocalListenTogetherManager.current
     val artists = remember {
         song.artists.mapNotNull {
             it.id?.let { artistId ->
@@ -317,7 +319,31 @@ fun YouTubeSongMenu(
 
         item {
             Material3MenuGroup(
-                items = listOf(
+                items = listOfNotNull(
+                    if (listenTogetherManager != null && listenTogetherManager.isInRoom && !listenTogetherManager.isHost) {
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.suggest_to_host)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.queue_music),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                val durationMs = if (song.duration != null && song.duration!! > 0) song.duration!! * 1000L else 180000L
+                                val trackInfo = com.metrolist.music.listentogether.TrackInfo(
+                                    id = song.id,
+                                    title = song.title,
+                                    artist = artists.joinToString(", ") { it.name },
+                                    album = song.album?.name,
+                                    duration = durationMs,
+                                    thumbnail = song.thumbnail
+                                )
+                                listenTogetherManager.suggestTrack(trackInfo)
+                                onDismiss()
+                            }
+                        )
+                    } else null,
                     Material3MenuItemData(
                         title = { Text(text = stringResource(R.string.start_radio)) },
                         description = { Text(text = stringResource(R.string.start_radio_desc)) },
