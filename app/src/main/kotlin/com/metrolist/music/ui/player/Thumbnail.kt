@@ -232,7 +232,8 @@ fun Thumbnail(
     val mediaItemsData by remember(
         playerConnection.player.currentMediaItemIndex,
         playerConnection.player.shuffleModeEnabled,
-        swipeThumbnail
+        swipeThumbnail,
+        mediaMetadata
     ) {
         derivedStateOf {
             getMediaItems(playerConnection.player, swipeThumbnail)
@@ -396,7 +397,9 @@ fun Thumbnail(
                                 onSeek = onSeekCallback,
                                 playerConnection = playerConnection,
                                 context = context,
-                                isLandscape = isLandscape
+                                isLandscape = isLandscape,
+                                currentMediaId = mediaMetadata?.id,
+                                currentMediaThumbnail = mediaMetadata?.thumbnailUrl
                             )
                         }
                     }
@@ -478,8 +481,10 @@ private fun ThumbnailItem(
     onSeek: (String, Boolean) -> Unit,
     playerConnection: com.metrolist.music.playback.PlayerConnection,
     context: android.content.Context,
+    isLandscape: Boolean = false,
+    currentMediaId: String? = null,
+    currentMediaThumbnail: String? = null,
     modifier: Modifier = Modifier,
-    isLandscape: Boolean = false
 ) {
     val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
     var skipMultiplier by remember { mutableIntStateOf(1) }
@@ -540,8 +545,14 @@ private fun ThumbnailItem(
             if (hidePlayerThumbnail) {
                 HiddenThumbnailPlaceholder(textBackgroundColor = textBackgroundColor)
             } else {
+                val artworkUriToUse = if (item.mediaId == currentMediaId && !currentMediaThumbnail.isNullOrBlank()) {
+                    currentMediaThumbnail
+                } else {
+                    item.mediaMetadata.artworkUri?.toString()
+                }
+
                 ThumbnailImage(
-                    artworkUri = item.mediaMetadata.artworkUri?.toString(),
+                    artworkUri = artworkUriToUse,
                     cropArtwork = cropAlbumArt
                 )
             }
