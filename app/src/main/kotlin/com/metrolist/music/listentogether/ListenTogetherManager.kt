@@ -54,6 +54,12 @@ class ListenTogetherManager @Inject constructor(
     // Track ID being buffered
     private var bufferingTrackId: String? = null
 
+    // Pending sync to apply after buffering completes for guest
+    private var pendingSyncState: SyncStatePayload? = null
+
+    // Track if a buffer-complete arrived before the pending sync was ready
+    private var bufferCompleteReceivedForTrack: String? = null
+
     // Expose client state
     val connectionState = client.connectionState
     val roomState = client.roomState
@@ -227,6 +233,14 @@ class ListenTogetherManager @Inject constructor(
                     Log.d(TAG, "Room created with existing track: ${metadata.title}")
                     // Send track change so server has the current track info
                     sendTrackChangeInternal(metadata)
+                    // If host is already playing, immediately send PLAY with current position
+                    val isPlaying = playerConnection?.player?.playWhenReady == true
+                    if (isPlaying) {
+                        lastSyncedIsPlaying = true
+                        val position = playerConnection?.player?.currentPosition ?: 0
+                        Log.d(TAG, "Host already playing on room create, sending PLAY at $position")
+                        client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                    }
                 }
             }
             
@@ -267,6 +281,12 @@ class ListenTogetherManager @Inject constructor(
                     playerConnection?.player?.currentMetadata?.let { metadata ->
                         Log.d(TAG, "[SYNC] Sending current track to newly joined user: ${metadata.title}")
                         sendTrackChangeInternal(metadata)
+                        // If host is currently playing, also send PLAY with current position so the guest jumps to the live position
+                        if (playerConnection?.player?.playWhenReady == true) {
+                            val pos = playerConnection?.player?.currentPosition ?: 0
+                            Log.d(TAG, "[SYNC] Host playing, sending PLAY at $pos for new joiner")
+                            client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                        }
                         // Don't send play state - let buffering complete first
                     }
                 }
@@ -279,8 +299,8 @@ class ListenTogetherManager @Inject constructor(
             is ListenTogetherEvent.BufferComplete -> {
                 Log.d(TAG, "BufferComplete for track: ${event.trackId}")
                 if (!isHost && bufferingTrackId == event.trackId) {
-                    bufferingTrackId = null
-                    // Playback will start via sync_playback PLAY action
+                    bufferCompleteReceivedForTrack = event.trackId
+                    applyPendingSyncIfReady()
                 }
             }
             
@@ -325,6 +345,12 @@ class ListenTogetherManager @Inject constructor(
                     playerConnection?.player?.currentMetadata?.let { metadata ->
                         Log.d(TAG, "Reconnected as host, sending current track: ${metadata.title}")
                         sendTrackChangeInternal(metadata)
+                        // If host is playing after reconnect, send PLAY with current position
+                        if (playerConnection?.player?.playWhenReady == true) {
+                            val pos = playerConnection?.player?.currentPosition ?: 0
+                            Log.d(TAG, "Reconnected host is playing, sending PLAY at $pos")
+                            client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                        }
                     }
                 } else {
                     // Guest: sync to host's state
@@ -388,6 +414,49 @@ class ListenTogetherManager @Inject constructor(
         lastSyncedTrackId = null
         bufferingTrackId = null
         isSyncing = false
+        bufferCompleteReceivedForTrack = null
+    }
+
+    private fun applyPendingSyncIfReady() {
+        val pending = pendingSyncState ?: return
+        val pendingTrackId = pending.currentTrack?.id ?: bufferingTrackId ?: return
+        val completeForTrack = bufferCompleteReceivedForTrack
+
+        if (completeForTrack != pendingTrackId) return
+
+        val player = playerConnection?.player ?: return
+
+        Log.d(TAG, "Applying pending sync: track=$pendingTrackId, pos=${pending.position}, play=${pending.isPlaying}")
+        isSyncing = true
+
+        val targetPos = pending.position
+        if (kotlin.math.abs(player.currentPosition - targetPos) > 100) {
+            playerConnection?.seekTo(targetPos)
+        }
+
+        if (pending.isPlaying) {
+            playerConnection?.play()
+        } else {
+            playerConnection?.pause()
+        }
+
+        scope.launch {
+            delay(200)
+            isSyncing = false
+        }
+
+        bufferingTrackId = null
+        pendingSyncState = null
+        bufferCompleteReceivedForTrack = null
+
+        // Request a fresh authoritative sync after things settle, to correct any drift
+        scope.launch {
+            delay(1000)
+            if (!isHost) {
+                Log.d(TAG, "Requesting post-sync verification from host")
+                client.requestSync()
+            }
+        }
     }
 
     private fun handlePlaybackSync(action: PlaybackActionPayload) {
@@ -575,6 +644,9 @@ class ListenTogetherManager @Inject constructor(
 
     private fun syncToTrack(track: TrackInfo, shouldPlay: Boolean, position: Long) {
         Log.d(TAG, "syncToTrack: ${track.title}, play: $shouldPlay, pos: $position")
+
+        // Track which buffer-complete we expect for this load
+        bufferingTrackId = track.id
         
         scope.launch(Dispatchers.IO) {
             try {
@@ -605,19 +677,26 @@ class ListenTogetherManager @Inject constructor(
                             delay(50)
                             waitCount++
                         }
-                        
-                        // Seek to exact position
-                        if (position > 0) {
-                            playerConnection?.seekTo(position)
-                        }
-                        
+
+                        // Do NOT seek here; defer the exact seek until after the server signals buffer-complete
                         // Ensure paused state before signaling ready
                         playerConnection?.pause()
-                        
+
+                        // Store pending sync (guest will apply seek + play/pause after BufferComplete)
+                        pendingSyncState = SyncStatePayload(
+                            currentTrack = track,
+                            isPlaying = shouldPlay,
+                            position = position,
+                            lastUpdate = System.currentTimeMillis()
+                        )
+
+                        // Apply immediately if buffer-complete already arrived
+                        applyPendingSyncIfReady()
+
                         // Signal we're ready to play
                         client.sendBufferReady(track.id)
-                        Log.d(TAG, "Sent buffer ready for ${track.id}")
-                        
+                        Log.d(TAG, "Sent buffer ready for ${track.id}, pending sync stored: pos=$position, play=$shouldPlay")
+
                         // Minimal delay before accepting sync commands
                         delay(100)
                         isSyncing = false
