@@ -188,6 +188,9 @@ class ListenTogetherManager @Inject constructor(
             playerListenerRegistered = false
         }
         playerConnection?.shouldBlockPlaybackChanges = null
+        playerConnection?.onSkipPrevious = null
+        playerConnection?.onSkipNext = null
+        playerConnection?.onRestartSong = null
         
         playerConnection = connection
         
@@ -202,6 +205,28 @@ class ListenTogetherManager @Inject constructor(
             connection.player.addListener(playerListener)
             playerListenerRegistered = true
             Log.d(TAG, "Added player listener for room sync")
+            
+            // Hook up skip actions
+            connection.onSkipPrevious = {
+                if (isHost && !isSyncing) {
+                    Log.d(TAG, "Host Skip Previous triggered")
+                    client.sendPlaybackAction(PlaybackActions.SKIP_PREV)
+                }
+            }
+            connection.onSkipNext = {
+                if (isHost && !isSyncing) {
+                    Log.d(TAG, "Host Skip Next triggered")
+                    client.sendPlaybackAction(PlaybackActions.SKIP_NEXT)
+                }
+            }
+            
+            // Hook up restart action
+            connection.onRestartSong = {
+                if (isHost && !isSyncing) {
+                    Log.d(TAG, "Host Restart Song triggered (sending 1ms as 0ms workaround)")
+                    client.sendPlaybackAction(PlaybackActions.SEEK, position = 1L)
+                }
+            }
         }
 
         // Start/stop queue observation based on role
@@ -468,12 +493,11 @@ class ListenTogetherManager @Inject constructor(
         try {
             when (action.action) {
                 PlaybackActions.PLAY -> {
-                    Log.d(TAG, "Guest: PLAY at position ${action.position}")
+                    val pos = action.position ?: 0L
+                    Log.d(TAG, "Guest: PLAY at position $pos")
                     // Seek first for precision, then play
-                    action.position?.let { pos ->
-                        if (kotlin.math.abs(player.currentPosition - pos) > 100) {
-                            playerConnection?.seekTo(pos)
-                        }
+                    if (kotlin.math.abs(player.currentPosition - pos) > 100) {
+                        playerConnection?.seekTo(pos)
                     }
                     if (bufferingTrackId == null) {
                         // Start playback immediately for tighter sync
@@ -482,21 +506,19 @@ class ListenTogetherManager @Inject constructor(
                 }
                 
                 PlaybackActions.PAUSE -> {
-                    Log.d(TAG, "Guest: PAUSE at position ${action.position}")
+                    val pos = action.position ?: 0L
+                    Log.d(TAG, "Guest: PAUSE at position $pos")
                     // Pause first, then seek for accuracy
                     playerConnection?.pause()
-                    action.position?.let { pos ->
-                        if (kotlin.math.abs(player.currentPosition - pos) > 100) {
-                            playerConnection?.seekTo(pos)
-                        }
+                    if (kotlin.math.abs(player.currentPosition - pos) > 100) {
+                        playerConnection?.seekTo(pos)
                     }
                 }
                 
                 PlaybackActions.SEEK -> {
-                    Log.d(TAG, "Guest: SEEK to ${action.position}")
-                    action.position?.let { 
-                        playerConnection?.seekTo(it)
-                    }
+                    val pos = action.position ?: 0L
+                    Log.d(TAG, "Guest: SEEK to $pos")
+                    playerConnection?.seekTo(pos)
                 }
                 
                 PlaybackActions.CHANGE_TRACK -> {

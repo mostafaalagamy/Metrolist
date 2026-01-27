@@ -401,6 +401,7 @@ fun Thumbnail(
                                 playerConnection = playerConnection,
                                 context = context,
                                 isLandscape = isLandscape,
+                                isListenTogetherGuest = isListenTogetherGuest,
                                 currentMediaId = mediaMetadata?.id,
                                 currentMediaThumbnail = mediaMetadata?.thumbnailUrl
                             )
@@ -524,6 +525,7 @@ private fun ThumbnailItem(
     playerConnection: com.metrolist.music.playback.PlayerConnection,
     context: android.content.Context,
     isLandscape: Boolean = false,
+    isListenTogetherGuest: Boolean = false,
     currentMediaId: String? = null,
     currentMediaThumbnail: String? = null,
     modifier: Modifier = Modifier,
@@ -551,6 +553,8 @@ private fun ThumbnailItem(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onDoubleTap = { offset ->
+                        if (isListenTogetherGuest) return@detectTapGestures
+
                         val currentPosition = playerConnection.player.currentPosition
                         val duration = playerConnection.player.duration
 

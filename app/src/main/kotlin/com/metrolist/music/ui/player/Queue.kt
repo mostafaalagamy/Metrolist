@@ -805,7 +805,7 @@ fun Queue(
                                             onClick = {
                                                 if (inSelectMode) {
                                                     onCheckedChange(window.mediaItem.mediaId !in selection)
-                                                } else {
+                                                } else if (!isListenTogetherGuest) {
                                                     if (index == currentWindowIndex) {
                                                         if (isCasting) {
                                                             if (castIsPlaying) {
@@ -881,31 +881,33 @@ fun Queue(
                             MediaMetadataListItem(
                                 mediaMetadata = item.metadata!!,
                                 trailingContent = {
-                                    IconButton(
-                                        onClick = {
-                                            playerConnection.service.playNextAutomix(
-                                                item,
-                                                index,
+                                    if (!isListenTogetherGuest) {
+                                        IconButton(
+                                            onClick = {
+                                                playerConnection.service.playNextAutomix(
+                                                    item,
+                                                    index,
+                                                )
+                                            },
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.playlist_play),
+                                                contentDescription = null,
                                             )
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.playlist_play),
-                                            contentDescription = null,
-                                        )
-                                    }
-                                    IconButton(
-                                        onClick = {
-                                            playerConnection.service.addToQueueAutomix(
-                                                item,
-                                                index,
+                                        }
+                                        IconButton(
+                                            onClick = {
+                                                playerConnection.service.addToQueueAutomix(
+                                                    item,
+                                                    index,
+                                                )
+                                            },
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.queue_music),
+                                                contentDescription = null,
                                             )
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.queue_music),
-                                            contentDescription = null,
-                                        )
+                                        }
                                     }
                                 },
                                 modifier =

@@ -100,6 +100,9 @@ class PlayerConnection(
     @Volatile
     var allowInternalSync: Boolean = false
 
+    var onSkipPrevious: (() -> Unit)? = null
+    var onSkipNext: (() -> Unit)? = null
+
     init {
         player.addListener(this)
 
@@ -221,9 +224,14 @@ class PlayerConnection(
             return
         }
         player.seekToNext()
-        player.prepare()
+        if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+            player.prepare()
+        }
         player.playWhenReady = true
+        onSkipNext?.invoke()
     }
+
+    var onRestartSong: (() -> Unit)? = null
 
     fun seekToPrevious() {
         // When casting, use Cast skip instead of local player
@@ -232,9 +240,25 @@ class PlayerConnection(
             castHandler.skipToPrevious()
             return
         }
-        player.seekToPrevious()
-        player.prepare()
-        player.playWhenReady = true
+
+        // Logic to mimic standard seekToPrevious behavior but with explicit callbacks
+        // If we are more than 3 seconds in, just restart the song
+        if (player.currentPosition > 3000 || !player.hasPreviousMediaItem()) {
+            player.seekTo(0)
+            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+            onRestartSong?.invoke()
+        } else {
+            // Otherwise go to previous media item
+            player.seekToPreviousMediaItem()
+            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+            onSkipPrevious?.invoke()
+        }
     }
 
     override fun onPlaybackStateChanged(state: Int) {
