@@ -389,8 +389,8 @@
     <string name="player_client_android_vr">Android VR</string>
     <string name="player_client_android_vr_desc">Opzione più veloce. URL di streaming diretti senza decifratura della firma. Consigliata per la maggior parte degli utenti.</string>
     <string name="player_client_web_remix">Remix Web</string>
-    <string name="player_client_web_remix_desc">Più lenta ma supporta i formati premium. Utilizza JavaScript per la decifratura della firma, che aggiunge circa 5-10 secondi all’avvio della riproduzione.</string>
+    <string name="player_client_web_remix_desc">Più lenta ma supporta i formati premium. Utilizza JavaScript per la decrittografia della firma, che aggiunge circa 5-10 secondi all’avvio della riproduzione.</string>
     <string name="player_client">Client di riproduzione</string>
     <string name="crop_album_art">Ritaglia copertina dell\'album</string>
-    <string name="crop_album_art_desc">Forza un aspect ratio quadrato ritagliando le miniature dei video</string>
+    <string name="crop_album_art_desc">Forza le proporzioni quadrate ritagliando le miniature dei video</string>
 </resources>
