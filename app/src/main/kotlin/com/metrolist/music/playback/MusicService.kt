@@ -1715,6 +1715,18 @@ class MusicService :
         
         Log.w(TAG, "Player error occurred: ${error.message}", error)
         reportException(error)
+
+        // Mandatory cache clearing for the current song on any playback error
+        // This addresses issues like 416 (Requested Range Not Satisfiable) and EOFException
+        player.currentMediaItem?.mediaId?.let { mediaId ->
+            Log.d(TAG, "Clearing cache for $mediaId due to playback error")
+            try {
+                playerCache.removeResource(mediaId)
+                Log.d(TAG, "Successfully cleared cache for $mediaId")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to clear cache for $mediaId", e)
+            }
+        }
         
         // Check for expired URL (403 error) - needs immediate URL refresh
         if (isExpiredUrlError(error)) {
