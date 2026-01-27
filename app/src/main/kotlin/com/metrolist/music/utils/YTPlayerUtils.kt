@@ -15,7 +15,6 @@ import com.metrolist.innertube.PipePipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
-import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_NO_SDK
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_43_32
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_61_48
@@ -24,7 +23,6 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.IPADOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
-import com.metrolist.innertube.models.YouTubeClient.Companion.VISIONOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
@@ -65,13 +63,11 @@ object YTPlayerUtils {
                 WEB_REMIX,
                 ANDROID_CREATOR,
                 IPADOS,
-                TVHTML5,
-                VISIONOS,
-                ANDROID_NO_SDK,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
-                IOS,
+                TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                IOS,
                 WEB,
                 WEB_CREATOR
             )
@@ -80,13 +76,11 @@ object YTPlayerUtils {
                 ANDROID_VR_1_61_48,
                 ANDROID_CREATOR,
                 IPADOS,
-                TVHTML5,
-                VISIONOS,
-                ANDROID_NO_SDK,
                 ANDROID_VR_NO_AUTH,
                 MOBILE,
-                IOS,
+                TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                IOS,
                 WEB,
                 WEB_CREATOR
             )
