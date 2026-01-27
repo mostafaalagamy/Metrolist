@@ -95,7 +95,7 @@ fun AiSettings(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("AI Settings") },
+                title = { Text("AI Lyrics Translation") },
                 navigationIcon = {
                     androidx.compose.material3.IconButton(onClick = { navController.navigateUp() }) {
                         androidx.compose.material3.Icon(

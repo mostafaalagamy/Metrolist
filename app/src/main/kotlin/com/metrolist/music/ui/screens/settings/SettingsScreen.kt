@@ -95,7 +95,7 @@ fun SettingsScreen(
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.translate),
-                    title = { Text("AI for Lyrics Translation") },
+                    title = { Text("AI Lyrics Translation") },
                     onClick = { navController.navigate("settings/ai") }
                 )
             )

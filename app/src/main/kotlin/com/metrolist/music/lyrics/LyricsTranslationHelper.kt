@@ -176,19 +176,10 @@ object LyricsTranslationHelper {
                     
                     // Show error in UI
                     _status.value = TranslationStatus.Error(errorMessage)
-                    
-                    // Also display error in first line for user visibility
-                    if (lyrics.isNotEmpty()) {
-                        lyrics[0].translatedTextFlow.value = "⚠️ Error: ${errorMessage.take(50)}"
-                    }
                 }
             } catch (e: Exception) {
                 val errorMessage = e.message ?: "Translation failed"
                 _status.value = TranslationStatus.Error(errorMessage)
-                
-                if (lyrics.isNotEmpty()) {
-                    lyrics[0].translatedTextFlow.value = "⚠️ ${errorMessage.take(50)}"
-                }
             }
         }
     }
