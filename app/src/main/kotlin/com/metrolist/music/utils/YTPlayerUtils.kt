@@ -8,8 +8,10 @@ package com.metrolist.music.utils
 import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.metrolist.music.constants.AudioQuality
+import com.metrolist.music.constants.DecryptionLibrary
 import com.metrolist.music.constants.PlayerClient
 import com.metrolist.innertube.NewPipeUtils
+import com.metrolist.innertube.PipePipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
@@ -110,18 +112,19 @@ object YTPlayerUtils {
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
         playerClient: PlayerClient = PlayerClient.ANDROID_VR,
+        decryptionLibrary: DecryptionLibrary = DecryptionLibrary.NEWPIPE_EXTRACTOR,
     ): Result<PlaybackData> = runCatching {
         val mainClient = getMainClient(playerClient)
         val fallbackClients = getFallbackClients(playerClient)
         
-        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId, client: ${mainClient.clientName}")
+        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId, client: ${mainClient.clientName}, decryptionLibrary: $decryptionLibrary")
         /**
          * This is required for some clients to get working streams however
          * it should not be forced for the [MAIN_CLIENT] because the response of the [MAIN_CLIENT]
          * is required even if the streams won't work from this client.
          * This is why it is allowed to be null.
          */
-        val signatureTimestamp = getSignatureTimestampOrNull(videoId)
+        val signatureTimestamp = getSignatureTimestampOrNull(videoId, decryptionLibrary)
         Timber.tag(logTag).d("Signature timestamp: $signatureTimestamp")
 
         val isLoggedIn = YouTube.cookie != null
@@ -193,7 +196,7 @@ object YTPlayerUtils {
 
                 Timber.tag(logTag).d("Format found: ${format.mimeType}, bitrate: ${format.bitrate}")
 
-                streamUrl = findUrlOrNull(format, videoId)
+                streamUrl = findUrlOrNull(format, videoId, decryptionLibrary)
                 if (streamUrl == null) {
                     Timber.tag(logTag).d("Stream URL not found for format")
                     continue
@@ -333,13 +336,19 @@ object YTPlayerUtils {
         return false
     }
     /**
-     * Wrapper around the [NewPipeUtils.getSignatureTimestamp] function which reports exceptions
+     * Wrapper around the decryption library's getSignatureTimestamp function which reports exceptions.
+     * Uses the selected decryption library (NewPipe Extractor or PipePipe Extractor).
      */
     private fun getSignatureTimestampOrNull(
-        videoId: String
+        videoId: String,
+        decryptionLibrary: DecryptionLibrary
     ): Int? {
-        Timber.tag(logTag).d("Getting signature timestamp for videoId: $videoId")
-        return NewPipeUtils.getSignatureTimestamp(videoId)
+        Timber.tag(logTag).d("Getting signature timestamp for videoId: $videoId using $decryptionLibrary")
+        val result = when (decryptionLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getSignatureTimestamp(videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getSignatureTimestamp(videoId)
+        }
+        return result
             .onSuccess { Timber.tag(logTag).d("Signature timestamp obtained: $it") }
             .onFailure {
                 Timber.tag(logTag).e(it, "Failed to get signature timestamp")
@@ -347,15 +356,22 @@ object YTPlayerUtils {
             }
             .getOrNull()
     }
+    
     /**
-     * Wrapper around the [NewPipeUtils.getStreamUrl] function which reports exceptions
+     * Wrapper around the decryption library's getStreamUrl function which reports exceptions.
+     * Uses the selected decryption library (NewPipe Extractor or PipePipe Extractor).
      */
     private fun findUrlOrNull(
         format: PlayerResponse.StreamingData.Format,
-        videoId: String
+        videoId: String,
+        decryptionLibrary: DecryptionLibrary
     ): String? {
-        Timber.tag(logTag).d("Finding stream URL for format: ${format.mimeType}, videoId: $videoId")
-        return NewPipeUtils.getStreamUrl(format, videoId)
+        Timber.tag(logTag).d("Finding stream URL for format: ${format.mimeType}, videoId: $videoId using $decryptionLibrary")
+        val result = when (decryptionLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getStreamUrl(format, videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getStreamUrl(format, videoId)
+        }
+        return result
             .onSuccess { Timber.tag(logTag).d("Stream URL obtained successfully") }
             .onFailure {
                 Timber.tag(logTag).e(it, "Failed to get stream URL")

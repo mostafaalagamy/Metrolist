@@ -79,6 +79,13 @@ enum class PlayerClient {
     WEB_REMIX,
 }
 
+val DecryptionLibraryKey = stringPreferencesKey("decryptionLibrary")
+
+enum class DecryptionLibrary {
+    NEWPIPE_EXTRACTOR,
+    PIPEPIPE_EXTRACTOR,
+}
+
 val AudioOffload = booleanPreferencesKey("enableOffload")
 
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")

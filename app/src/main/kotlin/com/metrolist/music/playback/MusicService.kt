@@ -97,6 +97,8 @@ import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
+import com.metrolist.music.constants.DecryptionLibrary
+import com.metrolist.music.constants.DecryptionLibraryKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.PlayerClient
 import com.metrolist.music.constants.PlayerClientKey
@@ -241,6 +243,7 @@ class MusicService :
 
     private lateinit var audioQuality: com.metrolist.music.constants.AudioQuality
     private lateinit var playerClient: com.metrolist.music.constants.PlayerClient
+    private lateinit var decryptionLibrary: com.metrolist.music.constants.DecryptionLibrary
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
@@ -412,6 +415,7 @@ class MusicService :
         connectivityObserver = NetworkConnectivityObserver(this)
         audioQuality = dataStore.get(AudioQualityKey).toEnum(com.metrolist.music.constants.AudioQuality.AUTO)
         playerClient = dataStore.get(PlayerClientKey).toEnum(PlayerClient.ANDROID_VR)
+        decryptionLibrary = dataStore.get(DecryptionLibraryKey).toEnum(DecryptionLibrary.NEWPIPE_EXTRACTOR)
         playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
         // Initialize Google Cast
@@ -1886,6 +1890,7 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                     playerClient = playerClient,
+                    decryptionLibrary = decryptionLibrary,
                 )
             }.getOrElse { throwable ->
                 when (throwable) {
@@ -2234,6 +2239,7 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                     playerClient = playerClient,
+                    decryptionLibrary = decryptionLibrary,
                 ).getOrNull()
                 playbackData?.streamUrl
             } catch (e: Exception) {
