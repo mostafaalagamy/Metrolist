@@ -166,6 +166,7 @@ class ListenTogetherClient @Inject constructor(
         const val EXTRA_USER_ID = "extra_user_id"
         const val EXTRA_SUGGESTION_ID = "extra_suggestion_id"
         const val EXTRA_NOTIFICATION_ID = "extra_notification_id"
+        private const val RECONNECT_ON_NETWORK_RESTORED = true
 
         @Volatile
         private var instance: ListenTogetherClient? = null
@@ -183,6 +184,35 @@ class ListenTogetherClient @Inject constructor(
         // Load persisted session info asynchronously after construction to avoid calling log() before flows are initialized
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             loadPersistedSession()
+            observeNetworkChanges()
+        }
+    }
+
+    /**
+     * Observe network changes to trigger reconnections
+     */
+    private fun observeNetworkChanges() {
+        scope.launch {
+            connectivityObserver.networkStatus.collect { available ->
+                val previous = isNetworkAvailable
+                isNetworkAvailable = available
+                
+                if (available && !previous) {
+                    log(LogLevel.INFO, "Network restored, checking if reconnection needed")
+                    // Reset attempts when network is restored to allow a fresh set of retries
+                    if (_connectionState.value == ConnectionState.ERROR || 
+                        _connectionState.value == ConnectionState.DISCONNECTED) {
+                        
+                        if (sessionToken != null || _roomState.value != null || pendingAction != null) {
+                            log(LogLevel.INFO, "Network restored, triggering reconnection")
+                            reconnectAttempts = 0 // Reset attempts for a fresh start
+                            connect()
+                        }
+                    }
+                } else if (!available && previous) {
+                    log(LogLevel.WARNING, "Network lost")
+                }
+            }
         }
     }
     
@@ -284,6 +314,10 @@ class ListenTogetherClient @Inject constructor(
 
     // Track notification IDs for suggestions to dismiss them similarly
     private val suggestionNotifications = mutableMapOf<String, Int>()
+
+    // Network connectivity monitoring
+    private val connectivityObserver = NetworkConnectivityObserver(context)
+    private var isNetworkAvailable = connectivityObserver.isCurrentlyConnected()
 
     // State flows
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
@@ -600,6 +634,12 @@ class ListenTogetherClient @Inject constructor(
         
         // Always try to reconnect if we have a session token or pending action
         val shouldReconnect = sessionToken != null || _roomState.value != null || pendingAction != null
+        
+        if (!isNetworkAvailable) {
+            log(LogLevel.WARNING, "Connection failure, waiting for network", t.message)
+            _connectionState.value = ConnectionState.DISCONNECTED
+            return
+        }
         
         if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS && shouldReconnect) {
             reconnectAttempts++

@@ -376,17 +376,29 @@ class ListenTogetherManager @Inject constructor(
                 
                 // Sync state based on role
                 if (event.isHost) {
-                    // Host: send current track info to server to sync others
+                    // Host: only send sync if necessary
                     lastSyncedIsPlaying = playerConnection?.player?.playWhenReady
                     lastSyncedTrackId = playerConnection?.player?.currentMediaItem?.mediaId
-                    playerConnection?.player?.currentMetadata?.let { metadata ->
-                        Log.d(TAG, "Reconnected as host, sending current track: ${metadata.title}")
-                        sendTrackChangeInternal(metadata)
-                        // If host is playing after reconnect, send PLAY with current position
-                        if (playerConnection?.player?.playWhenReady == true) {
-                            val pos = playerConnection?.player?.currentPosition ?: 0
-                            Log.d(TAG, "Reconnected host is playing, sending PLAY at $pos")
-                            client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                    
+                    val currentMetadata = playerConnection?.player?.currentMetadata
+                    if (currentMetadata != null) {
+                        // Check if server already has the right track (from event.state)
+                        val serverTrackId = event.state.currentTrack?.id
+                        if (serverTrackId != currentMetadata.id) {
+                            Log.d(TAG, "Reconnected as host, server track ($serverTrackId) differs from local (${currentMetadata.id}), syncing")
+                            sendTrackChangeInternal(currentMetadata)
+                        } else {
+                            Log.d(TAG, "Reconnected as host, server already has current track $serverTrackId")
+                        }
+                        
+                        // Small delay before sending play state to let connection stabilize
+                        scope.launch {
+                            delay(500)
+                            if (playerConnection?.player?.playWhenReady == true) {
+                                val pos = playerConnection?.player?.currentPosition ?: 0
+                                Log.d(TAG, "Reconnected host is playing, sending PLAY at $pos")
+                                client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                            }
                         }
                     }
                 } else {
