@@ -708,13 +708,11 @@ class MainActivity : ComponentActivity() {
                     LocalSyncUtils provides syncUtils,
                     LocalListenTogetherManager provides listenTogetherManager,
                 ) {
-                    if (mediaMetadata != null) {
-                        ListenTogetherDialog(
-                            visible = showListenTogetherDialog,
-                            mediaMetadata = mediaMetadata!!,
-                            onDismiss = { showListenTogetherDialog = false }
-                        )
-                    }
+                    ListenTogetherDialog(
+                        visible = showListenTogetherDialog,
+                        mediaMetadata = mediaMetadata,
+                        onDismiss = { showListenTogetherDialog = false }
+                    )
 
                     Scaffold(
                         snackbarHost = { SnackbarHost(snackbarHostState) },

@@ -720,7 +720,7 @@ fun <T> ValueAdjuster(
 @Composable
 fun ListenTogetherDialog(
     visible: Boolean,
-    mediaMetadata: MediaMetadata,
+    mediaMetadata: MediaMetadata?,
     onDismiss: () -> Unit
 ) {
     if (!visible) return
