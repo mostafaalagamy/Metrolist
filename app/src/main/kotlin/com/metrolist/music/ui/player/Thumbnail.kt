@@ -454,11 +454,20 @@ private fun ThumbnailHeader(
                 .align(Alignment.Center)
                 .padding(horizontal = 48.dp)
         ) {
-            Text(
-                text = stringResource(R.string.now_playing),
-                style = MaterialTheme.typography.titleMedium,
-                color = textColor
-            )
+            // Listen Together indicator
+            if (listenTogetherRoleState?.value != RoomRole.NONE) {
+                Text(
+                    text = if (listenTogetherRoleState?.value == RoomRole.HOST) "Hosting Listen Together" else "Listening Together",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = textColor
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.now_playing),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = textColor
+                )
+            }
             val playingFrom = queueTitle ?: albumTitle
             if (!playingFrom.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -469,42 +478,6 @@ private fun ThumbnailHeader(
                     maxLines = 1,
                     modifier = Modifier.basicMarquee()
                 )
-            }
-            // Listen Together indicator
-            if (listenTogetherRoleState?.value != RoomRole.NONE) {
-                Spacer(Modifier.height(4.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .background(
-                            color = if (listenTogetherRoleState?.value == RoomRole.HOST)
-                                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.9f)
-                            else
-                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Icon(
-                        painter = if (listenTogetherRoleState?.value == RoomRole.HOST) painterResource(R.drawable.crown) else painterResource(R.drawable.share),
-                        contentDescription = null,
-                        tint = if (listenTogetherRoleState?.value == RoomRole.HOST)
-                            MaterialTheme.colorScheme.onTertiaryContainer
-                        else
-                            MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Text(
-                        text = if (listenTogetherRoleState?.value == RoomRole.HOST) "Hosting Listen Together" else "Listening Together",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (listenTogetherRoleState?.value == RoomRole.HOST)
-                            MaterialTheme.colorScheme.onTertiaryContainer
-                        else
-                            MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
             }
         }
     }

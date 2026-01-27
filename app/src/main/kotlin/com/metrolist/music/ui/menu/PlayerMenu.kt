@@ -607,6 +607,8 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         playerConnection.player.playbackParameters =
             PlaybackParameters(tempo, 2f.pow(transposeValue.toFloat() / 12))
     }
+    val listenTogetherManager = com.metrolist.music.LocalListenTogetherManager.current
+    val isInRoom = listenTogetherManager?.isInRoom ?: false
 
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -634,17 +636,19 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         },
         text = {
             Column {
-                ValueAdjuster(
-                    icon = R.drawable.speed,
-                    currentValue = tempo,
-                    values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
-                    onValueUpdate = {
-                        tempo = it
-                        updatePlaybackParameters()
-                    },
-                    valueText = { "x$it" },
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
+                if (!isInRoom) {
+                    ValueAdjuster(
+                        icon = R.drawable.speed,
+                        currentValue = tempo,
+                        values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
+                        onValueUpdate = {
+                            tempo = it
+                            updatePlaybackParameters()
+                        },
+                        valueText = { "x$it" },
+                        modifier = Modifier.padding(bottom = 12.dp),
+                    )
+                }
                 ValueAdjuster(
                     icon = R.drawable.discover_tune,
                     currentValue = transposeValue,

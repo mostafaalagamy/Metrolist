@@ -257,6 +257,12 @@ class MusicService :
         }
 
     lateinit var playerVolume: MutableStateFlow<Float>
+    val isMuted = MutableStateFlow(false)
+
+    fun toggleMute() {
+        isMuted.value = !isMuted.value
+    }
+
 
     lateinit var sleepTimer: SleepTimer
 
@@ -457,7 +463,9 @@ class MusicService :
             }
         }
 
-        playerVolume.collectLatest(scope) {
+        combine(playerVolume, isMuted) { volume, muted ->
+            if (muted) 0f else volume
+        }.collectLatest(scope) {
             player.volume = it
         }
 
@@ -639,7 +647,7 @@ class MusicService :
                     delay(1000) // Wait for queue to be loaded
                     player.repeatMode = playerState.repeatMode
                     player.shuffleModeEnabled = playerState.shuffleModeEnabled
-                    player.volume = playerState.volume
+                    playerVolume.value = playerState.volume
 
                     // Restore position if it's still valid
                     if (playerState.currentMediaItemIndex < player.mediaItemCount) {
@@ -707,7 +715,7 @@ class MusicService :
                     }
                 }
 
-                player.volume = playerVolume.value
+                player.volume = if (isMuted.value) 0f else playerVolume.value
                 lastAudioFocusState = focusChange
             }
 
@@ -734,14 +742,14 @@ class MusicService :
                 hasAudioFocus = false
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * 0.2f)
+                    player.volume = if (isMuted.value) 0f else (playerVolume.value * 0.2f)
                 }
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
-                player.volume = playerVolume.value
+                player.volume = if (isMuted.value) 0f else playerVolume.value
                 lastAudioFocusState = focusChange
             }
         }

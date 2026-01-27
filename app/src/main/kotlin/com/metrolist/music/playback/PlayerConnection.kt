@@ -91,6 +91,8 @@ class PlayerConnection(
     val canSkipNext = MutableStateFlow(true)
 
     val error = MutableStateFlow<PlaybackException?>(null)
+    val isMuted = service.isMuted
+
     val waitingForNetworkConnection = service.waitingForNetworkConnection
     
     // Callback to check if playback changes should be blocked (e.g., Listen Together guest)
@@ -159,6 +161,10 @@ class PlayerConnection(
 
     fun toggleLike() {
         service.toggleLike()
+    }
+
+    fun toggleMute() {
+        service.toggleMute()
     }
 
     /**

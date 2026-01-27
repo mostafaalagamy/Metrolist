@@ -1142,9 +1142,12 @@ fun Queue(
             )
 
             IconButton(
+                enabled = !isListenTogetherGuest,
                 modifier = Modifier.align(Alignment.CenterEnd),
                 onClick = playerConnection.player::toggleRepeatMode,
             ) {
+                val baseAlpha = if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f
+                val finalAlpha = if (!isListenTogetherGuest) baseAlpha else 0.3f
                 Icon(
                     painter =
                     painterResource(
@@ -1155,7 +1158,7 @@ fun Queue(
                         },
                     ),
                     contentDescription = null,
-                    modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                    modifier = Modifier.alpha(finalAlpha),
                 )
             }
         }

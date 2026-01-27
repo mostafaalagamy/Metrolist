@@ -366,6 +366,8 @@ private fun NewMiniPlayerPlayButton(
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
     val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
+    val isMuted by playerConnection.isMuted.collectAsState()
+
     
     val trackColor = outlineColor.copy(alpha = 0.2f)
     val strokeWidth = 3.dp
@@ -415,15 +417,7 @@ private fun NewMiniPlayerPlayButton(
                 .border(1.dp, outlineColor.copy(alpha = 0.3f), CircleShape)
                 .clickable {
                     if (isListenTogetherGuest) {
-                        // Guest: if paused, sync; if playing, allow pause
-                        val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != Player.STATE_ENDED
-                        if (!isCurrentlyPlaying) {
-                            // Currently paused - request sync when unpausing
-                            listenTogetherManager.requestSync()
-                        } else {
-                            // Currently playing - allow pause
-                            playerConnection.pause()
-                        }
+                        playerConnection.toggleMute()
                         return@clickable
                     }
                     if (isCasting) {
@@ -448,8 +442,8 @@ private fun NewMiniPlayerPlayButton(
                 )
             }
 
-            // Overlay for paused state
-            if (!effectiveIsPlaying || playbackState == Player.STATE_ENDED) {
+            // Overlay for paused state or muted (guest)
+            if (isListenTogetherGuest && isMuted || (!isListenTogetherGuest && (!effectiveIsPlaying || playbackState == Player.STATE_ENDED))) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -457,7 +451,9 @@ private fun NewMiniPlayerPlayButton(
                 )
                 Icon(
                     painter = painterResource(
-                        if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play
+                        if (isListenTogetherGuest) {
+                            if (isMuted) R.drawable.volume_off else R.drawable.volume_up
+                        } else if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play
                     ),
                     contentDescription = null,
                     tint = Color.White,
@@ -721,19 +717,13 @@ private fun LegacyPlayPauseButton(
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
     val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
+    val isMuted by playerConnection.isMuted.collectAsState()
+
 
     IconButton(
         onClick = {
             if (isListenTogetherGuest) {
-                // Guest: if paused, sync; if playing, allow pause
-                val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != Player.STATE_ENDED
-                if (!isCurrentlyPlaying) {
-                    // Currently paused - request sync when unpausing
-                    listenTogetherManager.requestSync()
-                } else {
-                    // Currently playing - allow pause
-                    playerConnection.pause()
-                }
+                playerConnection.toggleMute()
                 return@IconButton
             }
             if (isCasting) {
@@ -749,6 +739,7 @@ private fun LegacyPlayPauseButton(
         Icon(
             painter = painterResource(
                 when {
+                    isListenTogetherGuest -> if (isMuted) R.drawable.volume_off else R.drawable.volume_up
                     playbackState == Player.STATE_ENDED -> R.drawable.replay
                     effectiveIsPlaying -> R.drawable.pause
                     else -> R.drawable.play

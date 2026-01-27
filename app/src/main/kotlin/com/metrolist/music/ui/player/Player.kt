@@ -266,6 +266,8 @@ fun BottomSheetPlayer(
     val repeatMode by playerConnection.repeatMode.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
+    val isMuted by playerConnection.isMuted.collectAsState()
+
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val squigglySlider by rememberPreference(SquigglySliderKey, defaultValue = false)
     
@@ -1325,15 +1327,7 @@ fun BottomSheetPlayer(
                             FilledIconButton(
                                 onClick = {
                                     if (isListenTogetherGuest) {
-                                        // Guest: if paused, sync; if playing, allow pause
-                                        val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != STATE_ENDED
-                                        if (!isCurrentlyPlaying) {
-                                            // Currently paused - request sync when unpausing
-                                            listenTogetherManager.requestSync()
-                                        } else {
-                                            // Currently playing - allow pause
-                                            playerConnection.pause()
-                                        }
+                                        playerConnection.toggleMute()
                                         return@FilledIconButton
                                     }
                                     if (isCasting) {
@@ -1365,14 +1359,22 @@ fun BottomSheetPlayer(
                                 ) {
                                     Icon(
                                         painter = painterResource(
-                                            if (effectiveIsPlaying) R.drawable.pause else R.drawable.play
+                                            if (isListenTogetherGuest) {
+                                                if (isMuted) R.drawable.volume_off else R.drawable.volume_up
+                                            } else {
+                                                if (effectiveIsPlaying) R.drawable.pause else R.drawable.play
+                                            }
                                         ),
-                                        contentDescription = if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
+                                        contentDescription = if (isListenTogetherGuest) {
+                                            if (isMuted) "Unmute" else "Mute"
+                                        } else if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
                                         modifier = Modifier.size(32.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
+                                        text = if (isListenTogetherGuest) {
+                                            if (isMuted) "Unmute" else "Mute"
+                                        } else if (effectiveIsPlaying) "Pause" else stringResource(R.string.play),
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                 }
@@ -1452,15 +1454,7 @@ fun BottomSheetPlayer(
                                     .background(textButtonColor)
                                     .clickable {
                                         if (isListenTogetherGuest) {
-                                            // Guest: if paused, sync; if playing, allow pause
-                                            val isCurrentlyPlaying = playerConnection.player.playWhenReady && playbackState != STATE_ENDED
-                                            if (!isCurrentlyPlaying) {
-                                                // Currently paused - request sync when unpausing
-                                                listenTogetherManager.requestSync()
-                                            } else {
-                                                // Currently playing - allow pause
-                                                playerConnection.pause()
-                                            }
+                                            playerConnection.toggleMute()
                                             return@clickable
                                         }
                                         if (isCasting) {
@@ -1480,7 +1474,9 @@ fun BottomSheetPlayer(
                                 Image(
                                     painter =
                                     painterResource(
-                                        if (playbackState ==
+                                        if (isListenTogetherGuest) {
+                                            if (isMuted) R.drawable.volume_off else R.drawable.volume_up
+                                        } else if (playbackState ==
                                             STATE_ENDED
                                         ) {
                                             R.drawable.replay
