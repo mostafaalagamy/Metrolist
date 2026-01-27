@@ -143,6 +143,13 @@ import com.metrolist.music.constants.LyricsRomanizeMacedonianKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
+import com.metrolist.music.constants.OpenRouterApiKey
+import com.metrolist.music.constants.OpenRouterBaseUrlKey
+import com.metrolist.music.constants.OpenRouterModelKey
+import com.metrolist.music.constants.AutoTranslateLyricsKey
+import com.metrolist.music.constants.AutoTranslateLyricsMismatchKey
+import com.metrolist.music.constants.TranslateLanguageKey
+import com.metrolist.music.constants.TranslateModeKey
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
@@ -162,6 +169,8 @@ import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
 import com.metrolist.music.lyrics.LyricsUtils.romanizeChinese
+import com.metrolist.music.lyrics.LyricsTranslationHelper
+import com.metrolist.music.lyrics.LanguageDetectionHelper
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
@@ -213,6 +222,15 @@ fun Lyrics(
     val lyricsAnimationStyle by rememberEnumPreference(LyricsAnimationStyleKey, LyricsAnimationStyle.APPLE)
     val lyricsTextSize by rememberPreference(LyricsTextSizeKey, 24f)
     val lyricsLineSpacing by rememberPreference(LyricsLineSpacingKey, 1.3f)
+    
+    val openRouterApiKey by rememberPreference(OpenRouterApiKey, "")
+    val openRouterBaseUrl by rememberPreference(OpenRouterBaseUrlKey, "https://openrouter.ai/api/v1/chat/completions")
+    val openRouterModel by rememberPreference(OpenRouterModelKey, "mistralai/mistral-small-3.1-24b-instruct:free")
+    val autoTranslateLyrics by rememberPreference(AutoTranslateLyricsKey, false)
+    val autoTranslateLyricsMismatch by rememberPreference(AutoTranslateLyricsMismatchKey, false)
+    val translateLanguage by rememberPreference(TranslateLanguageKey, "en")
+    val translateMode by rememberPreference(TranslateModeKey, "Literal")
+    
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -392,6 +410,65 @@ fun Lyrics(
         remember(lyrics) {
             !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
         }
+
+    // State for translation status
+    val translationStatus by LyricsTranslationHelper.status.collectAsState()
+    
+    // Listen for manual trigger
+    LaunchedEffect(Unit) {
+        LyricsTranslationHelper.manualTrigger.collect {
+             if (lines.isNotEmpty() && openRouterApiKey.isNotBlank()) {
+                 LyricsTranslationHelper.translateLyrics(
+                     lyrics = lines,
+                     targetLanguage = translateLanguage,
+                     apiKey = openRouterApiKey,
+                     baseUrl = openRouterBaseUrl,
+                     model = openRouterModel,
+                     mode = translateMode,
+                     scope = scope
+                 )
+             } else if (openRouterApiKey.isBlank()) {
+                 Toast.makeText(context, "API Key Required", Toast.LENGTH_SHORT).show()
+             }
+        }
+    }
+
+    LaunchedEffect(lines, autoTranslateLyrics, autoTranslateLyricsMismatch, openRouterApiKey, translateMode, translateLanguage) {
+        if (lines.isNotEmpty()) {
+            // First, try to apply cached translations
+            val targetLang = if (autoTranslateLyricsMismatch) java.util.Locale.getDefault().language else translateLanguage
+            val hasCached = LyricsTranslationHelper.applyCachedTranslations(lines, translateMode, targetLang)
+            
+            // If no cache and auto-translate is enabled, translate
+            if (!hasCached && autoTranslateLyrics && openRouterApiKey.isNotBlank()) {
+                val needsTranslation = lines.any { it.translatedTextFlow.value == null && it.text.isNotBlank() }
+                if (needsTranslation) {
+                    var shouldTranslate = true
+                    if (autoTranslateLyricsMismatch) {
+                        val combinedText = lines.take(5).joinToString(" ") { it.text }
+                        val detectedLang = LanguageDetectionHelper.identifyLanguage(combinedText)
+                        val systemLang = java.util.Locale.getDefault().language
+                        
+                        if (detectedLang != null && detectedLang == systemLang) {
+                            shouldTranslate = false
+                        }
+                    }
+
+                    if (shouldTranslate) {
+                        LyricsTranslationHelper.translateLyrics(
+                            lyrics = lines,
+                            targetLanguage = targetLang,
+                            apiKey = openRouterApiKey,
+                            baseUrl = openRouterBaseUrl,
+                            model = openRouterModel,
+                            mode = translateMode,
+                            scope = scope
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     // Use Material 3 expressive accents and keep glow/text colors unified
     val expressiveAccent = when (playerBackground) {
@@ -1267,6 +1344,25 @@ fun Lyrics(
                                     },
                                     fontWeight = FontWeight.Normal,
                                     modifier = Modifier.padding(top = 2.dp)
+                                )
+                            }
+                        }
+                        
+                        // Show translated text if available
+                        if (autoTranslateLyrics || openRouterApiKey.isNotBlank()) {
+                            val translatedText by item.translatedTextFlow.collectAsState()
+                            translatedText?.let { translated ->
+                                Text(
+                                    text = translated,
+                                    fontSize = 16.sp,
+                                    color = expressiveAccent.copy(alpha = 0.5f),
+                                    textAlign = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> TextAlign.Left
+                                        LyricsPosition.CENTER -> TextAlign.Center
+                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                    },
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(top = 4.dp)
                                 )
                             }
                         }
