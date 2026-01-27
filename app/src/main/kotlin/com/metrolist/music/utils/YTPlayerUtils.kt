@@ -353,7 +353,12 @@ object YTPlayerUtils {
     
     /**
      * Wrapper around the decryption library's getStreamUrl function which reports exceptions.
-     * Uses the selected decryption library (NewPipe Extractor or PipePipe Extractor).
+     * Uses the selected decryption library with automatic fallback to the alternative library.
+     * 
+     * Fallback strategy:
+     * 1. Try the selected library first
+     * 2. If it fails, clear caches and try the alternative library
+     * 3. If both fail, return null
      */
     private fun findUrlOrNull(
         format: PlayerResponse.StreamingData.Format,
@@ -361,16 +366,70 @@ object YTPlayerUtils {
         decryptionLibrary: DecryptionLibrary
     ): String? {
         Timber.tag(logTag).d("Finding stream URL for format: ${format.mimeType}, videoId: $videoId using $decryptionLibrary")
-        val result = when (decryptionLibrary) {
+        
+        // Try primary library
+        val primaryResult = when (decryptionLibrary) {
             DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getStreamUrl(format, videoId)
             DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getStreamUrl(format, videoId)
         }
-        return result
-            .onSuccess { Timber.tag(logTag).d("Stream URL obtained successfully") }
-            .onFailure {
-                Timber.tag(logTag).e(it, "Failed to get stream URL")
-                reportException(it)
+        
+        primaryResult.onSuccess { 
+            Timber.tag(logTag).d("Stream URL obtained successfully with primary library: $decryptionLibrary")
+            return it
+        }
+        
+        // Primary failed, log and try fallback
+        primaryResult.onFailure { primaryError ->
+            Timber.tag(logTag).w(primaryError, "Primary library ($decryptionLibrary) failed, attempting fallback")
+            
+            // Clear caches before fallback attempt
+            clearDecryptionCaches()
+        }
+        
+        // Try fallback library
+        val fallbackLibrary = when (decryptionLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> DecryptionLibrary.PIPEPIPE_EXTRACTOR
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> DecryptionLibrary.NEWPIPE_EXTRACTOR
+        }
+        
+        Timber.tag(logTag).d("Trying fallback library: $fallbackLibrary")
+        
+        val fallbackResult = when (fallbackLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getStreamUrl(format, videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getStreamUrl(format, videoId)
+        }
+        
+        return fallbackResult
+            .onSuccess { 
+                Timber.tag(logTag).d("Stream URL obtained successfully with fallback library: $fallbackLibrary")
+            }
+            .onFailure { fallbackError ->
+                Timber.tag(logTag).e(fallbackError, "Both decryption libraries failed for videoId: $videoId")
+                reportException(fallbackError)
             }
             .getOrNull()
+    }
+    
+    /**
+     * Clears all decryption-related caches to force fresh data retrieval.
+     * Should be called when decryption errors occur.
+     */
+    private fun clearDecryptionCaches() {
+        try {
+            Timber.tag(logTag).d("Clearing decryption caches...")
+            PipePipeUtils.clearCache()
+            Timber.tag(logTag).d("Decryption caches cleared successfully")
+        } catch (e: Exception) {
+            Timber.tag(logTag).e(e, "Failed to clear decryption caches")
+        }
+    }
+    
+    /**
+     * Public method to force clear all caches when playback errors occur.
+     * This includes URL caches and decryption caches.
+     */
+    fun forceRefreshForVideo(videoId: String) {
+        Timber.tag(logTag).d("Force refreshing all caches for videoId: $videoId")
+        clearDecryptionCaches()
     }
 }
