@@ -76,9 +76,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -231,6 +235,37 @@ inline fun ListItem(
         trailingContent()
     }
 }
+
+@Composable
+fun ListItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: AnnotatedString?,
+    badges: @Composable RowScope.() -> Unit = {},
+    thumbnailContent: @Composable () -> Unit,
+    trailingContent: @Composable RowScope.() -> Unit = {},
+    isSelected: Boolean? = false,
+    isActive: Boolean = false,
+) = ListItem(
+    title = title,
+    subtitle = {
+        badges()
+        if (subtitle != null) {
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    },
+    thumbnailContent = thumbnailContent,
+    trailingContent = trailingContent,
+    modifier = modifier,
+    isSelected = isSelected,
+    isActive = isActive
+)
 
 // merge badges and subtitle text and pass to basic list item
 @Composable
@@ -907,10 +942,24 @@ fun MediaMetadataListItem(
 ) {
     ListItem(
         title = mediaMetadata.title,
-        subtitle = joinByBullet(
-            mediaMetadata.artists.joinToString { it.name },
-            makeTimeString(mediaMetadata.duration * 1000L)
-        ),
+        subtitle = if (mediaMetadata.suggestedBy != null) {
+            buildAnnotatedString {
+                append(mediaMetadata.artists.joinToString { it.name })
+                append(" • ")
+                append(makeTimeString(mediaMetadata.duration * 1000L))
+                append(" • ")
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(mediaMetadata.suggestedBy)
+                }
+            }
+        } else {
+            AnnotatedString(
+                joinByBullet(
+                    mediaMetadata.artists.joinToString { it.name },
+                    makeTimeString(mediaMetadata.duration * 1000L)
+                )
+            )
+        },
         badges = { if (mediaMetadata.explicit) Icon.Explicit()},
         thumbnailContent = {
             ItemThumbnail(

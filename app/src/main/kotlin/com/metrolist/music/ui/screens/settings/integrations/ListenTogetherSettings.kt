@@ -273,7 +273,7 @@ fun ListenTogetherSettings(
                     )
                     OutlinedTextField(
                         value = roomCodeInput,
-                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(6) },
+                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
                         label = { Text(stringResource(R.string.listen_together_room_code)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
@@ -284,7 +284,7 @@ fun ListenTogetherSettings(
                 Button(
                     onClick = {
                         val finalUsername = joinUsername.trim()
-                        if (finalUsername.isNotBlank() && roomCodeInput.length == 6) {
+                        if (finalUsername.isNotBlank() && roomCodeInput.length == 8) {
                             username = finalUsername
                             viewModel.joinRoom(roomCodeInput, finalUsername)
                             showJoinRoomDialog = false
@@ -293,7 +293,7 @@ fun ListenTogetherSettings(
                             Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
                     },
-                    enabled = joinUsername.trim().isNotBlank() && roomCodeInput.length == 6
+                    enabled = joinUsername.trim().isNotBlank() && roomCodeInput.length == 8
                 ) {
                     Text(stringResource(R.string.join))
                 }
@@ -410,7 +410,7 @@ fun ListenTogetherSettings(
                         Spacer(modifier = Modifier.width(8.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = stringResource(R.string.listen_together_room_code) + ": ${state.roomCode}",
+                                text = state.roomCode,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold
                             )

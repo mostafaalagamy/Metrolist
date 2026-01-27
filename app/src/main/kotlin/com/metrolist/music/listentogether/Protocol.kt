@@ -92,7 +92,8 @@ data class TrackInfo(
     val artist: String,
     val album: String? = null,
     val duration: Long, // milliseconds
-    val thumbnail: String? = null
+    val thumbnail: String? = null,
+    @SerialName("suggested_by") val suggestedBy: String? = null
 )
 
 /**

@@ -715,22 +715,24 @@ fun SelectionMediaMetadataMenu(
                                 }
                             )
                         )
-                        add(
-                            Material3MenuItemData(
-                                title = { Text(text = stringResource(R.string.add_to_queue)) },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.queue_music),
-                                        contentDescription = null,
-                                    )
-                                },
-                                onClick = {
-                                    onDismiss()
-                                    playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
-                                    clearAction()
-                                }
+                        if (!isGuest) {
+                            add(
+                                Material3MenuItemData(
+                                    title = { Text(text = stringResource(R.string.add_to_queue)) },
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.queue_music),
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    onClick = {
+                                        onDismiss()
+                                        playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
+                                        clearAction()
+                                    }
+                                )
                             )
-                        )
+                        }
                     }
                     add(
                         Material3MenuItemData(

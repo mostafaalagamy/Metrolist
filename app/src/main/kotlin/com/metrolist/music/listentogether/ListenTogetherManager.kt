@@ -560,7 +560,9 @@ class ListenTogetherManager @Inject constructor(
                         scope.launch(Dispatchers.IO) {
                             // Fetch MediaItem via YouTube metadata
                             com.metrolist.innertube.YouTube.queue(listOf(track.id)).onSuccess { list ->
-                                val mediaItem = list.firstOrNull()?.toMediaMetadata()?.toMediaItem()
+                                val mediaItem = list.firstOrNull()?.toMediaMetadata()?.copy(
+                                    suggestedBy = track.suggestedBy
+                                )?.toMediaItem()
                                 if (mediaItem != null) {
                                     launch(Dispatchers.Main) {
                                         // Allow internal sync to bypass guest restrictions
@@ -933,7 +935,8 @@ class ListenTogetherManager @Inject constructor(
             artist = metadata.artists.joinToString(", ") { it.name },
             album = metadata.album?.title,
             duration = durationMs,
-            thumbnail = metadata.thumbnailUrl
+            thumbnail = metadata.thumbnailUrl,
+            suggestedBy = metadata.suggestedBy
         )
         
         Log.d(TAG, "Sending track change: ${trackInfo.title}, duration: $durationMs")
@@ -988,7 +991,8 @@ class ListenTogetherManager @Inject constructor(
             artist = metadata.artists.joinToString(", ") { it.name },
             album = metadata.album?.title,
             duration = durationMs,
-            thumbnail = metadata.thumbnailUrl
+            thumbnail = metadata.thumbnailUrl,
+            suggestedBy = metadata.suggestedBy
         )
     }
 
@@ -1004,7 +1008,8 @@ class ListenTogetherManager @Inject constructor(
             artists = listOf(Artist(id = "", name = artist)),
             album = if (album != null) Album(id = "", title = album) else null,
             duration = (duration / 1000).toInt(),
-            thumbnailUrl = thumbnail
+            thumbnailUrl = thumbnail,
+            suggestedBy = suggestedBy
         )
     }
 

@@ -1168,9 +1168,9 @@ fun ListenTogetherDialog(
                     
                     OutlinedTextField(
                         value = roomCodeInput,
-                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(6) },
+                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
                         label = { Text(stringResource(R.string.room_code)) },
-                        placeholder = { Text("ABC123") },
+                        placeholder = { Text("ABCD1234") },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.token),
@@ -1226,7 +1226,7 @@ fun ListenTogetherDialog(
                 }
             } else {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (roomCodeInput.length == 6) {
+                    if (roomCodeInput.length == 8) {
                         Button(
                             onClick = {
                                 val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
