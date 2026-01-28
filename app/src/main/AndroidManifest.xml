@@ -30,6 +30,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.Metrolist"
@@ -190,13 +191,18 @@
             </intent-filter>
         </service>
 
+        <!-- Receiver for Listen Together notification actions (Approve/Reject) -->
+        <receiver
+            android:name=".listentogether.ListenTogetherActionReceiver"
+            android:exported="false" />
+
         <receiver
             android:name="androidx.media3.session.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
-        </receiver>        
+        </receiver>
 
         <meta-data
             android:name="com.google.android.gms.car.application"
