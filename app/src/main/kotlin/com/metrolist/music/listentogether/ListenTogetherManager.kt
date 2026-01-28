@@ -117,18 +117,16 @@ class ListenTogetherManager @Inject constructor(
         }
         
         private fun sendPlayState(playWhenReady: Boolean) {
-            // Only sync if state actually changed
-            if (playWhenReady != lastSyncedIsPlaying) {
-                lastSyncedIsPlaying = playWhenReady
-                val position = playerConnection?.player?.currentPosition ?: 0
-                
-                if (playWhenReady) {
-                    Log.d(TAG, "Host sending PLAY at position $position")
-                    client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
-                } else {
-                    Log.d(TAG, "Host sending PAUSE at position $position")
-                    client.sendPlaybackAction(PlaybackActions.PAUSE, position = position)
-                }
+            val position = playerConnection?.player?.currentPosition ?: 0
+            
+            if (playWhenReady) {
+                Log.d(TAG, "Host sending PLAY at position $position")
+                client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                lastSyncedIsPlaying = true
+            } else if (!playWhenReady && (lastSyncedIsPlaying == true)) {
+                Log.d(TAG, "Host sending PAUSE at position $position")
+                client.sendPlaybackAction(PlaybackActions.PAUSE, position = position)
+                lastSyncedIsPlaying = false
             }
         }
         
@@ -232,8 +230,10 @@ class ListenTogetherManager @Inject constructor(
         // Start/stop queue observation based on role
         if (connection != null && isInRoom && isHost) {
             startQueueSyncObservation()
+            startHeartbeat()
         } else {
             stopQueueSyncObservation()
+            stopHeartbeat()
         }
     }
 
@@ -247,6 +247,27 @@ class ListenTogetherManager @Inject constructor(
             client.events.collect { event ->
                 Log.d(TAG, "Received event: $event")
                 handleEvent(event)
+            }
+        }
+        
+        // Role change listener
+        scope.launch {
+            role.collect { newRole ->
+                val wasHost = isHost
+                if (newRole == RoomRole.HOST && !wasHost && playerConnection != null) {
+                    Log.d(TAG, "Role changed to HOST, starting sync services")
+                    startQueueSyncObservation()
+                    startHeartbeat()
+                    // Re-register listener if needed
+                    if (!playerListenerRegistered) {
+                        playerConnection!!.player.addListener(playerListener)
+                        playerListenerRegistered = true
+                    }
+                } else if (newRole != RoomRole.HOST && wasHost) {
+                    Log.d(TAG, "Role changed from HOST, stopping sync services")
+                    stopQueueSyncObservation()
+                    stopHeartbeat()
+                }
             }
         }
     }
@@ -286,6 +307,7 @@ class ListenTogetherManager @Inject constructor(
                     }
                 }
                 startQueueSyncObservation()
+                startHeartbeat()
             }
             
             is ListenTogetherEvent.JoinApproved -> {
@@ -412,18 +434,21 @@ class ListenTogetherManager @Inject constructor(
                         queue = event.state.queue,
                         bypassBuffer = true  // Reconnect: bypass buffer protocol
                     )
+                    
+                    // Immediately request fresh sync after a short delay to catch live position
+                    scope.launch {
+                        delay(1000)
+                        if (isInRoom && !isHost) {
+                            Log.d(TAG, "Requesting fresh sync after reconnect")
+                            requestSync()
+                        }
+                    }
                 }
             }
             
             is ListenTogetherEvent.UserReconnected -> {
                 Log.d(TAG, "User reconnected: ${event.username}")
-                // If host, send current state to the reconnected user
-                if (isHost) {
-                    playerConnection?.player?.currentMetadata?.let { metadata ->
-                        Log.d(TAG, "Sending current track to reconnected user: ${metadata.title}")
-                        sendTrackChangeInternal(metadata)
-                    }
-                }
+                // No action needed - reconnected user already synced via reconnect state
             }
             
             is ListenTogetherEvent.UserDisconnected -> {
@@ -445,6 +470,8 @@ class ListenTogetherManager @Inject constructor(
             playerConnection?.player?.removeListener(playerListener)
             playerListenerRegistered = false
         }
+        stopQueueSyncObservation()
+        stopHeartbeat()
         // Note: Don't clear shouldBlockPlaybackChanges callback - it checks isInRoom dynamically
         lastSyncedIsPlaying = null
         lastSyncedTrackId = null
@@ -686,6 +713,7 @@ class ListenTogetherManager @Inject constructor(
     }
     
     private fun handleSyncState(state: SyncStatePayload) {
+        Log.d(TAG, "handleSyncState: playing=${state.isPlaying}, pos=${state.position}, track=${state.currentTrack?.id}")
         applyPlaybackState(
             currentTrack = state.currentTrack,
             isPlaying = state.isPlaying,
@@ -774,11 +802,27 @@ class ListenTogetherManager @Inject constructor(
                 if (bypassBuffer) {
                     // Manual sync/reconnect: apply play/pause immediately, no buffer protocol
                     Log.d(TAG, "Bypass buffer: immediately applying play=$isPlaying at pos=$position")
-                    if (isPlaying) {
-                        playerConnection?.play()
-                    } else {
-                        playerConnection?.pause()
+                    
+                    // Wait for player to be ready before seek/play
+                    var attempts = 0
+                    while (player.playbackState != Player.STATE_READY && attempts < 100) {
+                        delay(50)
+                        attempts++
                     }
+                    if (player.playbackState == Player.STATE_READY) {
+                        Log.d(TAG, "Player ready after ${attempts * 50}ms, seeking to $position")
+                        player.seekTo(position)
+                        if (isPlaying) {
+                            playerConnection?.play()
+                            Log.d(TAG, "Bypass: PLAY issued")
+                        } else {
+                            playerConnection?.pause()
+                            Log.d(TAG, "Bypass: PAUSE issued")
+                        }
+                    } else {
+                        Log.w(TAG, "Player not ready after 5s timeout during bypass sync")
+                    }
+                    
                     // Clear sync state
                     pendingSyncState = null
                     bufferingTrackId = null
@@ -1104,4 +1148,30 @@ class ListenTogetherManager @Inject constructor(
      * Get current session age
      */
     fun getSessionAge(): Long = client.getSessionAge()
+
+    // Heartbeat timer
+    private var heartbeatJob: Job? = null
+
+    private fun startHeartbeat() {
+        if (heartbeatJob?.isActive == true) return
+        heartbeatJob = scope.launch {
+            while (heartbeatJob?.isActive == true && isInRoom && isHost) {
+                delay(15000L) // 15 seconds
+                playerConnection?.player?.let { player ->
+                    if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+                        val pos = player.currentPosition
+                        Log.d(TAG, "Host heartbeat: sending PLAY at pos $pos")
+                        client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                    }
+                }
+            }
+        }
+        Log.d(TAG, "Host heartbeat started (15s interval)")
+    }
+
+    private fun stopHeartbeat() {
+        heartbeatJob?.cancel()
+        heartbeatJob = null
+        Log.d(TAG, "Host heartbeat stopped")
+    }
 }
