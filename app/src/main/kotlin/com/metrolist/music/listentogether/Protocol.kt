@@ -153,7 +153,8 @@ data class PlaybackActionPayload(
     val position: Long? = null, // milliseconds
     @SerialName("track_info") val trackInfo: TrackInfo? = null,
     @SerialName("insert_next") val insertNext: Boolean? = null,
-    val queue: List<TrackInfo>? = null
+    val queue: List<TrackInfo>? = null,
+    @SerialName("queue_title") val queueTitle: String? = null
 )
 
 @Serializable

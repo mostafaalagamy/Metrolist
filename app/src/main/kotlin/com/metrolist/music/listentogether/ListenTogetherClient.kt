@@ -1182,12 +1182,20 @@ class ListenTogetherClient @Inject constructor(
     /**
      * Send a playback action (host only)
      */
-    fun sendPlaybackAction(action: String, trackId: String? = null, position: Long? = null, trackInfo: TrackInfo? = null, insertNext: Boolean? = null, queue: List<TrackInfo>? = null) {
+    fun sendPlaybackAction(
+        action: String, 
+        trackId: String? = null, 
+        position: Long? = null, 
+        trackInfo: TrackInfo? = null, 
+        insertNext: Boolean? = null, 
+        queue: List<TrackInfo>? = null,
+        queueTitle: String? = null
+    ) {
         if (_role.value != RoomRole.HOST) {
             log(LogLevel.ERROR, "Cannot control playback", "Not host")
             return
         }
-        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo, insertNext, queue))
+        sendMessage(MessageTypes.PLAYBACK_ACTION, PlaybackActionPayload(action, trackId, position, trackInfo, insertNext, queue, queueTitle))
     }
 
     /**

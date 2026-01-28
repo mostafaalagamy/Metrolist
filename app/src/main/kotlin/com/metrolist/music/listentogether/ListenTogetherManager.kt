@@ -534,11 +534,13 @@ class ListenTogetherManager @Inject constructor(
                         
                         // If we have a queue, use it! This is the "smart" sync path.
                         if (action.queue != null && action.queue.isNotEmpty()) {
+                            val queueTitle = action.queueTitle
                             applyPlaybackState(
                                 currentTrack = track,
                                 isPlaying = false, // Will be updated by subsequent PLAY or pending sync
                                 position = 0,
-                                queue = action.queue
+                                queue = action.queue,
+                                queueTitle = queueTitle
                             )
                         } else {
                             // Fallback to old behavior (network fetch) if no queue provided
@@ -631,6 +633,7 @@ class ListenTogetherManager @Inject constructor(
 
                 PlaybackActions.SYNC_QUEUE -> {
                     val queue = action.queue
+                    val queueTitle = action.queueTitle
                     if (queue != null) {
                         Log.d(TAG, "Guest: SYNC_QUEUE size=${queue.size}")
                         // Cancel any pending "smart" sync (e.g. YouTube radio fetch) in favor of this authoritative queue
@@ -666,6 +669,9 @@ class ListenTogetherManager @Inject constructor(
                             if (wasPlaying && !player.isPlaying) {
                                 playerConnection?.play()
                             }
+                            
+                            // Sync queue title
+                            playerConnection?.service?.queueTitle = queueTitle
                         }
                     }
                 }
@@ -694,6 +700,7 @@ class ListenTogetherManager @Inject constructor(
         isPlaying: Boolean,
         position: Long,
         queue: List<TrackInfo>?,
+        queueTitle: String? = null,  // New param
         bypassBuffer: Boolean = false
     ) {
         val player = playerConnection?.player
@@ -720,6 +727,7 @@ class ListenTogetherManager @Inject constructor(
                     player.clearMediaItems()
                 }
                 playerConnection?.pause()
+                playerConnection?.service?.queueTitle = queueTitle
                 playerConnection?.allowInternalSync = false
                 isSyncing = false
             }
@@ -759,6 +767,9 @@ class ListenTogetherManager @Inject constructor(
                 }
                 
                 playerConnection?.seekTo(position)  // Always seek immediately to target pos
+                
+                // Sync queue title
+                playerConnection?.service?.queueTitle = queueTitle ?: "Listen Together"
                 
                 if (bypassBuffer) {
                     // Manual sync/reconnect: apply play/pause immediately, no buffer protocol
@@ -817,7 +828,7 @@ class ListenTogetherManager @Inject constructor(
                                 preloadItem = queue.firstOrNull()?.toMediaMetadata()
                             )
                         )
-                        // Reset flag after playQueue call
+                        playerConnection?.service?.queueTitle = "Listen Together" // Set default title
                         playerConnection?.allowInternalSync = false
                         
                         // Wait for player to be ready - monitor actual player state
@@ -958,9 +969,11 @@ class ListenTogetherManager @Inject constructor(
         
         // Also grab current queue to send along with track change
         val currentQueue = playerConnection?.queueWindows?.value?.map { it.toTrackInfo() }
+        val currentTitle = playerConnection?.queueTitle?.value
         
         client.sendPlaybackAction(
             PlaybackActions.CHANGE_TRACK,
+            queueTitle = currentTitle,
             trackInfo = trackInfo,
             queue = currentQueue
         )
@@ -968,8 +981,7 @@ class ListenTogetherManager @Inject constructor(
 
     private fun startQueueSyncObservation() {
         if (queueObserverJob?.isActive == true) return
-        
-        Log.d(TAG, "Starting queue sync observation")
+    
         Log.d(TAG, "Starting queue sync observation")
         queueObserverJob = scope.launch {
             playerConnection?.queueWindows
@@ -979,18 +991,13 @@ class ListenTogetherManager @Inject constructor(
                 ?.distinctUntilChanged()
                 ?.collectLatest { tracks ->
                     if (!isHost || !isInRoom || isSyncing) return@collectLatest
-                    
-                    // Send immediately on first emission or significant change
-                    // Debounce is handled naturally by distinctUntilChanged + collectLatest if we wanted to add delay,
-                    // but for queue we want responsiveness. A small 500ms delay for stability is okay but 
-                    // should be skippable for first emit?
-                    // Let's rely on distinctUntilChanged to reduce noise.
-                    
+                
                     delay(500) // Debounce rapid playlist manipulations
-                    
+                
                     Log.d(TAG, "Sending SYNC_QUEUE with ${tracks.size} items")
                     client.sendPlaybackAction(
                         PlaybackActions.SYNC_QUEUE,
+                        queueTitle = playerConnection?.queueTitle?.value,
                         queue = tracks
                     )
                 }
