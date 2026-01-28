@@ -381,4 +381,11 @@
     <string name="error_copy_hint">Hata bilgilerini paylaşmak geliştiricilerin hata çözümünde yardımcı olur</string>
     <string name="error_title">Hata</string>
     <string name="error_eq_apply_failed">Ekolayzır profilini kaydederken sorun oluştu: %1$s</string>
+    <string name="crop_album_art">Albüm Resmini Kırp</string>
+    <string name="crop_album_art_desc">Video küçük resimlerini kırparak kare en boy oranını zorlayın</string>
+    <string name="player_client">Oynatıcı istemcisi</string>
+    <string name="player_client_android_vr">Android VR</string>
+    <string name="player_client_web_remix">Web Remiks</string>
+    <string name="player_client_web_remix_desc">Daha yavaş ancak premium formatları destekler. JavaScript imza çözme işlemi kullandığından oynatma başlangıcına yaklaşık ~5–10 saniye ekler.</string>
+    <string name="player_client_android_vr_desc">En hızlı seçenektir. İmza çözme olmadan doğrudan akış URL’lerini kullanır. Çoğu kullanıcı için önerilir.</string>
 </resources>

@@ -263,7 +263,7 @@
     <string name="share_playlist_desc">Partager cette playlist avec d\'autres personnes</string>
     <string name="delete_playlist_desc">Supprimer définitivement cette playlist</string>
     <string name="sync_playlist_desc">Synchroniser la playlist avec YouTube Music</string>
-    <string name="enable_better_lyrics">Activer de meilleures paroles</string>
+    <string name="enable_better_lyrics">Activer Better Lyrics</string>
     <string name="enable_better_lyrics_desc">Utiliser le fournisseur Better Lyrics pour des paroles synchronisées mot à mot</string>
     <string name="lyrics_animation_style">Style d\'animation mot à mot</string>
     <string name="none">Aucun</string>
@@ -333,9 +333,9 @@
     <string name="enable_wavy_slider">Activer le curseur ondulé</string>
     <string name="wavy">Ondulé</string>
     <plurals name="profiles_count">
-        <item quantity="one">%d Profile</item>
-        <item quantity="many">%d Profiles</item>
-        <item quantity="other">%d Profiles</item>
+        <item quantity="one">%d Profil</item>
+        <item quantity="many">%d Profils</item>
+        <item quantity="other">%d Profils</item>
     </plurals>
     <string name="equalizer_header">Égaliseur</string>
     <string name="no_profiles">Aucun profil d\'égaliseur</string>
@@ -387,8 +387,10 @@
     <string name="error_title">Erreur</string>
     <string name="error_eq_apply_failed">Échec de l\'application du profil d\'égalisation : %1$s</string>
     <string name="player_client_android_vr">Android VR</string>
-    <string name="player_client_android_vr_desc">Option la plus rapide. URL de flux directes sans décryptage de signature. Recommandé pour la plupart des utilisateurs.</string>
+    <string name="player_client_android_vr_desc">Option la plus rapide. URL de flux direct sans décryptage de signature. Recommandé pour la plupart des utilisateurs.</string>
     <string name="player_client_web_remix">Remix Web</string>
     <string name="player_client_web_remix_desc">Plus lent, mais prend en charge les formats haut de gamme. Utilise le décryptage de signature JavaScript, ce qui ajoute environ 5 à 10 secondes au démarrage de la lecture.</string>
     <string name="player_client">Lecteur client</string>
+    <string name="crop_album_art">Recadrer la pochette d\'album</string>
+    <string name="crop_album_art_desc">Forcer un format carré en recadrant les miniatures vidéo</string>
 </resources>

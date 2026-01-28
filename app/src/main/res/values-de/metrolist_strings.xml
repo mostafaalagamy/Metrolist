@@ -371,4 +371,20 @@
     <string name="skip_silence_instant">Stille sofort überspringen</string>
     <string name="skip_silence_instant_desc">Springe in stillen Momenten vorwärts, anstatt die Wiedergabe zu beschleunigen</string>
     <string name="skip_silence_desc">Stille Teile von Songs vorspulen</string>
+    <string name="crop_album_art">Albumcover zuschneiden</string>
+    <string name="crop_album_art_desc">Erzwinge ein quadratisches Seitenverhältnis durch Zuschneiden der Video-Miniaturansichten.</string>
+    <string name="persistent_shuffle_desc">Shuffle beim Starten neuer Songs oder Wiedergabelisten aktiviert lassen</string>
+    <string name="error_title">Fehler</string>
+    <string name="error_eq_apply_failed">EQ-Profil konnte nicht angewendet werden: %1$s</string>
+    <string name="error_playback_failed">Wiedergabe fehlgeschlagen</string>
+    <string name="error_copied">Fehlerinformation in die Zwischenablage kopiert</string>
+    <string name="error_copy_hint">Kopieren Sie die Fehlerinformationen, um den Entwicklern bei der Fehlerbehebung zu helfen.</string>
+    <string name="player_client_android_vr_desc">Schnellste Option. Direkte Stream-URLs ohne Entschlüsselung der Signatur. Für die meisten Benutzer empfohlen.</string>
+    <string name="player_client_web_remix">Web-Remix</string>
+    <string name="player_client_web_remix_desc">Langsamer, unterstützt jedoch Premium-Formate. Verwendet JavaScript-Signaturentschlüsselung, wodurch sich der Start der Wiedergabe um ca. 5–10 Sekunden verzögert.</string>
+    <string name="persistent_shuffle_title">Permanentes shuffle</string>
+    <string name="lyrics_offset">Songtext versatz</string>
+    <string name="copy_error">Fehlermeldung kopieren</string>
+    <string name="player_client">Player-Client</string>
+    <string name="player_client_android_vr">Android VR</string>
 </resources>
