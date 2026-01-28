@@ -457,8 +457,8 @@
 
     <!-- Decryption Library Settings -->
     <string name="decryption_library">Decryption library</string>
-    <string name="decryption_library_newpipe">NewPipe Extractor</string>
-    <string name="decryption_library_newpipe_desc">Uses NewPipe\'s JavaScript-based signature decryption. More stable but may be slower on some devices.</string>
-    <string name="decryption_library_pipepipe">PipePipe Extractor API</string>
-    <string name="decryption_library_pipepipe_desc">Uses PipePipe\'s API-based decryption. Faster and more reliable, recommended for most users.</string>
+    <string name="decryption_library_newpipe">NewPipe Extractor (Official)</string>
+    <string name="decryption_library_newpipe_desc">Official TeamNewPipe library. Most up-to-date with YouTube changes. Recommended as default. Automatic fallback to PipePipe API if fails.</string>
+    <string name="decryption_library_pipepipe_api">PipePipe API</string>
+    <string name="decryption_library_pipepipe_api_desc">API-based decryption using MetroExtractor. Faster but depends on external API. Automatic fallback to NewPipe if fails.</string>
 </resources>

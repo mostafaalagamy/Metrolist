@@ -10,7 +10,7 @@ import androidx.media3.common.PlaybackException
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.DecryptionLibrary
 import com.metrolist.music.constants.PlayerClient
-import com.metrolist.innertube.NewPipeUtils
+import com.metrolist.innertube.NewPipeExtractorUtils
 import com.metrolist.innertube.PipePipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
@@ -331,24 +331,53 @@ object YTPlayerUtils {
     }
     /**
      * Wrapper around the decryption library's getSignatureTimestamp function which reports exceptions.
-     * Uses the selected decryption library (NewPipe Extractor or PipePipe Extractor).
+     * Uses the selected decryption library with automatic fallback support.
      */
     private fun getSignatureTimestampOrNull(
         videoId: String,
         decryptionLibrary: DecryptionLibrary
     ): Int? {
         Timber.tag(logTag).d("Getting signature timestamp for videoId: $videoId using $decryptionLibrary")
-        val result = when (decryptionLibrary) {
-            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getSignatureTimestamp(videoId)
-            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getSignatureTimestamp(videoId)
+        
+        // Try primary library
+        val primaryResult = when (decryptionLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeExtractorUtils.getSignatureTimestamp(videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> PipePipeUtils.getSignatureTimestamp(videoId)
         }
-        return result
-            .onSuccess { Timber.tag(logTag).d("Signature timestamp obtained: $it") }
-            .onFailure {
-                Timber.tag(logTag).e(it, "Failed to get signature timestamp")
-                reportException(it)
-            }
+        
+        primaryResult.onSuccess { 
+            Timber.tag(logTag).d("Signature timestamp obtained: $it")
+            return it
+        }
+        
+        // Primary failed, try fallback
+        primaryResult.onFailure { primaryError ->
+            Timber.tag(logTag).w(primaryError, "Primary library ($decryptionLibrary) failed for signature timestamp")
+        }
+        
+        // Try fallback library
+        val fallbackLibrary = getFallbackLibrary(decryptionLibrary)
+        Timber.tag(logTag).d("Trying fallback library for signature timestamp: $fallbackLibrary")
+        
+        val fallbackResult = when (fallbackLibrary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeExtractorUtils.getSignatureTimestamp(videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> PipePipeUtils.getSignatureTimestamp(videoId)
+        }
+        
+        return fallbackResult
+            .onSuccess { Timber.tag(logTag).d("Signature timestamp obtained with fallback: $fallbackLibrary") }
+            .onFailure { Timber.tag(logTag).e(it, "All libraries failed to get signature timestamp") }
             .getOrNull()
+    }
+    
+    /**
+     * Gets the fallback library based on the primary library.
+     */
+    private fun getFallbackLibrary(primary: DecryptionLibrary): DecryptionLibrary {
+        return when (primary) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> DecryptionLibrary.PIPEPIPE_EXTRACTOR_API
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> DecryptionLibrary.NEWPIPE_EXTRACTOR
+        }
     }
     
     /**
@@ -368,10 +397,7 @@ object YTPlayerUtils {
         Timber.tag(logTag).d("Finding stream URL for format: ${format.mimeType}, videoId: $videoId using $decryptionLibrary")
         
         // Try primary library
-        val primaryResult = when (decryptionLibrary) {
-            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getStreamUrl(format, videoId)
-            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getStreamUrl(format, videoId)
-        }
+        val primaryResult = getStreamUrlFromLibrary(format, videoId, decryptionLibrary)
         
         primaryResult.onSuccess { 
             Timber.tag(logTag).d("Stream URL obtained successfully with primary library: $decryptionLibrary")
@@ -381,23 +407,14 @@ object YTPlayerUtils {
         // Primary failed, log and try fallback
         primaryResult.onFailure { primaryError ->
             Timber.tag(logTag).w(primaryError, "Primary library ($decryptionLibrary) failed, attempting fallback")
-            
-            // Clear caches before fallback attempt
             clearDecryptionCaches()
         }
         
         // Try fallback library
-        val fallbackLibrary = when (decryptionLibrary) {
-            DecryptionLibrary.NEWPIPE_EXTRACTOR -> DecryptionLibrary.PIPEPIPE_EXTRACTOR
-            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> DecryptionLibrary.NEWPIPE_EXTRACTOR
-        }
-        
+        val fallbackLibrary = getFallbackLibrary(decryptionLibrary)
         Timber.tag(logTag).d("Trying fallback library: $fallbackLibrary")
         
-        val fallbackResult = when (fallbackLibrary) {
-            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeUtils.getStreamUrl(format, videoId)
-            DecryptionLibrary.PIPEPIPE_EXTRACTOR -> PipePipeUtils.getStreamUrl(format, videoId)
-        }
+        val fallbackResult = getStreamUrlFromLibrary(format, videoId, fallbackLibrary)
         
         return fallbackResult
             .onSuccess { 
@@ -411,12 +428,27 @@ object YTPlayerUtils {
     }
     
     /**
+     * Gets stream URL from a specific library.
+     */
+    private fun getStreamUrlFromLibrary(
+        format: PlayerResponse.StreamingData.Format,
+        videoId: String,
+        library: DecryptionLibrary
+    ): Result<String> {
+        return when (library) {
+            DecryptionLibrary.NEWPIPE_EXTRACTOR -> NewPipeExtractorUtils.getStreamUrl(format, videoId)
+            DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> PipePipeUtils.getStreamUrl(format, videoId)
+        }
+    }
+    
+    /**
      * Clears all decryption-related caches to force fresh data retrieval.
      * Should be called when decryption errors occur.
      */
     private fun clearDecryptionCaches() {
         try {
             Timber.tag(logTag).d("Clearing decryption caches...")
+            NewPipeExtractorUtils.clearCache()
             PipePipeUtils.clearCache()
             Timber.tag(logTag).d("Decryption caches cleared successfully")
         } catch (e: Exception) {

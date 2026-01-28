@@ -239,13 +239,13 @@ fun PlayerSettings(
             valueText = {
                 when (it) {
                     DecryptionLibrary.NEWPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_newpipe)
-                    DecryptionLibrary.PIPEPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_pipepipe)
+                    DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> stringResource(R.string.decryption_library_pipepipe_api)
                 }
             },
             valueDescription = {
                 when (it) {
                     DecryptionLibrary.NEWPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_newpipe_desc)
-                    DecryptionLibrary.PIPEPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_pipepipe_desc)
+                    DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> stringResource(R.string.decryption_library_pipepipe_api_desc)
                 }
             }
         )
@@ -306,7 +306,7 @@ fun PlayerSettings(
                         Text(
                             when (decryptionLibrary) {
                                 DecryptionLibrary.NEWPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_newpipe)
-                                DecryptionLibrary.PIPEPIPE_EXTRACTOR -> stringResource(R.string.decryption_library_pipepipe)
+                                DecryptionLibrary.PIPEPIPE_EXTRACTOR_API -> stringResource(R.string.decryption_library_pipepipe_api)
                             }
                         )
                     },
