@@ -519,4 +519,6 @@
     <string name="change">Change</string>
     <string name="listen_together_cannot_edit_username_in_room">Cannot edit username while in a room</string>
     <string name="error_username_empty">Username is required.</string>
+    <string name="listen_together_suggestion_sent">Suggestion sent to host!</string>
+    <string name="resync">Resync</string>
 </resources>

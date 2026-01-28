@@ -1221,6 +1221,9 @@ class ListenTogetherClient @Inject constructor(
             return
         }
         sendMessage(MessageTypes.SUGGEST_TRACK, SuggestTrackPayload(trackInfo))
+        scope.launch(Dispatchers.Main) {
+            Toast.makeText(context, context.getString(R.string.listen_together_suggestion_sent), Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

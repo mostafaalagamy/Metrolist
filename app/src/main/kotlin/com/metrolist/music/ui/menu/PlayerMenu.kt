@@ -530,6 +530,24 @@ fun PlayerMenu(
                             onClick = { showListenTogetherDialog = true }
                         )
                     )
+                    if (isListenTogetherGuest) {
+                        add(
+                            Material3MenuItemData(
+                                title = { Text(text = stringResource(R.string.resync)) },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.replay),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                },
+                                onClick = {
+                                    listenTogetherManager.requestSync()
+                                    onDismiss()
+                                }
+                            )
+                        )
+                    }
                 }
             )
         }
@@ -1207,20 +1225,11 @@ fun ListenTogetherDialog(
                             modifier = Modifier.padding(20.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Column {
-                                Text(
-                                    text = stringResource(R.string.listen_together),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                                Text(
-                                    text = stringResource(R.string.listen_together_description),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                                )
-                            }
-                            
+                            Text(
+                                text = stringResource(R.string.listen_together_description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                            )
                             OutlinedTextField(
                                 value = usernameInput,
                                 onValueChange = { usernameInput = it },

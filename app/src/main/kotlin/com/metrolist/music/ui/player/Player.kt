@@ -1007,25 +1007,6 @@ fun BottomSheetPlayer(
                                 }
                             }
                         }
-
-                        // Force sync button for Listen Together guests only
-                        if (isListenTogetherGuest) {
-                            FilledIconButton(
-                                onClick = { listenTogetherManager.requestSync() },
-                                shape = favShape,
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = textButtonColor,
-                                    contentColor = iconButtonColor
-                                ),
-                                modifier = Modifier.size(42.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.replay),
-                                    contentDescription = "Request sync",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
                     }
                 } else {
                     AnimatedContent(targetState = showInlineLyrics, label = "ShareButton") { showLyrics ->
@@ -1124,26 +1105,7 @@ fun BottomSheetPlayer(
                         }
                     }
 
-                    // Force sync button for Listen Together guests only (old design)
-                    if (isListenTogetherGuest) {
-                        Spacer(modifier = Modifier.size(12.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                                .background(textButtonColor)
-                                .clickable { listenTogetherManager.requestSync() },
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.replay),
-                                contentDescription = "Request sync",
-                                tint = iconButtonColor,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp)
-                            )
-                        }
-                    }
+
                 }
             }
 
