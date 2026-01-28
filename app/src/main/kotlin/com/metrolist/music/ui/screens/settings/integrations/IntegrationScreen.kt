@@ -6,6 +6,8 @@
 package com.metrolist.music.ui.screens.settings.integrations
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -56,6 +58,22 @@ fun IntegrationScreen(
                     title = { Text(stringResource(R.string.lastfm_integration)) },
                     onClick = {
                         navController.navigate("settings/integrations/lastfm")
+                    }
+                )
+            )
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        IntegrationCard(
+            title = stringResource(R.string.listen_together),
+            items = listOf(
+                IntegrationCardItem(
+                    icon = painterResource(R.drawable.group),
+                    title = { Text(stringResource(R.string.listen_together)) },
+                    description = { Text(stringResource(R.string.listen_together_desc)) },
+                    onClick = {
+                        navController.navigate("settings/integrations/listen_together")
                     }
                 )
             )
