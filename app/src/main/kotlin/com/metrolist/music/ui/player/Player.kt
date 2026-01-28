@@ -898,6 +898,9 @@ fun BottomSheetPlayer(
                         topEnd = 50.dp, bottomEnd = 50.dp
                     )
 
+                    val middleShape = RoundedCornerShape(5.dp)
+                    val likeShape = if (isListenTogetherGuest) middleShape else favShape
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -969,7 +972,7 @@ fun BottomSheetPlayer(
                                             )
                                         }
                                     },
-                                    shape = favShape,
+                                    shape = likeShape,
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = textButtonColor,
                                         contentColor = iconButtonColor,
@@ -985,7 +988,7 @@ fun BottomSheetPlayer(
                             } else {
                                 FilledIconButton(
                                     onClick = playerConnection::toggleLike,
-                                    shape = favShape,
+                                    shape = likeShape,
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = textButtonColor,
                                         contentColor = iconButtonColor,
@@ -1002,6 +1005,25 @@ fun BottomSheetPlayer(
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }
+                            }
+                        }
+
+                        // Force sync button for Listen Together guests only
+                        if (isListenTogetherGuest) {
+                            FilledIconButton(
+                                onClick = { listenTogetherManager?.requestSync() },
+                                shape = favShape,
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = textButtonColor,
+                                    contentColor = iconButtonColor
+                                ),
+                                modifier = Modifier.size(42.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.replay),
+                                    contentDescription = "Request sync",
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
                         }
                     }
@@ -1098,6 +1120,27 @@ fun BottomSheetPlayer(
                                 state = state,
                                 textButtonColor = textButtonColor,
                                 iconButtonColor = iconButtonColor,
+                            )
+                        }
+                    }
+
+                    // Force sync button for Listen Together guests only (old design)
+                    if (isListenTogetherGuest) {
+                        Spacer(modifier = Modifier.size(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(textButtonColor)
+                                .clickable { listenTogetherManager?.requestSync() },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.replay),
+                                contentDescription = "Request sync",
+                                tint = iconButtonColor,
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(24.dp)
                             )
                         }
                     }
@@ -1393,7 +1436,8 @@ fun BottomSheetPlayer(
                                 ),
                                 modifier = Modifier
                                     .height(68.dp)
-                                    .weight(nextButtonWeight)
+                                    .weight(nextButtonWeight
+                                    )
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.skip_next),

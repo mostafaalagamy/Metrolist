@@ -296,6 +296,7 @@ class ListenTogetherManager @Inject constructor(
                     isPlaying = event.state.isPlaying,
                     position = event.state.position,
                     queue = event.state.queue
+                    // bypassBuffer=false (default) for initial join buffer sync
                 )
             }
             
@@ -404,19 +405,13 @@ class ListenTogetherManager @Inject constructor(
                 } else {
                     // Guest: ALWAYS sync to host's state after reconnection
                     Log.d(TAG, "Reconnected as guest, syncing to host's current state")
-                    if (event.state.currentTrack != null) {
-                        // Load the track (even if it appears to be the same - position/play state may differ)
-                        syncToTrack(event.state.currentTrack, event.state.isPlaying, event.state.position)
-                    } else {
-                        // No track in room, just ensure player is paused
-                        Log.d(TAG, "No track in room after reconnect, pausing player")
-                        isSyncing = true
-                        playerConnection?.pause()
-                        scope.launch {
-                            delay(300)
-                            isSyncing = false
-                        }
-                    }
+                    applyPlaybackState(
+                        currentTrack = event.state.currentTrack,
+                        isPlaying = event.state.isPlaying,
+                        position = event.state.position,
+                        queue = event.state.queue,
+                        bypassBuffer = true  // Reconnect: bypass buffer protocol
+                    )
                 }
             }
             
@@ -689,7 +684,8 @@ class ListenTogetherManager @Inject constructor(
             currentTrack = state.currentTrack,
             isPlaying = state.isPlaying,
             position = state.position,
-            queue = state.queue
+            queue = state.queue,
+            bypassBuffer = true  // Manual sync: bypass buffer
         )
     }
 
@@ -697,7 +693,8 @@ class ListenTogetherManager @Inject constructor(
         currentTrack: TrackInfo?,
         isPlaying: Boolean,
         position: Long,
-        queue: List<TrackInfo>?
+        queue: List<TrackInfo>?,
+        bypassBuffer: Boolean = false
     ) {
         val player = playerConnection?.player
         if (player == null) {
@@ -705,7 +702,7 @@ class ListenTogetherManager @Inject constructor(
             return
         }
 
-        Log.d(TAG, "Applying playback state: track=${currentTrack?.id}, pos=$position, queue=${queue?.size}")
+        Log.d(TAG, "Applying playback state: track=${currentTrack?.id}, pos=$position, queue=${queue?.size}, bypassBuffer=$bypassBuffer")
 
         // Cancel any pending sync job
         activeSyncJob?.cancel()
@@ -729,7 +726,6 @@ class ListenTogetherManager @Inject constructor(
             return
         }
 
-        // We have a track.
         bufferingTrackId = currentTrack.id
         
         scope.launch(Dispatchers.Main) {
@@ -737,7 +733,7 @@ class ListenTogetherManager @Inject constructor(
             playerConnection?.allowInternalSync = true
             
             try {
-                // Apply queue if available
+                // Apply queue/media (same)
                 if (queue != null && queue.isNotEmpty()) {
                     val mediaItems = queue.map { it.toMediaMetadata().toMediaItem() }
                     
@@ -762,30 +758,37 @@ class ListenTogetherManager @Inject constructor(
                     player.setMediaItems(listOf(item), 0, position)
                 }
                 
-                // Important: Pause initially to wait for buffer signal (if we want strict sync)
-                // But setMediaItems might auto-play if playWhenReady was true? Default is usually false unless set.
-                playerConnection?.pause()
+                playerConnection?.seekTo(position)  // Always seek immediately to target pos
                 
-                // Store pending state for accurate sync
-                pendingSyncState = SyncStatePayload(
-                    currentTrack = currentTrack,
-                    isPlaying = isPlaying,
-                    position = position,
-                    lastUpdate = System.currentTimeMillis()
-                )
-                
-                // Initial check in case we are already ready (local cache?)
-                applyPendingSyncIfReady()
-                
-                // Signal ready
-                client.sendBufferReady(currentTrack.id)
+                if (bypassBuffer) {
+                    // Manual sync/reconnect: apply play/pause immediately, no buffer protocol
+                    Log.d(TAG, "Bypass buffer: immediately applying play=$isPlaying at pos=$position")
+                    if (isPlaying) {
+                        playerConnection?.play()
+                    } else {
+                        playerConnection?.pause()
+                    }
+                    // Clear sync state
+                    pendingSyncState = null
+                    bufferingTrackId = null
+                    bufferCompleteReceivedForTrack = null
+                } else {
+                    // Normal sync: pause, store pending, send buffer_ready
+                    playerConnection?.pause()
+                    pendingSyncState = SyncStatePayload(
+                        currentTrack = currentTrack,
+                        isPlaying = isPlaying,
+                        position = position,
+                        lastUpdate = System.currentTimeMillis()
+                    )
+                    applyPendingSyncIfReady()
+                    client.sendBufferReady(currentTrack.id)
+                }
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Error applying playback state", e)
             } finally {
                 playerConnection?.allowInternalSync = false
-                // Keep isSyncing = true until buffering completes? 
-                // No, release it so we can process other messages, but buffer logic protects us.
                 delay(200)
                 isSyncing = false
             }
