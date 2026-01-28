@@ -137,7 +137,16 @@ object YTPlayerUtils {
             YouTube.player(videoId, playlistId, mainClient, signatureTimestamp).getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
         val videoDetails = mainPlayerResponse.videoDetails
-        val playbackTracking = mainPlayerResponse.playbackTracking
+        
+        // Always use WEB_REMIX for playbackTracking to ensure history sync works
+        // ANDROID_VR clients don't support login and may not return valid playbackTracking
+        val playbackTracking = if (mainClient != WEB_REMIX) {
+            Timber.tag(logTag).d("Fetching playbackTracking from WEB_REMIX for history sync")
+            YouTube.player(videoId, playlistId, WEB_REMIX, signatureTimestamp)
+                .getOrNull()?.playbackTracking ?: mainPlayerResponse.playbackTracking
+        } else {
+            mainPlayerResponse.playbackTracking
+        }
         var format: PlayerResponse.StreamingData.Format? = null
         var streamUrl: String? = null
         var streamExpiresInSeconds: Int? = null
