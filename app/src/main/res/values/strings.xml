@@ -6,7 +6,7 @@
 <!-- "InnerTune" is replaced with "Metrolist" -->
 <!-- Translators: Do not modify this file for translations, use InnerTune's Weblate instead. -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom navigation -->
     <string name="home">Home</string>
     <string name="songs">Songs</string>
@@ -25,7 +25,7 @@
     <string name="mood_and_genres">Mood and Genres</string>
     <string name="account">Account</string>
     <string name="quick_picks">Quick picks</string>
-    <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
+    <string name="quick_picks_empty" tools:keep="@string/quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="forgotten_favorites">Forgotten favorites</string>
     <string name="keep_listening">Keep listening</string>
     <string name="your_youtube_playlists">Your YouTube playlists</string>
@@ -40,8 +40,8 @@
 
     <!-- Stats -->
     <string name="most_played_songs">Most played songs</string>
-    <string name="most_played_artists">Most played artists</string>
-    <string name="most_played_albums">Most played albums</string>
+    <string name="most_played_artists" tools:keep="@string/most_played_artists">Most played artists</string>
+    <string name="most_played_albums" tools:keep="@string/most_played_albums">Most played albums</string>
 
     <!-- Search -->
     <string name="search">Search</string>
@@ -58,17 +58,17 @@
     <string name="filter_playlists">Playlists</string>
     <string name="filter_community_playlists">Community playlists</string>
     <string name="filter_featured_playlists">Featured playlists</string>
-    <string name="filter_bookmarked">Bookmarked</string>
+    <string name="filter_bookmarked" tools:keep="@string/filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">No results found</string>
 
     <!-- Library -->
-    <string name="library_song_empty">Library songs will show up here</string>
+    <string name="library_song_empty" tools:keep="@string/library_song_empty">Library songs will show up here</string>
     <string name="library_artist_empty">Library artists will show up here</string>
     <string name="library_album_empty">Library albums will show up here</string>
-    <string name="library_playlist_empty">Your playlists will show up here</string>
+    <string name="library_playlist_empty" tools:keep="@string/library_playlist_empty">Your playlists will show up here</string>
 
     <!-- Artist screen -->
-    <string name="from_your_library">From your library</string>
+    <string name="from_your_library" tools:keep="@string/from_your_library">From your library</string>
 
     <!-- Album screen -->
     <string name="other_versions">Other versions</string>
@@ -94,9 +94,9 @@
     <string name="play_next">Play next</string>
     <string name="add_to_queue">Add to queue</string>
     <string name="add_to_library">Add to library</string>
-    <string name="add_all_to_library">Add all to library</string>
+    <string name="add_all_to_library" tools:keep="@string/add_all_to_library">Add all to library</string>
     <string name="remove_from_library">Remove from library</string>
-    <string name="remove_all_from_library">Remove all from library</string>
+    <string name="remove_all_from_library" tools:keep="@string/remove_all_from_library">Remove all from library</string>
     <string name="action_download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="remove_download">Remove download</string>
@@ -109,7 +109,7 @@
     <string name="delete">Delete</string>
     <string name="remove_from_history">Remove from history</string>
     <string name="remove_from_playlist">Remove from playlist</string>
-    <string name="remove_from_queue">Remove from queue</string>
+    <string name="remove_from_queue" tools:keep="@string/remove_from_queue">Remove from queue</string>
     <string name="search_online">Search online</string>
     <string name="action_sync">Sync</string>
     <string name="advanced">Advanced</string>
@@ -137,25 +137,25 @@
     <string name="unknown">Unknown</string>
     <string name="copied">Copied to clipboard</string>
 
-    <string name="edit_lyrics">Edit lyrics</string>
+    <string name="edit_lyrics" tools:keep="@string/edit_lyrics">Edit lyrics</string>
     <string name="search_lyrics">Search lyrics</string>
 
     <string name="edit_song">Edit song</string>
     <string name="song_title">Song title</string>
     <string name="song_artists">Song artists</string>
-    <string name="error_song_title_empty">Song title cannot be empty.</string>
-    <string name="error_song_artist_empty">Song artist cannot be empty.</string>
+    <string name="error_song_title_empty" tools:keep="@string/error_song_title_empty">Song title cannot be empty.</string>
+    <string name="error_song_artist_empty" tools:keep="@string/error_song_artist_empty">Song artist cannot be empty.</string>
     <string name="save">Save</string>
 
-    <string name="choose_playlist">Choose playlist</string>
+    <string name="choose_playlist" tools:keep="@string/choose_playlist">Choose playlist</string>
     <string name="edit_playlist">Edit playlist</string>
     <string name="create_playlist">Create playlist</string>
-    <string name="playlist_name">Playlist name</string>
-    <string name="error_playlist_name_empty">Playlist name cannot be empty.</string>
+    <string name="playlist_name" tools:keep="@string/playlist_name">Playlist name</string>
+    <string name="error_playlist_name_empty" tools:keep="@string/error_playlist_name_empty">Playlist name cannot be empty.</string>
 
-    <string name="edit_artist">Edit artist</string>
+    <string name="edit_artist" tools:keep="@string/edit_artist">Edit artist</string>
     <string name="artist_name">Artist name</string>
-    <string name="error_artist_name_empty">Artist name cannot be empty.</string>
+    <string name="error_artist_name_empty" tools:keep="@string/error_artist_name_empty">Artist name cannot be empty.</string>
 
     <string name="duplicates">Duplicates</string>
     <string name="skip_duplicates">Skip duplicates</string>
@@ -194,7 +194,7 @@
     </plurals>
 
     <!-- Snackbar -->
-    <string name="playlist_imported">Playlist imported</string>
+    <string name="playlist_imported" tools:keep="@string/playlist_imported">Playlist imported</string>
     <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Undo</string>
@@ -207,16 +207,16 @@
         <item quantity="one">1 minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
-    <string name="error_no_stream">No stream available</string>
+    <string name="error_no_stream" tools:keep="@string/error_no_stream">No stream available</string>
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Timeout</string>
     <string name="error_unknown">Unknown error</string>
 
     <!-- Player action -->
     <string name="action_like">Like</string>
-    <string name="action_like_all">Like all</string>
+    <string name="action_like_all" tools:keep="@string/action_like_all">Like all</string>
     <string name="action_remove_like">Remove like</string>
-    <string name="action_remove_like_all">Remove all likes</string>
+    <string name="action_remove_like_all" tools:keep="@string/action_remove_like_all">Remove all likes</string>
     <string name="action_shuffle_on">Shuffle on</string>
     <string name="action_shuffle_off">Shuffle off</string>
     <string name="repeat_mode_off">Repeat mode off</string>
@@ -240,11 +240,11 @@
     <string name="dark_theme_off">Off</string>
     <string name="dark_theme_follow_system">Follow system</string>
     <string name="pure_black">Pure black</string>
-    <string name="customize_navigation_tabs">Customize navigation tabs</string>
+    <string name="customize_navigation_tabs" tools:keep="@string/customize_navigation_tabs">Customize navigation tabs</string>
     <string name="player">Player</string>
-    <string name="player_text_alignment">Player text alignment</string>
+    <string name="player_text_alignment" tools:keep="@string/player_text_alignment">Player text alignment</string>
     <string name="lyrics_text_position">Lyrics text position</string>
-    <string name="sided">Sided</string>
+    <string name="sided" tools:keep="@string/sided">Sided</string>
     <string name="left">Left</string>
     <string name="center">Center</string>
     <string name="right">Right</string>
@@ -262,7 +262,7 @@
     <string name="action_login">Log in</string>
     <string name="login">Login</string>
     <string name="not_logged_in">Not logged in</string>
-    <string name="login_failed">Login failed</string>
+    <string name="login_failed" tools:keep="@string/login_failed">Login failed</string>
 
     <string name="content_language">Default content language</string>
     <string name="content_country">Default content country</string>
@@ -270,7 +270,7 @@
     <string name="enable_proxy">Enable proxy</string>
     <string name="proxy_type">Proxy type</string>
     <string name="proxy_url">Proxy URL</string>
-    <string name="restart_to_take_effect">Restart to take effect</string>
+    <string name="restart_to_take_effect" tools:keep="@string/restart_to_take_effect">Restart to take effect</string>
 
     <string name="player_and_audio">Player and audio</string>
     <string name="audio_quality">Audio quality</string>
@@ -290,17 +290,17 @@
     <string name="equalizer">Equalizer</string>
 
     <string name="storage">Storage</string>
-    <string name="cache">Cache</string>
+    <string name="cache" tools:keep="@string/cache">Cache</string>
     <string name="image_cache">Image Cache</string>
     <string name="song_cache">Song Cache</string>
-    <string name="max_cache_size">Max cache size</string>
+    <string name="max_cache_size" tools:keep="@string/max_cache_size">Max cache size</string>
     <string name="unlimited">Unlimited</string>
     <string name="clear_all_downloads">Clear all downloads</string>
     <string name="max_image_cache_size">Max image cache size</string>
     <string name="clear_image_cache">Clear image cache</string>
     <string name="max_song_cache_size">Max song cache size</string>
     <string name="clear_song_cache">Clear song cache</string>
-    <string name="size_used">%s used</string>
+    <string name="size_used" tools:keep="@string/size_used">%s used</string>
 
     <string name="privacy">Privacy</string>
     <string name="listen_history">Listen history</string>
@@ -311,8 +311,8 @@
     <string name="pause_search_history">Pause search history</string>
     <string name="clear_search_history">Clear search history</string>
     <string name="clear_search_history_confirm">Are you sure you want to clear all search history?</string>
-    <string name="use_login_for_browse">Use login for browsing content</string>
-    <string name="use_login_for_browse_desc">This can influence what content you see and for example shows premium-only albums if you are logged in with a Premium account</string>
+    <string name="use_login_for_browse" tools:keep="@string/use_login_for_browse">Use login for browsing content</string>
+    <string name="use_login_for_browse_desc" tools:keep="@string/use_login_for_browse_desc">This can influence what content you see and for example shows premium-only albums if you are logged in with a Premium account</string>
     <string name="disable_screenshot">Disable screenshot</string>
     <string name="disable_screenshot_desc">When this option is on, screenshots and the app\'s view in Recents are disabled.</string>
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
@@ -322,7 +322,7 @@
     <string name="backup_restore">Backup and restore</string>
     <string name="action_backup">Backup</string>
     <string name="action_restore">Restore</string>
-    <string name="imported_playlist">Imported playlist</string>
+    <string name="imported_playlist" tools:keep="@string/imported_playlist">Imported playlist</string>
     <string name="backup_create_success">Backup created successfully</string>
     <string name="backup_create_failed">Couldn\'t create backup</string>
     <string name="restore_failed">Failed to restore backup</string>
@@ -335,9 +335,9 @@
     <string name="enable_discord_rpc">Enable Rich Presence</string>
 
     <string name="about">About</string>
-    <string name="app_version">App version</string>
+    <string name="app_version" tools:keep="@string/app_version">App version</string>
 
     <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
+    <string name="translation_models" tools:keep="@string/translation_models">Translation Models</string>
+    <string name="clear_translation_models" tools:keep="@string/clear_translation_models">Clear translation models</string>
 </resources>

@@ -372,7 +372,7 @@ class ListenTogetherClient @Inject constructor(
         return cappedDelay + jitter
     }
 
-    private fun log(level: LogLevel, message: String, details: String? = null) {
+    internal fun log(level: LogLevel, message: String, details: String? = null) {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"))
         val entry = LogEntry(timestamp, level, message, details)
         
@@ -445,7 +445,7 @@ class ListenTogetherClient @Inject constructor(
         })
     }
     
-    private fun executePendingAction() {
+    internal fun executePendingAction() {
         val action = pendingAction ?: return
         pendingAction = null
         
@@ -491,7 +491,7 @@ class ListenTogetherClient @Inject constructor(
         scope.launch { _events.emit(ListenTogetherEvent.Disconnected) }
     }
 
-    private fun startPingJob() {
+    internal fun startPingJob() {
         pingJob?.cancel()
         pingJob = scope.launch {
             while (true) {
@@ -610,7 +610,7 @@ class ListenTogetherClient @Inject constructor(
         NotificationManagerCompat.from(context).notify(notifId, builder.build())
     }
 
-    private fun handleDisconnect() {
+    internal fun handleDisconnect() {
         pingJob?.cancel()
         pingJob = null
         
@@ -629,7 +629,7 @@ class ListenTogetherClient @Inject constructor(
         }
     }
 
-    private fun handleConnectionFailure(t: Throwable) {
+    internal fun handleConnectionFailure(t: Throwable) {
         pingJob?.cancel()
         pingJob = null
         
@@ -690,7 +690,7 @@ class ListenTogetherClient @Inject constructor(
         }
     }
 
-    private fun handleMessage(text: String) {
+    internal fun handleMessage(text: String) {
         log(LogLevel.DEBUG, "Received message", text.take(200))
         
         try {

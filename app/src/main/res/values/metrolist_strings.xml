@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="explore">Explore</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="explore" tools:keep="@string/explore">Explore</string>
 
     <string name="local_history">Local</string>
     <string name="remote_history">Remote</string>
 
     <string name="charts">Charts</string>
-    <string name="back_button_desc">Back</string>
-    <string name="no_title">No title</string>
-    <string name="unknown_artist">Unknown artist</string>
-    <string name="unknown_item_type">Unknown item type</string>
-    <string name="loading_charts">Loading charts…</string>
-    <string name="retry_button">Retry</string>
+    <string name="back_button_desc" tools:keep="@string/back_button_desc">Back</string>
+    <string name="no_title" tools:keep="@string/no_title">No title</string>
+    <string name="unknown_artist" tools:keep="@string/unknown_artist">Unknown artist</string>
+    <string name="unknown_item_type" tools:keep="@string/unknown_item_type">Unknown item type</string>
+    <string name="loading_charts" tools:keep="@string/loading_charts">Loading charts…</string>
+    <string name="retry_button" tools:keep="@string/retry_button">Retry</string>
     <string name="album_cover_desc">Album cover</string>
     <string name="top_music_videos">Top music videos</string>
     <string name="trending">Trending</string>
-    <string name="top_result">Top result</string>
-    <string name="other_results">Other</string>
+    <string name="top_result" tools:keep="@string/top_result">Top result</string>
+    <string name="other_results" tools:keep="@string/other_results">Other</string>
 
     <string name="weeks">Weeks</string>
     <string name="months">Months</string>
@@ -31,7 +31,7 @@
     <string name="filter_uploaded">Uploaded</string>
     <string name="sync_playlist">Sync playlist</string>
     <string name="sync_disabled">Sync disabled</string>
-    <string name="elements_selected">%1$d elements selected</string>
+    <string name="elements_selected" tools:keep="@string/elements_selected">%1$d elements selected</string>
     <string name="allows_for_sync_witch_youtube">Note: This allows for syncing with YouTube Music. This is NOT changeable later.</string>
     <string name="generating_image">Generating image</string>
     <string name="please_wait">Please wait</string>
@@ -42,13 +42,13 @@
     <string name="max_selection_limit">Max selection limit</string>
     <string name="share_selected">Share selected</string>
     <string name="customize_colors">Customize colors</string>
-    <string name="more_options">More options</string>
+    <string name="more_options" tools:keep="@string/more_options">More options</string>
     <string name="text_color">Text color</string>
     <string name="secondary_text_color">Secondary text color</string>
     <string name="background_color">Background color</string>
 
-    <string name="added_to_play_next">Added to play next</string>
-    <string name="added_to_queue">Added to the queue</string>
+    <string name="added_to_play_next" tools:keep="@string/added_to_play_next">Added to play next</string>
+    <string name="added_to_queue" tools:keep="@string/added_to_queue">Added to the queue</string>
     <string name="remove_from_cache">Remove from cache</string>
 
     <!-- Artist about section -->
@@ -77,9 +77,9 @@
     <string name="now_playing">Now Playing</string>
 
     <string name="lyrics">Lyrics</string>
-    <string name="close">Close</string>
-    <string name="minimum_volume">Minimum Volume</string>
-    <string name="maximum_volume">Maximum Volume</string>
+    <string name="close" tools:keep="@string/close">Close</string>
+    <string name="minimum_volume" tools:keep="@string/minimum_volume">Minimum Volume</string>
+    <string name="maximum_volume" tools:keep="@string/maximum_volume">Maximum Volume</string>
     <string name="hide_player_thumbnail">Hide Player Thumbnail</string>
     <string name="hide_player_thumbnail_desc">Replace album artwork with app logo in player</string>
     <string name="crop_album_art">Crop Album Art</string>
@@ -87,7 +87,7 @@
 
     <string name="already_in_playlist">Already in playlist:</string>
 
-    <plurals name="n_element">
+    <plurals name="n_element" tools:keep="@plurals/n_element">
         <item quantity="one">%d element</item>
         <item quantity="other">%d elements</item>
     </plurals>
@@ -96,8 +96,8 @@
         <item quantity="other">%d times</item>
     </plurals>
 
-    <string name="seek_backward">5 seconds backward</string>
-    <string name="seek_forward">5 seconds forward</string>
+    <string name="seek_backward" tools:keep="@string/seek_backward">5 seconds backward</string>
+    <string name="seek_forward" tools:keep="@string/seek_forward">5 seconds forward</string>
     <string name="seek_forward_dynamic">+%1$d seconds forwards</string>
     <string name="seek_backward_dynamic">-%1$d seconds backwards</string>
     <string name="seek_seconds_addup">Progressive seek</string>
@@ -105,8 +105,8 @@
 
     <string name="similar_content">Similar content</string>
 
-    <string name="login_settings">Login settings</string>
-    <string name="general_settings">General settings</string>
+    <string name="login_settings" tools:keep="@string/login_settings">Login settings</string>
+    <string name="general_settings" tools:keep="@string/general_settings">General settings</string>
 
     <string name="player_background_style">Player background style</string>
     <string name="follow_theme">Follow theme</string>
@@ -118,8 +118,8 @@
     <string name="default_style">Default</string>
     <string name="primary_color_style">Primary color</string>
     <string name="tertiary_color_style">Tertiary color</string>
-    <string name="secondary_color_style">Secondary</string>
-    <string name="enable_wavy_slider">Enable wavy slider</string>
+    <string name="secondary_color_style" tools:keep="@string/secondary_color_style">Secondary</string>
+    <string name="enable_wavy_slider" tools:keep="@string/enable_wavy_slider">Enable wavy slider</string>
     <string name="wavy">Wavy</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
@@ -148,13 +148,13 @@
     <string name="skip_silence_instant">Instantly skip silence</string>
     <string name="skip_silence_instant_desc">Jump ahead during silent moments instead of speeding up playback</string>
 
-    <string name="google">Google</string>
-    <string name="discord">Discord</string>
+    <string name="google" tools:keep="@string/google">Google</string>
+    <string name="discord" tools:keep="@string/discord">Discord</string>
     <string name="advanced_login">Login with token</string>
     <string name="token_hidden">Tap to show token</string>
     <string name="token_shown">Tap again to copy or edit</string>
     <string name="token_adv_login_description">This is an ADVANCED login method. As an alternative to the web portal, you may directly enter or update your login token here. For example, this can speed up logging in on multiple devices. Please note that any invalid token formats the app fails to parse will not be accepted</string>
-    <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
+    <string name="ytm_sync" tools:keep="@string/ytm_sync">Automatically sync with your YouTube Music account</string>
     <string name="yt_sync">Auto sync with account</string>
     <string name="more_content">More content</string>
     
@@ -172,11 +172,11 @@
     <string name="set_quick_picks">Set quick picks</string>
     <string name="last_song_listened">Based on last song listened</string>
     <string name="app_language">App language</string>
-    <string name="configure_app_language">Configure app languages</string>
-    <string name="intent_app_language_not_found">Couldn\'t find app language settings, please configure them manually</string>
-    <string name="open_supported_links">Open supported link by default</string>
-    <string name="configure_supported_links">Configure supported links</string>
-    <string name="intent_supported_links_not_found">Couldn\'t find supported links settings, please configure them manually</string>
+    <string name="configure_app_language" tools:keep="@string/configure_app_language">Configure app languages</string>
+    <string name="intent_app_language_not_found" tools:keep="@string/intent_app_language_not_found">Couldn\'t find app language settings, please configure them manually</string>
+    <string name="open_supported_links" tools:keep="@string/open_supported_links">Open supported link by default</string>
+    <string name="configure_supported_links" tools:keep="@string/configure_supported_links">Configure supported links</string>
+    <string name="intent_supported_links_not_found" tools:keep="@string/intent_supported_links_not_found">Couldn\'t find supported links settings, please configure them manually</string>
     <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
     <string name="config_proxy">Configure proxy</string>
     <string name="proxy_username">Proxy username</string>
@@ -185,17 +185,17 @@
     <string name="discord_use_details">Use details instead of state</string>
     <string name="discord_use_details_description">Show song title prominently instead of artist names</string>
 
-    <string name="audio_quality_max">Max (beta)</string>
+    <string name="audio_quality_max" tools:keep="@string/audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Enable similar content</string>
     <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
     <string name="persistent_shuffle_title">Persistent shuffle</string>
     <string name="persistent_shuffle_desc">Keep shuffle enabled when starting new songs or playlists</string>
     <string name="remember_shuffle_and_repeat">Remember shuffle and repeat</string>
     <string name="remember_shuffle_and_repeat_desc">Remember shuffle and repeat mode when restarting the app</string>
-    <string name="min_playback_duration_title">Minimum playback duration</string>
-    <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
-    <string name="percentage_format">%d%%</string>
-    <string name="minimum_playback_duration">Minimum playback duration</string>
+    <string name="min_playback_duration_title" tools:keep="@string/min_playback_duration_title">Minimum playback duration</string>
+    <string name="min_playback_duration_description" tools:keep="@string/min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
+    <string name="percentage_format" tools:keep="@string/percentage_format">%d%%</string>
+    <string name="minimum_playback_duration" tools:keep="@string/minimum_playback_duration">Minimum playback duration</string>
 
     <string name="import_online">Import a \"m3u\" playlists</string>
     <string name="import_csv">Import a \"csv\" playlists</string>
@@ -205,7 +205,7 @@
     <string name="auto_download_on_like_desc">Automatically download songs when you like them</string>
 
     <string name="swipe_sensitivity">Mini player swipe sensitivity</string>
-    <string name="swipe_sensitivity_desc">Adjust how sensitive swipe gestures are for changing songs</string>
+    <string name="swipe_sensitivity_desc" tools:keep="@string/swipe_sensitivity_desc">Adjust how sensitive swipe gestures are for changing songs</string>
     <string name="sensitivity_percentage">%1$d%%</string>
 
     <string name="clear_song_cache_dialog">  Are you sure you want to clear all cached songs?</string>
@@ -214,7 +214,7 @@
 
     <string name="disable">Disable</string>
 
-    <string name="pause_remote_listen_history">Pause share listen history with YouTube Music</string>
+    <string name="pause_remote_listen_history" tools:keep="@string/pause_remote_listen_history">Pause share listen history with YouTube Music</string>
     <string name="not_logged_in_youtube">Not logged in to YouTube</string>
 
     <string name="default_links">Open supported links</string>
@@ -238,10 +238,10 @@
     <string name="dislikes">Dislikes</string>
     <string name="subscribe">Subscribe</string>
     <string name="subscribed">Subscribed</string>
-    <string name="playlist_not_found">Playlist not found</string>
-    <string name="playlist_not_found_desc">The requested playlist could not be loaded</string>
-    <string name="empty_playlist">Empty Playlist</string>
-    <string name="empty_playlist_desc">This playlist doesn\'t contain any songs</string>
+    <string name="playlist_not_found" tools:keep="@string/playlist_not_found">Playlist not found</string>
+    <string name="playlist_not_found_desc" tools:keep="@string/playlist_not_found_desc">The requested playlist could not be loaded</string>
+    <string name="empty_playlist" tools:keep="@string/empty_playlist">Empty Playlist</string>
+    <string name="empty_playlist_desc" tools:keep="@string/empty_playlist_desc">This playlist doesn\'t contain any songs</string>
     <plurals name="seconds">
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>
@@ -257,7 +257,7 @@
     <string name="lyrics_romanization_cyrillic">Cyrillic</string>
     <string name="lyrics_romanize_title">Romanization</string>
     <string name="lyrics_romanization">Lyrics romanization</string>
-    <string name="romanization">Romanization</string>
+    <string name="romanization" tools:keep="@string/romanization">Romanization</string>
     <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
     <string name="lyrics_romanize_chinese">Romanize Chinese lyrics</string>
@@ -271,7 +271,7 @@
     <string name="line_by_line_option_desc">The Cyrillic language will be detected line by line instead of the entire song.</string>
     <string name="line_by_line_dialog_title">Are you sure?</string>
     <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
-    <string name="line_by_line_dialog_enable">Enable</string>
+    <string name="line_by_line_dialog_enable" tools:keep="@string/line_by_line_dialog_enable">Enable</string>
     <string name="romanize_current_track">Romanize current track</string>
 
     <!-- Lyrics Offset Settings -->
@@ -280,7 +280,7 @@
     <!-- Material 3 Settings Sections -->
     <string name="settings_section_ui">Interface</string>
     <string name="settings_section_privacy">Privacy &amp; Security</string>
-    <string name="settings_section_player">Player &amp; Media</string>
+    <string name="settings_section_player" tools:keep="@string/settings_section_player">Player &amp; Media</string>
     <string name="settings_section_player_content">Player &amp; Content</string>
     <string name="settings_section_storage">Storage &amp; Data</string>
     <string name="settings_section_system">System &amp; About</string>
@@ -337,7 +337,7 @@
     <string name="enable_dynamic_icon">Enable dynamic icon</string>
     <string name="mini_player">Mini-player</string>
     <string name="pure_black_mini_player">Pure black mini-player</string>
-    <string name="mini_player_outline">Mini-player outline</string>
+    <string name="mini_player_outline" tools:keep="@string/mini_player_outline">Mini-player outline</string>
     <string name="cache_size_warning_title">Hold on!</string>
     <string name="cache_size_warning_message">You\'ve chosen a cache size limit smaller than what the app is currently using (%1$s). If you continue, the app may remove some cached %2$s to match the new limit. Proceed anyway?</string>
     <string name="cache_size_warning_confirm">Continue</string>
@@ -362,7 +362,7 @@
     <string name="wrapped_album_listening_time_minutes">%d minutes</string>
     <string name="wrapped_no_data">No data</string>
     <string name="wrapped_top_5_artists_title">Your top artists of the year</string>
-    <string name="wrapped_artist_image_content_description">Artist image</string>
+    <string name="wrapped_artist_image_content_description" tools:keep="@string/wrapped_artist_image_content_description">Artist image</string>
     <string name="wrapped_artist_listening_time">%d minutes</string>
     <string name="wrapped_top_5_songs_title">Your top songs of the year</string>
     <string name="wrapped_top_song_album_art_content_description">Album art</string>
@@ -378,10 +378,10 @@
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_intro_subtitle">it\'s time to see what you\'ve been listening to</string>
     <string name="wrapped_intro_button">let\'s go!</string>
-    <string name="wrapped_end_thanks">Thanks for listening with Metrolist!</string>
-    <string name="wrapped_end_create_playlist">Create Your Wrapped Playlist</string>
-    <string name="wrapped_end_creating_playlist">Creating...</string>
-    <string name="wrapped_end_playlist_saved">Playlist Saved</string>
+    <string name="wrapped_end_thanks" tools:keep="@string/wrapped_end_thanks">Thanks for listening with Metrolist!</string>
+    <string name="wrapped_end_create_playlist" tools:keep="@string/wrapped_end_create_playlist">Create Your Wrapped Playlist</string>
+    <string name="wrapped_end_creating_playlist" tools:keep="@string/wrapped_end_creating_playlist">Creating...</string>
+    <string name="wrapped_end_playlist_saved" tools:keep="@string/wrapped_end_playlist_saved">Playlist Saved</string>
     <string name="wrapped_logo_content_description">Metrolist Logo</string>
     <string name="wrapped_year">2025</string>
     <string name="wrapped_ready_title">YOUR WRAPPED IS READY!</string>
@@ -446,7 +446,7 @@
     <string name="like">Like</string>
     <string name="widget_description">Music player widget with playback controls</string>
     <string name="turntable_widget_description">Quick access to your most recently played track</string>
-    <string name="queue_widget_description">Music player with queue preview</string>
+    <string name="queue_widget_description" tools:keep="@string/queue_widget_description">Music player with queue preview</string>
 
     <!-- Player Client Settings -->
     <string name="player_client">Player client</string>
@@ -523,7 +523,7 @@
     <string name="you_label">You</string>
     <string name="connected_users">Connected Users</string>
     <string name="enter_username">Enter Username</string>
-    <string name="change">Change</string>
+    <string name="change" tools:keep="@string/change">Change</string>
     <string name="listen_together_cannot_edit_username_in_room">Cannot edit username while in a room</string>
     <string name="error_username_empty">Username is required.</string>
     <string name="listen_together_suggestion_sent">Suggestion sent to host!</string>
