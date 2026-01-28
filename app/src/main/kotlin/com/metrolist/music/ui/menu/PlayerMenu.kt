@@ -42,6 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -107,6 +108,9 @@ import kotlinx.coroutines.launch
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.round
+import androidx.compose.material3.Card
+import androidx.compose.material3.LinearProgressIndicator
+import com.metrolist.music.listentogether.ConnectionState
 
 @Composable
 fun PlayerMenu(
@@ -838,6 +842,76 @@ fun ListenTogetherDialog(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // Connection status indicator and controls
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = when (connectionState) {
+                            ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primaryContainer
+                            ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> MaterialTheme.colorScheme.secondaryContainer
+                            ConnectionState.ERROR -> MaterialTheme.colorScheme.errorContainer
+                            ConnectionState.DISCONNECTED -> MaterialTheme.colorScheme.surfaceVariant
+                        }
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = when (connectionState) {
+                                ConnectionState.CONNECTED -> stringResource(R.string.listen_together_connected)
+                                ConnectionState.CONNECTING -> stringResource(R.string.listen_together_connecting)
+                                ConnectionState.RECONNECTING -> stringResource(R.string.listen_together_reconnecting)
+                                ConnectionState.ERROR -> stringResource(R.string.listen_together_error)
+                                ConnectionState.DISCONNECTED -> stringResource(R.string.listen_together_disconnected)
+                            },
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        
+                        if (connectionState == ConnectionState.CONNECTING || connectionState == ConnectionState.RECONNECTING) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                        
+                        Spacer(modifier = Modifier.height(12.dp))
+                        
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (connectionState == ConnectionState.DISCONNECTED || connectionState == ConnectionState.ERROR) {
+                                Button(
+                                    onClick = { listenTogetherManager.connect() },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(stringResource(R.string.connect))
+                                }
+                            } else {
+                                Button(
+                                    onClick = { listenTogetherManager.disconnect() },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(stringResource(R.string.disconnect))
+                                }
+                                FilledTonalButton(
+                                    onClick = { listenTogetherManager.forceReconnect() },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Reconnect")
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (connectionState == ConnectionState.CONNECTED && !isInRoom) {
+                    Text(
+                        text = stringResource(R.string.listen_together_background_disconnect_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
                 if (isInRoom) {
                     // Room status card
                     roomState?.let { room ->
@@ -1121,85 +1195,127 @@ fun ListenTogetherDialog(
                         }
                     }
                 } else {
-                    // Not in a room - show options
-                    Text(
-                        text = stringResource(R.string.listen_together_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    
-                    // Username input - editable locally; persist only when user confirms join/create.
-                    OutlinedTextField(
-                        value = usernameInput,
-                        onValueChange = {
-                            usernameInput = it
-                        },
-                        label = { Text(stringResource(R.string.username)) },
-                        placeholder = { Text(stringResource(R.string.enter_username)) },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.person),
-                                contentDescription = null
+                    // Quick join card
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column {
+                                Text(
+                                    text = stringResource(R.string.listen_together),
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Text(
+                                    text = stringResource(R.string.listen_together_description),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                                )
+                            }
+                            
+                            OutlinedTextField(
+                                value = usernameInput,
+                                onValueChange = { usernameInput = it },
+                                label = { Text(stringResource(R.string.username)) },
+                                placeholder = { Text(stringResource(R.string.enter_username)) },
+                                leadingIcon = {
+                                    Icon(painterResource(R.drawable.person), null)
+                                },
+                                trailingIcon = {
+                                    if (usernameInput.isNotBlank()) {
+                                        IconButton(onClick = { usernameInput = "" }) {
+                                            Icon(painterResource(R.drawable.close), null)
+                                        }
+                                    }
+                                },
+                                singleLine = true,
+                                shape = RoundedCornerShape(12.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                ),
+                                modifier = Modifier.fillMaxWidth()
                             )
-                        },
-                        trailingIcon = {
-                            if (usernameInput.isNotBlank()) {
-                                IconButton(onClick = {
-                                    usernameInput = ""
-                                }) {
+                            
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    text = stringResource(R.string.join_existing_room),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                
+                                OutlinedTextField(
+                                    value = roomCodeInput,
+                                    onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
+                                    label = { Text(stringResource(R.string.room_code)) },
+                                    placeholder = { Text("ABCD1234") },
+                                    supportingText = {
+                                        Text(
+                                            text = "${roomCodeInput.length}/8",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                                        )
+                                    },
+                                    leadingIcon = {
+                                        Icon(painterResource(R.drawable.token), null)
+                                    },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+
+                            // Status messages
+                            if (isJoiningRoom) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null
+                                        painterResource(R.drawable.hourglass_empty),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                    Text(
+                                        text = waitingForApprovalText,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             }
-                        },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    
-                    Text(
-                        text = stringResource(R.string.join_existing_room),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                    
-                    OutlinedTextField(
-                        value = roomCodeInput,
-                        onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
-                        label = { Text(stringResource(R.string.room_code)) },
-                        placeholder = { Text("ABCD1234") },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.token),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Characters,
-                            keyboardType = KeyboardType.Text
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Show status messages for join/create
-                    if (isJoiningRoom) {
-                        Text(
-                            text = waitingForApprovalText,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    joinErrorMessage?.let { msg ->
-                        Text(
-                            text = msg,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
+                            joinErrorMessage?.let { msg ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painterResource(R.drawable.error),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                    Text(
+                                        text = msg,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

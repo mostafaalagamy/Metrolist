@@ -1011,7 +1011,7 @@ fun BottomSheetPlayer(
                         // Force sync button for Listen Together guests only
                         if (isListenTogetherGuest) {
                             FilledIconButton(
-                                onClick = { listenTogetherManager?.requestSync() },
+                                onClick = { listenTogetherManager.requestSync() },
                                 shape = favShape,
                                 colors = IconButtonDefaults.filledIconButtonColors(
                                     containerColor = textButtonColor,
@@ -1132,7 +1132,7 @@ fun BottomSheetPlayer(
                                 .size(40.dp)
                                 .clip(RoundedCornerShape(24.dp))
                                 .background(textButtonColor)
-                                .clickable { listenTogetherManager?.requestSync() },
+                                .clickable { listenTogetherManager.requestSync() },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.replay),
