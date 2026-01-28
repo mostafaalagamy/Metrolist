@@ -14,7 +14,8 @@ dependencies {
     implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.client.encoding)
     implementation(libs.brotli)
-    implementation(libs.extractor)
+    implementation(libs.newpipeextractor)
+    implementation(libs.metroextractor)
     implementation(libs.metrolistshared)
     testImplementation(libs.junit)
 }

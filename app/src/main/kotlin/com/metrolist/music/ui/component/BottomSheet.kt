@@ -70,6 +70,7 @@ fun BottomSheet(
     background: @Composable (BoxScope.() -> Unit) = { },
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
+    isExpandable: Boolean = true,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val density = LocalDensity.current
@@ -93,7 +94,8 @@ fun BottomSheet(
                     .coerceAtLeast(0f)
                 translationY = y
             }
-            .pointerInput(state) {
+            .pointerInput(state, isExpandable) {
+                if (!isExpandable) return@pointerInput
                 val velocityTracker = VelocityTracker()
 
                 detectVerticalDragGestures(
@@ -143,7 +145,7 @@ fun BottomSheet(
                     }.clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = state::expandSoft,
+                        onClick = { if (isExpandable) state.expandSoft() },
                     ).fillMaxWidth()
                     .height(state.collapsedBound),
                 content = collapsedContent,
