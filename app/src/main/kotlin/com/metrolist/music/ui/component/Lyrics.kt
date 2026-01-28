@@ -452,6 +452,8 @@ fun Lyrics(
     val selectedIndices = remember { mutableStateListOf<Int>() }
     var showMaxSelectionToast by remember { mutableStateOf(false) } // State for showing max selection toast
 
+    val isLyricsProviderShown = lyricsEntity?.provider != null && lyricsEntity?.provider != "Unknown" && !isSelectionModeActive
+
     val lazyListState = rememberLazyListState()
     
     // Professional animation states for smooth Metrolist-style transitions
@@ -546,7 +548,8 @@ fun Lyrics(
         if (isAnimating) return // Prevent multiple animations
         isAnimating = true
         try {
-            val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+            val lookUpIndex = if (isLyricsProviderShown) targetIndex + 1 else targetIndex
+            val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == lookUpIndex }
             if (itemInfo != null) {
                 // Item is visible, animate directly to center without sudden jumps
                 val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
@@ -666,7 +669,7 @@ fun Lyrics(
             }
 
             // Show lyrics provider at the top, scrolling with content
-            if (lyricsEntity?.provider != null && lyricsEntity?.provider != "Unknown" && !isSelectionModeActive) {
+            if (isLyricsProviderShown) {
                 item {
                     Text(
                         text = "Lyrics from ${lyricsEntity?.provider}",
