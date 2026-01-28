@@ -899,7 +899,6 @@ fun BottomSheetPlayer(
                     )
 
                     val middleShape = RoundedCornerShape(5.dp)
-                    val likeShape = if (isListenTogetherGuest) middleShape else favShape
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -972,7 +971,7 @@ fun BottomSheetPlayer(
                                             )
                                         }
                                     },
-                                    shape = likeShape,
+                                    shape = favShape,
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = textButtonColor,
                                         contentColor = iconButtonColor,
@@ -988,7 +987,7 @@ fun BottomSheetPlayer(
                             } else {
                                 FilledIconButton(
                                     onClick = playerConnection::toggleLike,
-                                    shape = likeShape,
+                                    shape = favShape,
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = textButtonColor,
                                         contentColor = iconButtonColor,
