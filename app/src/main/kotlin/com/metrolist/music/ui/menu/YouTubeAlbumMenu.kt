@@ -299,8 +299,6 @@ fun YouTubeAlbumMenu(
                                 }
                             }
                         )
-                    } else null,
-                    if (!isGuest) {
                         NewAction(
                             icon = {
                                 Icon(
@@ -342,7 +340,8 @@ fun YouTubeAlbumMenu(
                         }
                     )
                 ),
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp),
+                columns = if (isGuest) 1 else 3
             )
         }
         item {

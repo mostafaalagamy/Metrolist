@@ -89,6 +89,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.R
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.HideExplicitKey
@@ -146,6 +147,8 @@ fun ArtistScreen(
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
+    val listenTogetherManager = LocalListenTogetherManager.current
+    val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
     val isPlaying by playerConnection.isEffectivelyPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val artistPage = viewModel.artistPage
@@ -383,7 +386,7 @@ fun ArtistScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         // Radio Button
-                                        if (!showLocal) {
+                                        if (!showLocal && !isGuest) {
                                             artistPage?.artist?.radioEndpoint?.let { radioEndpoint ->
                                                 OutlinedButton(
                                                     onClick = {
@@ -407,7 +410,7 @@ fun ArtistScreen(
                                         }
 
                                         // Shuffle Button
-                                        if (!showLocal) {
+                                        if (!showLocal && !isGuest) {
                                             artistPage?.artist?.shuffleEndpoint?.let { shuffleEndpoint ->
                                                 IconButton(
                                                     onClick = {
@@ -428,7 +431,7 @@ fun ArtistScreen(
                                                     )
                                                 }
                                             }
-                                        } else if (librarySongs.isNotEmpty()) {
+                                        } else if (librarySongs.isNotEmpty() && !isGuest) {
                                             IconButton(
                                                 onClick = {
                                                     val shuffledSongs = librarySongs.shuffled()

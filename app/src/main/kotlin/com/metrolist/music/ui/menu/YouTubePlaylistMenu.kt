@@ -360,8 +360,6 @@ fun YouTubePlaylistMenu(
                                 )
                             )
                         }
-                    }
-                    if (!isGuest) {
                         playlist.shuffleEndpoint?.let { shuffleEndpoint ->
                             add(
                                 NewAction(
@@ -381,8 +379,6 @@ fun YouTubePlaylistMenu(
                                 )
                             )
                         }
-                    }
-                    if (!isGuest) {
                         playlist.radioEndpoint?.let { radioEndpoint ->
                             add(
                                 NewAction(
