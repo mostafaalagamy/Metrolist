@@ -347,10 +347,7 @@ fun NavGraphBuilder.navigationBuilder(
 
     composable(route = "settings/integrations/listen_together") {
         ListenTogetherSettings(navController, scrollBehavior)
-    }
-
-    composable(route = "settings/integrations/listen_together") {
-        ListenTogetherSettings(navController, scrollBehavior)
+    }stenTogetherSettings(navController, scrollBehavior)
     }
 
     composable("settings/discord/login") {
