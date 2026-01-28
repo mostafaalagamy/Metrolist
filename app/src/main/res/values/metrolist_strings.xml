@@ -455,6 +455,13 @@
     <string name="player_client_web_remix">Web Remix</string>
     <string name="player_client_web_remix_desc">Slower but supports premium formats. Uses JavaScript signature decryption which adds ~5-10 seconds to playback start.</string>
 
+    <!-- Decryption Library Settings -->
+    <string name="decryption_library">Decryption library</string>
+    <string name="decryption_library_newpipe">NewPipe Extractor (Official)</string>
+    <string name="decryption_library_newpipe_desc">Official TeamNewPipe library. Most up-to-date with YouTube changes. Recommended as default. Automatic fallback to PipePipe API if fails.</string>
+    <string name="decryption_library_pipepipe_api">PipePipe API</string>
+    <string name="decryption_library_pipepipe_api_desc">API-based decryption using MetroExtractor. Faster but depends on external API. Automatic fallback to NewPipe if fails.</string>
+
     <!-- Listen Together -->
     <string name="listen_together">Listen Together</string>
     <string name="listen_together_desc">Listen to music with friends in real-time</string>

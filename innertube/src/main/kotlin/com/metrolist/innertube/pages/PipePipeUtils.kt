@@ -6,20 +6,22 @@ import kotlinx.coroutines.withTimeout
 import project.pipepipe.extractor.services.youtube.YouTubeDecryptionHelper
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.util.concurrent.TimeUnit
 
 /**
- * Utility object for handling YouTube stream URL decryption using MetroExtractor/PipePipe API.
+ * Utility object for handling YouTube stream URL decryption using PipePipe Extractor.
  * Provides thread-safe access to player information and stream URL decryption.
+ * 
+ * This is the newer decryption library that uses the PipePipe API for signature decryption.
+ * It's generally faster and more reliable than the NewPipe-based implementation.
  */
-object NewPipeUtils {
-    private const val TAG = "NewPipeUtils"
+object PipePipeUtils {
+    private const val TAG = "PipePipeUtils"
     private const val DEBUG = false
     private const val API_TIMEOUT_MS = 10000L
 
     @Volatile
     private var cachedPlayer: Pair<String, Int>? = null
-    
+
     private val playerLock = Any()
 
     private fun log(message: String) {
@@ -35,11 +37,11 @@ object NewPipeUtils {
      */
     private fun getPlayer(): Pair<String, Int>? {
         cachedPlayer?.let { return it }
-        
+
         return synchronized(playerLock) {
             // Double-check after acquiring lock
             cachedPlayer?.let { return it }
-            
+
             log("Fetching latest player from API...")
             val player = YouTubeDecryptionHelper.getLatestPlayer()
             log("Got player: ${player?.first}, sts: ${player?.second}")
@@ -47,7 +49,7 @@ object NewPipeUtils {
             player
         }
     }
-    
+
     /**
      * Clears the cached player information to force a refresh on next use.
      * Thread-safe.
@@ -78,16 +80,16 @@ object NewPipeUtils {
      */
     private fun getQueryParam(url: String, param: String): String? {
         require(param.isNotBlank()) { "Parameter name cannot be blank" }
-        
+
         val queryStart = url.indexOf('?')
         if (queryStart == -1 || queryStart == url.length - 1) return null
-        
+
         val query = url.substring(queryStart + 1)
         if (query.isBlank()) return null
-        
+
         for (p in query.split('&')) {
             if (p.isBlank()) continue
-            
+
             val parts = p.split('=', limit = 2)
             if (parts.size == 2 && parts[0] == param) {
                 return try {
@@ -100,7 +102,7 @@ object NewPipeUtils {
         }
         return null
     }
-    
+
     /**
      * Replaces a query parameter value in a URL with proper URL encoding.
      * If the parameter doesn't exist, it will be appended.
@@ -112,24 +114,24 @@ object NewPipeUtils {
      */
     private fun replaceQueryParam(url: String, param: String, newValue: String): String {
         require(param.isNotBlank()) { "Parameter name cannot be blank" }
-        
+
         val queryStart = url.indexOf('?')
         if (queryStart == -1) {
             // No query string, append new parameter
             return "$url?$param=${URLEncoder.encode(newValue, "UTF-8")}"
         }
-        
+
         val baseUrl = url.substring(0, queryStart)
         val query = url.substring(queryStart + 1)
-        
+
         if (query.isBlank()) {
             return "$baseUrl?$param=${URLEncoder.encode(newValue, "UTF-8")}"
         }
-        
+
         val params = query.split('&').toMutableList()
         val encodedNewValue = URLEncoder.encode(newValue, "UTF-8")
         var found = false
-        
+
         for (i in params.indices) {
             val parts = params[i].split('=', limit = 2)
             if (parts[0] == param) {
@@ -138,14 +140,14 @@ object NewPipeUtils {
                 break
             }
         }
-        
+
         if (!found) {
             params.add("$param=$encodedNewValue")
         }
-        
+
         return "$baseUrl?${params.joinToString("&")}"
     }
-    
+
     /**
      * Decrypts cipher values using the PipePipe API.
      *
@@ -163,7 +165,7 @@ object NewPipeUtils {
         if (nValues.isEmpty() && sigValues.isEmpty()) {
             return emptyMap()
         }
-        
+
         return try {
             withTimeout(API_TIMEOUT_MS) {
                 YouTubeDecryptionHelper.batchDecryptCiphers(nValues, sigValues, player)
@@ -182,7 +184,7 @@ object NewPipeUtils {
      */
     private fun parseCipherParams(cipherString: String): Map<String, String> {
         if (cipherString.isBlank()) return emptyMap()
-        
+
         return cipherString.split('&')
             .filter { it.isNotBlank() }
             .associate { param ->
@@ -211,31 +213,31 @@ object NewPipeUtils {
     fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String): Result<String> =
         runCatching {
             require(videoId.isNotBlank()) { "Video ID cannot be blank" }
-            
-            val player = getPlayer()?.first 
+
+            val player = getPlayer()?.first
                 ?: throw IllegalStateException("Player information unavailable from API")
-            
+
             log("Processing stream URL for videoId: $videoId with player: $player")
-            
+
             // Case 1: Format has direct URL (may need 'n' parameter decryption)
             format.url?.let { directUrl ->
                 log("Format has direct URL")
-                
+
                 val nParam = getQueryParam(directUrl, "n")
                 if (nParam != null && nParam.isNotBlank()) {
                     log("Found n parameter (length: ${nParam.length})")
-                    
+
                     val decrypted = runBlocking {
                         decryptCiphers(listOf(nParam), emptyList(), player)
                     }
-                    
+
                     val decryptedN = decrypted[nParam]
                         ?: throw IllegalStateException("Failed to decrypt 'n' parameter")
-                    
+
                     log("Successfully decrypted n parameter (length: ${decryptedN.length})")
                     return@runCatching replaceQueryParam(directUrl, "n", decryptedN)
                 }
-                
+
                 log("No n parameter found, returning direct URL")
                 return@runCatching directUrl
             }
@@ -243,9 +245,9 @@ object NewPipeUtils {
             // Case 2: Format has signatureCipher (needs signature and possibly 'n' decryption)
             format.signatureCipher?.let { signatureCipher ->
                 log("Format has signatureCipher")
-                
+
                 val params = parseCipherParams(signatureCipher)
-                
+
                 val obfuscatedSignature = params["s"]
                     ?: throw IllegalArgumentException("Missing 's' parameter in signatureCipher")
                 val signatureParam = params["sp"]?.takeIf { it.isNotBlank() } ?: "sig"
@@ -258,7 +260,7 @@ object NewPipeUtils {
                 val sigDecrypted = runBlocking {
                     decryptCiphers(emptyList(), listOf(obfuscatedSignature), player)
                 }
-                
+
                 val decryptedSig = sigDecrypted[obfuscatedSignature]
                     ?: throw IllegalStateException("Failed to decrypt signature")
 
@@ -266,16 +268,16 @@ object NewPipeUtils {
 
                 // Build URL with decrypted signature
                 var finalUrl = "$baseUrl&$signatureParam=${URLEncoder.encode(decryptedSig, "UTF-8")}"
-                
+
                 // Check if base URL also has an 'n' parameter that needs decryption
                 val nParam = getQueryParam(baseUrl, "n")
                 if (nParam != null && nParam.isNotBlank()) {
                     log("Base URL has n parameter, decrypting...")
-                    
+
                     val nDecrypted = runBlocking {
                         decryptCiphers(listOf(nParam), emptyList(), player)
                     }
-                    
+
                     nDecrypted[nParam]?.let { decryptedN ->
                         log("Successfully decrypted base URL n parameter")
                         finalUrl = replaceQueryParam(finalUrl, "n", decryptedN)

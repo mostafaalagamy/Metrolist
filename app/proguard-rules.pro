@@ -60,7 +60,7 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
-## Rules for PipePipeExtractor
+## Rules for PipePipeExtractor (MetroExtractor)
 -keep class project.pipepipe.extractor.** { *; }
 -keep class project.pipepipe.shared.** { *; }
 
@@ -81,7 +81,7 @@
 ## Keep Wire protobuf classes
 -keep class com.squareup.wire.** { *; }
 
-## Legacy NewPipeExtractor rules (kept for compatibility)
+## Rules for NewPipeExtractor
 -keep class org.schabi.newpipe.extractor.services.youtube.protos.** { *; }
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
