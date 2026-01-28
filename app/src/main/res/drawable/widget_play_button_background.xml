@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@android:color/system_accent1_500">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@android:color/system_accent1_500"
+    tools:keep="@drawable/widget_play_button_background">
     <item android:id="@android:id/mask">
         <shape android:shape="oval">
             <solid android:color="@android:color/white" />
