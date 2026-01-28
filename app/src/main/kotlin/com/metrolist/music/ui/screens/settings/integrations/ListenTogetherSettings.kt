@@ -598,6 +598,17 @@ fun ListenTogetherSettings(
                     Text(stringResource(R.string.listen_together_join_room))
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = stringResource(R.string.listen_together_background_disconnect_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
         }
         
         Spacer(modifier = Modifier.height(16.dp))

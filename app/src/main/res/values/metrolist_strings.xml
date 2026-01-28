@@ -482,6 +482,7 @@
     <string name="listen_together_logs">Connection Logs</string>
     <string name="listen_together_no_logs">No logs yet</string>
     <string name="listen_together_description">Listen to music with friends in real-time. Create a room to host or join an existing room with a code.</string>
+    <string name="listen_together_background_disconnect_note">Note: You may get disconnected if you create a room while not playing music and then switch to another app.</string>
     <string name="join_existing_room">Join Existing Room</string>
     <string name="room_code">Room Code</string>
     <string name="leave_room">Leave Room</string>

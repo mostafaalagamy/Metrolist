@@ -53,6 +53,7 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.metrolist.music.utils.NetworkConnectivityObserver
 
 /**
  * Connection state for the Listen Together feature
@@ -193,7 +194,7 @@ class ListenTogetherClient @Inject constructor(
      */
     private fun observeNetworkChanges() {
         scope.launch {
-            connectivityObserver.networkStatus.collect { available ->
+            connectivityObserver.networkStatus.collect { available: Boolean ->
                 val previous = isNetworkAvailable
                 isNetworkAvailable = available
                 
