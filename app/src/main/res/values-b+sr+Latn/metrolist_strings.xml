@@ -463,4 +463,5 @@
     <string name="update_available_title"></string>
     <string name="proxy"></string>
     <string name="listen_together_room_created"></string>
+    <string name="discord"></string>
 </resources>
