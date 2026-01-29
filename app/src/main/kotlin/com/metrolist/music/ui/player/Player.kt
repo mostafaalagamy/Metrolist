@@ -1370,14 +1370,14 @@ fun BottomSheetPlayer(
                                             }
                                         ),
                                         contentDescription = if (isListenTogetherGuest) {
-                                            if (isMuted) "Unmute" else "Mute"
+                                            stringResource(if (isMuted) R.string.unmute else R.string.mute)
                                         } else if (effectiveIsPlaying) stringResource(R.string.pause) else stringResource(R.string.play),
                                         modifier = Modifier.size(32.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = if (isListenTogetherGuest) {
-                                            if (isMuted) "Unmute" else "Mute"
+                                            stringResource(if (isMuted) R.string.unmute else R.string.mute)
                                         } else if (effectiveIsPlaying) stringResource(R.string.pause) else stringResource(R.string.play),
                                         style = MaterialTheme.typography.titleMedium
                                     )
