@@ -8,7 +8,7 @@ package com.metrolist.music.ui.screens.wrapped
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.util.Log
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -23,13 +23,12 @@ import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.core.net.toUri
 import timber.log.Timber
 
 class WrappedAudioService(
@@ -48,7 +47,7 @@ class WrappedAudioService(
             player = ExoPlayer.Builder(context).build().apply {
                 addListener(object : Player.Listener {
                     override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        Log.e("WrappedAudioService", "Player error", error)
+                        Timber.tag("WrappedAudioService").e(error, "Player error")
                         playbackJob?.cancel()
                     }
                 })
@@ -108,13 +107,13 @@ class WrappedAudioService(
         }
 
         return try {
-            val audioQuality = context.dataStore.get(com.metrolist.music.constants.AudioQualityKey).let {
+            val audioQuality = context.dataStore[com.metrolist.music.constants.AudioQualityKey].let {
                 AudioQuality.valueOf(it ?: AudioQuality.AUTO.name)
             }
-            val playerClient = context.dataStore.get(PlayerClientKey).let {
+            val playerClient = context.dataStore[PlayerClientKey].let {
                 PlayerClient.valueOf(it ?: PlayerClient.ANDROID_VR.name)
             }
-            val decryptionLibrary = context.dataStore.get(DecryptionLibraryKey).let {
+            val decryptionLibrary = context.dataStore[DecryptionLibraryKey].let {
                 DecryptionLibrary.valueOf(it ?: DecryptionLibrary.NEWPIPE_EXTRACTOR.name)
             }
             val playbackData = withContext(Dispatchers.IO) {

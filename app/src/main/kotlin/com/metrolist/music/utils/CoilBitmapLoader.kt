@@ -31,8 +31,8 @@ class CoilBitmapLoader(
     
     override fun supportsMimeType(mimeType: String): Boolean = mimeType.startsWith("image/")
 
-    private fun createFallbackBitmap(): Bitmap = 
-        Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888)
+    private fun createFallbackBitmap(): Bitmap =
+        createBitmap(64, 64)
 
     private fun Bitmap.copyIfNeeded(): Bitmap {
         return if (isRecycled) {

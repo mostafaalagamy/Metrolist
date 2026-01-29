@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.screens
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -142,7 +143,7 @@ fun HistoryScreen(
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
 
-    fun dateAgoToString(dateAgo: DateAgo): String {
+    fun dateAgoToString(context: Context, dateAgo: DateAgo): String {
         return when (dateAgo) {
             DateAgo.Today -> context.getString(R.string.today)
             DateAgo.Yesterday -> context.getString(R.string.yesterday)
@@ -301,7 +302,7 @@ fun HistoryScreen(
                 filteredEvents.forEach { (dateAgo, dateEvents) ->
                     stickyHeader {
                         NavigationTitle(
-                            title = dateAgoToString(dateAgo),
+                            title = dateAgoToString(context, dateAgo),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface)
@@ -362,7 +363,7 @@ fun HistoryScreen(
                                         } else {
                                             playerConnection.playQueue(
                                                 ListQueue(
-                                                    title = dateAgoToString(dateAgo),
+                                                    title = dateAgoToString(context, dateAgo),
                                                     items = dateEvents.map { it.song.toMediaItem() },
                                                     startIndex = index
                                                 )

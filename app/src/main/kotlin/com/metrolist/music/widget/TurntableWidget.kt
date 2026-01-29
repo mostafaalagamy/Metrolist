@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.BitmapImageProvider
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -85,7 +84,7 @@ class TurntableWidget : GlanceAppWidget() {
             ) {
                 if (albumArtBitmap != null) {
                     Image(
-                        provider = BitmapImageProvider(albumArtBitmap),
+                        provider = ImageProvider(albumArtBitmap),
                         contentDescription = context.getString(R.string.album_art),
                         modifier = GlanceModifier.size(120.dp).cornerRadius(60.dp),
                         contentScale = ContentScale.Crop

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.BitmapImageProvider
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -41,7 +40,6 @@ import androidx.glance.layout.Column
 import androidx.glance.layout.ContentScale
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -120,7 +118,7 @@ class MusicWidget : GlanceAppWidget() {
                 ) {
                     if (albumArtBitmap != null) {
                         Image(
-                            provider = BitmapImageProvider(albumArtBitmap),
+                            provider = ImageProvider(albumArtBitmap),
                             contentDescription = context.getString(R.string.album_art),
                             modifier = GlanceModifier.size(40.dp).cornerRadius(10.dp),
                             contentScale = ContentScale.Crop
@@ -247,7 +245,7 @@ class MusicWidget : GlanceAppWidget() {
                 ) {
                     if (albumArtBitmap != null) {
                         Image(
-                            provider = BitmapImageProvider(albumArtBitmap),
+                            provider = ImageProvider(albumArtBitmap),
                             contentDescription = context.getString(R.string.album_art),
                             modifier = GlanceModifier.size(88.dp).cornerRadius(16.dp),
                             contentScale = ContentScale.Crop

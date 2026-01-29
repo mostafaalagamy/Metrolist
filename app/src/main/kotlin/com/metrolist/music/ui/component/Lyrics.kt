@@ -103,6 +103,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -190,6 +191,7 @@ fun Lyrics(
     val density = LocalDensity.current
     val context = LocalContext.current
     val configuration = LocalConfiguration.current // Get configuration
+    val windowInfo = LocalWindowInfo.current
 
     val landscapeOffset =
         configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -1488,7 +1490,7 @@ fun Lyrics(
         val coverUrl = mediaMetadata?.thumbnailUrl
         val paletteColors = remember { mutableStateListOf<Color>() }
 
-        val previewCardWidth = configuration.screenWidthDp.dp * 0.90f
+        val previewCardWidth = LocalWindowInfo.current.containerSize.width.dp * 0.90f
         val previewPadding = 20.dp * 2
         val previewBoxPadding = 28.dp * 2
         val previewAvailableWidth = previewCardWidth - previewPadding - previewBoxPadding
@@ -1644,8 +1646,8 @@ fun Lyrics(
                             showProgressDialog = true
                             scope.launch {
                                 try {
-                                    val screenWidth = configuration.screenWidthDp
-                                    val screenHeight = configuration.screenHeightDp
+                                    val screenWidth = windowInfo.containerSize.width
+                                    val screenHeight = windowInfo.containerSize.height
 
                                     val image = ComposeToImage.createLyricsImage(
                                         context = context,
@@ -1674,7 +1676,7 @@ fun Lyrics(
                                     }
                                     context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_lyrics)))
                                 } catch (e: Exception) {
-                                    Toast.makeText(context, context.getString(R.string.failed_to_create_image, e.message), Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.failed_to_create_image, e.message ?: ""), Toast.LENGTH_SHORT).show()
                                 } finally {
                                     showProgressDialog = false
                                 }
