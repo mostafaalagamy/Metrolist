@@ -2475,6 +2475,28 @@ class MusicService :
     }
 
     /**
+     * Get the stream URL for a given media ID.
+     * This is used for Google Cast to send the audio URL to Chromecast.
+     */
+    suspend fun getStreamUrl(mediaId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val playbackData = YTPlayerUtils.playerResponseForPlayback(
+                    videoId = mediaId,
+                    audioQuality = audioQuality,
+                    connectivityManager = connectivityManager,
+                    playerClient = playerClient,
+                    decryptionLibrary = decryptionLibrary,
+                ).getOrNull()
+                playbackData?.streamUrl
+            } catch (e: Exception) {
+                timber.log.Timber.e(e, "Failed to get stream URL for Cast")
+                null
+            }
+        }
+    }
+
+    /**
      * Initialize Google Cast support
      */
     private fun initializeCast() {
