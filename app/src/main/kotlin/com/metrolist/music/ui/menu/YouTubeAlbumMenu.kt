@@ -162,13 +162,12 @@ fun YouTubeAlbumMenu(
             }
             album?.songs?.map { it.id }.orEmpty()
         },
-        onDismiss = { showChoosePlaylistDialog = false }
+        onDismiss = { }
     )
 
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
-                showErrorPlaylistAddDialog = false
                 onDismiss()
             },
         ) {
@@ -183,7 +182,7 @@ fun YouTubeAlbumMenu(
                             modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier.clickable { showErrorPlaylistAddDialog = false },
+                    modifier = Modifier.clickable { },
                 )
             }
 
@@ -199,7 +198,7 @@ fun YouTubeAlbumMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { showSelectArtistDialog = false },
+            onDismiss = { },
         ) {
             items(
                 items = album?.artists.orEmpty().distinctBy { it.id },
@@ -211,7 +210,6 @@ fun YouTubeAlbumMenu(
                         .height(ListItemHeight)
                         .clickable {
                             navController.navigate("artist/${artist.id}")
-                            showSelectArtistDialog = false
                             onDismiss()
                         }
                         .padding(horizontal = 12.dp),
@@ -222,7 +220,6 @@ fun YouTubeAlbumMenu(
                             .fillParentMaxWidth()
                             .height(ListItemHeight)
                             .clickable {
-                                showSelectArtistDialog = false
                                 onDismiss()
                                 navController.navigate("artist/${artist.id}")
                             }
@@ -395,7 +392,6 @@ fun YouTubeAlbumMenu(
                             )
                         },
                         onClick = {
-                            showChoosePlaylistDialog = true
                         }
                     )
                 )
@@ -506,7 +502,6 @@ fun YouTubeAlbumMenu(
                                     navController.navigate("artist/${artists[0].id}")
                                     onDismiss()
                                 } else {
-                                    showSelectArtistDialog = true
                                 }
                             }
                         )

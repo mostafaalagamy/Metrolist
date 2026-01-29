@@ -90,7 +90,7 @@ fun LyricsMenu(
 
     if (showEditDialog) {
         TextFieldDialog(
-            onDismiss = { showEditDialog = false },
+            onDismiss = { },
             icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
             title = { Text(text = mediaMetadataProvider().title) },
             initialTextFieldValue = TextFieldValue(lyricsProvider()?.lyrics.orEmpty()),
@@ -142,7 +142,7 @@ fun LyricsMenu(
     if (showSearchDialog) {
         DefaultDialog(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            onDismiss = { showSearchDialog = false },
+            onDismiss = { },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.search),
@@ -152,7 +152,7 @@ fun LyricsMenu(
             title = { Text(stringResource(R.string.search_lyrics)) },
             buttons = {
                 TextButton(
-                    onClick = { showSearchDialog = false },
+                    onClick = { },
                 ) {
                     Text(stringResource(android.R.string.cancel))
                 }
@@ -161,7 +161,6 @@ fun LyricsMenu(
 
                 TextButton(
                     onClick = {
-                        showSearchDialog = false
                         onDismiss()
                         try {
                             context.startActivity(
@@ -227,11 +226,11 @@ fun LyricsMenu(
         val isLoading by viewModel.isLoading.collectAsState()
 
         var expandedItemIndex by rememberSaveable {
-            mutableStateOf(-1)
+            mutableIntStateOf(-1)
         }
 
         ListDialog(
-            onDismiss = { showSearchResultDialog = false },
+            onDismiss = { },
         ) {
             itemsIndexed(results) { index, result ->
                 Row(
@@ -369,7 +368,6 @@ fun LyricsMenu(
                         },
                         text = stringResource(R.string.edit),
                         onClick = {
-                            showEditDialog = true
                         }
                     ),
                     NewAction(
@@ -398,7 +396,6 @@ fun LyricsMenu(
                         },
                         text = stringResource(R.string.search),
                         onClick = {
-                            showSearchDialog = true
                         }
                     )
                 ),
@@ -449,7 +446,6 @@ fun LyricsMenu(
                             Switch(
                                 checked = isChecked,
                                 onCheckedChange = { newCheckedState ->
-                                    isChecked = newCheckedState
                                     songProvider()?.let { song ->
                                         database.query {
                                             upsert(song.copy(romanizeLyrics = newCheckedState))

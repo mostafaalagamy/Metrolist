@@ -32,7 +32,25 @@ data class Context(
     data class Request(
         val internalExperimentFlags: Array<String> = emptyArray(),
         val useSsl: Boolean = true,
-    )
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Request
+
+            if (useSsl != other.useSsl) return false
+            if (!internalExperimentFlags.contentEquals(other.internalExperimentFlags)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = useSsl.hashCode()
+            result = 31 * result + internalExperimentFlags.contentHashCode()
+            return result
+        }
+    }
 
     @Serializable
     data class User(

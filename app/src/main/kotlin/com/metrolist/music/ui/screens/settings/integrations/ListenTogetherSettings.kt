@@ -114,7 +114,7 @@ fun ListenTogetherSettings(
     val bufferingUsers by viewModel.bufferingUsers.collectAsState()
     val logs by viewModel.logs.collectAsState()
     
-    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "ws://metroserver.meowery.eu/ws")
+    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "wss://metroserver.meowery.eu/ws")
     var username by rememberPreference(ListenTogetherUsernameKey, "")
     
     var showServerUrlDialog by rememberSaveable { mutableStateOf(false) }
@@ -160,7 +160,7 @@ fun ListenTogetherSettings(
             title = { Text(stringResource(R.string.listen_together_server_url)) },
             initialTextFieldValue = TextFieldValue(serverUrl),
             onDone = { serverUrl = it },
-            onDismiss = { showServerUrlDialog = false }
+            onDismiss = { }
         )
     }
     
@@ -168,7 +168,7 @@ fun ListenTogetherSettings(
         var tempUsername by rememberSaveable(showUsernameDialog) { mutableStateOf(username) }
 
         AlertDialog(
-            onDismissRequest = { showUsernameDialog = false },
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.listen_together_username)) },
             text = {
                 Column(
@@ -195,12 +195,12 @@ fun ListenTogetherSettings(
                 }
             },
             confirmButton = {
-                Button(onClick = { username = tempUsername.trim(); showUsernameDialog = false }) {
+                Button(onClick = { username = tempUsername.trim(); }) {
                     Text(stringResource(android.R.string.ok))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { username = ""; showUsernameDialog = false }) {
+                TextButton(onClick = { username = ""; }) {
                     Text(stringResource(R.string.reset))
                 }
             }
@@ -211,7 +211,7 @@ fun ListenTogetherSettings(
         var createUsername by rememberSaveable(showCreateRoomDialog) { mutableStateOf(username) }
 
         AlertDialog(
-            onDismissRequest = { showCreateRoomDialog = false },
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.listen_together_create_room)) },
             text = {
                 Column(
@@ -235,7 +235,6 @@ fun ListenTogetherSettings(
                         if (finalUsername.isNotBlank()) {
                             username = finalUsername
                             viewModel.createRoom(finalUsername)
-                            showCreateRoomDialog = false
                         } else {
                             Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
@@ -246,7 +245,7 @@ fun ListenTogetherSettings(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showCreateRoomDialog = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(android.R.string.cancel))
                 }
             }
@@ -257,7 +256,7 @@ fun ListenTogetherSettings(
         var joinUsername by rememberSaveable(showJoinRoomDialog) { mutableStateOf(username) }
 
         AlertDialog(
-            onDismissRequest = { showJoinRoomDialog = false },
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.listen_together_join_room)) },
             text = {
                 Column(
@@ -287,8 +286,6 @@ fun ListenTogetherSettings(
                         if (finalUsername.isNotBlank() && roomCodeInput.length == 8) {
                             username = finalUsername
                             viewModel.joinRoom(roomCodeInput, finalUsername)
-                            showJoinRoomDialog = false
-                            roomCodeInput = ""
                         } else {
                             Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                         }
@@ -299,7 +296,7 @@ fun ListenTogetherSettings(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showJoinRoomDialog = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(android.R.string.cancel))
                 }
             }
@@ -310,7 +307,7 @@ fun ListenTogetherSettings(
         LogsDialog(
             logs = logs,
             onClear = { viewModel.clearLogs() },
-            onDismiss = { showLogsDialog = false }
+            onDismiss = { }
         )
     }
 
@@ -573,7 +570,7 @@ fun ListenTogetherSettings(
                     .padding(horizontal = 16.dp)
             ) {
                 Button(
-                    onClick = { showCreateRoomDialog = true },
+                    onClick = { },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
@@ -586,7 +583,7 @@ fun ListenTogetherSettings(
                 }
                 
                 OutlinedButton(
-                    onClick = { showJoinRoomDialog = true },
+                    onClick = { },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
@@ -623,7 +620,7 @@ fun ListenTogetherSettings(
             title = { Text(stringResource(R.string.listen_together_server_url)) },
             description = serverUrl,
             icon = { Icon(painterResource(R.drawable.cloud), null) },
-            onClick = { showServerUrlDialog = true }
+            onClick = { }
         )
         
         PreferenceEntry(
@@ -632,7 +629,6 @@ fun ListenTogetherSettings(
             icon = { Icon(painterResource(R.drawable.person), null) },
             onClick = {
                 if (roomState == null) {
-                    showUsernameDialog = true
                 } else {
                     Toast.makeText(context, context.getString(R.string.listen_together_cannot_edit_username_in_room), Toast.LENGTH_SHORT).show()
                 }
@@ -644,7 +640,7 @@ fun ListenTogetherSettings(
             title = { Text(stringResource(R.string.listen_together_view_logs)) },
             description = stringResource(R.string.listen_together_view_logs_desc),
             icon = { Icon(painterResource(R.drawable.bug_report), null) },
-            onClick = { showLogsDialog = true }
+            onClick = { }
         )
         
         Spacer(modifier = Modifier.height(16.dp))

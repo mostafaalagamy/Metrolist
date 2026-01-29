@@ -359,7 +359,7 @@ fun rememberBottomSheetState(
                     animatable.snapTo(animatable.value - with(density) { delta.toDp() })
                 }
             },
-            onAnchorChanged = { previousAnchor = it },
+            onAnchorChanged = { },
             coroutineScope = coroutineScope,
             animatable = animatable,
             collapsedBound = collapsedBound

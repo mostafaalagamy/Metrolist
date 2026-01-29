@@ -151,7 +151,7 @@ class ListenTogetherClient @Inject constructor(
 ) {
     companion object {
         private const val TAG = "ListenTogether"
-        private const val DEFAULT_SERVER_URL = "https://metroserver.meowery.eu/ws"
+        private const val DEFAULT_SERVER_URL = "wss://metroserver.meowery.eu/ws"
         private const val MAX_RECONNECT_ATTEMPTS = 15  // Increased from 5 to 15
         private const val INITIAL_RECONNECT_DELAY_MS = 1000L  // Start at 1 second
         private const val MAX_RECONNECT_DELAY_MS = 120000L  // Cap at 2 minutes

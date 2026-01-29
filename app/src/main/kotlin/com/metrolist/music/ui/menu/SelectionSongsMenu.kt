@@ -146,7 +146,6 @@ fun SelectionSongMenu(
             songSelection.map { it.id }
         },
         onDismiss = {
-            showChoosePlaylistDialog = false
         },
     )
 
@@ -156,7 +155,7 @@ fun SelectionSongMenu(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { showRemoveDownloadDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, "selection"),
@@ -167,7 +166,6 @@ fun SelectionSongMenu(
             buttons = {
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                     },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
@@ -175,7 +173,6 @@ fun SelectionSongMenu(
 
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                         songSelection.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -259,7 +256,6 @@ fun SelectionSongMenu(
                         },
                         text = stringResource(R.string.add_to_playlist),
                         onClick = {
-                            showChoosePlaylistDialog = true
                         }
                     )
                 ),
@@ -338,7 +334,6 @@ fun SelectionSongMenu(
                                 )
                             },
                             onClick = {
-                                showChoosePlaylistDialog = true
                             }
                         )
                     )
@@ -417,7 +412,6 @@ fun SelectionSongMenu(
                                         )
                                     },
                                     onClick = {
-                                        showRemoveDownloadDialog = true
                                     }
                                 )
                             }
@@ -431,7 +425,6 @@ fun SelectionSongMenu(
                                         )
                                     },
                                     onClick = {
-                                        showRemoveDownloadDialog = true
                                     }
                                 )
                             }
@@ -567,7 +560,7 @@ fun SelectionMediaMetadataMenu(
                 it.id
             }
         },
-        onDismiss = { showChoosePlaylistDialog = false }
+        onDismiss = { }
     )
 
     var downloadState by remember {
@@ -599,7 +592,7 @@ fun SelectionMediaMetadataMenu(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { showRemoveDownloadDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, "selection"),
@@ -610,7 +603,6 @@ fun SelectionMediaMetadataMenu(
             buttons = {
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                     },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
@@ -618,7 +610,6 @@ fun SelectionMediaMetadataMenu(
 
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                         songSelection.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -744,7 +735,6 @@ fun SelectionMediaMetadataMenu(
                                 )
                             },
                             onClick = {
-                                showChoosePlaylistDialog = true
                             }
                         )
                     )
@@ -805,7 +795,6 @@ fun SelectionMediaMetadataMenu(
                                         )
                                     },
                                     onClick = {
-                                        showRemoveDownloadDialog = true
                                     },
                                     cardColors = CardDefaults.cardColors(
                                         containerColor = MaterialTheme.colorScheme.onSurface
@@ -822,7 +811,6 @@ fun SelectionMediaMetadataMenu(
                                         )
                                     },
                                     onClick = {
-                                        showRemoveDownloadDialog = true
                                     }
                                 )
                             }

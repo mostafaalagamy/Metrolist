@@ -279,8 +279,8 @@ fun BottomSheetPlayer(
     // Cast state
     val castHandler = playerConnection.service.castConnectionHandler
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
-    val castPosition by castHandler?.castPosition?.collectAsState() ?: remember { mutableStateOf(0L) }
-    val castDuration by castHandler?.castDuration?.collectAsState() ?: remember { mutableStateOf(0L) }
+    val castPosition by castHandler?.castPosition?.collectAsState() ?: remember { mutableLongStateOf(0L) }
+    val castDuration by castHandler?.castDuration?.collectAsState() ?: remember { mutableLongStateOf(0L) }
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     
     // Use Cast state when casting, otherwise local player
@@ -309,7 +309,7 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
     // Track when we last manually set position to avoid Cast overwriting it
-    var lastManualSeekTime by remember { mutableStateOf(0L) }
+    var lastManualSeekTime by remember { mutableLongStateOf(0L) }
     
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
@@ -491,7 +491,7 @@ fun BottomSheetPlayer(
     if (showSleepTimerDialog) {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = { showSleepTimerDialog = false },
+            onDismissRequest = { },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.bedtime),
@@ -502,7 +502,6 @@ fun BottomSheetPlayer(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        showSleepTimerDialog = false
                         playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
                     },
                 ) {
@@ -511,7 +510,7 @@ fun BottomSheetPlayer(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { showSleepTimerDialog = false },
+                    onClick = { },
                 ) {
                     Text(stringResource(android.R.string.cancel))
                 }
@@ -536,7 +535,6 @@ fun BottomSheetPlayer(
 
                     OutlinedIconButton(
                         onClick = {
-                            showSleepTimerDialog = false
                             playerConnection.service.sleepTimer.start(-1)
                         },
                     ) {

@@ -50,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -186,7 +187,7 @@ fun TopPlaylistScreen(
     val name = stringResource(R.string.my_top) + " $maxSize"
 
     val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
+    var downloadState by remember { mutableIntStateOf(Download.STATE_STOPPED) }
 
     LaunchedEffect(songs) {
         mutableSongs.apply {
@@ -215,7 +216,7 @@ fun TopPlaylistScreen(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { showRemoveDownloadDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, name),
@@ -225,14 +226,13 @@ fun TopPlaylistScreen(
             },
             buttons = {
                 TextButton(
-                    onClick = { showRemoveDownloadDialog = false },
+                    onClick = { },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
 
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                         songs!!.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -274,7 +274,7 @@ fun TopPlaylistScreen(
                                 songs = songs!!,
                                 likeLength = likeLength,
                                 downloadState = downloadState,
-                                onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
+                                onShowRemoveDownloadDialog = { },
                                 menuState = menuState,
                                 modifier = Modifier.animateItem()
                             )

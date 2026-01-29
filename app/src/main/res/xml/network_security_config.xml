@@ -2,6 +2,7 @@
 <network-security-config>
     <!-- Allow cleartext traffic for Listen Together local servers -->
     <!-- For production, use wss:// (secure WebSocket) instead -->
+    <!-- TODO: make this only true for debug builds and test builds -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />

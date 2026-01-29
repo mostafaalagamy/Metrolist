@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -95,18 +96,18 @@ fun StorageSettings(
     // State for the confirmation dialog
     var showCacheWarningDialog by remember { mutableStateOf(false) }
     var cacheType by remember { mutableStateOf("") }
-    var cacheUsage by remember { mutableStateOf(0L) }
+    var cacheUsage by remember { androidx.compose.runtime.mutableLongStateOf(0L) }
     var onConfirmAction by remember { mutableStateOf<() -> Unit>({}) }
 
 
     var imageCacheSize by remember {
-        mutableStateOf(imageDiskCache.size)
+        androidx.compose.runtime.mutableLongStateOf(imageDiskCache.size)
     }
     var playerCacheSize by remember {
-        mutableStateOf(tryOrNull { playerCache.cacheSpace } ?: 0)
+        androidx.compose.runtime.mutableLongStateOf(tryOrNull { playerCache.cacheSpace } ?: 0)
     }
     var downloadCacheSize by remember {
-        mutableStateOf(tryOrNull { downloadCache.cacheSpace } ?: 0)
+        mutableLongStateOf(tryOrNull { downloadCache.cacheSpace } ?: 0)
     }
     val imageCacheProgress by animateFloatAsState(
         targetValue = (imageCacheSize.toFloat() / (maxImageCacheSize * 1024 * 1024L)).coerceIn(
@@ -163,16 +164,15 @@ fun StorageSettings(
     if (clearDownloads) {
         ActionPromptDialog(
             title = stringResource(R.string.clear_all_downloads),
-            onDismiss = { clearDownloads = false },
+            onDismiss = { },
             onConfirm = {
                 coroutineScope.launch(Dispatchers.IO) {
                     downloadCache.keys.forEach { key ->
                         downloadCache.removeResource(key)
                     }
                 }
-                clearDownloads = false
             },
-            onCancel = { clearDownloads = false },
+            onCancel = { },
             content = {
                 Text(text = stringResource(R.string.clear_downloads_dialog))
             }
@@ -181,16 +181,15 @@ fun StorageSettings(
     if (clearCacheDialog) {
         ActionPromptDialog(
             title = stringResource(R.string.clear_song_cache),
-            onDismiss = { clearCacheDialog = false },
+            onDismiss = { },
             onConfirm = {
                 coroutineScope.launch(Dispatchers.IO) {
                     playerCache.keys.forEach { key ->
                         playerCache.removeResource(key)
                     }
                 }
-                clearCacheDialog = false
             },
-            onCancel = { clearCacheDialog = false },
+            onCancel = { },
             content = {
                 Text(text = stringResource(R.string.clear_song_cache_dialog))
             }
@@ -199,14 +198,13 @@ fun StorageSettings(
     if (clearImageCacheDialog) {
         ActionPromptDialog(
             title = stringResource(R.string.clear_image_cache),
-            onDismiss = { clearImageCacheDialog = false },
+            onDismiss = { },
             onConfirm = {
                 coroutineScope.launch(Dispatchers.IO) {
                     imageDiskCache.clear()
                 }
-                clearImageCacheDialog = false
             },
-            onCancel = { clearImageCacheDialog = false },
+            onCancel = { },
             content = {
                 Text(text = stringResource(R.string.clear_image_cache_dialog))
             }
@@ -216,7 +214,7 @@ fun StorageSettings(
     // Confirmation Dialog
     if (showCacheWarningDialog) {
         AlertDialog(
-            onDismissRequest = { showCacheWarningDialog = false },
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.cache_size_warning_title)) },
             text = {
                 Text(
@@ -231,7 +229,6 @@ fun StorageSettings(
                 TextButton(
                     onClick = {
                         onConfirmAction()
-                        showCacheWarningDialog = false
                     }
                 ) {
                     Text(
@@ -241,7 +238,7 @@ fun StorageSettings(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showCacheWarningDialog = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(id = android.R.string.cancel))
                 }
             }
@@ -293,7 +290,6 @@ fun StorageSettings(
                         icon = painterResource(R.drawable.clear_all),
                         title = { Text(stringResource(R.string.clear_all_downloads)) },
                         onClick = {
-                            clearDownloads = true
                         }
                     )
                 )
@@ -330,7 +326,6 @@ fun StorageSettings(
                                             cacheUsage = playerCacheSize
                                             cacheType = songCacheString
                                             onConfirmAction = { onMaxSongCacheSizeChange(newValue) }
-                                            showCacheWarningDialog = true
                                         } else {
                                             onMaxSongCacheSizeChange(newValue)
                                         }
@@ -363,7 +358,6 @@ fun StorageSettings(
                         icon = painterResource(R.drawable.clear_all),
                         title = { Text(stringResource(R.string.clear_song_cache)) },
                         onClick = {
-                            clearCacheDialog = true
                         }
                     )
                 )
@@ -395,7 +389,6 @@ fun StorageSettings(
                                             cacheUsage = imageCacheSize
                                             cacheType = imageCacheString
                                             onConfirmAction = { onMaxImageCacheSizeChange(newValue) }
-                                            showCacheWarningDialog = true
                                         } else {
                                             onMaxImageCacheSizeChange(newValue)
                                         }
@@ -424,7 +417,6 @@ fun StorageSettings(
                         icon = painterResource(R.drawable.clear_all),
                         title = { Text(stringResource(R.string.clear_image_cache)) },
                         onClick = {
-                            clearImageCacheDialog = true
                         }
                     )
                 )

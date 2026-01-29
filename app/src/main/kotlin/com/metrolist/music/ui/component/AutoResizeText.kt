@@ -75,7 +75,6 @@ fun AutoResizeText(
                     readyToDraw = true
                 } else {
                     // Text doesn't fit yet and haven't reached minimum text range, keep decreasing
-                    fontSizeValue = nextFontSizeValue
                 }
             } else {
                 // Text fits before reaching the minimum, it's readyToDraw

@@ -134,7 +134,7 @@ fun YouTubeSongMenu(
             }  
             listOf(song.id)  
         },  
-        onDismiss = { showChoosePlaylistDialog = false }  
+        onDismiss = { }
     )  
 
     var showSelectArtistDialog by rememberSaveable {  
@@ -143,7 +143,7 @@ fun YouTubeSongMenu(
 
     if (showSelectArtistDialog) {  
         ListDialog(  
-            onDismiss = { showSelectArtistDialog = false },  
+            onDismiss = { },
         ) {  
             items(artists) { artist ->  
                 Row(  
@@ -152,9 +152,8 @@ fun YouTubeSongMenu(
                     Modifier  
                         .height(ListItemHeight)  
                         .clickable {  
-                            navController.navigate("artist/${artist.id}")  
-                            showSelectArtistDialog = false  
-                            onDismiss()  
+                            navController.navigate("artist/${artist.id}")
+                            onDismiss()
                         }  
                         .padding(horizontal = 12.dp),  
                 ) {  
@@ -165,9 +164,8 @@ fun YouTubeSongMenu(
                             .fillParentMaxWidth()  
                             .height(ListItemHeight)  
                             .clickable {  
-                                navController.navigate("artist/${artist.id}")  
-                                showSelectArtistDialog = false  
-                                onDismiss()  
+                                navController.navigate("artist/${artist.id}")
+                                onDismiss()
                             }  
                             .padding(horizontal = 24.dp),  
                     ) {  
@@ -293,7 +291,6 @@ fun YouTubeSongMenu(
                         },
                         text = stringResource(R.string.add_to_playlist),
                         onClick = {
-                            showChoosePlaylistDialog = true
                         }
                     ),
                     NewAction(
@@ -558,7 +555,6 @@ fun YouTubeSongMenu(
                                         navController.navigate("artist/${artists[0].id}")
                                         onDismiss()
                                     } else {
-                                        showSelectArtistDialog = true
                                     }
                                 }
                             )

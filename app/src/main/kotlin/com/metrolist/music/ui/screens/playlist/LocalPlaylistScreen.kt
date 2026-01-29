@@ -262,7 +262,7 @@ fun LocalPlaylistScreen(
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
+        mutableIntStateOf(Download.STATE_STOPPED)
     }
 
     val editable: Boolean = playlist?.playlist?.isEditable == true
@@ -312,7 +312,7 @@ fun LocalPlaylistScreen(
                     )
                 },
                 title = { Text(text = stringResource(R.string.edit_playlist)) },
-                onDismiss = { showEditDialog = false },
+                onDismiss = { },
                 initialTextFieldValue = TextFieldValue(
                     playlistEntity.name,
                     TextRange(playlistEntity.name.length)
@@ -340,7 +340,7 @@ fun LocalPlaylistScreen(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { showRemoveDownloadDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(
@@ -353,14 +353,13 @@ fun LocalPlaylistScreen(
             },
             buttons = {
                 TextButton(
-                    onClick = { showRemoveDownloadDialog = false },
+                    onClick = { },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
 
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                         if (!editable) {
                             database.transaction {
                                 playlist?.id?.let { clearPlaylist(it) }
@@ -387,7 +386,7 @@ fun LocalPlaylistScreen(
     }
     if (showDeletePlaylistDialog) {
         DefaultDialog(
-            onDismiss = { showDeletePlaylistDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(
@@ -401,14 +400,12 @@ fun LocalPlaylistScreen(
             buttons = {
                 TextButton(
                     onClick = {
-                        showDeletePlaylistDialog = false
                     }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
                 TextButton(
                     onClick = {
-                        showDeletePlaylistDialog = false
                         database.query {
                             playlist?.let { delete(it.playlist) }
                         }
@@ -502,9 +499,9 @@ fun LocalPlaylistScreen(
                             LocalPlaylistHeader(
                                 playlist = playlist,
                                 songs = songs,
-                                onShowEditDialog = { showEditDialog = true },
-                                onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
-                                onshowDeletePlaylistDialog = { showDeletePlaylistDialog = true },
+                                onShowEditDialog = { },
+                                onShowRemoveDownloadDialog = { },
+                                onshowDeletePlaylistDialog = { },
                                 onStartSearch = { isSearching = true },
                                 snackbarHostState = snackbarHostState,
                                 modifier = Modifier.animateItem()

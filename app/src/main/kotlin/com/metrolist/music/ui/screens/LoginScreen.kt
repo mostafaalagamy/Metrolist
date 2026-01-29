@@ -94,7 +94,6 @@ fun LoginScreen(
                     @JavascriptInterface
                     fun onRetrieveVisitorData(newVisitorData: String?) {
                         if (newVisitorData != null) {
-                            visitorData = newVisitorData
                         }
                     }
                     @JavascriptInterface

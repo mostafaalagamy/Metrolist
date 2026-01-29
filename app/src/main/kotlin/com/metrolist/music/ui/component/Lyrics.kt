@@ -476,7 +476,6 @@ fun Lyrics(
                 context.getString(R.string.max_selection_limit, maxSelectionLimit),
                 Toast.LENGTH_SHORT
             ).show()
-            showMaxSelectionToast = false
         }
     }
 
@@ -545,7 +544,6 @@ fun Lyrics(
 
     suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 1500) {
         if (isAnimating) return // Prevent multiple animations
-        isAnimating = true
         try {
             val lookUpIndex = if (isLyricsProviderShown) targetIndex + 1 else targetIndex
             val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == lookUpIndex }
@@ -566,19 +564,16 @@ fun Lyrics(
                 lazyListState.scrollToItem(targetIndex)
             }
         } finally {
-            isAnimating = false
         }
     }
     LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone, isAutoScrollEnabled) {
         if (!isSynced) return@LaunchedEffect
         if (isAutoScrollEnabled) {
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
-            shouldScrollToFirstLine = false
             // Initial scroll to center the first line with medium animation (600ms)
             val initialCenterIndex = kotlin.math.max(0, currentLineIndex)
             performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
             if(!isAppMinimized) {
-                initialScrollDone = true
             }
         } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
@@ -597,9 +592,7 @@ fun Lyrics(
         }
         }
         if(currentLineIndex > 0) {
-            shouldScrollToFirstLine = true
         }
-        previousLineIndex = currentLineIndex
     }
 
     BoxWithConstraints(
@@ -1378,7 +1371,7 @@ fun Lyrics(
 
     if (showShareDialog && shareDialogData != null) {
         val (lyricsText, songTitle, artists) = shareDialogData!! // Renamed 'lyrics' to 'lyricsText' for clarity
-        BasicAlertDialog(onDismissRequest = { showShareDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { }) {
             Card(
                 shape = MaterialTheme.shapes.medium,
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -1419,7 +1412,6 @@ fun Lyrics(
                                         context.getString(R.string.share_lyrics)
                                     )
                                 )
-                                showShareDialog = false
                             }
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -1444,7 +1436,6 @@ fun Lyrics(
                                 // Pass the potentially multi-line lyrics to the color picker
                                 shareDialogData = Triple(lyricsText, songTitle, artists)
                                 showColorPickerDialog = true
-                                showShareDialog = false
                             }
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -1474,7 +1465,7 @@ fun Lyrics(
                             color = MaterialTheme.colorScheme.error,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier
-                                .clickable { showShareDialog = false }
+                                .clickable { }
                                 .padding(vertical = 8.dp, horizontal = 12.dp)
                         )
                     }
@@ -1545,7 +1536,7 @@ fun Lyrics(
             }
         }
 
-        BasicAlertDialog(onDismissRequest = { showColorPickerDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { }) {
             Card(
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
@@ -1640,8 +1631,6 @@ fun Lyrics(
 
                     Button(
                         onClick = {
-                            showColorPickerDialog = false
-                            showProgressDialog = true
                             scope.launch {
                                 try {
                                     val screenWidth = configuration.screenWidthDp
@@ -1676,7 +1665,6 @@ fun Lyrics(
                                 } catch (e: Exception) {
                                     Toast.makeText(context, context.getString(R.string.failed_to_create_image, e.message), Toast.LENGTH_SHORT).show()
                                 } finally {
-                                    showProgressDialog = false
                                 }
                             }
                         },

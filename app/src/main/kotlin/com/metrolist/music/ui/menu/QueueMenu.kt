@@ -128,7 +128,6 @@ fun QueueMenu(
             listOf(mediaMetadata.id)
         },
         onDismiss = {
-            showChoosePlaylistDialog = false
         }
     )
 
@@ -138,7 +137,7 @@ fun QueueMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { showSelectArtistDialog = false },
+            onDismiss = { },
         ) {
             items(artists) { artist ->
                 Row(
@@ -147,7 +146,6 @@ fun QueueMenu(
                         .height(ListItemHeight)
                         .clickable {
                             navController.navigate("artist/${artist.id}")
-                            showSelectArtistDialog = false
                             playerBottomSheetState.collapseSoft()
                             onDismiss()
                         }
@@ -262,7 +260,7 @@ fun QueueMenu(
                             )
                         },
                         text = stringResource(R.string.add_to_playlist),
-                        onClick = { showChoosePlaylistDialog = true }
+                        onClick = { }
                     ),
                     NewAction(
                         icon = {
@@ -451,7 +449,6 @@ fun QueueMenu(
                                         playerBottomSheetState.collapseSoft()
                                         onDismiss()
                                     } else {
-                                        showSelectArtistDialog = true
                                     }
                                 }
                             )
@@ -505,7 +502,6 @@ fun QueueMenu(
                                 )
                             },
                             onClick = {
-                                refetchIconDegree -= 360
                                 coroutineScope.launch(Dispatchers.IO) {
                                     YouTube.queue(listOf(mediaMetadata.id)).onSuccess {
                                         val newSong = it.firstOrNull()

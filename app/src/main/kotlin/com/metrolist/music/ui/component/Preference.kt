@@ -125,7 +125,7 @@ fun <T> ListPreference(
     }
     if (showDialog) {
         ListDialog(
-            onDismiss = { showDialog = false },
+            onDismiss = { },
         ) {
             items(values) { value ->
                 Row(
@@ -134,7 +134,6 @@ fun <T> ListPreference(
                     Modifier
                         .fillMaxWidth()
                         .clickable {
-                            showDialog = false
                             onValueSelected(value)
                         }.padding(horizontal = 16.dp, vertical = 12.dp),
                 ) {
@@ -158,7 +157,7 @@ fun <T> ListPreference(
         title = title,
         description = valueText(selectedValue),
         icon = icon,
-        onClick = { showDialog = true },
+        onClick = { },
         isEnabled = isEnabled,
     )
 }
@@ -246,7 +245,7 @@ fun EditTextPreference(
             singleLine = singleLine,
             isInputValid = isInputValid,
             onDone = onValueChange,
-            onDismiss = { showDialog = false },
+            onDismiss = { },
         )
     }
 
@@ -255,7 +254,7 @@ fun EditTextPreference(
         title = title,
         description = value,
         icon = icon,
-        onClick = { showDialog = true },
+        onClick = { },
         isEnabled = isEnabled,
     )
 }
@@ -293,17 +292,14 @@ fun SliderPreference(
                     )
                 }
             },
-            onDismiss = { showDialog = false },
+            onDismiss = { },
             onConfirm = {
-                showDialog = false
                 onValueChange.invoke(sliderValue)
             },
             onCancel = {
-                sliderValue = value
-                showDialog = false
             },
             onReset = {
-                sliderValue = 30f // Default value or any reset value you prefer
+                // Default value or any reset value you prefer
             },
             content = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -334,7 +330,7 @@ fun SliderPreference(
         title = title,
         description = value.roundToInt().toString(),
         icon = icon,
-        onClick = { showDialog = true },
+        onClick = { },
         isEnabled = isEnabled,
     )
 }

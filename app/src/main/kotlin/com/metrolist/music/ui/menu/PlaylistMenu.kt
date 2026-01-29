@@ -139,7 +139,7 @@ fun PlaylistMenu(
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_playlist)) },
-            onDismiss = { showEditDialog = false },
+            onDismiss = { },
             initialTextFieldValue =
             TextFieldValue(
                 playlist.playlist.name,
@@ -168,7 +168,7 @@ fun PlaylistMenu(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { showRemoveDownloadDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(
@@ -182,7 +182,6 @@ fun PlaylistMenu(
             buttons = {
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                     },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
@@ -190,7 +189,6 @@ fun PlaylistMenu(
 
                 TextButton(
                     onClick = {
-                        showRemoveDownloadDialog = false
                         songs.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -213,7 +211,7 @@ fun PlaylistMenu(
 
     if (showDeletePlaylistDialog) {
         DefaultDialog(
-            onDismiss = { showDeletePlaylistDialog = false },
+            onDismiss = { },
             content = {
                 Text(
                     text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
@@ -224,7 +222,6 @@ fun PlaylistMenu(
             buttons = {
                 TextButton(
                     onClick = {
-                        showDeletePlaylistDialog = false
                     }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
@@ -232,7 +229,6 @@ fun PlaylistMenu(
 
                 TextButton(
                     onClick = {
-                        showDeletePlaylistDialog = false
                         onDismiss()
                         database.transaction {
                             // First toggle the like using the same logic as the like button
@@ -456,7 +452,6 @@ fun PlaylistMenu(
                                     )
                                 },
                                 onClick = {
-                                    showEditDialog = true
                                 }
                             )
                         )
@@ -478,7 +473,6 @@ fun PlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            showRemoveDownloadDialog = true
                                         }
                                     )
                                 }
@@ -492,7 +486,6 @@ fun PlaylistMenu(
                                             )
                                         },
                                         onClick = {
-                                            showRemoveDownloadDialog = true
                                         }
                                     )
                                 }
@@ -539,7 +532,6 @@ fun PlaylistMenu(
                                     )
                                 },
                                 onClick = {
-                                    showDeletePlaylistDialog = true
                                 }
                             )
                         )

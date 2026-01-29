@@ -183,10 +183,9 @@ fun PlayerSettings(
 
     if (showAudioQualityDialog) {
         EnumDialog(
-            onDismiss = { showAudioQualityDialog = false },
+            onDismiss = { },
             onSelect = {
                 onAudioQualityChange(it)
-                showAudioQualityDialog = false
             },
             title = stringResource(R.string.audio_quality),
             current = audioQuality,
@@ -203,10 +202,9 @@ fun PlayerSettings(
 
     if (showPlayerClientDialog) {
         EnumDialog(
-            onDismiss = { showPlayerClientDialog = false },
+            onDismiss = { },
             onSelect = {
                 onPlayerClientChange(it)
-                showPlayerClientDialog = false
             },
             title = stringResource(R.string.player_client),
             current = playerClient,
@@ -228,10 +226,9 @@ fun PlayerSettings(
 
     if (showDecryptionLibraryDialog) {
         EnumDialog(
-            onDismiss = { showDecryptionLibraryDialog = false },
+            onDismiss = { },
             onSelect = {
                 onDecryptionLibraryChange(it)
-                showDecryptionLibraryDialog = false
             },
             title = stringResource(R.string.decryption_library),
             current = decryptionLibrary,
@@ -284,7 +281,7 @@ fun PlayerSettings(
                             }
                         )
                     },
-                    onClick = { showAudioQualityDialog = true }
+                    onClick = { }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.play),
@@ -297,7 +294,7 @@ fun PlayerSettings(
                             }
                         )
                     },
-                    onClick = { showPlayerClientDialog = true }
+                    onClick = { }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.tune),
@@ -310,7 +307,7 @@ fun PlayerSettings(
                             }
                         )
                     },
-                    onClick = { showDecryptionLibraryDialog = true }
+                    onClick = { }
                 ))
                 add(Material3SettingsItem(
                     icon = painterResource(R.drawable.history),

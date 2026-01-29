@@ -130,7 +130,7 @@ fun PlayerMenu(
     // Cast state for volume control
     val castHandler = playerConnection.service.castConnectionHandler
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
-    val castVolume by castHandler?.castVolume?.collectAsState() ?: remember { mutableStateOf(1f) }
+    val castVolume by castHandler?.castVolume?.collectAsState() ?: remember { mutableFloatStateOf(1f) }
     val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf<String?>(null) }
     
     val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
@@ -169,14 +169,13 @@ fun PlayerMenu(
             listOf(mediaMetadata.id)
         },
         onDismiss = {
-            showChoosePlaylistDialog = false
         }
     )
 
     ListenTogetherDialog(
         visible = showListenTogetherDialog,
         mediaMetadata = mediaMetadata,
-        onDismiss = { showListenTogetherDialog = false }
+        onDismiss = { }
     )
 
     var showSelectArtistDialog by rememberSaveable {
@@ -185,7 +184,7 @@ fun PlayerMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { showSelectArtistDialog = false },
+            onDismiss = { },
         ) {
             items(artists) { artist ->
                 Box(
@@ -196,7 +195,6 @@ fun PlayerMenu(
                         .height(ListItemHeight)
                         .clickable {
                             navController.navigate("artist/${artist.id}")
-                            showSelectArtistDialog = false
                             playerBottomSheetState.collapseSoft()
                             onDismiss()
                         }
@@ -220,7 +218,7 @@ fun PlayerMenu(
 
     if (showPitchTempoDialog) {
         TempoPitchDialog(
-            onDismiss = { showPitchTempoDialog = false },
+            onDismiss = { },
         )
     }
 
@@ -319,7 +317,7 @@ fun PlayerMenu(
                             )
                         },
                         text = stringResource(R.string.add_to_playlist),
-                        onClick = { showChoosePlaylistDialog = true }
+                        onClick = { }
                     ),
                     NewAction(
                         icon = {
@@ -372,7 +370,6 @@ fun PlayerMenu(
                                         playerBottomSheetState.collapseSoft()
                                         onDismiss()
                                     } else {
-                                        showSelectArtistDialog = true
                                     }
                                 }
                             )
@@ -527,7 +524,7 @@ fun PlayerMenu(
                                     }
                                 }
                             },
-                            onClick = { showListenTogetherDialog = true }
+                            onClick = { }
                         )
                     )
                     if (isListenTogetherGuest) {
@@ -605,7 +602,6 @@ fun PlayerMenu(
                                     )
                                 },
                                 onClick = {
-                                    showPitchTempoDialog = true
                                 }
                             )
                         )
@@ -810,7 +806,6 @@ fun ListenTogetherDialog(
                         else -> "$joinRequestDeniedText: $reason"
                     }
                     isJoiningRoom = false
-                    isCreatingRoom = false
                 }
 
                 is ListenTogetherEvent.JoinApproved -> {
@@ -819,7 +814,6 @@ fun ListenTogetherDialog(
                 }
 
                 is ListenTogetherEvent.RoomCreated -> {
-                    isCreatingRoom = false
                 }
 
                 else -> { /* ignore other events here */ }
@@ -1364,9 +1358,6 @@ fun ListenTogetherDialog(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     // Keep the dialog open while waiting for host approval
-                                    isJoiningRoom = true
-                                    isCreatingRoom = false
-                                    joinErrorMessage = null
                                     listenTogetherManager.connect()
                                     listenTogetherManager.joinRoom(roomCodeInput, finalUsername)
                                 } else {
@@ -1396,9 +1387,6 @@ fun ListenTogetherDialog(
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 // Keep the dialog open while creating the room
-                                isCreatingRoom = true
-                                isJoiningRoom = false
-                                joinErrorMessage = null
                                 listenTogetherManager.connect()
                                 listenTogetherManager.createRoom(finalUsername)
                             } else {

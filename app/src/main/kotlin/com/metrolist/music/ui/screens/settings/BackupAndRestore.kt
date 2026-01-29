@@ -178,7 +178,7 @@ fun BackupAndRestore(
         allowSyncing = false,
         initialTextFieldValue = importedTitle,
         songs = importedSongs,
-        onDismiss = { showChoosePlaylistDialogOnline = false },
+        onDismiss = { },
         onProgressStart = { newVal -> isProgressStarted = newVal },
         onPercentageChange = { newPercentage -> progressPercentage = newPercentage }
     )

@@ -127,7 +127,7 @@ fun EqScreen(
     // Error dialog
     if (showError != null) {
         AlertDialog(
-            onDismissRequest = { showError = null },
+            onDismissRequest = { },
             title = {
                 Text(stringResource(R.string.import_error_title))
             },
@@ -135,7 +135,7 @@ fun EqScreen(
                 Text(showError ?: "")
             },
             confirmButton = {
-                TextButton(onClick = { showError = null }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(android.R.string.ok))
                 }
             }
@@ -362,7 +362,7 @@ private fun EQProfileItem(
     // Delete confirmation dialog
     if (showDeleteDialog) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.delete_profile_desc)) },
             text = {
                 Text(
@@ -373,14 +373,13 @@ private fun EQProfileItem(
                 TextButton(
                     onClick = {
                         onDelete()
-                        showDeleteDialog = false
                     }
                 ) {
                     Text(stringResource(android.R.string.ok))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(onClick = { }) {
                     Text(stringResource(android.R.string.cancel))
                 }
             }
