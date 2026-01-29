@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerConnection(
@@ -122,7 +123,7 @@ class PlayerConnection(
     fun playQueue(queue: Queue) {
         // Block if Listen Together guest (but allow internal sync)
         if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
-            android.util.Log.d("PlayerConnection", "playQueue blocked - Listen Together guest")
+            Timber.tag("PlayerConnection").d("playQueue blocked - Listen Together guest")
             return
         }
         service.playQueue(queue)
@@ -131,7 +132,7 @@ class PlayerConnection(
     fun startRadioSeamlessly() {
         // Block if Listen Together guest
         if (shouldBlockPlaybackChanges?.invoke() == true) {
-            android.util.Log.d("PlayerConnection", "startRadioSeamlessly blocked - Listen Together guest")
+            Timber.tag("PlayerConnection").d("startRadioSeamlessly blocked - Listen Together guest")
             return
         }
         service.startRadioSeamlessly()
@@ -142,7 +143,7 @@ class PlayerConnection(
     fun playNext(items: List<MediaItem>) {
         // Block if Listen Together guest (unless internal sync)
         if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
-            android.util.Log.d("PlayerConnection", "playNext blocked - Listen Together guest")
+            Timber.tag("PlayerConnection").d("playNext blocked - Listen Together guest")
             return
         }
         service.playNext(items)
@@ -153,7 +154,7 @@ class PlayerConnection(
     fun addToQueue(items: List<MediaItem>) {
         // Block if Listen Together guest (unless internal sync)
         if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
-            android.util.Log.d("PlayerConnection", "addToQueue blocked - Listen Together guest")
+            Timber.tag("PlayerConnection").d("addToQueue blocked - Listen Together guest")
             return
         }
         service.addToQueue(items)

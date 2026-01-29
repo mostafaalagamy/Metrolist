@@ -41,7 +41,7 @@ import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.viewmodels.LocalFilter
 import com.metrolist.music.viewmodels.LocalSearchViewModel
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.collect
+import androidx.compose.ui.platform.LocalWindowInfo
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,8 +78,9 @@ fun LocalSearchScreen(
         viewModel.query.value = query
     }
 
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+    val windowInfo = LocalWindowInfo.current
+    // containerSize provides pixels, which is fine for comparing aspect ratio
+    val isLandscape = windowInfo.containerSize.width > windowInfo.containerSize.height
 
     Column(
         modifier = Modifier

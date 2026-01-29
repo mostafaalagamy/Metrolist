@@ -40,6 +40,7 @@ import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.SortedSongAlbumMap
 import com.metrolist.music.db.entities.SortedSongArtistMap
 import com.metrolist.music.extensions.toSQLiteQuery
+import timber.log.Timber
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -168,7 +169,7 @@ abstract class InternalDatabase : RoomDatabase() {
                                 db.query("PRAGMA wal_autocheckpoint = 1000").close()
                                 db.query("PRAGMA synchronous = NORMAL").close()
                             } catch (e: Exception) {
-                                android.util.Log.e("MusicDatabase", "Failed to set PRAGMA settings", e)
+                                Timber.tag("MusicDatabase").e(e, "Failed to set PRAGMA settings")
                             }
                         }
                     })
@@ -394,22 +395,22 @@ val MIGRATION_21_24 =
             try {
                 db.execSQL("ALTER TABLE song ADD COLUMN libraryAddToken TEXT DEFAULT ''")
             } catch (e: Exception) {
-                android.util.Log.w("Migration", "Column libraryAddToken may already exist")
+                Timber.tag("Migration").w("Column libraryAddToken may already exist")
             }
             try {
                 db.execSQL("ALTER TABLE song ADD COLUMN libraryRemoveToken TEXT DEFAULT ''")
             } catch (e: Exception) {
-                android.util.Log.w("Migration", "Column libraryRemoveToken may already exist")
+                Timber.tag("Migration").w("Column libraryRemoveToken may already exist")
             }
             try {
                 db.execSQL("ALTER TABLE song ADD COLUMN romanizeLyrics INTEGER NOT NULL DEFAULT 1")
             } catch (e: Exception) {
-                android.util.Log.w("Migration", "Column romanizeLyrics may already exist")
+                Timber.tag("Migration").w("Column romanizeLyrics may already exist")
             }
             try {
                 db.execSQL("ALTER TABLE song ADD COLUMN isDownloaded INTEGER NOT NULL DEFAULT 0")
             } catch (e: Exception) {
-                android.util.Log.w("Migration", "Column isDownloaded may already exist")
+                Timber.tag("Migration").w("Column isDownloaded may already exist")
             }
             
             // From 23→24: Add isUploaded
@@ -597,22 +598,22 @@ class Migration21To22 : AutoMigrationSpec {
         try {
             db.execSQL("ALTER TABLE song ADD COLUMN libraryAddToken TEXT DEFAULT ''")
         } catch (e: Exception) {
-            android.util.Log.w("Migration21To22", "Column may already exist", e)
+            Timber.tag("Migration21To22").w(e, "Column may already exist")
         }
         try {
             db.execSQL("ALTER TABLE song ADD COLUMN libraryRemoveToken TEXT DEFAULT ''")
         } catch (e: Exception) {
-            android.util.Log.w("Migration21To22", "Column may already exist", e)
+            Timber.tag("Migration21To22").w(e, "Column may already exist")
         }
         try {
             db.execSQL("ALTER TABLE song ADD COLUMN romanizeLyrics INTEGER NOT NULL DEFAULT 1")
         } catch (e: Exception) {
-            android.util.Log.w("Migration21To22", "Column may already exist", e)
+            Timber.tag("Migration21To22").w(e, "Column may already exist")
         }
         try {
             db.execSQL("ALTER TABLE song ADD COLUMN isDownloaded INTEGER NOT NULL DEFAULT 0")
         } catch (e: Exception) {
-            android.util.Log.w("Migration21To22", "Column may already exist", e)
+            Timber.tag("Migration21To22").w(e, "Column may already exist")
         }
     }
 }

@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
+import timber.log.Timber
 
 class CoilBitmapLoader(
     private val context: Context,
@@ -51,7 +52,7 @@ class CoilBitmapLoader(
                 val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
                 bitmap?.copyIfNeeded() ?: createFallbackBitmap()
             } catch (e: Exception) {
-                Log.w("CoilBitmapLoader", "Failed to decode bitmap data", e)
+                Timber.tag("CoilBitmapLoader").w(e, "Failed to decode bitmap data")
                 createFallbackBitmap()
             }
         }
@@ -63,9 +64,7 @@ class CoilBitmapLoader(
                 .allowHardware(false)
                 .build()
 
-            val result = context.imageLoader.execute(request)
-
-            when (result) {
+            when (val result = context.imageLoader.execute(request)) {
                 is ErrorResult -> {
                     createFallbackBitmap()
                 }
@@ -74,7 +73,7 @@ class CoilBitmapLoader(
                         val bitmap = result.image.toBitmap()
                         bitmap.copyIfNeeded()
                     } catch (e: Exception) {
-                        Log.w("CoilBitmapLoader", "Failed to convert image to bitmap", e)
+                        Timber.tag("CoilBitmapLoader").w(e, "Failed to convert image to bitmap")
                         createFallbackBitmap()
                     }
                 }

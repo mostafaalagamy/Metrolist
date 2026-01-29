@@ -3,9 +3,11 @@
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 
-<div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
-<h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
-If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
+<div align="left">
+
+> [!WARNING]
+> If you're in a region where YouTube Music is not supported, you won't be able to use this app **unless you have a proxy or VPN** to connect to a YTM-supported region.
+
 </div>
 
 <h1>Screenshots</h1>
@@ -25,6 +27,7 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
+
 </div>
 
 <div align="center">
@@ -38,30 +41,31 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 - [Translations](#translations)
 - [Support Me](#support-me)
 - [Join our community](#join-our-community)
-- [Contributors](#thanks-to-all-contributors) 
+- [Contributors](#thanks-to-all-contributors)
 
 <div align="center">
 <h1>Features</h1>
 </div>
 
 - Play any song or video from YT Music
-- Background playback 
-- Personalized quick picks 
-- Library management 
+- Background playback
+- Personalized quick picks
+- Library management
 - Download and cache songs for offline playback
+- Listen together with friends
 - Search for songs, albums, artists, videos and playlists
-- Live lyrics 
+- Live lyrics
 - YouTube Music account login support
 - Syncing of songs, artists, albums and playlists, from and to your account
-- Skip silence 
-- Import playlists 
-- Audio normalization 
-- Adjust tempo/pitch 
+- Skip silence
+- Import playlists
+- Audio normalization
+- Adjust tempo/pitch
 - Local playlist management
-- Reorder songs in playlist or queue 
+- Reorder songs in playlist or queue
 - Light - Dark - black - Dynamic theme
 - Sleep timer
-- Material 3 
+- Material 3
 - etc.
 
 <div align="center">
@@ -97,6 +101,7 @@ We use Weblate to translate Metrolist. For more details or to get started, visit
 </a>
 
 Thank you very much for helping to make Metrolist accessible to many people worldwide.
+
 </div>
 
 <div align="center">
@@ -132,8 +137,9 @@ This project uses GitHub Secrets to securely store API keys for building release
 <h1>Support Me</h1>
 
 If you'd like to support my work, send a Monero (XMR) donation to this address:
-
+```plaintext
 44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
+```
 
 Or scan this QR code:
 
@@ -150,6 +156,7 @@ Or other
 
 [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=1c1917)](https://dsc.gg/metrolist)
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white&labelColor=1c1917)](https://t.me/metrolistapp)
+
 </div>
 
 <div align="center">
@@ -168,6 +175,8 @@ Credits:
 [**Better Lyrics**](https://better-lyrics.boidu.dev) – for beautiful time-synced lyrics with word-by-word highlighting, and seamless YouTube Music integration.
 
 [**SimpMusic Lyrics**](https://github.com/maxrave-dev/SimpMusic) – for providing lyrics data through the SimpMusic Lyrics API.
+
+[**metroserver**](https://github.com/nyxiereal/metroserver) – for creating the listen together server used in the app
 
 The open-source community for tools, libraries, and APIs that make this project possible.
 
@@ -193,3 +202,5 @@ This project and its contents are not affiliated with, funded, authorized, endor
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
 
 **Made with ❤️ by [Mo Agamy](https://github.com/mostafaalagamy)**
+
+</div>

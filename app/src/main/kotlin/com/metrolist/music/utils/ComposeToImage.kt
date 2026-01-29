@@ -5,6 +5,7 @@
 
 package com.metrolist.music.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.*
@@ -171,6 +172,7 @@ object ComposeToImage {
         return@withContext bitmap
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun AppLogo(
         context: Context,
         canvas: Canvas,

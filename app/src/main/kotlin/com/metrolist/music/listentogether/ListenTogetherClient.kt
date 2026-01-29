@@ -54,6 +54,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.metrolist.music.utils.NetworkConnectivityObserver
+import timber.log.Timber
 
 /**
  * Connection state for the Listen Together feature
@@ -379,10 +380,10 @@ class ListenTogetherClient @Inject constructor(
         _logs.value = (_logs.value + entry).takeLast(MAX_LOG_ENTRIES)
         
         when (level) {
-            LogLevel.ERROR -> Log.e(TAG, "$message ${details ?: ""}")
-            LogLevel.WARNING -> Log.w(TAG, "$message ${details ?: ""}")
-            LogLevel.DEBUG -> Log.d(TAG, "$message ${details ?: ""}")
-            LogLevel.INFO -> Log.i(TAG, "$message ${details ?: ""}")
+            LogLevel.ERROR -> Timber.tag(TAG).e("$message ${details ?: ""}")
+            LogLevel.WARNING -> Timber.tag(TAG).w("$message ${details ?: ""}")
+            LogLevel.DEBUG -> Timber.tag(TAG).d("$message ${details ?: ""}")
+            LogLevel.INFO -> Timber.tag(TAG).i("$message ${details ?: ""}")
         }
     }
 
