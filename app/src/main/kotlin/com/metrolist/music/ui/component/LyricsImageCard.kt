@@ -33,6 +33,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.metrolist.music.R
 import com.metrolist.music.models.MediaMetadata
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun rememberAdjustedFontSize(
@@ -285,7 +286,7 @@ fun LyricsImageCard(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = context.getString(R.string.app_name),
+                        text = stringResource(R.string.app_name),
                         color = secondaryColor,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold

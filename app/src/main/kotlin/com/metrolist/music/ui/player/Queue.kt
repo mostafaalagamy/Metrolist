@@ -692,6 +692,7 @@ fun Queue(
                         state = reorderableState,
                         key = window.uid.hashCode(),
                     ) {
+                        val context = LocalContext.current
                         val currentItem by rememberUpdatedState(window)
                         val isActive = window.uid == currentPlayingUid
                         val dismissBoxState =
@@ -714,7 +715,7 @@ fun Queue(
                                     val snackbarResult = snackbarHostState.showSnackbar(
                                         message = context.getString(
                                             R.string.removed_song_from_playlist,
-                                            currentItem.mediaItem.metadata?.title,
+                                            currentItem.mediaItem.metadata?.title ?: "",
                                         ),
                                         actionLabel = context.getString(R.string.undo),
                                         duration = SnackbarDuration.Short,
