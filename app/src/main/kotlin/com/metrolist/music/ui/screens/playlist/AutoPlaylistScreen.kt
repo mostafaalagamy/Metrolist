@@ -249,7 +249,7 @@ fun AutoPlaylistScreen(
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { },
+            onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, playlist),
@@ -259,13 +259,14 @@ fun AutoPlaylistScreen(
             },
             buttons = {
                 TextButton(
-                    onClick = { },
+                    onClick = { showRemoveDownloadDialog = false },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
 
                 TextButton(
                     onClick = {
+                        showRemoveDownloadDialog = false
                         songs!!.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -339,7 +340,7 @@ fun AutoPlaylistScreen(
                                 songs = songs!!,
                                 likeLength = likeLength,
                                 downloadState = downloadState,
-                                onShowRemoveDownloadDialog = { },
+                                onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
                                 menuState = menuState,
                                 modifier = Modifier.animateItem()
                             )

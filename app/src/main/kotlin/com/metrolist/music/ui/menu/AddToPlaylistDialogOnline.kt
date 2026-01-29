@@ -299,7 +299,7 @@ fun AddToPlaylistDialogOnline(
 
     if (showCreatePlaylistDialog) {
         CreatePlaylistDialog(
-            onDismiss = { },
+            onDismiss = { showCreatePlaylistDialog = false },
             initialTextFieldValue = initialTextFieldValue,
             allowSyncing = allowSyncing
         )
@@ -312,6 +312,7 @@ fun AddToPlaylistDialogOnline(
             buttons = {
                 TextButton(
                     onClick = {
+                        showDuplicateDialog = false
                         onDismiss()
                         database.transaction {
                             addSongToPlaylist(
@@ -328,6 +329,7 @@ fun AddToPlaylistDialogOnline(
 
                 TextButton(
                     onClick = {
+                        showDuplicateDialog = false
                         onDismiss()
                         database.transaction {
                             addSongToPlaylist(selectedPlaylist!!, songIds!!)
@@ -339,12 +341,14 @@ fun AddToPlaylistDialogOnline(
 
                 TextButton(
                     onClick = {
+                        showDuplicateDialog = false
                     }
                 ) {
                     Text(stringResource(android.R.string.cancel))
                 }
             },
             onDismiss = {
+                showDuplicateDialog = false
             }
         ) {
             Text(

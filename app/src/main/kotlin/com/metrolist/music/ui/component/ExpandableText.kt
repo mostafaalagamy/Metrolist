@@ -36,9 +36,9 @@ data class LinkSegment(
 
 @Composable
 fun ExpandableText(
-    modifier: Modifier = Modifier,
     text: String = "",
     runs: List<LinkSegment>? = null,
+    modifier: Modifier = Modifier,
     collapsedMaxLines: Int = 3,
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }

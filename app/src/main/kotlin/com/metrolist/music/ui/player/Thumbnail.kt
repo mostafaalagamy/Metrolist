@@ -497,11 +497,11 @@ private fun ThumbnailItem(
     onSeek: (String, Boolean) -> Unit,
     playerConnection: com.metrolist.music.playback.PlayerConnection,
     context: android.content.Context,
-    modifier: Modifier = Modifier,
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
     currentMediaId: String? = null,
     currentMediaThumbnail: String? = null,
+    modifier: Modifier = Modifier,
 ) {
     val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
     var skipMultiplier by remember { mutableIntStateOf(1) }
@@ -537,6 +537,7 @@ private fun ThumbnailItem(
                         } else {
                             skipMultiplier = 1
                         }
+                        lastTapTime = now
 
                         val skipAmount = 5000 * skipMultiplier
 

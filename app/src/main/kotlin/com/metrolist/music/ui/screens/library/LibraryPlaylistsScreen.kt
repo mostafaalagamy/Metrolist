@@ -208,7 +208,7 @@ fun LibraryPlaylistsScreen(
 
     if (showCreatePlaylistDialog) {
         CreatePlaylistDialog(
-            onDismiss = { },
+            onDismiss = { showCreatePlaylistDialog = false },
             initialTextFieldValue = initialTextFieldValue,
             allowSyncing = allowSyncing
         )
@@ -410,6 +410,7 @@ fun LibraryPlaylistsScreen(
                     lazyListState = lazyListState,
                     icon = R.drawable.add,
                     onClick = {
+                        showCreatePlaylistDialog = true
                     },
                 )
             }
@@ -573,6 +574,7 @@ fun LibraryPlaylistsScreen(
                     lazyListState = lazyGridState,
                     icon = R.drawable.add,
                     onClick = {
+                        showCreatePlaylistDialog = true
                     },
                 )
             }

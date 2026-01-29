@@ -5,7 +5,6 @@
 
 package com.metrolist.music.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import java.util.Locale
@@ -14,7 +13,6 @@ fun reportException(throwable: Throwable) {
     throwable.printStackTrace()
 }
 
-@SuppressLint("AppBundleLocaleChanges")
 @Suppress("DEPRECATION")
 fun setAppLocale(context: Context, locale: Locale) {
     val config = Configuration(context.resources.configuration)

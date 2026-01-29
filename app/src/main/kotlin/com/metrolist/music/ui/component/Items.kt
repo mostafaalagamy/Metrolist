@@ -59,7 +59,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -608,7 +607,7 @@ fun AlbumListItem(
         val allDownloads by downloadUtil.downloads.collectAsState()
 
         val downloadState by remember(songs, allDownloads) {
-            androidx.compose.runtime.mutableIntStateOf(
+            mutableStateOf(
                 if (songs.isEmpty()) {
                     Download.STATE_STOPPED
                 } else {
@@ -671,7 +670,7 @@ fun AlbumGridItem(
         val allDownloads by downloadUtil.downloads.collectAsState()
 
         val downloadState by remember(songs, allDownloads) {
-            androidx.compose.runtime.mutableIntStateOf(
+            mutableStateOf(
                 if (songs.isEmpty()) {
                     Download.STATE_STOPPED
                 } else {
@@ -764,7 +763,7 @@ fun PlaylistListItem(
         val allDownloads by downloadUtil.downloads.collectAsState()
 
         val downloadState by remember(songs, allDownloads) {
-            androidx.compose.runtime.mutableIntStateOf(
+            mutableStateOf(
                 if (songs.isEmpty()) {
                     Download.STATE_STOPPED
                 } else {
@@ -845,7 +844,7 @@ fun PlaylistGridItem(
         val allDownloads by downloadUtil.downloads.collectAsState()
 
         val downloadState by remember(songs, allDownloads) {
-            mutableIntStateOf(
+            mutableStateOf(
                 if (songs.isEmpty()) {
                     Download.STATE_STOPPED
                 } else {
@@ -1160,14 +1159,14 @@ fun YouTubeGridItem(
 
 @Composable
 fun LocalSongsGrid(
-    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     badges: @Composable RowScope.() -> Unit = {},
     thumbnailUrl: String?,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
-    fillMaxWidth: Boolean = false
+    fillMaxWidth: Boolean = false,
+    modifier: Modifier = Modifier
 ) = GridItem(
     title = title,
     subtitle = subtitle,
@@ -1189,14 +1188,14 @@ fun LocalSongsGrid(
 
 @Composable
 fun LocalArtistsGrid(
-    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     badges: @Composable RowScope.() -> Unit = {},
     thumbnailUrl: String?,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
-    fillMaxWidth: Boolean = false
+    fillMaxWidth: Boolean = false,
+    modifier: Modifier = Modifier
 ) = GridItem(
     title = title,
     subtitle = subtitle,
@@ -1218,14 +1217,14 @@ fun LocalArtistsGrid(
 
 @Composable
 fun LocalAlbumsGrid(
-    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     badges: @Composable RowScope.() -> Unit = {},
     thumbnailUrl: String?,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
-    fillMaxWidth: Boolean = false
+    fillMaxWidth: Boolean = false,
+    modifier: Modifier = Modifier
 ) = GridItem(
     title = title,
     subtitle = subtitle,
@@ -1600,7 +1599,7 @@ fun SwipeToSongBox(
     val threshold = 300f
 
     val dragState = rememberDraggableState { delta ->
-        offset.floatValue = (offset.floatValue + delta).coerceIn(-threshold, threshold)
+        offset.value = (offset.value + delta).coerceIn(-threshold, threshold)
     }
 
     Box(
@@ -1611,13 +1610,13 @@ fun SwipeToSongBox(
                 state = dragState,
                 onDragStopped = {
                     when {
-                        offset.floatValue >= threshold -> {
+                        offset.value >= threshold -> {
                             player?.playNext(listOf(mediaItem))
                             Toast.makeText(ctx, R.string.play_next, Toast.LENGTH_SHORT).show()
                             reset(offset, scope)
                         }
 
-                        offset.floatValue <= -threshold -> {
+                        offset.value <= -threshold -> {
                             player?.addToQueue(listOf(mediaItem))
                             Toast.makeText(ctx, R.string.add_to_queue, Toast.LENGTH_SHORT).show()
                             reset(offset, scope)
@@ -1628,8 +1627,8 @@ fun SwipeToSongBox(
                 }
             )
     ) {
-        if (offset.floatValue != 0f) {
-            val (iconRes, bg, tint, align) = if (offset.floatValue > 0)
+        if (offset.value != 0f) {
+            val (iconRes, bg, tint, align) = if (offset.value > 0)
                 Quadruple(
                     R.drawable.playlist_play,
                     MaterialTheme.colorScheme.secondary,
@@ -1665,7 +1664,7 @@ fun SwipeToSongBox(
 
         Box(
             modifier = Modifier
-                .offset { IntOffset(offset.floatValue.roundToInt(), 0) }
+                .offset { IntOffset(offset.value.roundToInt(), 0) }
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface),
             content = content

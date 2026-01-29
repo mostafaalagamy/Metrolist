@@ -44,7 +44,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -127,7 +126,7 @@ fun ContentSettings(
         var authEnabled by rememberSaveable { mutableStateOf(proxyUsername.isNotBlank() || proxyPassword.isNotBlank()) }
 
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = { showProxyConfigurationDialog = false },
             title = {
                 Text(stringResource(R.string.config_proxy))
             },
@@ -221,6 +220,7 @@ fun ContentSettings(
                         onProxyUrlChange(tempProxyUrl)
                         onProxyUsernameChange(if (authEnabled) tempProxyUsername else "")
                         onProxyPasswordChange(if (authEnabled) tempProxyPassword else "")
+                        showProxyConfigurationDialog = false
                     }
                 ) {
                     Text(stringResource(R.string.save))
@@ -228,6 +228,7 @@ fun ContentSettings(
             },
             dismissButton = {
                 TextButton(onClick = {
+                    showProxyConfigurationDialog = false
                 }) {
                     Text(stringResource(R.string.cancel))
                 }
@@ -241,9 +242,10 @@ fun ContentSettings(
 
     if (showContentLanguageDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showContentLanguageDialog = false },
             onSelect = {
                 onContentLanguageChange(it)
+                showContentLanguageDialog = false
             },
             title = stringResource(R.string.content_language),
             current = contentLanguage,
@@ -260,9 +262,10 @@ fun ContentSettings(
 
     if (showContentCountryDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showContentCountryDialog = false },
             onSelect = {
                 onContentCountryChange(it)
+                showContentCountryDialog = false
             },
             title = stringResource(R.string.content_country),
             current = contentCountry,
@@ -279,9 +282,10 @@ fun ContentSettings(
 
     if (showAppLanguageDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showAppLanguageDialog = false },
             onSelect = {
                 onAppLanguageChange(it)
+                showAppLanguageDialog = false
             },
             title = stringResource(R.string.app_language),
             current = appLanguage,
@@ -298,9 +302,10 @@ fun ContentSettings(
 
     if (showPreferredProviderDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showPreferredProviderDialog = false },
             onSelect = {
                 onPreferredProviderChange(it)
+                showPreferredProviderDialog = false
             },
             title = stringResource(R.string.set_first_lyrics_provider),
             current = preferredProvider,
@@ -322,9 +327,10 @@ fun ContentSettings(
 
     if (showQuickPicksDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showQuickPicksDialog = false },
             onSelect = {
                 onQuickPicksChange(it)
+                showQuickPicksDialog = false
             },
             title = stringResource(R.string.set_quick_picks),
             current = quickPicks,
@@ -343,10 +349,10 @@ fun ContentSettings(
     }
 
     if (showTopLengthDialog) {
-        var tempLength by rememberSaveable { mutableFloatStateOf(lengthTop.toFloat()) }
+        var tempLength by rememberSaveable { mutableStateOf(lengthTop.toFloat()) }
 
         AlertDialog(
-            onDismissRequest = { },
+            onDismissRequest = { showTopLengthDialog = false },
             title = { Text(stringResource(R.string.top_length)) },
             text = {
                 Row(
@@ -367,6 +373,7 @@ fun ContentSettings(
                 TextButton(
                     onClick = {
                         onLengthTopChange(tempLength.toInt().toString())
+                        showTopLengthDialog = false
                     }
                 ) {
                     Text(stringResource(R.string.save))
@@ -392,7 +399,7 @@ fun ContentSettings(
                             LanguageCodeToName.getOrElse(contentLanguage) { stringResource(R.string.system_default) }
                         )
                     },
-                    onClick = { }
+                    onClick = { showContentLanguageDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.location_on),
@@ -402,7 +409,7 @@ fun ContentSettings(
                             CountryCodeToName.getOrElse(contentCountry) { stringResource(R.string.system_default) }
                         )
                     },
-                    onClick = { }
+                    onClick = { showContentCountryDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.explicit),
@@ -542,7 +549,7 @@ fun ContentSettings(
                                 LanguageCodeToName.getOrElse(appLanguage) { stringResource(R.string.system_default) }
                             )
                         },
-                        onClick = { }
+                        onClick = { showAppLanguageDialog = true }
                     )
                 }
             )
@@ -580,7 +587,7 @@ fun ContentSettings(
                         Material3SettingsItem(
                             icon = painterResource(R.drawable.settings),
                             title = { Text(stringResource(R.string.config_proxy)) },
-                            onClick = { }
+                            onClick = { showProxyConfigurationDialog = true }
                         )
                     )
                 }
@@ -687,7 +694,7 @@ fun ContentSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showPreferredProviderDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.language_korean_latin),
@@ -734,7 +741,7 @@ fun ContentSettings(
                     icon = painterResource(R.drawable.trending_up),
                     title = { Text(stringResource(R.string.top_length)) },
                     description = { Text(lengthTop) },
-                    onClick = { }
+                    onClick = { showTopLengthDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.home_outlined),
@@ -747,7 +754,7 @@ fun ContentSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showQuickPicksDialog = true }
                 )
             )
         )

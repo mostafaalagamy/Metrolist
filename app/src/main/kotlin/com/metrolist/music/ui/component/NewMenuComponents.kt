@@ -71,12 +71,13 @@ fun NewActionButton(
     if (performAction) {
         onClick()
         LaunchedEffect(Unit) {
+            performAction = false
         }
     }
 
     Card(
         modifier = modifier
-            .clickable(enabled = enabled) { },
+            .clickable(enabled = enabled) { performAction = true },
         colors = CardDefaults.cardColors(
             containerColor = animatedBackground
         ),
@@ -117,12 +118,12 @@ fun NewActionButton(
 @Composable
 fun NewMenuItem(
     headlineContent: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     supportingContent: @Composable (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     androidx.compose.material3.ListItem(
         headlineContent = headlineContent,
@@ -204,10 +205,10 @@ data class NewAction(
 // Enhanced Menu Content - Material 3 Expressive Design
 @Composable
 fun NewMenuContent(
-    modifier: Modifier = Modifier,
     headerContent: @Composable (() -> Unit)? = null,
     actionGrid: @Composable (() -> Unit)? = null,
-    menuItems: @Composable (() -> Unit)? = null
+    menuItems: @Composable (() -> Unit)? = null,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,

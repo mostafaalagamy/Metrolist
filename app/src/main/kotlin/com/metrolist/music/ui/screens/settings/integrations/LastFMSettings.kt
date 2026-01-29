@@ -129,6 +129,8 @@ fun LastFMSettings(
         AlertDialog(
             onDismissRequest = { 
                 if (!isLoggingIn) {
+                    showLoginDialog = false
+                    loginError = null
                 }
             },
             title = { Text(stringResource(R.string.login)) },
@@ -197,9 +199,13 @@ fun LastFMSettings(
                 TextButton(
                     onClick = {
                         if (tempUsername.isBlank() || tempPassword.isBlank()) {
+                            loginError = "Please enter both username and password"
                             return@TextButton
                         }
-
+                        
+                        isLoggingIn = true
+                        loginError = null
+                        
                         coroutineScope.launch(Dispatchers.IO) {
                             try {
                                 LastFM.getMobileSession(tempUsername, tempPassword)
@@ -210,10 +216,14 @@ fun LastFMSettings(
                                         
                                         // Switch back to main thread to update UI
                                         coroutineScope.launch(Dispatchers.Main) {
+                                            isLoggingIn = false
+                                            showLoginDialog = false
+                                            loginError = null
                                         }
                                     }
                                     .onFailure { exception ->
                                         coroutineScope.launch(Dispatchers.Main) {
+                                            isLoggingIn = false
                                             loginError = when (exception) {
                                                 is com.metrolist.lastfm.LastFM.LastFmException -> {
                                                     when (exception.code) {
@@ -234,6 +244,8 @@ fun LastFMSettings(
                                     }
                             } catch (e: Exception) {
                                 coroutineScope.launch(Dispatchers.Main) {
+                                    isLoggingIn = false
+                                    loginError = "Unexpected error occurred"
                                 }
                                 reportException(e)
                             }
@@ -248,6 +260,8 @@ fun LastFMSettings(
                 TextButton(
                     onClick = {
                         if (!isLoggingIn) {
+                            showLoginDialog = false
+                            loginError = null
                         }
                     },
                     enabled = !isLoggingIn
@@ -294,6 +308,7 @@ fun LastFMSettings(
                     }
                 } else {
                     OutlinedButton(onClick = {
+                        showLoginDialog = true
                     }) {
                         Text(stringResource(R.string.action_login))
                     }

@@ -156,10 +156,11 @@ fun DiscordSettings(
 
     if (showTokenDialog) {
         TextFieldDialog(
-            onDismiss = { },
+            onDismiss = { showTokenDialog = false },
             icon = { Icon(painterResource(R.drawable.token), null) },
             onDone = {
                 discordToken = it
+                showTokenDialog = false
             },
             singleLine = true,
             isInputValid = { it.isNotEmpty() },
@@ -264,6 +265,7 @@ fun DiscordSettings(
                 },
                 icon = { Icon(painterResource(R.drawable.token), null) },
                 onClick = {
+                    showTokenDialog = true
                 }
             )
         }

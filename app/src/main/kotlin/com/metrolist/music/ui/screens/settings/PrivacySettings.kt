@@ -73,7 +73,7 @@ fun PrivacySettings(
 
     if (showClearListenHistoryDialog) {
         DefaultDialog(
-            onDismiss = { },
+            onDismiss = { showClearListenHistoryDialog = false },
             content = {
                 Text(
                     text = stringResource(R.string.clear_listen_history_confirm),
@@ -83,13 +83,14 @@ fun PrivacySettings(
             },
             buttons = {
                 TextButton(
-                    onClick = { },
+                    onClick = { showClearListenHistoryDialog = false },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
 
                 TextButton(
                     onClick = {
+                        showClearListenHistoryDialog = false
                         database.query {
                             clearListenHistory()
                         }
@@ -107,7 +108,7 @@ fun PrivacySettings(
 
     if (showClearSearchHistoryDialog) {
         DefaultDialog(
-            onDismiss = { },
+            onDismiss = { showClearSearchHistoryDialog = false },
             content = {
                 Text(
                     text = stringResource(R.string.clear_search_history_confirm),
@@ -117,13 +118,14 @@ fun PrivacySettings(
             },
             buttons = {
                 TextButton(
-                    onClick = { },
+                    onClick = { showClearSearchHistoryDialog = false },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
 
                 TextButton(
                     onClick = {
+                        showClearSearchHistoryDialog = false
                         database.query {
                             clearSearchHistory()
                         }
@@ -179,7 +181,7 @@ fun PrivacySettings(
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.delete_history),
                     title = { Text(stringResource(R.string.clear_listen_history)) },
-                    onClick = { }
+                    onClick = { showClearListenHistoryDialog = true }
                 )
             )
         )
@@ -212,7 +214,7 @@ fun PrivacySettings(
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.clear_all),
                     title = { Text(stringResource(R.string.clear_search_history)) },
-                    onClick = { }
+                    onClick = { showClearSearchHistoryDialog = true }
                 )
             )
         )

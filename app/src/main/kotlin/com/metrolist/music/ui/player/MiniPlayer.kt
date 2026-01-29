@@ -229,6 +229,7 @@ private fun NewMiniPlayer(
                         detectHorizontalDragGestures(
                             onDragStart = {
                                 dragStartTime = System.currentTimeMillis()
+                                totalDragDistance = 0f
                             },
                             onDragCancel = {
                                 coroutineScope.launch {
@@ -586,6 +587,7 @@ private fun LegacyMiniPlayer(
                         detectHorizontalDragGestures(
                             onDragStart = {
                                 dragStartTime = System.currentTimeMillis()
+                                totalDragDistance = 0f
                             },
                             onDragCancel = {
                                 coroutineScope.launch { offsetXAnimatable.animateTo(0f, animationSpec) }

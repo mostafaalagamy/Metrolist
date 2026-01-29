@@ -195,10 +195,11 @@ fun SongMenu(
                         }
                     }
 
+                    showEditDialog = false
                     onDismiss()
                 }
             },
-            onDismiss = { }
+            onDismiss = { showEditDialog = false }
         )
     }
 
@@ -221,12 +222,14 @@ fun SongMenu(
             listOf(song.id)
         },
         onDismiss = {
+            showChoosePlaylistDialog = false
         },
     )
 
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
+                showErrorPlaylistAddDialog = false
                 onDismiss()
             },
         ) {
@@ -241,7 +244,7 @@ fun SongMenu(
                             modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -257,7 +260,7 @@ fun SongMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { },
+            onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
                 items = song.artists.distinctBy { it.id },
@@ -269,6 +272,7 @@ fun SongMenu(
                         .height(ListItemHeight)
                         .clickable {
                             navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
                             onDismiss()
                         }
                         .padding(horizontal = 12.dp),
@@ -353,7 +357,7 @@ fun SongMenu(
                             )
                         },
                         text = stringResource(R.string.edit),
-                        onClick = { }
+                        onClick = { showEditDialog = true }
                     ),
                     NewAction(
                         icon = {
@@ -365,7 +369,7 @@ fun SongMenu(
                             )
                         },
                         text = stringResource(R.string.add_to_playlist),
-                        onClick = { }
+                        onClick = { showChoosePlaylistDialog = true }
                     ),
                     NewAction(
                         icon = {
@@ -687,6 +691,7 @@ fun SongMenu(
                                     navController.navigate("artist/${song.artists[0].id}")
                                     onDismiss()
                                 } else {
+                                    showSelectArtistDialog = true
                                 }
                             }
                         )
@@ -725,6 +730,7 @@ fun SongMenu(
                                 )
                             },
                             onClick = {
+                                refetchIconDegree -= 360
                                 scope.launch(Dispatchers.IO) {
                                     YouTube.queue(listOf(song.id)).onSuccess {
                                         val newSong = it.firstOrNull()

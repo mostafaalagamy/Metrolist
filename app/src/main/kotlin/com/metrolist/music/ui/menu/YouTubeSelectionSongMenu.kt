@@ -164,12 +164,13 @@ fun YouTubeSelectionSongMenu(
         onProgressStart = { },
         onPercentageChange = { },
         onDismiss = {
+            showChoosePlaylistDialog = false
         },
     )
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { },
+            onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, "selection"),
@@ -180,6 +181,7 @@ fun YouTubeSelectionSongMenu(
             buttons = {
                 TextButton(
                     onClick = {
+                        showRemoveDownloadDialog = false
                     },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
@@ -187,6 +189,7 @@ fun YouTubeSelectionSongMenu(
 
                 TextButton(
                     onClick = {
+                        showRemoveDownloadDialog = false
                         songSelection.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -255,6 +258,7 @@ fun YouTubeSelectionSongMenu(
                         icon = { Icon(painterResource(R.drawable.playlist_add), null) },
                         title = { Text(stringResource(R.string.add_to_playlist)) },
                         onClick = {
+                            showChoosePlaylistDialog = true
                         },
                     ),
                     Material3MenuItemData(
@@ -321,6 +325,7 @@ fun YouTubeSelectionSongMenu(
                                     )
                                 },
                                 onClick = {
+                                    showRemoveDownloadDialog = true
                                 }
                             )
                         }
@@ -334,6 +339,7 @@ fun YouTubeSelectionSongMenu(
                                     )
                                 },
                                 onClick = {
+                                    showRemoveDownloadDialog = true
                                 }
                             )
                         }

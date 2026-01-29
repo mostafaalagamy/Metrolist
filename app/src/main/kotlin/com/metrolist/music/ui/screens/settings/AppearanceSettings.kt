@@ -308,9 +308,10 @@ fun AppearanceSettings(
 
     if (showLyricsPositionDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showLyricsPositionDialog = false },
             onSelect = {
                 onLyricsPositionChange(it)
+                showLyricsPositionDialog = false
             },
             title = stringResource(R.string.lyrics_text_position),
             current = lyricsPosition,
@@ -327,9 +328,10 @@ fun AppearanceSettings(
 
     if (showLyricsAnimationStyleDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showLyricsAnimationStyleDialog = false },
             onSelect = {
                 onLyricsAnimationStyleChange(it)
+                showLyricsAnimationStyleDialog = false
             },
             title = stringResource(R.string.lyrics_animation_style),
             current = lyricsAnimationStyle,
@@ -351,7 +353,9 @@ fun AppearanceSettings(
         var tempTextSize by remember { mutableFloatStateOf(lyricsTextSize) }
         
         DefaultDialog(
-            onDismiss = {
+            onDismiss = { 
+                tempTextSize = lyricsTextSize
+                showLyricsTextSizeDialog = false 
             },
             buttons = {
                 TextButton(
@@ -367,6 +371,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { 
                         tempTextSize = lyricsTextSize
+                        showLyricsTextSizeDialog = false 
                     }
                 ) {
                     Text(stringResource(android.R.string.cancel))
@@ -374,6 +379,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { 
                         onLyricsTextSizeChange(tempTextSize)
+                        showLyricsTextSizeDialog = false 
                     }
                 ) {
                     Text(stringResource(android.R.string.ok))
@@ -411,7 +417,9 @@ fun AppearanceSettings(
         var tempLineSpacing by remember { mutableFloatStateOf(lyricsLineSpacing) }
         
         DefaultDialog(
-            onDismiss = {
+            onDismiss = { 
+                tempLineSpacing = lyricsLineSpacing
+                showLyricsLineSpacingDialog = false 
             },
             buttons = {
                 TextButton(
@@ -427,6 +435,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { 
                         tempLineSpacing = lyricsLineSpacing
+                        showLyricsLineSpacingDialog = false 
                     }
                 ) {
                     Text(stringResource(android.R.string.cancel))
@@ -434,6 +443,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { 
                         onLyricsLineSpacingChange(tempLineSpacing)
+                        showLyricsLineSpacingDialog = false 
                     }
                 ) {
                     Text(stringResource(android.R.string.ok))
@@ -469,9 +479,10 @@ fun AppearanceSettings(
 
     if (showPlayerButtonsStyleDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showPlayerButtonsStyleDialog = false },
             onSelect = {
                 onPlayerButtonsStyleChange(it)
+                showPlayerButtonsStyleDialog = false
             },
             title = stringResource(R.string.player_buttons_style),
             current = playerButtonsStyle,
@@ -488,9 +499,10 @@ fun AppearanceSettings(
 
     if (showPlayerBackgroundDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showPlayerBackgroundDialog = false },
             onSelect = {
                 onPlayerBackgroundChange(it)
+                showPlayerBackgroundDialog = false
             },
             title = stringResource(R.string.player_background_style),
             current = playerBackground,
@@ -507,9 +519,10 @@ fun AppearanceSettings(
 
     if (showDarkModeDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showDarkModeDialog = false },
             onSelect = {
                 onDarkModeChange(it)
+                showDarkModeDialog = false
             },
             title = stringResource(R.string.dark_theme),
             current = darkMode,
@@ -530,9 +543,10 @@ fun AppearanceSettings(
 
     if (showDefaultOpenTabDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showDefaultOpenTabDialog = false },
             onSelect = {
                 onDefaultOpenTabChange(it)
+                showDefaultOpenTabDialog = false
             },
             title = stringResource(R.string.default_open_tab),
             current = defaultOpenTab,
@@ -553,9 +567,10 @@ fun AppearanceSettings(
 
     if (showDefaultChipDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showDefaultChipDialog = false },
             onSelect = {
                 onDefaultChipChange(it)
+                showDefaultChipDialog = false
             },
             title = stringResource(R.string.default_lib_chips),
             current = defaultChip,
@@ -578,9 +593,10 @@ fun AppearanceSettings(
 
     if (showGridSizeDialog) {
         EnumDialog(
-            onDismiss = { },
+            onDismiss = { showGridSizeDialog = false },
             onSelect = {
                 onGridItemSizeChange(it)
+                showGridSizeDialog = false
             },
             title = stringResource(R.string.grid_cell_size),
             current = gridItemSize,
@@ -598,12 +614,13 @@ fun AppearanceSettings(
         DefaultDialog(
             buttons = {
                 TextButton(
-                    onClick = { }
+                    onClick = { showSliderOptionDialog = false }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
             },
             onDismiss = {
+                showSliderOptionDialog = false
             }
         ) {
             val sliderPreviewColors = PlayerSliderColors.getSliderColors(
@@ -633,6 +650,7 @@ fun AppearanceSettings(
                             .clickable {
                                 onSliderStyleChange(SliderStyle.DEFAULT)
                                 onSquigglySliderChange(false)
+                                showSliderOptionDialog = false
                             }
                             .padding(12.dp)
                     ) {
@@ -667,6 +685,7 @@ fun AppearanceSettings(
                             .clickable {
                                 onSliderStyleChange(SliderStyle.WAVY)
                                 onSquigglySliderChange(false)
+                                showSliderOptionDialog = false
                             }
                             .padding(12.dp)
                     ) {
@@ -706,6 +725,7 @@ fun AppearanceSettings(
                             .clickable {
                                 onSliderStyleChange(SliderStyle.SLIM)
                                 onSquigglySliderChange(false)
+                                showSliderOptionDialog = false
                             }
                             .padding(12.dp)
                     ) {
@@ -748,6 +768,7 @@ fun AppearanceSettings(
                             .clickable {
                                 onSliderStyleChange(SliderStyle.WAVY)
                                 onSquigglySliderChange(true)
+                                showSliderOptionDialog = false
                             }
                             .padding(12.dp)
                     ) {
@@ -848,7 +869,7 @@ fun AppearanceSettings(
                                 }
                             )
                         },
-                        onClick = { }
+                        onClick = { showDarkModeDialog = true }
                     )
                 )
                 if (useDarkTheme) {
@@ -974,7 +995,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showPlayerBackgroundDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.hide_image),
@@ -1030,7 +1051,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showPlayerButtonsStyleDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.sliders),
@@ -1044,7 +1065,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showSliderOptionDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.swipe),
@@ -1166,7 +1187,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showLyricsPositionDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
@@ -1183,7 +1204,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showLyricsAnimationStyleDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
@@ -1210,13 +1231,13 @@ fun AppearanceSettings(
                     icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.lyrics_text_size)) },
                     description = { Text("${lyricsTextSize.roundToInt()} sp") },
-                    onClick = { }
+                    onClick = { showLyricsTextSizeDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
                     title = { Text(stringResource(R.string.lyrics_line_spacing)) },
                     description = { Text("${String.format("%.1f", lyricsLineSpacing)}x") },
-                    onClick = { }
+                    onClick = { showLyricsLineSpacingDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.lyrics),
@@ -1278,7 +1299,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showDefaultOpenTabDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.tab),
@@ -1294,7 +1315,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showDefaultChipDialog = true }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(R.drawable.swipe),
@@ -1367,7 +1388,7 @@ fun AppearanceSettings(
                             }
                         )
                     },
-                    onClick = { }
+                    onClick = { showGridSizeDialog = true }
                 )
             )
         )

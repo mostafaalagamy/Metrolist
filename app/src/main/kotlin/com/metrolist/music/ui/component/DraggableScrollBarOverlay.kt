@@ -97,9 +97,11 @@ fun DraggableScrollbar(
                     },
                     onDragEnd = { 
                         isDragging = false
+                        lastScrollTime = 0L
                     },
                     onDragCancel = { 
-                        isDragging = false
+                        isDragging = false 
+                        lastScrollTime = 0L
                     }
                 ) { change, _ ->
                     val currentTime = System.currentTimeMillis()
@@ -121,6 +123,7 @@ fun DraggableScrollbar(
                     smoothedThumbY = smoothedThumbY * (1f - thumbSmoothingFactor) + targetThumbY * thumbSmoothingFactor
                     
                     if (currentTime - lastScrollTime < 40) return@detectDragGestures
+                    lastScrollTime = currentTime
 
                     val visibleItems = layoutInfo.visibleItemsInfo
                     if (visibleItems.isEmpty()) return@detectDragGestures
@@ -143,6 +146,7 @@ fun DraggableScrollbar(
                             .coerceIn(headerItems, layoutInfo.totalItemsCount - 1)
 
                         if (abs(targetIndex - lastTargetIndex) >= 1) {
+                            lastTargetIndex = targetIndex
                             coroutineScope.launch {
                                 try {
                                     scrollState.animateScrollToItem(
@@ -185,6 +189,7 @@ fun DraggableScrollbar(
                 val maxThumbY = viewportHeight - constThumbHeight
                 val newPosition = (scrollProgress * maxThumbY).coerceIn(0f, maxThumbY)
 
+                lastThumbPosition = newPosition
                 newPosition
             }
         }

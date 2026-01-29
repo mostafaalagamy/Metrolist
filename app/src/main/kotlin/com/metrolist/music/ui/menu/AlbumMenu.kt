@@ -39,7 +39,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -121,7 +120,7 @@ fun AlbumMenu(
     }
 
     var downloadState by remember {
-        mutableIntStateOf(STATE_STOPPED)
+        mutableStateOf(STATE_STOPPED)
     }
 
     LaunchedEffect(songs) {
@@ -180,12 +179,14 @@ fun AlbumMenu(
             songs.map { it.id }
         },
         onDismiss = {
+            showChoosePlaylistDialog = false
         },
     )
 
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
+                showErrorPlaylistAddDialog = false
                 onDismiss()
             },
         ) {
@@ -202,7 +203,7 @@ fun AlbumMenu(
                     },
                     modifier =
                     Modifier
-                        .clickable { },
+                        .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -214,7 +215,7 @@ fun AlbumMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { },
+            onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
                 items = album.artists.distinctBy { it.id },
@@ -227,6 +228,7 @@ fun AlbumMenu(
                         .height(ListItemHeight)
                         .clickable {
                             navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
                             onDismiss()
                         }
                         .padding(horizontal = 12.dp),
@@ -419,6 +421,7 @@ fun AlbumMenu(
                             )
                         },
                         onClick = {
+                            showChoosePlaylistDialog = true
                         }
                     )
                 )
@@ -529,6 +532,7 @@ fun AlbumMenu(
                                 navController.navigate("artist/${album.artists[0].id}")
                                 onDismiss()
                             } else {
+                                showSelectArtistDialog = true
                             }
                         }
                     ),
@@ -543,6 +547,7 @@ fun AlbumMenu(
                             )
                         },
                         onClick = {
+                            refetchIconDegree -= 360
                             scope.launch(Dispatchers.IO) {
                                 YouTube.album(album.id).onSuccess {
                                     database.transaction {

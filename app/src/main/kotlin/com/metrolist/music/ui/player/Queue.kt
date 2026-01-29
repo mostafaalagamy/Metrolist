@@ -529,14 +529,16 @@ fun Queue(
                             )
                         }
                     },
-                    onDismiss = { },
+                    onDismiss = { showSleepTimerDialog = false },
                     onConfirm = {
+                        showSleepTimerDialog = false
                         playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
                     },
                     onCancel = {
+                        showSleepTimerDialog = false
                     },
                     onReset = {
-                        // Default value
+                        sleepTimerValue = 30f // Default value
                     },
                     content = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -563,6 +565,7 @@ fun Queue(
 
                             OutlinedButton(
                                 onClick = {
+                                    showSleepTimerDialog = false
                                     playerConnection.service.sleepTimer.start(-1)
                                 }
                             ) {
@@ -1181,15 +1184,15 @@ private fun PlayerQueueButton(
     icon: Int,
     onClick: () -> Unit,
     isActive: Boolean,
+    enabled: Boolean = true,
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+    text: String? = null,
     textButtonColor: Color,
     iconButtonColor: Color,
     iconSize: androidx.compose.ui.unit.Dp,
     textBackgroundColor: Color,
-    playerBackground: PlayerBackgroundStyle,
-    shape: RoundedCornerShape,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    text: String? = null,
+    playerBackground: PlayerBackgroundStyle
 ) {
     val buttonModifier = Modifier
         .clip(shape)

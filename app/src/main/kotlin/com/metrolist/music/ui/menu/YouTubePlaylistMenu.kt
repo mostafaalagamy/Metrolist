@@ -38,7 +38,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -136,7 +135,7 @@ fun YouTubePlaylistMenu(
             }
             allSongs.map { it.id }
         },
-        onDismiss = { },
+        onDismiss = { showChoosePlaylistDialog = false },
     )
 
     YouTubeListItem(
@@ -198,7 +197,7 @@ fun YouTubePlaylistMenu(
     HorizontalDivider()
 
     var downloadState by remember {
-        mutableIntStateOf(Download.STATE_STOPPED)
+        mutableStateOf(Download.STATE_STOPPED)
     }
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
@@ -221,7 +220,7 @@ fun YouTubePlaylistMenu(
     }
     if (showRemoveDownloadDialog) {
         DefaultDialog(
-            onDismiss = { },
+            onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
                     text = stringResource(
@@ -234,12 +233,13 @@ fun YouTubePlaylistMenu(
             },
             buttons = {
                 TextButton(
-                    onClick = { }
+                    onClick = { showRemoveDownloadDialog = false }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
                 TextButton(
                     onClick = {
+                        showRemoveDownloadDialog = false
                         songs.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
@@ -271,12 +271,13 @@ fun YouTubePlaylistMenu(
             allSongs.map { it.id }
         },
         playlistTitle = playlist.title,
-        onDismiss = { }
+        onDismiss = { showImportPlaylistDialog = false }
     )
 
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
+                showErrorPlaylistAddDialog = false
                 onDismiss()
             },
         ) {
@@ -291,7 +292,7 @@ fun YouTubePlaylistMenu(
                             modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -479,6 +480,7 @@ fun YouTubePlaylistMenu(
                             )
                         },
                         onClick = {
+                            showChoosePlaylistDialog = true
                         }
                     )
                 )
@@ -507,6 +509,7 @@ fun YouTubePlaylistMenu(
                                             )
                                         },
                                         onClick = {
+                                            showRemoveDownloadDialog = true
                                         }
                                     )
                                 }
@@ -520,6 +523,7 @@ fun YouTubePlaylistMenu(
                                             )
                                         },
                                         onClick = {
+                                            showRemoveDownloadDialog = true
                                         }
                                     )
                                 }

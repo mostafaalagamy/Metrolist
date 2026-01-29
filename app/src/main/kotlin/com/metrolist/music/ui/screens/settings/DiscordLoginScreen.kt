@@ -92,6 +92,7 @@ fun DiscordLoginScreen(navController: NavController) {
                     ): Boolean {
                         Timber.d("Discord Token received")
                         if (message.isNotBlank() && message != "null" && message != "undefined") {
+                            discordToken = message
                             scope.launch(Dispatchers.Main) {
                                 navController.navigateUp()
                             }

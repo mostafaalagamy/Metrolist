@@ -96,14 +96,17 @@ fun WavySlider(
             .pointerInput(valueRange) {
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->
+                        isDragging = true
                         dragValue = (offset.x / size.width).coerceIn(0f, 1f)
                         val mappedValue = valueRange.start + dragValue * (valueRange.endInclusive - valueRange.start)
                         onValueChange(mappedValue)
                     },
                     onDragEnd = {
+                        isDragging = false
                         onValueChangeFinished?.invoke()
                     },
                     onDragCancel = {
+                        isDragging = false
                     },
                     onHorizontalDrag = { _, dragAmount ->
                         dragValue = (dragValue + dragAmount / size.width).coerceIn(0f, 1f)
