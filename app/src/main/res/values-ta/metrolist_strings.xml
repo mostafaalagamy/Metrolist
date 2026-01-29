@@ -458,4 +458,5 @@
     <string name="proxy"></string>
     <string name="copy_link"></string>
     <string name="listen_together_room_created"></string>
+    <string name="discord"></string>
 </resources>
