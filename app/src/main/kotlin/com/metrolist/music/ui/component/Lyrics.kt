@@ -145,6 +145,9 @@ import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.listentogether.RoomRole
+import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
@@ -192,6 +195,10 @@ fun Lyrics(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current // Get configuration
     val windowInfo = LocalWindowInfo.current
+
+    val listenTogetherManager = LocalListenTogetherManager.current
+    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = RoomRole.NONE)
+    val isGuest = listenTogetherRoleState?.value == RoomRole.GUEST
 
     val landscapeOffset =
         configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -730,7 +737,7 @@ fun Lyrics(
                                             showMaxSelectionToast = true
                                         }
                                     }
-                                } else if (isSynced && changeLyrics) {
+                                } else if (isSynced && changeLyrics && !isGuest) {
                                     // Professional seek action with smooth animation
                                     val lyricsOffset = currentSong?.song?.lyricsOffset ?: 0
                                     playerConnection.seekTo((item.time - lyricsOffset).coerceAtLeast(0))
