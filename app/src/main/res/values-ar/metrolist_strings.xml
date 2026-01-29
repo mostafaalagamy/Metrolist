@@ -474,4 +474,9 @@
     <string name="enter_username">أدخل اسم المستخدم</string>
     <string name="decryption_library">إعدادات مكتبة فك التشفير</string>
     <string name="listen_together_connecting">جاري الاتصال…</string>
+    <string name="change">تغيير</string>
+    <string name="listen_together_cannot_edit_username_in_room">لا يمكن تعديل اسم المستخدم أثناء التواجد في الغرفة</string>
+    <string name="error_username_empty">اسم المستخدم مطلوب.</string>
+    <string name="listen_together_suggestion_sent">تم إرسال الاقتراح إلى المضيف!</string>
+    <string name="resync">إعادة المزامنة</string>
 </resources>
