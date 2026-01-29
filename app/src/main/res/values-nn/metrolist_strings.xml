@@ -161,7 +161,7 @@
     <string name="auto_download_on_like_desc">Lad sjølvverkande ned songar når du likar dei</string>
     <string name="swipe_sensitivity">Minispelarsveipsfølsemd</string>
     <string name="swipe_sensitivity_desc">Juster kor følsam sveiprørsler er for å byta songar</string>
-    <string name="sensitivity_percentage">%1$d %%</string>
+    <string name="sensitivity_percentage">%1$d %%</string>
     <string name="clear_song_cache_dialog">Er du viss på at du vil reinsa alle hurtiglagra songar?</string>
     <string name="clear_image_cache_dialog">Er du viss på at du vil reinsa alle hurtiglagra bilete?</string>
     <string name="clear_downloads_dialog">Er du viss på at du vil reinsa alle nedladingar?</string>
@@ -353,7 +353,7 @@
     <string name="error_file_open">Klarte ikkje å opna fil: %1$s</string>
     <string name="import_error_title">Importeringslyte</string>
     <string name="casting_to">Kastar til %s</string>
-    <string name="progress_percent">Framsteg %s %%</string>
+    <string name="progress_percent">Framsteg %s %%</string>
     <string name="listening_to_metrolist">Høyrer på Metrolist</string>
     <string name="listen_on_youtube_music">Høyr på på YouTube Music</string>
     <string name="visit_metrolist">Vitja Metrolist</string>
