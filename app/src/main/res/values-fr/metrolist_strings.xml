@@ -447,21 +447,4 @@
     <string name="pending_requests">Demandes en attente</string>
     <string name="pending_suggestions">Suggestions en attente</string>
     <string name="listen_together_suggestion_received">%1$s demandés %2$s</string>
-    <string name="listen_together_join_request_notification"></string>
-    <string name="listen_together_cannot_edit_username_in_room"></string>
-    <string name="change"></string>
-    <string name="listen_together_notification_channel_desc"></string>
-    <string name="in_room"></string>
-    <string name="error_username_empty"></string>
-    <string name="listen_together_suggestion_sent"></string>
-    <string name="suggest_to_host"></string>
-    <string name="kick_user"></string>
-    <string name="host_label"></string>
-    <string name="resync"></string>
-    <string name="hosting_room"></string>
-    <string name="connected_users"></string>
-    <string name="you_label"></string>
-    <string name="listen_together_notification_channel_name"></string>
-    <string name="enter_username"></string>
-    <string name="listen_together_room_created"></string>
 </resources>
