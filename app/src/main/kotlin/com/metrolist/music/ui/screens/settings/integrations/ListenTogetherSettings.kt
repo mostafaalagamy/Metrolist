@@ -114,7 +114,7 @@ fun ListenTogetherSettings(
     val bufferingUsers by viewModel.bufferingUsers.collectAsState()
     val logs by viewModel.logs.collectAsState()
     
-    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "ws://metroserver.meowery.eu/ws")
+    var serverUrl by rememberPreference(ListenTogetherServerUrlKey, "wss://metroserver.meowery.eu/ws")
     var username by rememberPreference(ListenTogetherUsernameKey, "")
     
     var showServerUrlDialog by rememberSaveable { mutableStateOf(false) }

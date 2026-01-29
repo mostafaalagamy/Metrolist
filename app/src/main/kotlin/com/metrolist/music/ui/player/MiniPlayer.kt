@@ -7,7 +7,6 @@
 
 package com.metrolist.music.ui.player
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -46,7 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -66,8 +64,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +74,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
 import com.metrolist.music.LocalDatabase
@@ -95,7 +92,6 @@ import com.metrolist.music.listentogether.ListenTogetherManager
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.CastConnectionHandler
 import com.metrolist.music.playback.PlayerConnection
-import com.metrolist.music.ui.component.Icon as MIcon
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.rememberEnumPreference
@@ -103,6 +99,7 @@ import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import com.metrolist.music.ui.component.Icon as MIcon
 
 /**
  * Stable wrapper for progress state - reads values only during draw phase
@@ -130,11 +127,6 @@ fun MiniPlayer(
     
     // Create stable progress state - doesn't cause recomposition on position changes
     val progressState = remember { ProgressState(positionState, durationState) }
-
-    val configuration = LocalConfiguration.current
-    val isTabletLandscape = remember(configuration.screenWidthDp, configuration.orientation) {
-        configuration.screenWidthDp >= 600 && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
 
     if (useNewMiniPlayerDesign) {
         NewMiniPlayer(
@@ -192,10 +184,9 @@ private fun NewMiniPlayer(
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     
-    val configuration = LocalConfiguration.current
-    val isTabletLandscape = remember(configuration.screenWidthDp, configuration.orientation) {
-        configuration.screenWidthDp >= 600 && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
+    val windowInfo = LocalWindowInfo.current
+    // containerSize provides pixels, which is fine for comparing aspect ratio
+    val isLandscape = windowInfo.containerSize.width > windowInfo.containerSize.height
 
     // Swipe animation state
     val offsetXAnimatable = remember { Animatable(0f) }
@@ -285,7 +276,7 @@ private fun NewMiniPlayer(
     ) {
         Box(
             modifier = Modifier
-                .then(if (isTabletLandscape) Modifier.width(500.dp).align(Alignment.Center) else Modifier.fillMaxWidth())
+                .then(if (isLandscape) Modifier.width(500.dp).align(Alignment.Center) else Modifier.fillMaxWidth())
                 .height(64.dp)
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
@@ -334,7 +325,7 @@ private fun NewMiniPlayer(
 
                 // Subscribe button - isolated composable
                 mediaMetadata?.artists?.firstOrNull()?.id?.let { artistId ->
-                    SubscribeButton(artistId = artistId, metadata = mediaMetadata!!)
+                    SubscribeButton(artistId = artistId, metadata = mediaMetadata ?: return@let)
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -551,10 +542,9 @@ private fun LegacyMiniPlayer(
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     
-    val configuration = LocalConfiguration.current
-    val isTabletLandscape = remember(configuration.screenWidthDp, configuration.orientation) {
-        configuration.screenWidthDp >= 600 && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
+    val windowInfo = LocalWindowInfo.current
+    // containerSize provides pixels, which is fine for comparing aspect ratio
+    val isLandscape = windowInfo.containerSize.width > windowInfo.containerSize.height
 
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableLongStateOf(0L) }
@@ -573,7 +563,7 @@ private fun LegacyMiniPlayer(
 
     Box(
         modifier = modifier
-            .then(if (isTabletLandscape) Modifier.width(500.dp) else Modifier.fillMaxWidth())
+            .then(if (isLandscape) Modifier.width(500.dp) else Modifier.fillMaxWidth())
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))

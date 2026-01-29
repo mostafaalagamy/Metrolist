@@ -88,6 +88,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -521,7 +522,9 @@ class MainActivity : ComponentActivity() {
                         currentRoute!!.startsWith("search/")
                 }
 
-                val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+                val windowInfo = LocalWindowInfo.current
+                // containerSize provides pixels, which is fine for comparing aspect ratio
+                val isLandscape = windowInfo.containerSize.width > windowInfo.containerSize.height
 
                 val showRail = isLandscape && !inSearchScreen
 

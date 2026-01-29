@@ -37,7 +37,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -765,6 +764,7 @@ fun BottomSheetPlayer(
                         transitionSpec = { fadeIn() togetherWith fadeOut() },
                         label = "",
                     ) { title ->
+                        val copiedTitleString = stringResource(R.string.copied_title)
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleLarge,
@@ -786,10 +786,10 @@ fun BottomSheetPlayer(
                                         }
                                     },
                                     onLongClick = {
-                                        val clip = ClipData.newPlainText(context.getString(R.string.copied_title), title)
+                                        val clip = ClipData.newPlainText(copiedTitleString, title)
                                         clipboardManager.setPrimaryClip(clip)
                                         Toast
-                                            .makeText(context, context.getString(R.string.copied_title), Toast.LENGTH_SHORT)
+                                            .makeText(context, copiedTitleString, Toast.LENGTH_SHORT)
                                             .show()
                                     }
                                 )
@@ -804,6 +804,7 @@ fun BottomSheetPlayer(
                         if (mediaMetadata.explicit) MIcon.Explicit()
 
                         if (mediaMetadata.artists.any { it.name.isNotBlank() }) {
+                            val copiedArtistString = stringResource(R.string.copied_artist)
                             val annotatedString = buildAnnotatedString {
                                 mediaMetadata.artists.forEachIndexed { index, artist ->
                                     val tag = "artist_${artist.id.orEmpty()}"
@@ -866,14 +867,14 @@ fun BottomSheetPlayer(
                                             onLongClick = {
                                                 val clip =
                                                     ClipData.newPlainText(
-                                                        context.getString(R.string.copied_artist),
+                                                        copiedArtistString,
                                                         annotatedString
                                                     )
                                                 clipboardManager.setPrimaryClip(clip)
                                                 Toast
                                                     .makeText(
                                                         context,
-                                                        context.getString(R.string.copied_artist),
+                                                        copiedArtistString,
                                                         Toast.LENGTH_SHORT
                                                     )
                                                     .show()
@@ -898,7 +899,7 @@ fun BottomSheetPlayer(
                         topEnd = 50.dp, bottomEnd = 50.dp
                     )
 
-                    val middleShape = RoundedCornerShape(5.dp)
+                    //val middleShape = RoundedCornerShape(5.dp)
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -1552,7 +1553,7 @@ fun BottomSheetPlayer(
                         .padding(bottom = 24.dp)
                         .fillMaxSize()
                 ) {
-                    BoxWithConstraints(
+                    Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .weight(1f)
@@ -1713,24 +1714,24 @@ fun InlineLyricsView(
                     database.query {
                         upsert(LyricsEntity(mediaMetadata.id, fetchedLyricsWithProvider.lyrics, fetchedLyricsWithProvider.provider))
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Handle error
                 }
             }
         }
     }
 
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(12.dp)),
         contentAlignment = Alignment.Center
     ) {
-        when {
-            lyrics == null -> {
+        when (lyrics) {
+            null -> {
                 ContainedLoadingIndicator()
             }
-            lyrics == LyricsEntity.LYRICS_NOT_FOUND -> {
+            LyricsEntity.LYRICS_NOT_FOUND -> {
                 Text(
                     text = stringResource(R.string.lyrics_not_found),
                     style = MaterialTheme.typography.bodyMedium,
