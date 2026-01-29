@@ -343,7 +343,7 @@
     <string name="enable_simpmusic_desc">Verwenden Sie den Anbieter SimpMusic-Lyrics für synchronisierte Songtexte.</string>
     <plurals name="profiles_count">
         <item quantity="one">Equalizer-Benutzeroberfläche</item>
-        <item quantity="other"/>
+        <item quantity="other"></item>
     </plurals>
     <string name="system_equalizer">System-Equalizer</string>
     <string name="no_song_playing">Es wird kein Song abgespielt</string>
