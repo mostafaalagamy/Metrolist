@@ -302,6 +302,7 @@ class MusicService :
     private var originalQueueSize: Int = 0
 
     private var consecutivePlaybackErr = 0
+    private var consecutiveAuthFailures = 0
     private var retryJob: Job? = null
     private var retryCount = 0
     private var silenceSkipJob: Job? = null
@@ -637,15 +638,16 @@ class MusicService :
                     playWhenReady = false,
                 )
             }
+
             runCatching {
                 filesDir.resolve(PERSISTENT_AUTOMIX_FILE).inputStream().use { fis ->
                     ObjectInputStream(fis).use { oos ->
                         oos.readObject() as PersistQueue
                     }
+                    }
+                }.onSuccess { queue ->
+                    automixItems.value = queue.items.map { it.toMediaItem() }
                 }
-            }.onSuccess { queue ->
-                automixItems.value = queue.items.map { it.toMediaItem() }
-            }
 
             // Restore player state
             runCatching {
@@ -653,21 +655,21 @@ class MusicService :
                     ObjectInputStream(fis).use { oos ->
                         oos.readObject() as PersistPlayerState
                     }
-                }
-            }.onSuccess { playerState ->
-                // Restore player settings after queue is loaded
-                scope.launch {
-                    delay(1000) // Wait for queue to be loaded
-                    player.repeatMode = playerState.repeatMode
-                    player.shuffleModeEnabled = playerState.shuffleModeEnabled
-                    playerVolume.value = playerState.volume
+                    }
+                }.onSuccess { playerState ->
+                    // Restore player settings after queue is loaded
+                    scope.launch {
+                        delay(1000) // Wait for queue to be loaded
+                        player.repeatMode = playerState.repeatMode
+                        player.shuffleModeEnabled = playerState.shuffleModeEnabled
+                        playerVolume.value = playerState.volume
 
-                    // Restore position if it's still valid
-                    if (playerState.currentMediaItemIndex < player.mediaItemCount) {
-                        player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
+                        // Restore position if it's still valid
+                        if (playerState.currentMediaItemIndex < player.mediaItemCount) {
+                            player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
+                        }
                     }
                 }
-            }
         }
 
         // Save queue periodically to prevent queue loss from crash or force kill
@@ -1159,6 +1161,8 @@ class MusicService :
                                     val filteredItems = radioResult.items
                                         .filter { it.id != currentSong.id }
                                         .map { it.toMediaItem() }
+                                        .filterExplicit(dataStore.get(HideExplicitKey, false))
+                                        .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
                                     if (filteredItems.isNotEmpty()) {
                                         automixItems.value = filteredItems
                                     }
@@ -1630,17 +1634,20 @@ class MusicService :
                 val shuffledIndices = IntArray(totalCount)
                 var pos = 0
                 shuffledIndices[pos++] = currentIndex
-                
-                // If current is from original queue, add remaining originals first
-                if (currentIndex < originalQueueSize) {
-                    originalIndices.forEach { shuffledIndices[pos++] = it }
-                    addedIndices.forEach { shuffledIndices[pos++] = it }
-                } else {
-                    // Current is from added songs, still put all originals first
-                    (0 until originalQueueSize).shuffled().forEach { shuffledIndices[pos++] = it }
-                    addedIndices.forEach { shuffledIndices[pos++] = it }
+
+                originalIndices.forEach { if (it in 0 until totalCount) shuffledIndices[pos++] = it }
+                addedIndices.forEach { if (pos < totalCount) shuffledIndices[pos++] = it }
+
+                // Fill any missing indices (safety) to ensure a full permutation
+                if (pos < totalCount) {
+                    for (i in 0 until totalCount) {
+                        if (!shuffledIndices.contains(i)) {
+                            shuffledIndices[pos++] = i
+                            if (pos == totalCount) break
+                        }
+                    }
                 }
-                
+
                 player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
             } else {
                 // Original behavior - shuffle everything together
@@ -1792,6 +1799,18 @@ class MusicService :
         
         // Handle specific error types with strict strategies
         when {
+            isExpiredUrlError(error) -> {
+                consecutiveAuthFailures++
+                if (consecutiveAuthFailures >= 3 && mediaId != null) {
+                    scope.launch(Dispatchers.IO) {
+                        refreshSession(mediaId)
+                    }
+                    consecutiveAuthFailures = 0
+                }
+                Log.d(TAG, "Expired URL (403) detected, refreshing stream URL")
+                handleExpiredUrlError(mediaId)
+                return
+            }
             isRangeNotSatisfiableError(error) -> {
                 Log.d(TAG, "Range Not Satisfiable (416) detected, performing strict recovery")
                 handleRangeNotSatisfiableError(mediaId)
@@ -1802,6 +1821,7 @@ class MusicService :
                 handlePageReloadError(mediaId)
                 return
             }
+
             isExpiredUrlError(error) -> {
                 Log.d(TAG, "Expired URL (403) detected, refreshing stream URL")
                 handleExpiredUrlError(mediaId)
@@ -2099,9 +2119,6 @@ class MusicService :
 
     private suspend fun performInstantSilenceSkip() {
         val duration = player.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: return
-        if (duration <= INSTANT_SILENCE_SKIP_STEP_MS) return
-
-        isSilenceSkipping = true
         try {
             var hops = 0
             while (coroutineContext.isActive && instantSilenceSkipEnabled.value && silenceDetectorAudioProcessor.isCurrentlySilent()) {
@@ -2526,6 +2543,10 @@ class MusicService :
                 timber.log.Timber.e(e, "Failed to initialize Google Cast")
             }
         }
+    }
+
+    private fun refreshSession(mediaId: String) {
+        songUrlCache.remove(mediaId)
     }
 
     companion object {
