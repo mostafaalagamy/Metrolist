@@ -557,4 +557,6 @@
     <string name="ai_error_lyrics_empty">Lyrics are empty</string>
     <string name="ai_error_language_required">Target language is required</string>
     <string name="ai_error_unexpected">Unexpected translation result</string>
+    <string name="ai_error_unknown">Unknown error occurred</string>
+    <string name="ai_error_translation_failed">Translation failed</string>
 </resources>

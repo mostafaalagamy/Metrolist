@@ -415,6 +415,15 @@ fun Lyrics(
     // State for translation status
     val translationStatus by LyricsTranslationHelper.status.collectAsState()
     
+    // Track composition lifecycle
+    DisposableEffect(Unit) {
+        LyricsTranslationHelper.setCompositionActive(true)
+        onDispose {
+            LyricsTranslationHelper.setCompositionActive(false)
+            LyricsTranslationHelper.cancelTranslation()
+        }
+    }
+    
     // Listen for manual trigger
     LaunchedEffect(Unit) {
         LyricsTranslationHelper.manualTrigger.collect {

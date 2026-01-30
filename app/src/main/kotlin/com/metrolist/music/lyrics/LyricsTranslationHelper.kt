@@ -32,6 +32,7 @@ object LyricsTranslationHelper {
     val manualTrigger: SharedFlow<Unit> = _manualTrigger.asSharedFlow()
     
     private var translationJob: Job? = null
+    private var isCompositionActive = true
     
     // Cache for translations: key = hash of (lyrics content + mode + language), value = list of translations
     private val translationCache = mutableMapOf<String, List<String>>()
@@ -71,6 +72,16 @@ object LyricsTranslationHelper {
     
     fun clearCache() {
         translationCache.clear()
+    }
+    
+    fun setCompositionActive(active: Boolean) {
+        isCompositionActive = active
+    }
+    
+    fun cancelTranslation() {
+        isCompositionActive = false
+        translationJob?.cancel()
+        translationJob = null
     }
 
     fun translateLyrics(
@@ -138,6 +149,11 @@ object LyricsTranslationHelper {
                 )
                 
                 result.onSuccess { translatedLines ->
+                    // Check if composition is still active before updating state
+                    if (!isCompositionActive) {
+                        return@onSuccess
+                    }
+                    
                     // Cache the translations
                     val cacheKey = getCacheKey(fullText, mode, targetLanguage)
                     translationCache[cacheKey] = translatedLines
@@ -170,18 +186,25 @@ object LyricsTranslationHelper {
                     
                     // Auto-hide success message after 3 seconds
                     delay(3000)
-                    if (_status.value is TranslationStatus.Success) {
+                    if (_status.value is TranslationStatus.Success && isCompositionActive) {
                         _status.value = TranslationStatus.Idle
                     }
                 }.onFailure { error ->
-                    val errorMessage = error.message ?: "Unknown error occurred"
+                    if (!isCompositionActive) {
+                        return@onFailure
+                    }
+                    
+                    val errorMessage = error.message ?: context.getString(com.metrolist.music.R.string.ai_error_unknown)
                     
                     // Show error in UI
                     _status.value = TranslationStatus.Error(errorMessage)
                 }
             } catch (e: Exception) {
-                val errorMessage = e.message ?: "Translation failed"
-                _status.value = TranslationStatus.Error(errorMessage)
+                // Ignore cancellation exceptions or if composition is no longer active
+                if (e !is kotlinx.coroutines.CancellationException && isCompositionActive) {
+                    val errorMessage = e.message ?: context.getString(com.metrolist.music.R.string.ai_error_translation_failed)
+                    _status.value = TranslationStatus.Error(errorMessage)
+                }
             }
         }
     }
