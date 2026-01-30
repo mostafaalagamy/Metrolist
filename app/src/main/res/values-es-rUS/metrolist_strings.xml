@@ -37,7 +37,7 @@
     <string name="past_month">Mes pasado</string>
     <string name="description">Descripción</string>
     <string name="views">Vistas</string>
-    <string name="likes">Me gusta</string>
+    <string name="likes">Me gustas</string>
     <string name="subscribers">Suscriptores</string>
     <string name="numbers">Números</string>
     <string name="history_duration">Duración del historial</string>
@@ -289,7 +289,7 @@
     <string name="cache_size_warning_title">¡Espera!</string>
     <string name="cache_size_warning_message">Elegiste un límite de tamaño de caché menor que el usado actualmente por la app (%1$s). Si continúas, la app podría remover algunos %2$s de la caché para ajustarse al nuevo límite. ¿Proceder de todas formas?</string>
     <string name="cache_size_warning_confirm">Continuar</string>
-    <string name="lyrics_animation_style">Estilo de animación palabra-a-palabra</string>
+    <string name="lyrics_animation_style">Estilo de animación palabra a palabra</string>
     <string name="none">Ninguno</string>
     <string name="fade">Difuminar</string>
     <string name="glow">Brillar</string>
@@ -366,7 +366,7 @@
     <string name="failed_to_create_image">No se pudo crear la imagen: %s</string>
     <string name="copied_title">Se copió el título</string>
     <string name="copied_artist">Se copió el artista</string>
-    <string name="error_playing">Error de reproducción</string>
+    <string name="error_playing">Error al reproducir</string>
     <string name="failed_to_parse_proxy">No se pudo analizar la URL del proxy.</string>
     <string name="album_art">Carátula del álbum</string>
     <string name="no_song_playing">Ninguna canción en reproducción</string>
@@ -374,14 +374,23 @@
     <string name="previous">Anterior</string>
     <string name="play_pause">Reproducir/pausar</string>
     <string name="next">Siguiente</string>
-    <string name="like">Me gusta</string>
+    <string name="like">Me Gusta</string>
     <string name="widget_description">Widget de reproductor de música con controles de reproducción</string>
     <string name="turntable_widget_description">Acceso rápido a tu última canción reproducida</string>
     <string name="queue_widget_description">Reproductor de música con vista previa de la cola</string>
     <string name="progress_percent">Progreso %s%%</string>
     <string name="mini_player_outline">Contorno del mini reproductor</string>
-    <string name="error_playback_failed">Error de reproducción</string>
-    <string name="error_copied">Información del error copiada al portapapeles</string>
+    <string name="error_playback_failed">Falló la reproducción</string>
+    <string name="error_copied">Se copió la información del error al portapapeles</string>
     <string name="copy_error">Copiar error</string>
     <string name="error_copy_hint">Copia la información del error para ayudar a los desarrolladores a solucionarlo</string>
+    <string name="crop_album_art">Recortar carátula del álbum</string>
+    <string name="crop_album_art_desc">Recortar las miniaturas de los videos para forzar una relación de aspecto cuadrada</string>
+    <string name="error_title">Error</string>
+    <string name="error_eq_apply_failed">No se pudo aplicar el perfil de ecualización: %1$s</string>
+    <string name="player_client">Cliente del reproductor</string>
+    <string name="player_client_android_vr">Android VR</string>
+    <string name="player_client_android_vr_desc">Opción más rápida. Transmisión directa de URL sin descifrado de firma. Recomendado para la mayoría de usuarios.</string>
+    <string name="player_client_web_remix">Web Remix</string>
+    <string name="player_client_web_remix_desc">Más lento, pero admite formatos premium. Utiliza el descifrado de firma JavaScript, lo que añade entre 5 y 10 segundos al inicio de la reproducción.</string>
 </resources>
