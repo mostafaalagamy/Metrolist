@@ -340,33 +340,4 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-
-    <!-- AI Lyrics Translation -->
-    <string name="ai_lyrics_translation">AI Lyrics Translation</string>
-    <string name="ai_translating_lyrics">Translating lyrics...</string>
-    <string name="ai_lyrics_translated">Lyrics translated</string>
-    <string name="ai_provider">Provider</string>
-    <string name="ai_base_url">Base URL</string>
-    <string name="ai_api_key">API Key</string>
-    <string name="ai_model">Model</string>
-    <string name="ai_auto_translate">Auto translate all songs</string>
-    <string name="ai_language_mismatch">Translate only on language mismatch</string>
-    <string name="ai_translation_mode">Translation Mode</string>
-    <string name="ai_target_language">Target Language</string>
-    <string name="ai_setup_guide">Setup Guide</string>
-    <string name="ai_setup_step_1">1. Select your Provider (e.g., OpenRouter, ChatGPT) or \'Custom\'.</string>
-    <string name="ai_setup_step_2">2. Enter your API Key.</string>
-    <string name="ai_setup_step_3">3. If \'Custom\', enter the Base URL provided by your service.</string>
-    <string name="ai_setup_api_need">Need an API Key? Try </string>
-    <string name="ai_setup_api_provider">OpenRouter.ai</string>
-    <string name="ai_setup_api_end"> for access to many models.</string>
-    <string name="ai_language_mismatch_desc">Skip translation if lyrics identify as your system language</string>
-    <string name="ai_translation_literal">Original + Translation</string>
-    <string name="ai_translation_transcribed">Original + Transcribed</string>
-    <string name="ai_api_key_required">API Key Required</string>
-    <string name="ai_error_api_key_required">API key is required</string>
-    <string name="ai_error_no_lyrics">No lyrics to translate</string>
-    <string name="ai_error_lyrics_empty">Lyrics are empty</string>
-    <string name="ai_error_language_required">Target language is required</string>
-    <string name="ai_error_unexpected">Unexpected translation result</string>
 </resources>
