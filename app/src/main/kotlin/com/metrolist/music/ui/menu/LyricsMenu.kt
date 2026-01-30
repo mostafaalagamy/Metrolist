@@ -70,6 +70,10 @@ import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.viewmodels.LyricsMenuViewModel
+import com.metrolist.music.constants.AutoTranslateLyricsKey
+import com.metrolist.music.constants.OpenRouterApiKey
+import com.metrolist.music.lyrics.LyricsTranslationHelper
+import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +87,9 @@ fun LyricsMenu(
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
+    
+    val autoTranslateLyrics by rememberPreference(AutoTranslateLyricsKey, false)
+    val openRouterApiKey by rememberPreference(OpenRouterApiKey, "")
 
     var showEditDialog by rememberSaveable {
         mutableStateOf(false)
@@ -408,61 +415,86 @@ fun LyricsMenu(
 
         item {
             Material3MenuGroup(
-                items = listOf(
-                    Material3MenuItemData(
-                        title = { Text(stringResource(R.string.lyrics_offset)) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.fast_forward),
-                                contentDescription = null,
+                items = buildList {
+                    // Add "Translate with AI" option if auto-translate is disabled
+                    if (!autoTranslateLyrics && openRouterApiKey.isNotBlank()) {
+                        add(
+                            Material3MenuItemData(
+                                title = { Text(stringResource(R.string.ai_lyrics_translation)) },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.translate),
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    onDismiss()
+                                    LyricsTranslationHelper.triggerManualTranslation()
+                                },
                             )
-                        },
-                        onClick = {
-                            onDismiss()
-                            onShowOffsetDialog()
-                        },
-                        trailingContent = {
-                            Text(
-                                text = "${if (lyricsOffset >= 0) "+" else ""}${lyricsOffset}ms",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    ),
-                    Material3MenuItemData(
-                        title = { Text(text = stringResource(R.string.romanize_current_track)) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.language_korean_latin),
-                                contentDescription = null,
-                            )
-                        },
-                        onClick = {
-                            isChecked = !isChecked
-                            songProvider()?.let { song ->
-                                database.query {
-                                    upsert(song.copy(romanizeLyrics = isChecked))
-                                }
+                        )
+                    }
+                    
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(stringResource(R.string.lyrics_offset)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.fast_forward),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                onDismiss()
+                                onShowOffsetDialog()
+                            },
+                            trailingContent = {
+                                Text(
+                                    text = "${if (lyricsOffset >= 0) "+" else ""}${lyricsOffset}ms",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
-                        },
-                        trailingContent = {
-                            Switch(
-                                checked = isChecked,
-                                onCheckedChange = { newCheckedState ->
-                                    isChecked = newCheckedState
-                                    songProvider()?.let { song ->
-                                        database.query {
-                                            upsert(song.copy(romanizeLyrics = newCheckedState))
-                                        }
+                        )
+                    )
+                    
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.romanize_current_track)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.language_korean_latin),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                isChecked = !isChecked
+                                songProvider()?.let { song ->
+                                    database.query {
+                                        upsert(song.copy(romanizeLyrics = isChecked))
                                     }
                                 }
-                            )
-                        }
+                            },
+                            trailingContent = {
+                                Switch(
+                                    checked = isChecked,
+                                    onCheckedChange = { newCheckedState ->
+                                        isChecked = newCheckedState
+                                        songProvider()?.let { song ->
+                                            database.query {
+                                                upsert(song.copy(romanizeLyrics = newCheckedState))
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        )
                     )
-                )
+                }
             )
         }
     }
+    
     /* if (showRomanizationDialog) {
         var isChecked by remember { mutableStateOf(songProvider()?.romanizeLyrics ?: true) }
 

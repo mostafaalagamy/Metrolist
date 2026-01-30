@@ -425,9 +425,9 @@ fun Lyrics(
     }
     
     // Listen for manual trigger
-    LaunchedEffect(Unit) {
+    LaunchedEffect(showLyrics, lines.size, openRouterApiKey) {
         LyricsTranslationHelper.manualTrigger.collect {
-             if (lines.isNotEmpty() && openRouterApiKey.isNotBlank()) {
+             if (showLyrics && lines.isNotEmpty() && openRouterApiKey.isNotBlank()) {
                  LyricsTranslationHelper.translateLyrics(
                      lyrics = lines,
                      targetLanguage = translateLanguage,
@@ -446,6 +446,12 @@ fun Lyrics(
 
     LaunchedEffect(lines, autoTranslateLyrics, autoTranslateLyricsMismatch, openRouterApiKey, translateMode, translateLanguage) {
         if (lines.isNotEmpty()) {
+            // Reset status if auto-translate is disabled
+            if (!autoTranslateLyrics) {
+                LyricsTranslationHelper.resetStatus()
+                return@LaunchedEffect
+            }
+            
             // First, try to apply cached translations
             val targetLang = if (autoTranslateLyricsMismatch) java.util.Locale.getDefault().language else translateLanguage
             val hasCached = LyricsTranslationHelper.applyCachedTranslations(lines, translateMode, targetLang)

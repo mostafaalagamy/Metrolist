@@ -230,33 +230,31 @@ fun AiSettings(
                         checked = autoTranslateLyricsMismatch,
                         onCheckedChange = { autoTranslateLyricsMismatch = it }
                     )
+                }
 
-                    var translateMode by rememberPreference(TranslateModeKey, "Literal")
+                var translateMode by rememberPreference(TranslateModeKey, "Literal")
+                ListPreference(
+                    title = { Text(stringResource(R.string.ai_translation_mode)) },
+                    selectedValue = translateMode,
+                    values = listOf("Literal", "Transcribed"),
+                    valueText = { 
+                        when(it) {
+                            "Literal" -> stringResource(R.string.ai_translation_literal)
+                            "Transcribed" -> stringResource(R.string.ai_translation_transcribed)
+                            else -> it
+                        }
+                    },
+                    onValueSelected = { translateMode = it }
+                )
+
+                if (!autoTranslateLyricsMismatch || !autoTranslateLyrics) {
                     ListPreference(
-                        modifier = Modifier.padding(start = 24.dp),
-                        title = { Text(stringResource(R.string.ai_translation_mode)) },
-                        selectedValue = translateMode,
-                        values = listOf("Literal", "Transcribed"),
-                        valueText = { 
-                            when(it) {
-                                "Literal" -> stringResource(R.string.ai_translation_literal)
-                                "Transcribed" -> stringResource(R.string.ai_translation_transcribed)
-                                else -> it
-                            }
-                        },
-                        onValueSelected = { translateMode = it }
+                        title = { Text(stringResource(R.string.ai_target_language)) },
+                        selectedValue = translateLanguage,
+                        values = LanguageCodeToName.keys.sortedBy { LanguageCodeToName[it] },
+                        valueText = { LanguageCodeToName[it] ?: it },
+                        onValueSelected = { translateLanguage = it }
                     )
-
-                    if (!autoTranslateLyricsMismatch) {
-                        ListPreference(
-                            modifier = Modifier.padding(start = 24.dp),
-                            title = { Text(stringResource(R.string.ai_target_language)) },
-                            selectedValue = translateLanguage,
-                            values = LanguageCodeToName.keys.sortedBy { LanguageCodeToName[it] },
-                            valueText = { LanguageCodeToName[it] ?: it },
-                            onValueSelected = { translateLanguage = it }
-                        )
-                    }
                 }
             }
 
