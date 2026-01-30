@@ -1822,11 +1822,6 @@ class MusicService :
                 return
             }
 
-            isExpiredUrlError(error) -> {
-                Log.d(TAG, "Expired URL (403) detected, refreshing stream URL")
-                handleExpiredUrlError(mediaId)
-                return
-            }
             !isNetworkConnected.value || isNetworkRelatedError(error) -> {
                 Log.d(TAG, "Network-related error detected, waiting for connection")
                 waitOnNetworkError()

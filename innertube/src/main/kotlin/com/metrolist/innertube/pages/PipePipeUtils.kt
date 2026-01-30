@@ -242,11 +242,11 @@ object PipePipeUtils {
                 return@runCatching directUrl
             }
 
-            // Case 2: Format has signatureCipher (needs signature and possibly 'n' decryption)
-            format.signatureCipher?.let { signatureCipher ->
-                log("Format has signatureCipher")
+            // Case 2: Format has signatureCipher or cipher (needs signature and possibly 'n' decryption)
+            (format.signatureCipher ?: format.cipher)?.let { cipherString ->
+                log("Format has ${if (format.signatureCipher != null) "signatureCipher" else "cipher"}")
 
-                val params = parseCipherParams(signatureCipher)
+                val params = parseCipherParams(cipherString)
 
                 val obfuscatedSignature = params["s"]
                     ?: throw IllegalArgumentException("Missing 's' parameter in signatureCipher")

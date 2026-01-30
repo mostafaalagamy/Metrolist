@@ -118,8 +118,8 @@ object NewPipeExtractorUtils {
         runCatching {
             ensureInitialized()
             
-            val url = format.url ?: format.signatureCipher?.let { signatureCipher ->
-                val params = parseQueryString(signatureCipher)
+            val url = format.url ?: (format.signatureCipher ?: format.cipher)?.let { cipherString ->
+                val params = parseQueryString(cipherString)
                 val obfuscatedSignature = params["s"]
                     ?: throw ParsingException("Could not parse cipher signature")
                 val signatureParam = params["sp"]
