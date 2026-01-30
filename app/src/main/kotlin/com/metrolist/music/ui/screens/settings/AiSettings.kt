@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -95,7 +96,7 @@ fun AiSettings(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("AI Lyrics Translation") },
+                title = { Text(stringResource(R.string.ai_lyrics_translation)) },
                 navigationIcon = {
                     androidx.compose.material3.IconButton(onClick = { navController.navigateUp() }) {
                         androidx.compose.material3.Icon(
@@ -130,24 +131,24 @@ fun AiSettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Setup Guide", 
+                        text = stringResource(R.string.ai_setup_guide),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     val annotatedString = buildAnnotatedString {
-                        append("1. Select your Provider (e.g., OpenRouter, ChatGPT) or 'Custom'.\n")
-                        append("2. Enter your API Key.\n")
-                        append("3. If 'Custom', enter the Base URL provided by your service.\n\n")
+                        append(stringResource(R.string.ai_setup_step_1) + "\n")
+                        append(stringResource(R.string.ai_setup_step_2) + "\n")
+                        append(stringResource(R.string.ai_setup_step_3) + "\n\n")
                         
-                        append("Need an API Key? Try ")
+                        append(stringResource(R.string.ai_setup_api_need))
                         pushStringAnnotation(tag = "URL", annotation = "https://openrouter.ai")
                         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append("OpenRouter.ai")
+                            append(stringResource(R.string.ai_setup_api_provider))
                         }
                         pop()
-                        append(" for access to many models.")
+                        append(stringResource(R.string.ai_setup_api_end))
                     }
                     
                     val uriHandler = LocalUriHandler.current
@@ -171,7 +172,7 @@ fun AiSettings(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 ListPreference(
-                    title = { Text("Provider") },
+                    title = { Text(stringResource(R.string.ai_provider)) },
                     selectedValue = aiProvider,
                     values = aiProviders.keys.toList(),
                     valueText = { it },
@@ -193,7 +194,7 @@ fun AiSettings(
 
                 if (aiProvider == "Custom") {
                     EditTextPreference(
-                        title = { Text("Base URL") },
+                        title = { Text(stringResource(R.string.ai_base_url)) },
                         value = openRouterBaseUrl,
                         onValueChange = { openRouterBaseUrl = it },
                         icon = { Icon(painterResource(R.drawable.link), null) }
@@ -201,21 +202,21 @@ fun AiSettings(
                 }
 
                 EditTextPreference(
-                    title = { Text("API Key") },
+                    title = { Text(stringResource(R.string.ai_api_key)) },
                     value = openRouterApiKey,
                     onValueChange = { openRouterApiKey = it },
                     icon = { Icon(painterResource(R.drawable.key), null) }
                 )
 
                 EditTextPreference(
-                    title = { Text("Model") },
+                    title = { Text(stringResource(R.string.ai_model)) },
                     value = openRouterModel,
                     onValueChange = { openRouterModel = it },
                     icon = { Icon(painterResource(R.drawable.discover_tune), null) }
                 )
 
                 SwitchPreference(
-                    title = { Text("Auto translate all songs") },
+                    title = { Text(stringResource(R.string.ai_auto_translate)) },
                     checked = autoTranslateLyrics,
                     onCheckedChange = { autoTranslateLyrics = it },
                     icon = { Icon(painterResource(R.drawable.translate), null) }
@@ -224,8 +225,8 @@ fun AiSettings(
                 if (autoTranslateLyrics) {
                     SwitchPreference(
                         modifier = Modifier.padding(start = 24.dp),
-                        title = { Text("Translate only on language mismatch") },
-                        description = "Skip translation if lyrics identify as your system language",
+                        title = { Text(stringResource(R.string.ai_language_mismatch)) },
+                        description = stringResource(R.string.ai_language_mismatch_desc),
                         checked = autoTranslateLyricsMismatch,
                         onCheckedChange = { autoTranslateLyricsMismatch = it }
                     )
@@ -233,13 +234,13 @@ fun AiSettings(
                     var translateMode by rememberPreference(TranslateModeKey, "Literal")
                     ListPreference(
                         modifier = Modifier.padding(start = 24.dp),
-                        title = { Text("Translation Mode") },
+                        title = { Text(stringResource(R.string.ai_translation_mode)) },
                         selectedValue = translateMode,
                         values = listOf("Literal", "Transcribed"),
                         valueText = { 
                             when(it) {
-                                "Literal" -> "Original + Translation"
-                                "Transcribed" -> "Original + Transcribed"
+                                "Literal" -> stringResource(R.string.ai_translation_literal)
+                                "Transcribed" -> stringResource(R.string.ai_translation_transcribed)
                                 else -> it
                             }
                         },
@@ -249,7 +250,7 @@ fun AiSettings(
                     if (!autoTranslateLyricsMismatch) {
                         ListPreference(
                             modifier = Modifier.padding(start = 24.dp),
-                            title = { Text("Target Language") },
+                            title = { Text(stringResource(R.string.ai_target_language)) },
                             selectedValue = translateLanguage,
                             values = LanguageCodeToName.keys.sortedBy { LanguageCodeToName[it] },
                             valueText = { LanguageCodeToName[it] ?: it },

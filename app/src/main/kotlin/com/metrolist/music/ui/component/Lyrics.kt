@@ -426,10 +426,11 @@ fun Lyrics(
                      baseUrl = openRouterBaseUrl,
                      model = openRouterModel,
                      mode = translateMode,
-                     scope = scope
+                     scope = scope,
+                     context = context
                  )
              } else if (openRouterApiKey.isBlank()) {
-                 Toast.makeText(context, "API Key Required", Toast.LENGTH_SHORT).show()
+                 Toast.makeText(context, context.getString(R.string.ai_api_key_required), Toast.LENGTH_SHORT).show()
              }
         }
     }
@@ -463,7 +464,8 @@ fun Lyrics(
                             baseUrl = openRouterBaseUrl,
                             model = openRouterModel,
                             mode = translateMode,
-                            scope = scope
+                            scope = scope,
+                            context = context
                         )
                     }
                 }
@@ -715,7 +717,7 @@ fun Lyrics(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                             Text(
-                                text = "Translating lyrics...",
+                                text = stringResource(R.string.ai_translating_lyrics),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -769,7 +771,7 @@ fun Lyrics(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "Lyrics translated",
+                                text = stringResource(R.string.ai_lyrics_translated),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer
                             )

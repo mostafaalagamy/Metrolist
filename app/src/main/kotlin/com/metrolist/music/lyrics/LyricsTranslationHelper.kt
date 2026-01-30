@@ -5,6 +5,7 @@
 
 package com.metrolist.music.lyrics
 
+import android.content.Context
 import com.metrolist.music.api.OpenRouterService
 import com.metrolist.music.constants.LanguageCodeToName
 import kotlinx.coroutines.CoroutineScope
@@ -79,7 +80,8 @@ object LyricsTranslationHelper {
         baseUrl: String,
         model: String,
         mode: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ) {
         translationJob?.cancel()
         _status.value = TranslationStatus.Translating
@@ -91,12 +93,12 @@ object LyricsTranslationHelper {
             try {
                 // Validate inputs
                 if (apiKey.isBlank()) {
-                    _status.value = TranslationStatus.Error("API key is required")
+                    _status.value = TranslationStatus.Error(context.getString(com.metrolist.music.R.string.ai_error_api_key_required))
                     return@launch
                 }
                 
                 if (lyrics.isEmpty()) {
-                    _status.value = TranslationStatus.Error("No lyrics to translate")
+                    _status.value = TranslationStatus.Error(context.getString(com.metrolist.music.R.string.ai_error_no_lyrics))
                     return@launch
                 }
                 
@@ -106,7 +108,7 @@ object LyricsTranslationHelper {
                 }
                 
                 if (nonEmptyEntries.isEmpty()) {
-                    _status.value = TranslationStatus.Error("Lyrics are empty")
+                    _status.value = TranslationStatus.Error(context.getString(com.metrolist.music.R.string.ai_error_lyrics_empty))
                     return@launch
                 }
                 
@@ -115,7 +117,7 @@ object LyricsTranslationHelper {
 
                 // Validate language for all modes
                 if (targetLanguage.isBlank()) {
-                    _status.value = TranslationStatus.Error("Target language is required")
+                    _status.value = TranslationStatus.Error(context.getString(com.metrolist.music.R.string.ai_error_language_required))
                     return@launch
                 }
 
@@ -162,7 +164,7 @@ object LyricsTranslationHelper {
                             _status.value = TranslationStatus.Success
                         }
                         else -> {
-                            _status.value = TranslationStatus.Error("Unexpected translation result")
+                            _status.value = TranslationStatus.Error(context.getString(com.metrolist.music.R.string.ai_error_unexpected))
                         }
                     }
                     
