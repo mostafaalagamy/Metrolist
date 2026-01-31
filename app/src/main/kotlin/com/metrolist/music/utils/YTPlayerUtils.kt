@@ -133,14 +133,31 @@ object YTPlayerUtils {
         Timber.tag(logTag).d("Session authentication status: ${if (isLoggedIn) "Logged in" else "Not logged in"}")
 
         Timber.tag(logTag).d("Attempting to get player response using main client: ${mainClient.clientName}")
-        val mainPlayerResponse =
-            YouTube.player(videoId, playlistId, mainClient, signatureTimestamp).getOrThrow()
+        var mainPlayerResponseResult = YouTube.player(videoId, playlistId, mainClient, signatureTimestamp)
+        var usedClientForMainResponse = mainClient
+
+        if (mainPlayerResponseResult.isFailure) {
+            Timber.tag(logTag).w(mainPlayerResponseResult.exceptionOrNull(), "Main client ${mainClient.clientName} failed, trying fallbacks for metadata...")
+            for (fallback in fallbackClients) {
+                if (fallback.loginRequired && !isLoggedIn && YouTube.cookie == null) continue
+
+                val res = YouTube.player(videoId, playlistId, fallback, signatureTimestamp)
+                if (res.isSuccess) {
+                    mainPlayerResponseResult = res
+                    usedClientForMainResponse = fallback
+                    Timber.tag(logTag).i("Fallback client succeeded for metadata: ${fallback.clientName}")
+                    break
+                }
+            }
+        }
+
+        val mainPlayerResponse = mainPlayerResponseResult.getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
         val videoDetails = mainPlayerResponse.videoDetails
         
         // Always use WEB_REMIX for playbackTracking to ensure history sync works
         // ANDROID_VR clients don't support login and may not return valid playbackTracking
-        val playbackTracking = if (mainClient != WEB_REMIX) {
+        val playbackTracking = if (usedClientForMainResponse != WEB_REMIX) {
             Timber.tag(logTag).d("Fetching playbackTracking from WEB_REMIX for history sync")
             YouTube.player(videoId, playlistId, WEB_REMIX, signatureTimestamp)
                 .getOrNull()?.playbackTracking ?: mainPlayerResponse.playbackTracking
