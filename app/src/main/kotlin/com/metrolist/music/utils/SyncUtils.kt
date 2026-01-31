@@ -556,7 +556,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedSongs = SyncStatus.Syncing, currentOperation = "Syncing uploaded songs") }
 
         withRetry {
-            YouTube.libraryUploaded("FEmusic_library_privately_owned_tracks").completed()
+            YouTube.library("FEmusic_library_privately_owned_tracks").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {
@@ -675,7 +675,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedAlbums = SyncStatus.Syncing, currentOperation = "Syncing uploaded albums") }
 
         withRetry {
-            YouTube.libraryUploaded("FEmusic_library_privately_owned_releases").completed()
+            YouTube.library("FEmusic_library_privately_owned_releases").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {
