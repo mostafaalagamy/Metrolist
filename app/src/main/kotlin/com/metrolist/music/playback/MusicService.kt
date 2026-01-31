@@ -2076,8 +2076,12 @@ class MusicService :
                                                 .build()
                                         } ?: response.request
                                     }
+                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .retryOnConnectionFailure(true)
                                     .build(),
-                            ),
+                            ).setUserAgent(com.metrolist.innertube.models.YouTubeClient.USER_AGENT_WEB),
                         ),
                     ),
             ).setCacheWriteDataSinkFactory(null)
