@@ -59,7 +59,7 @@ object YTPlayerUtils {
     private fun getFallbackClients(playerClient: PlayerClient): Array<YouTubeClient> {
         return when (playerClient) {
             PlayerClient.ANDROID_VR -> arrayOf(
-                ANDROID_VR_1_43_32
+                ANDROID_VR_1_43_32,
                 WEB_REMIX,
                 ANDROID_CREATOR,
                 IPADOS,
