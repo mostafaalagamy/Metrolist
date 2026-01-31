@@ -64,12 +64,16 @@ data class HomePage(
                 return when {
                     renderer.isSong -> {
                         val subtitleRuns = renderer.subtitle?.runs ?: return null
+                        // Filter out separators like "•" and empty text
+                        val meaningfulRuns = subtitleRuns.filter { run ->
+                            run.text.isNotBlank() && run.text != "•" && run.text != " • "
+                        }
                         // Find artists by looking for runs with UC browse IDs (artist channels)
-                        val artistRuns = subtitleRuns.filter { run ->
+                        val artistRuns = meaningfulRuns.filter { run ->
                             run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
                         }
                         // Find album by looking for runs with MPREb_ browse IDs (albums)
-                        val albumRun = subtitleRuns.firstOrNull { run ->
+                        val albumRun = meaningfulRuns.firstOrNull { run ->
                             run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
                         }
                         val artists = artistRuns.map {
@@ -78,10 +82,15 @@ data class HomePage(
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
                             )
                         }.ifEmpty {
-                            // Fallback: try to get artist from position if no UC IDs found
-                            subtitleRuns.getOrNull(1)?.let {
-                                listOf(Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId))
-                            } ?: emptyList()
+                            // Fallback: get runs that have navigation endpoint (likely artists)
+                            meaningfulRuns.filter { it.navigationEndpoint?.browseEndpoint != null }
+                                .map { Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId) }
+                                .ifEmpty {
+                                    // Last fallback: first meaningful text that's not the album
+                                    meaningfulRuns.firstOrNull { run ->
+                                        run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") != true
+                                    }?.let { listOf(Artist(name = it.text, id = null)) } ?: emptyList()
+                                }
                         }
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
