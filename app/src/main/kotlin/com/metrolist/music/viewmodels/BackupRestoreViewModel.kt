@@ -112,13 +112,11 @@ class BackupRestoreViewModel @Inject constructor(
                 Timber.tag("RESTORE").e("Could not open input stream for uri: $uri")
             }
 
-            // Clear visitorData to force getting a fresh one on restart
-            // This fixes 403 errors caused by expired/invalid visitorData from old backups
-            Timber.tag("RESTORE").i("Clearing visitorData to force refresh on restart")
-            runBlocking(Dispatchers.IO) {
-                context.dataStore.edit { settings ->
-                    settings.remove(VisitorDataKey)
-                }
+            // Create a flag file to signal that a restore has happened
+            try {
+                context.filesDir.resolve("restore_flag").createNewFile()
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to create restore flag")
             }
 
             context.stopService(Intent(context, MusicService::class.java))
