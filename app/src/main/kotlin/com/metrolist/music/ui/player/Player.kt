@@ -722,7 +722,7 @@ fun BottomSheetPlayer(
                                 Box(
                                     modifier = Modifier
                                         .size(56.dp)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
                                         .background(MaterialTheme.colorScheme.surfaceVariant),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -740,7 +740,7 @@ fun BottomSheetPlayer(
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(56.dp)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dp))
