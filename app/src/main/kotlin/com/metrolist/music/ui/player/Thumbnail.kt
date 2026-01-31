@@ -70,10 +70,7 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.R
-import com.metrolist.music.listentogether.RoomRole
-import androidx.compose.foundation.layout.Row
 import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
@@ -201,7 +198,6 @@ fun Thumbnail(
     modifier: Modifier = Modifier,
     isPlayerExpanded: () -> Boolean = { true },
     isLandscape: Boolean = false,
-    isListenTogetherGuest: Boolean = false,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -215,9 +211,7 @@ fun Thumbnail(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
     // Preferences - computed once
-    // Disable swipe for Listen Together guests
-    val swipeThumbnailPref by rememberPreference(SwipeThumbnailKey, true)
-    val swipeThumbnail = swipeThumbnailPref && !isListenTogetherGuest
+    val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
     val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     val playerBackground by rememberEnumPreference(
@@ -235,8 +229,7 @@ fun Thumbnail(
     val mediaItemsData by remember(
         playerConnection.player.currentMediaItemIndex,
         playerConnection.player.shuffleModeEnabled,
-        swipeThumbnail,
-        mediaMetadata
+        swipeThumbnail
     ) {
         derivedStateOf {
             getMediaItems(playerConnection.player, swipeThumbnail)
@@ -400,10 +393,7 @@ fun Thumbnail(
                                 onSeek = onSeekCallback,
                                 playerConnection = playerConnection,
                                 context = context,
-                                isLandscape = isLandscape,
-                                isListenTogetherGuest = isListenTogetherGuest,
-                                currentMediaId = mediaMetadata?.id,
-                                currentMediaThumbnail = mediaMetadata?.thumbnailUrl
+                                isLandscape = isLandscape
                             )
                         }
                     }
@@ -440,9 +430,6 @@ private fun ThumbnailHeader(
     textColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val listenTogetherManager = LocalListenTogetherManager.current
-    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = RoomRole.NONE)
-    val isListenTogetherGuest = listenTogetherRoleState?.value == RoomRole.GUEST
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -454,20 +441,11 @@ private fun ThumbnailHeader(
                 .align(Alignment.Center)
                 .padding(horizontal = 48.dp)
         ) {
-            // Listen Together indicator
-            if (listenTogetherRoleState?.value != RoomRole.NONE) {
-                Text(
-                    text = if (listenTogetherRoleState?.value == RoomRole.HOST) "Hosting Listen Together" else "Listening Together",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = textColor
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.now_playing),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = textColor
-                )
-            }
+            Text(
+                text = stringResource(R.string.now_playing),
+                style = MaterialTheme.typography.titleMedium,
+                color = textColor
+            )
             val playingFrom = queueTitle ?: albumTitle
             if (!playingFrom.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -497,11 +475,8 @@ private fun ThumbnailItem(
     onSeek: (String, Boolean) -> Unit,
     playerConnection: com.metrolist.music.playback.PlayerConnection,
     context: android.content.Context,
-    isLandscape: Boolean = false,
-    isListenTogetherGuest: Boolean = false,
-    currentMediaId: String? = null,
-    currentMediaThumbnail: String? = null,
     modifier: Modifier = Modifier,
+    isLandscape: Boolean = false
 ) {
     val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
     var skipMultiplier by remember { mutableIntStateOf(1) }
@@ -526,8 +501,6 @@ private fun ThumbnailItem(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onDoubleTap = { offset ->
-                        if (isListenTogetherGuest) return@detectTapGestures
-
                         val currentPosition = playerConnection.player.currentPosition
                         val duration = playerConnection.player.duration
 
@@ -564,14 +537,8 @@ private fun ThumbnailItem(
             if (hidePlayerThumbnail) {
                 HiddenThumbnailPlaceholder(textBackgroundColor = textBackgroundColor)
             } else {
-                val artworkUriToUse = if (item.mediaId == currentMediaId && !currentMediaThumbnail.isNullOrBlank()) {
-                    currentMediaThumbnail
-                } else {
-                    item.mediaMetadata.artworkUri?.toString()
-                }
-
                 ThumbnailImage(
-                    artworkUri = artworkUriToUse,
+                    artworkUri = item.mediaMetadata.artworkUri?.toString(),
                     cropArtwork = cropAlbumArt
                 )
             }
