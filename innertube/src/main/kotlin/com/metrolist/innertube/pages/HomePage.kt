@@ -63,24 +63,34 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
-                        val isVideo = renderer.musicVideoType?.contains("MUSIC_VIDEO_TYPE_") == true
                         val subtitleRuns = renderer.subtitle?.runs ?: return null
-                        val album = subtitleRuns.getOrNull(0) ?: return null
+                        // Find artists by looking for runs with UC browse IDs (artist channels)
+                        val artistRuns = subtitleRuns.filter { run ->
+                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
+                        }
+                        // Find album by looking for runs with MPREb_ browse IDs (albums)
+                        val albumRun = subtitleRuns.firstOrNull { run ->
+                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
+                        }
+                        val artists = artistRuns.map {
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            )
+                        }.ifEmpty {
+                            // Fallback: try to get artist from position if no UC IDs found
+                            subtitleRuns.getOrNull(1)?.let {
+                                listOf(Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId))
+                            } ?: emptyList()
+                        }
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = subtitleRuns.getOrNull(if (isVideo) 2 else 1)?.let {
-                                listOf(
-                                    Artist(
-                                        name = it.text,
-                                        id = it.navigationEndpoint?.browseEndpoint?.browseId
-                                    )
-                                )
-                            } ?: emptyList(),
-                            album = album.let {
+                            artists = artists,
+                            album = albumRun?.let {
                                 Album(
                                     name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return@let null
                                 )
                             },
                             duration = null,
