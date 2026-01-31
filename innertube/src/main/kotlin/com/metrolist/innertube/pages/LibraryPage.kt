@@ -20,37 +20,30 @@ data class LibraryPage(
     companion object {
         fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
             return when {
-                renderer.isAlbum -> {
-                    val browseId = renderer.navigationEndpoint.browseEndpoint?.browseId ?: return null
-                    // Try to get playlistId from multiple sources
-                    val playlistId = renderer.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content
+                renderer.isAlbum -> AlbumItem(
+                    browseId = renderer.navigationEndpoint.browseEndpoint?.browseId ?: return null,
+                    playlistId = renderer.thumbnailOverlay?.musicItemThumbnailOverlayRenderer?.content
                         ?.musicPlayButtonRenderer?.playNavigationEndpoint
-                        ?.watchPlaylistEndpoint?.playlistId
-                        // Fallback: try to get from menu items
-                        ?: renderer.menu?.menuRenderer?.items?.firstOrNull()
-                            ?.menuNavigationItemRenderer?.navigationEndpoint
-                            ?.watchPlaylistEndpoint?.playlistId
-                        // Fallback: derive from browseId (albums typically have browseId starting with "MPREb_")
-                        ?: browseId.removePrefix("MPREb_").let { "OLAK5uy_$it" }
-                    
-                    AlbumItem(
-                        browseId = browseId,
-                        playlistId = playlistId,
-                        title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                        artists = parseArtists(renderer.subtitle?.runs),
-                        year = renderer.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
-                        thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl()
-                            ?: return null,
-                        explicit = renderer.subtitleBadges?.find {
-                            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
-                        } != null
-                    )
-                }
+                        ?.watchPlaylistEndpoint?.playlistId ?: return null,
+                    title = renderer.title.runs?.firstOrNull()?.text ?: return null,
+                    artists = parseArtists(renderer.subtitle?.runs),
+                    year = renderer.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
+                    thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl()
+                        ?: return null,
+                    explicit = renderer.subtitleBadges?.find {
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
+                    } != null
+                )
 
                 renderer.isPlaylist -> PlaylistItem(
                     id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                     title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                    author = null,
+                    author = renderer.subtitle?.runs?.firstOrNull()?.let {
+                        Artist(
+                            name = it.text,
+                            id = it.navigationEndpoint?.browseEndpoint?.browseId
+                        )
+                    },
                     songCountText = renderer.subtitle?.runs?.lastOrNull()?.text,
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     playEndpoint = renderer.thumbnailOverlay

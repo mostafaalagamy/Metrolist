@@ -115,15 +115,23 @@ data class ArtistPage(
         private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
             return when {
                 renderer.isSong -> {
+                    val subtitleRuns = renderer.subtitle?.runs?.oddElements() ?: return null
                     SongItem(
                         id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                        artists = listOfNotNull(renderer.subtitle?.runs?.firstOrNull()?.let {
+                        artists = subtitleRuns.filter { 
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true ||
+                            it.navigationEndpoint?.browseEndpoint != null
+                        }.map {
                             Artist(
                                 name = it.text,
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
                             )
-                        }),
+                        }.ifEmpty {
+                            subtitleRuns.firstOrNull()?.let { 
+                                listOf(Artist(name = it.text, id = null)) 
+                            } ?: emptyList()
+                        },
                         album = null,
                         duration = null,
                         musicVideoType = renderer.musicVideoType,
@@ -156,7 +164,7 @@ data class ArtistPage(
                         id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                         author = Artist(
-                            name = renderer.subtitle?.runs?.lastOrNull()?.text ?: return null,
+                            name = renderer.subtitle?.runs?.firstOrNull()?.text ?: return null,
                             id = null
                         ),
                         songCountText = null,
