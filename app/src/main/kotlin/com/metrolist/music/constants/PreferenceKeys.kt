@@ -72,29 +72,6 @@ enum class AudioQuality {
     LOW,
 }
 
-val PlayerClientKey = stringPreferencesKey("playerClient")
-
-enum class PlayerClient {
-    ANDROID_VR,
-    WEB_REMIX,
-}
-
-val DecryptionLibraryKey = stringPreferencesKey("decryptionLibrary")
-
-/**
- * Available decryption libraries for YouTube stream URL decryption.
- * 
- * - NEWPIPE_EXTRACTOR: Official NewPipe Extractor from TeamNewPipe (default, recommended)
- * - PIPEPIPE_EXTRACTOR_API: PipePipe API-based decryption (MetroExtractor)
- * 
- * Note: Both libraries are used with automatic fallback. If the primary library fails,
- * the system will automatically try the alternative library.
- */
-enum class DecryptionLibrary {
-    NEWPIPE_EXTRACTOR,      // Official TeamNewPipe/NewPipeExtractor (default)
-    PIPEPIPE_EXTRACTOR_API, // MetroExtractor API-based
-}
-
 val AudioOffload = booleanPreferencesKey("enableOffload")
 
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")

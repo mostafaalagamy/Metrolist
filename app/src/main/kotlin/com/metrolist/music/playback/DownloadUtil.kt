@@ -20,10 +20,6 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import com.metrolist.innertube.YouTube
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
-import com.metrolist.music.constants.DecryptionLibrary
-import com.metrolist.music.constants.DecryptionLibraryKey
-import com.metrolist.music.constants.PlayerClient
-import com.metrolist.music.constants.PlayerClientKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.SongEntity
@@ -52,8 +48,6 @@ constructor(
 ) {
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
-    private val playerClient by enumPreference(context, PlayerClientKey, PlayerClient.ANDROID_VR)
-    private val decryptionLibrary by enumPreference(context, DecryptionLibraryKey, DecryptionLibrary.NEWPIPE_EXTRACTOR)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -96,8 +90,6 @@ constructor(
                     mediaId,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
-                    playerClient = playerClient,
-                    decryptionLibrary = decryptionLibrary,
                 )
             }.getOrThrow()
             val format = playbackData.format
