@@ -109,6 +109,13 @@ class BackupRestoreViewModel @Inject constructor(
                 Timber.tag("RESTORE").e("Could not open input stream for uri: $uri")
             }
 
+            // Create a flag file to signal that a restore has happened
+            try {
+                context.filesDir.resolve("restore_flag").createNewFile()
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to create restore flag")
+            }
+
             context.stopService(Intent(context, MusicService::class.java))
             context.filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
             context.startActivity(Intent(context, MainActivity::class.java))

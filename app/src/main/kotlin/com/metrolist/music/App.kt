@@ -69,6 +69,13 @@ class App : Application(), SingletonImageLoader.Factory {
     }
 
     private suspend fun initializeSettings() {
+        val restoreFlag = filesDir.resolve("restore_flag")
+        if (restoreFlag.exists()) {
+            Timber.i("Restore flag found. Clearing account data.")
+            restoreFlag.delete()
+            forgetAccount(this)
+        }
+
         val settings = dataStore.data.first()
         val locale = Locale.getDefault()
         val languageTag = locale.language
