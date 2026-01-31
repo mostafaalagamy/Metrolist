@@ -63,32 +63,29 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
+                        val isVideo = renderer.musicVideoType?.contains("MUSIC_VIDEO_TYPE_") == true
                         val subtitleRuns = renderer.subtitle?.runs ?: return null
-                        val (artistRuns, albumRuns) = subtitleRuns.partition { run ->
-                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
-                        }
-                        val artists = artistRuns.map {
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
-                            )
-                        }
+                        val album = subtitleRuns.getOrNull(0) ?: return null
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = artists,
-                            album = albumRuns.firstOrNull { run ->
-                                run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
-                            }?.let { run ->
-                                val endpoint = run.navigationEndpoint?.browseEndpoint ?: return null
+                            artists = subtitleRuns.getOrNull(if (isVideo) 2 else 1)?.let {
+                                listOf(
+                                    Artist(
+                                        name = it.text,
+                                        id = it.navigationEndpoint?.browseEndpoint?.browseId
+                                    )
+                                )
+                            } ?: emptyList(),
+                            album = album.let {
                                 Album(
-                                    name = run.text,
-                                    id = endpoint.browseId
+                                    name = it.text,
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
                                 )
                             },
                             duration = null,
-                            musicVideoType = renderer.musicVideoType,
-                            thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                            thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl()
+                                ?: return null,
                             explicit = renderer.subtitleBadges?.any {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                             } == true
@@ -120,7 +117,7 @@ data class HomePage(
                             id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                             author = Artist(
-                                name = renderer.subtitle?.runs?.lastOrNull()?.text ?: return null,
+                                name = renderer.subtitle?.runs?.firstOrNull()?.text ?: return null,
                                 id = null
                             ),
                             songCountText = null,
