@@ -33,9 +33,8 @@ junit = "4.13.2"
 timber = "5.0.1"
 materialKolor = "4.1.0"
 kuromojiIpadic = "0.9.0"
-newpipeextractor = "670828a"
-metrolistextractor = "f824561"
-metroextractor = "9d54d9c"
+newpipeextractor = "e4e5ccc"
+metroextractor = "a243be2"
 metrolistshared = "eee2b3d"
 tinypinyin = "2.0.3"
 squigglyslider = "1.0.0"
@@ -113,7 +112,6 @@ junit = { module = "junit:junit", version.ref = "junit" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 newpipeextractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version.ref = "newpipeextractor" }
-metrolistextractor = { module = "com.github.mostafaalagamy:MetrolistExtractor", version.ref = "metrolistextractor" }
 metroextractor = { module = "com.github.mostafaalagamy:MetroExtractor", version.ref = "metroextractor" }
 metrolistshared = { module = "com.github.mostafaalagamy.MetrolistShared:shared-jvm", version.ref = "metrolistshared" }
 

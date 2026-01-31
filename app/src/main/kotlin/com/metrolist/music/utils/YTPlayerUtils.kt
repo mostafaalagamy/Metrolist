@@ -43,7 +43,7 @@ object YTPlayerUtils {
      */
     private fun getMainClient(playerClient: PlayerClient): YouTubeClient {
         return when (playerClient) {
-            PlayerClient.ANDROID_VR -> ANDROID_VR_1_43_32
+            PlayerClient.ANDROID_VR -> ANDROID_VR_NO_AUTH
             PlayerClient.WEB_REMIX -> WEB_REMIX
         }
     }
@@ -59,27 +59,27 @@ object YTPlayerUtils {
     private fun getFallbackClients(playerClient: PlayerClient): Array<YouTubeClient> {
         return when (playerClient) {
             PlayerClient.ANDROID_VR -> arrayOf(
-                ANDROID_VR_1_61_48,
+                ANDROID_VR_1_43_32,
                 WEB_REMIX,
                 ANDROID_CREATOR,
                 IPADOS,
-                ANDROID_VR_NO_AUTH,
                 MOBILE,
                 TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                ANDROID_VR_1_61_48,
                 IOS,
                 WEB,
                 WEB_CREATOR
             )
             PlayerClient.WEB_REMIX -> arrayOf(
+                ANDROID_VR_NO_AUTH,
                 ANDROID_VR_1_43_32,
-                ANDROID_VR_1_61_48,
                 ANDROID_CREATOR,
                 IPADOS,
-                ANDROID_VR_NO_AUTH,
                 MOBILE,
                 TVHTML5,
                 TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+                ANDROID_VR_1_61_48,
                 IOS,
                 WEB,
                 WEB_CREATOR

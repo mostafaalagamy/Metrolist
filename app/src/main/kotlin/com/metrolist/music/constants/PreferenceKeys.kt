@@ -129,17 +129,6 @@ val DiscordUseDetailsKey = booleanPreferencesKey("discordUseDetails")
 // Google Cast
 val EnableGoogleCastKey = booleanPreferencesKey("enableGoogleCast")
 
-// Listen Together
-val ListenTogetherServerUrlKey = stringPreferencesKey("listenTogetherServerUrl")
-val ListenTogetherUsernameKey = stringPreferencesKey("listenTogetherUsername")
-val EnableListenTogetherKey = booleanPreferencesKey("enableListenTogether")
-// Session persistence for reconnection
-val ListenTogetherSessionTokenKey = stringPreferencesKey("listenTogetherSessionToken")
-val ListenTogetherRoomCodeKey = stringPreferencesKey("listenTogetherRoomCode")
-val ListenTogetherUserIdKey = stringPreferencesKey("listenTogetherUserId")
-val ListenTogetherIsHostKey = booleanPreferencesKey("listenTogetherIsHost")
-val ListenTogetherSessionTimestampKey = longPreferencesKey("listenTogetherSessionTimestamp")
-
 val LastFMSessionKey = stringPreferencesKey("lastfmSession")
 val LastFMUsernameKey = stringPreferencesKey("lastfmUsername")
 val EnableLastFMScrobblingKey = booleanPreferencesKey("lastfmScrobblingEnable")
