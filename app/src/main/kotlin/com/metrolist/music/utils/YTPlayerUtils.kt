@@ -320,4 +320,8 @@ object YTPlayerUtils {
             }
             .getOrNull()
     }
+
+    fun forceRefreshForVideo(videoId: String) {
+        Timber.tag(logTag).d("Force refreshing for videoId: $videoId")
+    }
 }
