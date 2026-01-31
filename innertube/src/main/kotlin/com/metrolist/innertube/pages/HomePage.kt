@@ -63,40 +63,27 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
-                        val subtitleRuns = renderer.subtitle?.runs ?: return null
-                        // Filter out separators like "•" and empty text
-                        val meaningfulRuns = subtitleRuns.filter { run ->
-                            run.text.isNotBlank() && run.text != "•" && run.text != " • "
-                        }
-                        // Find artists by looking for runs with UC browse IDs (artist channels)
-                        val artistRuns = meaningfulRuns.filter { run ->
-                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
-                        }
-                        // Find album by looking for runs with MPREb_ browse IDs (albums)
-                        val albumRun = meaningfulRuns.firstOrNull { run ->
-                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
-                        }
-                        val artists = artistRuns.map {
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId
-                            )
-                        }.ifEmpty {
-                            // Fallback: get runs that have navigation endpoint (likely artists)
-                            meaningfulRuns.filter { it.navigationEndpoint?.browseEndpoint != null }
-                                .map { Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId) }
-                                .ifEmpty {
-                                    // Last fallback: first meaningful text that's not the album
-                                    meaningfulRuns.firstOrNull { run ->
-                                        run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") != true
-                                    }?.let { listOf(Artist(name = it.text, id = null)) } ?: emptyList()
-                                }
-                        }
+                        val subtitleRuns = renderer.subtitle?.runs?.oddElements() ?: return null
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = artists,
-                            album = albumRun?.let {
+                            artists = subtitleRuns.filter { 
+                                it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true ||
+                                (it.navigationEndpoint?.browseEndpoint != null && 
+                                 it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") != true)
+                            }.map {
+                                Artist(
+                                    name = it.text,
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId
+                                )
+                            }.ifEmpty {
+                                subtitleRuns.firstOrNull()?.let { 
+                                    listOf(Artist(name = it.text, id = null)) 
+                                } ?: emptyList()
+                            },
+                            album = subtitleRuns.firstOrNull { 
+                                it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true 
+                            }?.let {
                                 Album(
                                     name = it.text,
                                     id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return@let null

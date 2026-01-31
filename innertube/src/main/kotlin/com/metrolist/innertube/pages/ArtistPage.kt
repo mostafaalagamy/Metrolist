@@ -115,28 +115,23 @@ data class ArtistPage(
         private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
             return when {
                 renderer.isSong -> {
-                    val subtitleRuns = renderer.subtitle?.runs ?: return null
-                    // Filter out separators like "•" and empty text
-                    val meaningfulRuns = subtitleRuns.filter { run ->
-                        run.text.isNotBlank() && run.text != "•" && run.text != " • "
-                    }
-                    // Find artist by UC browseId pattern
-                    val artistRun = meaningfulRuns.firstOrNull { run ->
-                        run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
-                    } ?: meaningfulRuns.firstOrNull { run ->
-                        // Fallback: any run with navigation endpoint
-                        run.navigationEndpoint?.browseEndpoint != null
-                    } ?: meaningfulRuns.firstOrNull() // Last fallback: first meaningful text
-                    
+                    val subtitleRuns = renderer.subtitle?.runs?.oddElements() ?: return null
                     SongItem(
                         id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                        artists = listOfNotNull(artistRun?.let {
+                        artists = subtitleRuns.filter { 
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true ||
+                            it.navigationEndpoint?.browseEndpoint != null
+                        }.map {
                             Artist(
                                 name = it.text,
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
                             )
-                        }),
+                        }.ifEmpty {
+                            subtitleRuns.firstOrNull()?.let { 
+                                listOf(Artist(name = it.text, id = null)) 
+                            } ?: emptyList()
+                        },
                         album = null,
                         duration = null,
                         musicVideoType = renderer.musicVideoType,
