@@ -127,6 +127,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.HidePlayerThumbnailKey
 import com.metrolist.music.constants.KeepScreenOn
@@ -139,6 +140,7 @@ import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.SquigglySliderKey
+import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewPlayerDesignKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
@@ -192,6 +194,7 @@ fun BottomSheetPlayer(
         defaultValue = true
     )
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(HidePlayerThumbnailKey, false)
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     val playerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
         defaultValue = PlayerBackgroundStyle.DEFAULT
@@ -721,7 +724,7 @@ fun BottomSheetPlayer(
                                 Box(
                                     modifier = Modifier
                                         .size(56.dp)
-                                        .clip(RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
                                         .background(MaterialTheme.colorScheme.surfaceVariant),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -737,9 +740,10 @@ fun BottomSheetPlayer(
                                 AsyncImage(
                                     model = mediaMetadata.thumbnailUrl,
                                     contentDescription = null,
+                                    contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                                     modifier = Modifier
                                         .size(56.dp)
-                                        .clip(RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dp))

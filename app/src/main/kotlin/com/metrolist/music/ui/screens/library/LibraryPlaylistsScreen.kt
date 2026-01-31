@@ -170,7 +170,8 @@ fun LibraryPlaylistsScreen(
     val (showDownloaded) = rememberPreference(ShowDownloadedPlaylistKey, true)
     val (showTop) = rememberPreference(ShowTopPlaylistKey, true)
     val (showCached) = rememberPreference(ShowCachedPlaylistKey, true)
-    val (showUploaded) = rememberPreference(ShowUploadedPlaylistKey, true)
+    // Uploaded songs feature is temporarily disabled
+    val showUploaded = false // rememberPreference(ShowUploadedPlaylistKey, true)
 
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()

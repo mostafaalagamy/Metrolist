@@ -82,6 +82,7 @@ import coil3.compose.AsyncImage
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
@@ -724,6 +725,7 @@ private fun LegacyMiniMediaInfo(
     modifier: Modifier = Modifier,
 ) {
     val error by LocalPlayerConnection.current?.error?.collectAsState() ?: remember { mutableStateOf(null) }
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -747,7 +749,7 @@ private fun LegacyMiniMediaInfo(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),
