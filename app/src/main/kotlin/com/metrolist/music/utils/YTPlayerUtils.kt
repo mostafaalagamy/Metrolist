@@ -33,17 +33,20 @@ object YTPlayerUtils {
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
-
     /**
-     * Main client for playback - ANDROID_VR provides direct URLs without JS signature decryption.
+     * The main client is used for metadata and initial streams.
+     * Do not use other clients for this because it can result in inconsistent metadata.
+     * For example other clients can have different normalization targets (loudnessDb).
+     *
+     * [com.metrolist.innertube.models.YouTubeClient.WEB_REMIX] should be preferred here because currently it is the only client which provides:
+     * - the correct metadata (like loudnessDb)
+     * - premium formats
      */
-    private val MAIN_CLIENT = ANDROID_VR_NO_AUTH
-
+    private val MAIN_CLIENT: YouTubeClient = ANDROID_VR_1_43_32
     /**
-     * Fallback clients ordered by reliability.
+     * Clients used for fallback streams in case the streams of the main client do not work.
      */
-    private val FALLBACK_CLIENTS = arrayOf(
-        ANDROID_VR_1_43_32,
+    private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
         ANDROID_VR_1_61_48,
         WEB_REMIX,
         ANDROID_CREATOR,
@@ -56,7 +59,6 @@ object YTPlayerUtils {
         WEB,
         WEB_CREATOR
     )
-
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
         val videoDetails: PlayerResponse.VideoDetails?,
@@ -65,11 +67,10 @@ object YTPlayerUtils {
         val streamUrl: String,
         val streamExpiresInSeconds: Int,
     )
-
     /**
      * Custom player response intended to use for playback.
-     * Metadata like audioConfig and videoDetails are from the main client.
-     * Format & stream can be from main client or fallback clients.
+     * Metadata like audioConfig and videoDetails are from [MAIN_CLIENT].
+     * Format & stream can be from [MAIN_CLIENT] or [STREAM_FALLBACK_CLIENTS].
      */
     suspend fun playerResponseForPlayback(
         videoId: String,
@@ -77,48 +78,58 @@ object YTPlayerUtils {
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
     ): Result<PlaybackData> = runCatching {
-        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId, client: ${MAIN_CLIENT.clientName}")
-
+        Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId")
+        /**
+         * This is required for some clients to get working streams however
+         * it should not be forced for the [MAIN_CLIENT] because the response of the [MAIN_CLIENT]
+         * is required even if the streams won't work from this client.
+         * This is why it is allowed to be null.
+         */
         val signatureTimestamp = getSignatureTimestampOrNull(videoId)
         Timber.tag(logTag).d("Signature timestamp: $signatureTimestamp")
 
         val isLoggedIn = YouTube.cookie != null
+        val sessionId =
+            if (isLoggedIn) {
+                // signed in sessions use dataSyncId as identifier
+                YouTube.dataSyncId
+            } else {
+                // signed out sessions use visitorData as identifier
+                YouTube.visitorData
+            }
         Timber.tag(logTag).d("Session authentication status: ${if (isLoggedIn) "Logged in" else "Not logged in"}")
 
-        Timber.tag(logTag).d("Attempting to get player response using main client: ${MAIN_CLIENT.clientName}")
+        Timber.tag(logTag).d("Attempting to get player response using MAIN_CLIENT: ${MAIN_CLIENT.clientName}")
         val mainPlayerResponse =
             YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
         val videoDetails = mainPlayerResponse.videoDetails
-
-        // Always use WEB_REMIX for playbackTracking to ensure history sync works
-        // ANDROID_VR clients don't support login and may not return valid playbackTracking
-        val playbackTracking = run {
-            Timber.tag(logTag).d("Fetching playbackTracking from WEB_REMIX for history sync")
-            YouTube.player(videoId, playlistId, WEB_REMIX, signatureTimestamp)
-                .getOrNull()?.playbackTracking ?: mainPlayerResponse.playbackTracking
-        }
-
+        val playbackTracking = mainPlayerResponse.playbackTracking
         var format: PlayerResponse.StreamingData.Format? = null
         var streamUrl: String? = null
         var streamExpiresInSeconds: Int? = null
         var streamPlayerResponse: PlayerResponse? = null
 
-        for (clientIndex in (-1 until FALLBACK_CLIENTS.size)) {
+        for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
+            // reset for each client
             format = null
             streamUrl = null
             streamExpiresInSeconds = null
 
+            // decide which client to use for streams and load its player response
             val client: YouTubeClient
             if (clientIndex == -1) {
+                // try with streams from main client first
                 client = MAIN_CLIENT
                 streamPlayerResponse = mainPlayerResponse
-                Timber.tag(logTag).d("Trying stream from main client: ${client.clientName}")
+                Timber.tag(logTag).d("Trying stream from MAIN_CLIENT: ${client.clientName}")
             } else {
-                client = FALLBACK_CLIENTS[clientIndex]
-                Timber.tag(logTag).d("Trying fallback client ${clientIndex + 1}/${FALLBACK_CLIENTS.size}: ${client.clientName}")
+                // after main client use fallback clients
+                client = STREAM_FALLBACK_CLIENTS[clientIndex]
+                Timber.tag(logTag).d("Trying fallback client ${clientIndex + 1}/${STREAM_FALLBACK_CLIENTS.size}: ${client.clientName}")
 
                 if (client.loginRequired && !isLoggedIn && YouTube.cookie == null) {
+                    // skip client if it requires login but user is not logged in
                     Timber.tag(logTag).d("Skipping client ${client.clientName} - requires login but user is not logged in")
                     continue
                 }
@@ -128,13 +139,19 @@ object YTPlayerUtils {
                     YouTube.player(videoId, playlistId, client, signatureTimestamp).getOrNull()
             }
 
+            // process current client response
             if (streamPlayerResponse?.playabilityStatus?.status == "OK") {
-                Timber.tag(logTag).d("Player response status OK for client: ${client.clientName}")
+                Timber.tag(logTag).d("Player response status OK for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
 
-                format = findFormat(streamPlayerResponse, audioQuality, connectivityManager)
+                format =
+                    findFormat(
+                        streamPlayerResponse,
+                        audioQuality,
+                        connectivityManager,
+                    )
 
                 if (format == null) {
-                    Timber.tag(logTag).d("No suitable format found for client: ${client.clientName}")
+                    Timber.tag(logTag).d("No suitable format found for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
                     continue
                 }
 
@@ -154,22 +171,18 @@ object YTPlayerUtils {
 
                 Timber.tag(logTag).d("Stream expires in: $streamExpiresInSeconds seconds")
 
-                // Skip validation for main client for faster playback
-                if (clientIndex == -1) {
-                    Timber.tag(logTag).d("Using main client directly without validation for faster playback")
-                    break
-                }
-
-                if (clientIndex == FALLBACK_CLIENTS.size - 1) {
-                    Timber.tag(logTag).d("Using last fallback client without validation: ${client.clientName}")
+                if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1) {
+                    /** skip [validateStatus] for last client */
+                    Timber.tag(logTag).d("Using last fallback client without validation: ${STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
                     break
                 }
 
                 if (validateStatus(streamUrl)) {
-                    Timber.tag(logTag).d("Stream validated successfully with client: ${client.clientName}")
+                    // working stream found
+                    Timber.tag(logTag).d("Stream validated successfully with client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
                     break
                 } else {
-                    Timber.tag(logTag).d("Stream validation failed for client: ${client.clientName}")
+                    Timber.tag(logTag).d("Stream validation failed for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
                 }
             } else {
                 Timber.tag(logTag).d("Player response status not OK: ${streamPlayerResponse?.playabilityStatus?.status}, reason: ${streamPlayerResponse?.playabilityStatus?.reason}")
@@ -216,7 +229,6 @@ object YTPlayerUtils {
             streamExpiresInSeconds,
         )
     }
-
     /**
      * Simple player response intended to use for metadata only.
      * Stream URLs of this response might not work so don't use them.
@@ -225,8 +237,8 @@ object YTPlayerUtils {
         videoId: String,
         playlistId: String? = null,
     ): Result<PlayerResponse> {
-        Timber.tag(logTag).d("Fetching metadata-only player response for videoId: $videoId using WEB_REMIX client")
-        return YouTube.player(videoId, playlistId, client = WEB_REMIX)
+        Timber.tag(logTag).d("Fetching metadata-only player response for videoId: $videoId using MAIN_CLIENT: ${MAIN_CLIENT.clientName}")
+        return YouTube.player(videoId, playlistId, client = WEB_REMIX) // ANDROID_VR does not work with history
             .onSuccess { Timber.tag(logTag).d("Successfully fetched metadata") }
             .onFailure { Timber.tag(logTag).e(it, "Failed to fetch metadata") }
     }
@@ -256,7 +268,11 @@ object YTPlayerUtils {
 
         return format
     }
-
+    /**
+     * Checks if the stream url returns a successful status.
+     * If this returns true the url is likely to work.
+     * If this returns false the url might cause an error during playback.
+     */
     private fun validateStatus(url: String): Boolean {
         Timber.tag(logTag).d("Validating stream URL status")
         try {
@@ -273,25 +289,34 @@ object YTPlayerUtils {
         }
         return false
     }
-
-    private fun getSignatureTimestampOrNull(videoId: String): Int? {
+    /**
+     * Wrapper around the [NewPipeUtils.getSignatureTimestamp] function which reports exceptions
+     */
+    private fun getSignatureTimestampOrNull(
+        videoId: String
+    ): Int? {
         Timber.tag(logTag).d("Getting signature timestamp for videoId: $videoId")
         return NewPipeUtils.getSignatureTimestamp(videoId)
             .onSuccess { Timber.tag(logTag).d("Signature timestamp obtained: $it") }
-            .onFailure { Timber.tag(logTag).e(it, "Failed to get signature timestamp") }
+            .onFailure {
+                Timber.tag(logTag).e(it, "Failed to get signature timestamp")
+                reportException(it)
+            }
             .getOrNull()
     }
-
+    /**
+     * Wrapper around the [NewPipeUtils.getStreamUrl] function which reports exceptions
+     */
     private fun findUrlOrNull(
         format: PlayerResponse.StreamingData.Format,
-        videoId: String,
+        videoId: String
     ): String? {
         Timber.tag(logTag).d("Finding stream URL for format: ${format.mimeType}, videoId: $videoId")
         return NewPipeUtils.getStreamUrl(format, videoId)
             .onSuccess { Timber.tag(logTag).d("Stream URL obtained successfully") }
-            .onFailure { e ->
-                Timber.tag(logTag).e(e, "Failed to get stream URL for videoId: $videoId")
-                reportException(e)
+            .onFailure {
+                Timber.tag(logTag).e(it, "Failed to get stream URL")
+                reportException(it)
             }
             .getOrNull()
     }
