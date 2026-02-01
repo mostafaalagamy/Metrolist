@@ -233,7 +233,7 @@
     <string name="lyrics_glow_effect_desc">为动态歌词添加发光动画和弹跳效果</string>
     <string name="enable_better_lyrics">启用Better Lyrics提供歌词</string>
     <string name="enable_better_lyrics_desc">使用 Better Lyrics 歌词服务以获取逐字同步的歌词</string>
-    <string name="auto_scroll">重新同步</string>
+    <string name="auto_scroll">对齐歌词</string>
     <string name="shuffle_playlist_first">随机播放列表或专辑</string>
     <string name="shuffle_playlist_first_desc">随机播放时，先播放原播放列表/专辑中的所有歌曲，然后再播放内容相似的歌曲</string>
     <string name="show_wrapped_card">展示年度播放卡片</string>
@@ -383,4 +383,10 @@
     <string name="player_client_web_remix_desc">速度较慢. 但支持高级格式. 使用 JavaScript 签名解密, 这会使播放开始时间增加约 5-10 秒.</string>
     <string name="crop_album_art">裁剪专辑封面</string>
     <string name="crop_album_art_desc">通过裁剪视频缩略图强制使用正方形宽高比</string>
+    <string name="keep_screen_on_when_player_is_expanded">当播放页面最大化时保持屏幕打开</string>
+    <string name="decryption_library">解密库</string>
+    <string name="decryption_library_newpipe">NewPipe Extractor (官方)</string>
+    <string name="decryption_library_newpipe_desc">TeamNewPipe 官方库。紧跟 YouTube 最新变化。推荐设为默认选项。请求失败时将自动切换至 PipePipe API。</string>
+    <string name="decryption_library_pipepipe_api">PipePipe API</string>
+    <string name="decryption_library_pipepipe_api_desc">基于 MetroExtractor 的 API 解密。速度更快，但依赖外部 API。请求失败时将自动切换至 NewPipe 模式。</string>
 </resources>

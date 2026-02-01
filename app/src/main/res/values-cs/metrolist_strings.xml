@@ -399,4 +399,9 @@
     <string name="crop_album_art">Oříznout obal alba</string>
     <string name="crop_album_art_desc">Vynutit čtvercový poměr stran oříznutím miniatur videí</string>
     <string name="keep_screen_on_when_player_is_expanded">Ponechat zapnutou obrazovku při zvětšeném přehrávači</string>
+    <string name="decryption_library">Dešifrovací knihovna</string>
+    <string name="decryption_library_newpipe">NewPipe Extractor (oficiální)</string>
+    <string name="decryption_library_newpipe_desc">Oficiální knihovna od vývojářů TeamNewPipe. Nejlépe drží krok se změnami YouTube. Doporučeno jako výchozí. Pokud selže, automaticky se použije PipePipe API.</string>
+    <string name="decryption_library_pipepipe_api">PipePipe API</string>
+    <string name="decryption_library_pipepipe_api_desc">Dešifrování založené na API používající MetroExtractor. Rychlejší, ale závisí na externí API. Pokud selže, automaticky se použije NewPipe.</string>
 </resources>

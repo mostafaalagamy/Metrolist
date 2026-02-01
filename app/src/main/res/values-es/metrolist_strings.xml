@@ -230,7 +230,7 @@
     <string name="primary_color_style">Color primario</string>
     <string name="tertiary_color_style">Color terciario</string>
     <string name="auto_scroll">Volver a sincronizar</string>
-    <string name="google_cast">Google Cast</string>
+    <string name="google_cast">Transmitir con Google Cast</string>
     <string name="google_cast_description">Habilitar la transmisión de audio a Chromecast y otros dispositivos compatibles con Cast</string>
     <string name="hide_video_songs">Ocultar canciones de vídeo</string>
     <string name="details_desc">Ver la información de la canción</string>
@@ -326,18 +326,18 @@
     <string name="glow">Brillar</string>
     <string name="slide">Deslizar</string>
     <string name="karaoke">Karaoke</string>
-    <string name="apple_music_style">Apple Music</string>
+    <string name="apple_music_style">Estilo Apple Music</string>
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_logo_content_description">Logo de Metrolist</string>
     <string name="wrapped_year">2025</string>
-    <string name="show_artist_description">Ver descripción del artista</string>
+    <string name="show_artist_description">Mostrar descripción del artista</string>
     <string name="show_artist_subscriber_count">Ver numero de suscriptores</string>
     <string name="show_artist_monthly_listeners">Ver oyentes mensuales</string>
     <string name="lyrics_offset">Desfase de la letra</string>
     <string name="about_artist">Acerca de</string>
-    <string name="show_more">Ver más</string>
-    <string name="show_less">Ver menos</string>
-    <string name="artist_page_settings">Página del artista</string>
+    <string name="show_more">Mostrar más</string>
+    <string name="show_less">Mostrar menos</string>
+    <string name="artist_page_settings">Página del Artista</string>
     <string name="enable_wavy_slider">Habilitar control deslizante ondulado</string>
     <string name="wavy">Ondulado</string>
     <string name="enable_simpmusic">Habilitar letras de SimpMusic</string>
@@ -368,7 +368,7 @@
     <string name="widget_description">Widget reproductor de música con controles de reproducción</string>
     <string name="turntable_widget_description">Acceso rápido a la última canción reproducida</string>
     <string name="queue_widget_description">Reproductor de música con vista previa de la cola</string>
-    <string name="crop_album_art">Forzar portada cuadrada</string>
+    <string name="crop_album_art">Recortar portada del álbum</string>
     <plurals name="profiles_count">
         <item quantity="one">%d Perfil</item>
         <item quantity="many">%d Perfiles</item>
@@ -383,7 +383,7 @@
     <string name="error_eq_apply_failed">Error al aplicar el perfil de ecualización: %1$s</string>
     <string name="error_playback_failed">Reproducción fallida</string>
     <string name="error_copied">Información del error copiada al portapapeles</string>
-    <string name="copy_error">Error al copiar</string>
+    <string name="copy_error">Copiar el error</string>
     <string name="error_copy_hint">Copia la información del error para ayudar a solucionar el problema</string>
     <string name="player_client">Reproductor</string>
     <string name="player_client_android_vr">Android VR</string>
@@ -392,5 +392,11 @@
     <string name="persistent_shuffle_desc">Mantener la reproducción aleatoria habilitada al iniciar nuevas canciones o listas de reproducción</string>
     <string name="player_client_android_vr_desc">La opción más rápida. Transmisión directa de URL sin descifrado de firma. Recomendado para la mayoría de los usuarios.</string>
     <string name="player_client_web_remix_desc">Es más lento, pero admite formatos premium. Utiliza el descifrado de firma JavaScript, que añade entre 5 y 10 segundos al inicio de la reproducción.</string>
-    <string name="player_client_web_remix">Web Remix</string>
+    <string name="player_client_web_remix">Web Remix (Un poco mas lento)</string>
+    <string name="keep_screen_on_when_player_is_expanded">Mantener la pantalla encendida cuando el reproductor está expandido</string>
+    <string name="decryption_library">Biblioteca de descifrado</string>
+    <string name="decryption_library_newpipe">Extractor de NewPipe (Oficial)</string>
+    <string name="decryption_library_newpipe_desc">Biblioteca oficial de TeamNewPipe. La más actualizada con los cambios de YouTube. Recomendada como predeterminada. Retroceso automático al API de PipePipe si falla.</string>
+    <string name="decryption_library_pipepipe_api">Api PipePipe</string>
+    <string name="decryption_library_pipepipe_api_desc">Descifrado basado en API mediante MetroExtractor. Más rápido, pero depende de una API externa. Retroceso automático a NewPipe si falla.</string>
 </resources>
