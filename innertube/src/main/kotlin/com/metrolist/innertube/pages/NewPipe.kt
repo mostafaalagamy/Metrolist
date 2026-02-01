@@ -19,11 +19,19 @@ import java.net.Proxy
 
 class NewPipeDownloaderImpl(
     proxy: Proxy?,
+    proxyAuth: String? = null,
 ) : Downloader() {
     private val client =
         OkHttpClient
             .Builder()
             .proxy(proxy)
+            .proxyAuthenticator { _, response ->
+                proxyAuth?.let { auth ->
+                    response.request.newBuilder()
+                        .header("Proxy-Authorization", auth)
+                        .build()
+                } ?: response.request
+            }
             .build()
 
     @Throws(IOException::class, ReCaptchaException::class)
@@ -118,7 +126,10 @@ object NewPipeExtractor {
 
     fun init() {
         if (!isInitialized) {
-            newPipeDownloader = NewPipeDownloaderImpl(proxy = YouTube.proxy)
+            newPipeDownloader = NewPipeDownloaderImpl(
+                proxy = YouTube.proxy,
+                proxyAuth = YouTube.proxyAuth
+            )
             newPipeUtils = NewPipeUtils(newPipeDownloader!!)
             isInitialized = true
         }
