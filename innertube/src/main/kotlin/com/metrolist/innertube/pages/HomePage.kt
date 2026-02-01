@@ -70,7 +70,7 @@ data class HomePage(
                             artists = subtitleRuns.filter { run ->
                                 run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true ||
                                 (run.navigationEndpoint?.browseEndpoint != null && 
-                                 run.navigationEndpoint.browseEndpoint.browseId?.startsWith("MPREb_") != true)
+                                 run.navigationEndpoint.browseEndpoint.browseId.startsWith("MPREb_") != true)
                             }.map { run ->
                                 Artist(
                                     name = run.text,
