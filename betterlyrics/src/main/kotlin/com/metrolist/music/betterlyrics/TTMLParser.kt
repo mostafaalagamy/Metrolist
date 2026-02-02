@@ -9,7 +9,10 @@ object TTMLParser {
     data class ParsedLine(
         val text: String,
         val startTime: Double,
-        val words: List<ParsedWord>
+        val words: List<ParsedWord>,
+        val agent: String? = null,
+        val isBackground: Boolean = false,
+        val backgroundLines: List<ParsedLine> = emptyList()
     )
     
     data class ParsedWord(
@@ -44,6 +47,12 @@ object TTMLParser {
                 
                 val startTime = parseTime(begin)
                 val spanInfos = mutableListOf<SpanInfo>()
+                val backgroundLines = mutableListOf<ParsedLine>()
+                
+                // Get agent/vocalist info (ttm:agent attribute)
+                val agent = pElement.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "agent")
+                    .ifEmpty { pElement.getAttribute("ttm:agent") }
+                    .ifEmpty { null }
                 
                 // Parse child nodes to preserve whitespace between spans
                 val childNodes = pElement.childNodes
@@ -54,24 +63,36 @@ object TTMLParser {
                         Node.ELEMENT_NODE -> {
                             val span = node as? Element
                             if (span?.tagName?.lowercase() == "span") {
-                                val wordBegin = span.getAttribute("begin")
-                                val wordEnd = span.getAttribute("end")
-                                val wordText = span.textContent
+                                // Check for background vocal role (ttm:role="x-bg")
+                                val role = span.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
+                                    .ifEmpty { span.getAttribute("ttm:role") }
                                 
-                                if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
-                                    // Check if next sibling is whitespace text node
-                                    val nextSibling = node.nextSibling
-                                    val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
-                                        nextSibling.textContent?.contains(Regex("\\s")) == true
+                                if (role == "x-bg") {
+                                    // Parse background vocal line
+                                    val bgLine = parseBackgroundSpan(span, startTime)
+                                    if (bgLine != null) {
+                                        backgroundLines.add(bgLine)
+                                    }
+                                } else {
+                                    // Regular word span
+                                    val wordBegin = span.getAttribute("begin")
+                                    val wordEnd = span.getAttribute("end")
+                                    val wordText = getDirectTextContent(span)
                                     
-                                    spanInfos.add(
-                                        SpanInfo(
-                                            text = wordText,
-                                            startTime = parseTime(wordBegin),
-                                            endTime = parseTime(wordEnd),
-                                            hasTrailingSpace = hasTrailingSpace
+                                    if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
+                                        val nextSibling = node.nextSibling
+                                        val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
+                                            nextSibling.textContent?.contains(Regex("\\s")) == true
+                                        
+                                        spanInfos.add(
+                                            SpanInfo(
+                                                text = wordText,
+                                                startTime = parseTime(wordBegin),
+                                                endTime = parseTime(wordEnd),
+                                                hasTrailingSpace = hasTrailingSpace
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
                         }
@@ -82,9 +103,9 @@ object TTMLParser {
                 val words = mergeSpansIntoWords(spanInfos)
                 val lineText = words.joinToString(" ") { it.text }
                 
-                // If no spans found, use text content directly
+                // If no spans found, use text content directly (excluding background text)
                 val finalText = if (lineText.isEmpty()) {
-                    pElement.textContent.trim()
+                    getDirectTextContent(pElement).trim()
                 } else {
                     lineText
                 }
@@ -94,7 +115,10 @@ object TTMLParser {
                         ParsedLine(
                             text = finalText,
                             startTime = startTime,
-                            words = words
+                            words = words,
+                            agent = agent,
+                            isBackground = false,
+                            backgroundLines = backgroundLines
                         )
                     )
                 }
@@ -104,6 +128,91 @@ object TTMLParser {
         }
         
         return lines
+    }
+    
+    private fun parseBackgroundSpan(span: Element, parentStartTime: Double): ParsedLine? {
+        val bgBegin = span.getAttribute("begin")
+        val bgEnd = span.getAttribute("end")
+        val bgStartTime = if (bgBegin.isNotEmpty()) parseTime(bgBegin) else parentStartTime
+        
+        val spanInfos = mutableListOf<SpanInfo>()
+        val childNodes = span.childNodes
+        
+        for (j in 0 until childNodes.length) {
+            val node = childNodes.item(j)
+            if (node.nodeType == Node.ELEMENT_NODE) {
+                val innerSpan = node as? Element
+                if (innerSpan?.tagName?.lowercase() == "span") {
+                    val role = innerSpan.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
+                        .ifEmpty { innerSpan.getAttribute("ttm:role") }
+                    
+                    // Skip translation and romanization spans
+                    if (role == "x-translation" || role == "x-roman") continue
+                    
+                    val wordBegin = innerSpan.getAttribute("begin")
+                    val wordEnd = innerSpan.getAttribute("end")
+                    val wordText = getDirectTextContent(innerSpan)
+                    
+                    if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
+                        val nextSibling = node.nextSibling
+                        val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
+                            nextSibling.textContent?.contains(Regex("\\s")) == true
+                        
+                        spanInfos.add(
+                            SpanInfo(
+                                text = wordText,
+                                startTime = parseTime(wordBegin),
+                                endTime = parseTime(wordEnd),
+                                hasTrailingSpace = hasTrailingSpace
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        
+        val words = mergeSpansIntoWords(spanInfos)
+        val lineText = words.joinToString(" ") { it.text }
+        
+        val finalText = if (lineText.isEmpty()) {
+            getDirectTextContent(span).trim()
+        } else {
+            lineText
+        }
+        
+        return if (finalText.isNotEmpty()) {
+            ParsedLine(
+                text = finalText,
+                startTime = bgStartTime,
+                words = words,
+                agent = null,
+                isBackground = true,
+                backgroundLines = emptyList()
+            )
+        } else null
+    }
+    
+    private fun getDirectTextContent(element: Element): String {
+        val sb = StringBuilder()
+        val childNodes = element.childNodes
+        for (i in 0 until childNodes.length) {
+            val node = childNodes.item(i)
+            if (node.nodeType == Node.TEXT_NODE) {
+                sb.append(node.textContent)
+            } else if (node.nodeType == Node.ELEMENT_NODE) {
+                val el = node as? Element
+                val role = el?.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
+                    ?.ifEmpty { el.getAttribute("ttm:role") }
+                // Skip background, translation, and romanization spans
+                if (role != "x-bg" && role != "x-translation" && role != "x-roman") {
+                    // For regular spans without role, get direct text
+                    if (role.isNullOrEmpty() && el?.tagName?.lowercase() == "span") {
+                        sb.append(getDirectTextContent(el))
+                    }
+                }
+            }
+        }
+        return sb.toString()
     }
     
     private fun mergeSpansIntoWords(spanInfos: List<SpanInfo>): List<ParsedWord> {
@@ -166,13 +275,33 @@ object TTMLParser {
                 val seconds = (timeMs % 60000) / 1000
                 val centiseconds = (timeMs % 1000) / 10
                 
-                appendLine(String.format("[%02d:%02d.%02d]%s", minutes, seconds, centiseconds, line.text))
+                // Add agent info if present
+                val agentPrefix = if (!line.agent.isNullOrEmpty()) "{agent:${line.agent}}" else ""
+                
+                appendLine(String.format("[%02d:%02d.%02d]%s%s", minutes, seconds, centiseconds, agentPrefix, line.text))
                 
                 if (line.words.isNotEmpty()) {
                     val wordsData = line.words.joinToString("|") { word ->
                         "${word.text}:${word.startTime}:${word.endTime}"
                     }
                     appendLine("<$wordsData>")
+                }
+                
+                // Add background vocals as separate lines
+                line.backgroundLines.forEach { bgLine ->
+                    val bgTimeMs = (bgLine.startTime * 1000).toLong()
+                    val bgMinutes = bgTimeMs / 60000
+                    val bgSeconds = (bgTimeMs % 60000) / 1000
+                    val bgCentiseconds = (bgTimeMs % 1000) / 10
+                    
+                    appendLine(String.format("[%02d:%02d.%02d]{bg}%s", bgMinutes, bgSeconds, bgCentiseconds, bgLine.text))
+                    
+                    if (bgLine.words.isNotEmpty()) {
+                        val bgWordsData = bgLine.words.joinToString("|") { word ->
+                            "${word.text}:${word.startTime}:${word.endTime}"
+                        }
+                        appendLine("<$bgWordsData>")
+                    }
                 }
             }
         }

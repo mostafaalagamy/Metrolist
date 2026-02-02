@@ -246,7 +246,7 @@ fun Lyrics(
             val isMacedonianLyrics = romanizeMacedonianLyrics && !romanizeCyrillicByLine && isMacedonian(lyrics)
 
             parsedLines.map { entry ->
-                val newEntry = LyricsEntry(entry.time, entry.text, entry.words)
+                val newEntry = LyricsEntry(entry.time, entry.text, entry.words, agent = entry.agent, isBackground = entry.isBackground)
                 
                 if (romanizeJapaneseLyrics && isJapanese(entry.text) && !isChinese(entry.text)) {
                     scope.launch {
@@ -794,25 +794,49 @@ fun Lyrics(
                         animationSpec = tween(durationMillis = 400)
                     )
 
-                    Column(
-                        modifier = itemModifier.graphicsLayer {
-                            this.alpha = alpha
-                            this.scaleX = scale
-                            this.scaleY = scale
-                        },
-                        horizontalAlignment = when (lyricsTextPosition) {
+                    // Determine alignment based on agent for multi-singer support
+                    val agentAlignment = when {
+                        item.isBackground -> Alignment.CenterHorizontally // Background always centered
+                        item.agent == "v1" -> Alignment.Start // First vocalist - left
+                        item.agent == "v2" -> Alignment.End // Second vocalist - right
+                        item.agent == "v1000" -> Alignment.CenterHorizontally // Group/chorus - center
+                        else -> when (lyricsTextPosition) {
                             LyricsPosition.LEFT -> Alignment.Start
                             LyricsPosition.CENTER -> Alignment.CenterHorizontally
                             LyricsPosition.RIGHT -> Alignment.End
                         }
-                    ) {
-                        val isActiveLine = index == displayedCurrentLineIndex && isSynced
-                        val lineColor = if (isActiveLine) expressiveAccent else expressiveAccent.copy(alpha = 0.7f)
-                        val alignment = when (lyricsTextPosition) {
+                    }
+                    
+                    val agentTextAlign = when {
+                        item.isBackground -> TextAlign.Center
+                        item.agent == "v1" -> TextAlign.Left
+                        item.agent == "v2" -> TextAlign.Right
+                        item.agent == "v1000" -> TextAlign.Center
+                        else -> when (lyricsTextPosition) {
                             LyricsPosition.LEFT -> TextAlign.Left
                             LyricsPosition.CENTER -> TextAlign.Center
                             LyricsPosition.RIGHT -> TextAlign.Right
                         }
+                    }
+                    
+                    // Smaller scale for background vocals
+                    val bgScale = if (item.isBackground) 0.85f else 1f
+
+                    Column(
+                        modifier = itemModifier.graphicsLayer {
+                            this.alpha = if (item.isBackground) alpha * 0.8f else alpha
+                            this.scaleX = scale * bgScale
+                            this.scaleY = scale * bgScale
+                        },
+                        horizontalAlignment = agentAlignment
+                    ) {
+                        val isActiveLine = index == displayedCurrentLineIndex && isSynced
+                        val lineColor = if (isActiveLine) {
+                            if (item.isBackground) expressiveAccent.copy(alpha = 0.85f) else expressiveAccent
+                        } else {
+                            expressiveAccent.copy(alpha = if (item.isBackground) 0.5f else 0.7f)
+                        }
+                        val alignment = agentTextAlign
                         
                         val hasWordTimings = item.words?.isNotEmpty() == true
                         
