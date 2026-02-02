@@ -28,6 +28,28 @@ object TTMLParser {
         val hasTrailingSpace: Boolean
     )
     
+    // Helper function to get attribute by local name (handles namespace prefixes)
+    private fun Element.getAttributeByLocalName(localName: String): String {
+        // First try namespace-aware lookup
+        val nsValue = getAttributeNS("http://www.w3.org/ns/ttml#metadata", localName)
+        if (nsValue.isNotEmpty()) return nsValue
+        
+        // Then try with common prefixes
+        val prefixedValue = getAttribute("ttm:$localName")
+        if (prefixedValue.isNotEmpty()) return prefixedValue
+        
+        // Finally, search through all attributes
+        val attrs = attributes
+        for (i in 0 until attrs.length) {
+            val attr = attrs.item(i)
+            val attrName = attr.nodeName ?: continue
+            if (attrName == localName || attrName.endsWith(":$localName")) {
+                return attr.nodeValue ?: ""
+            }
+        }
+        return ""
+    }
+    
     fun parseTTML(ttml: String): List<ParsedLine> {
         val lines = mutableListOf<ParsedLine>()
         
@@ -50,9 +72,7 @@ object TTMLParser {
                 val backgroundLines = mutableListOf<ParsedLine>()
                 
                 // Get agent/vocalist info (ttm:agent attribute)
-                val agent = pElement.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "agent")
-                    .ifEmpty { pElement.getAttribute("ttm:agent") }
-                    .ifEmpty { null }
+                val agent = pElement.getAttributeByLocalName("agent").ifEmpty { null }
                 
                 // Parse child nodes to preserve whitespace between spans
                 val childNodes = pElement.childNodes
@@ -64,8 +84,7 @@ object TTMLParser {
                             val span = node as? Element
                             if (span?.tagName?.lowercase() == "span") {
                                 // Check for background vocal role (ttm:role="x-bg")
-                                val role = span.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
-                                    .ifEmpty { span.getAttribute("ttm:role") }
+                                val role = span.getAttributeByLocalName("role")
                                 
                                 when (role) {
                                     "x-bg" -> {
@@ -149,8 +168,7 @@ object TTMLParser {
             if (node.nodeType == Node.ELEMENT_NODE) {
                 val innerSpan = node as? Element
                 if (innerSpan?.tagName?.lowercase() == "span") {
-                    val role = innerSpan.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
-                        .ifEmpty { innerSpan.getAttribute("ttm:role") }
+                    val role = innerSpan.getAttributeByLocalName("role")
                     
                     // Skip translation and romanization spans
                     if (role == "x-translation" || role == "x-roman") continue
@@ -207,8 +225,7 @@ object TTMLParser {
                 sb.append(node.textContent)
             } else if (node.nodeType == Node.ELEMENT_NODE) {
                 val el = node as? Element
-                val role = el?.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
-                    ?.ifEmpty { el.getAttribute("ttm:role") }
+                val role = el?.getAttributeByLocalName("role") ?: ""
                 // Skip background, translation, and romanization spans
                 if (role != "x-bg" && role != "x-translation" && role != "x-roman") {
                     if (el?.tagName?.lowercase() == "span") {
