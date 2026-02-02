@@ -4,6 +4,7 @@ import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.response.PlayerResponse
 import io.ktor.http.URLBuilder
 import io.ktor.http.parseQueryString
+import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.schabi.newpipe.extractor.NewPipe
@@ -73,7 +74,58 @@ class NewPipeDownloaderImpl(
     }
 
     override fun executeAsync(request: Request, callback: AsyncCallback?): CancellableCall {
-        TODO("Placeholder")
+        val httpMethod = request.httpMethod()
+        val url = request.url()
+        val headers = request.headers()
+        val dataToSend = request.dataToSend()
+
+        val requestBuilder =
+            okhttp3.Request
+                .Builder()
+                .method(httpMethod, dataToSend?.toRequestBody())
+                .url(url)
+                .addHeader("User-Agent", YouTubeClient.USER_AGENT_WEB)
+
+        headers.forEach { (headerName, headerValueList) ->
+            if (headerValueList.size > 1) {
+                requestBuilder.removeHeader(headerName)
+                headerValueList.forEach { headerValue ->
+                    requestBuilder.addHeader(headerName, headerValue)
+                }
+            } else if (headerValueList.size == 1) {
+                requestBuilder.header(headerName, headerValueList[0])
+            }
+        }
+
+        val call = client.newCall(requestBuilder.build())
+
+        call.enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                callback?.onError(request, e)
+            }
+
+            override fun onResponse(call: Call, response: okhttp3.Response) {
+                if (response.code == 429) {
+                    response.close()
+                    callback?.onError(request, ReCaptchaException("reCaptcha Challenge requested", url))
+                    return
+                }
+
+                val responseBodyToReturn = response.body?.string()
+                val latestUrl = response.request.url.toString()
+                val responseToReturn = Response(
+                    response.code,
+                    response.message,
+                    response.headers.toMultimap(),
+                    responseBodyToReturn,
+                    responseBodyToReturn?.toByteArray(),
+                    latestUrl
+                )
+                callback?.onResponse(request, responseToReturn)
+            }
+        })
+
+        return CancellableCall { call.cancel() }
     }
 }
 
