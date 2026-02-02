@@ -129,7 +129,7 @@ class NewPipeDownloaderImpl(
             }
         })
 
-        return CancellableCall { call.cancel() }
+        return CancellableCall(call)
     }
 }
 
