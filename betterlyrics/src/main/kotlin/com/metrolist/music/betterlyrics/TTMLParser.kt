@@ -67,31 +67,37 @@ object TTMLParser {
                                 val role = span.getAttributeNS("http://www.w3.org/ns/ttml#metadata", "role")
                                     .ifEmpty { span.getAttribute("ttm:role") }
                                 
-                                if (role == "x-bg") {
-                                    // Parse background vocal line
-                                    val bgLine = parseBackgroundSpan(span, startTime)
-                                    if (bgLine != null) {
-                                        backgroundLines.add(bgLine)
+                                when (role) {
+                                    "x-bg" -> {
+                                        // Parse background vocal line
+                                        val bgLine = parseBackgroundSpan(span, startTime)
+                                        if (bgLine != null) {
+                                            backgroundLines.add(bgLine)
+                                        }
                                     }
-                                } else {
-                                    // Regular word span
-                                    val wordBegin = span.getAttribute("begin")
-                                    val wordEnd = span.getAttribute("end")
-                                    val wordText = getDirectTextContent(span)
-                                    
-                                    if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
-                                        val nextSibling = node.nextSibling
-                                        val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
-                                            nextSibling.textContent?.contains(Regex("\\s")) == true
+                                    "x-translation", "x-roman" -> {
+                                        // Skip translation and romanization spans
+                                    }
+                                    else -> {
+                                        // Regular word span
+                                        val wordBegin = span.getAttribute("begin")
+                                        val wordEnd = span.getAttribute("end")
+                                        val wordText = span.textContent?.trim() ?: ""
                                         
-                                        spanInfos.add(
-                                            SpanInfo(
-                                                text = wordText,
-                                                startTime = parseTime(wordBegin),
-                                                endTime = parseTime(wordEnd),
-                                                hasTrailingSpace = hasTrailingSpace
+                                        if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
+                                            val nextSibling = node.nextSibling
+                                            val hasTrailingSpace = nextSibling?.nodeType == Node.TEXT_NODE && 
+                                                nextSibling.textContent?.contains(Regex("\\s")) == true
+                                            
+                                            spanInfos.add(
+                                                SpanInfo(
+                                                    text = wordText,
+                                                    startTime = parseTime(wordBegin),
+                                                    endTime = parseTime(wordEnd),
+                                                    hasTrailingSpace = hasTrailingSpace
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
                             }
@@ -151,7 +157,7 @@ object TTMLParser {
                     
                     val wordBegin = innerSpan.getAttribute("begin")
                     val wordEnd = innerSpan.getAttribute("end")
-                    val wordText = getDirectTextContent(innerSpan)
+                    val wordText = innerSpan.textContent?.trim() ?: ""
                     
                     if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
                         val nextSibling = node.nextSibling
@@ -205,9 +211,8 @@ object TTMLParser {
                     ?.ifEmpty { el.getAttribute("ttm:role") }
                 // Skip background, translation, and romanization spans
                 if (role != "x-bg" && role != "x-translation" && role != "x-roman") {
-                    // For regular spans without role, get direct text
-                    if (role.isNullOrEmpty() && el?.tagName?.lowercase() == "span") {
-                        sb.append(getDirectTextContent(el))
+                    if (el?.tagName?.lowercase() == "span") {
+                        sb.append(el.textContent ?: "")
                     }
                 }
             }
