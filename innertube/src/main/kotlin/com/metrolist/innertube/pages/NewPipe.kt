@@ -101,13 +101,13 @@ class NewPipeDownloaderImpl(
 
         call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
-                callback?.onError(request, e)
+                callback?.onError(e)
             }
 
             override fun onResponse(call: Call, response: okhttp3.Response) {
                 if (response.code == 429) {
                     response.close()
-                    callback?.onError(request, ReCaptchaException("reCaptcha Challenge requested", url))
+                    callback?.onError(ReCaptchaException("reCaptcha Challenge requested", url))
                     return
                 }
 
@@ -121,7 +121,11 @@ class NewPipeDownloaderImpl(
                     responseBodyToReturn?.toByteArray(),
                     latestUrl
                 )
-                callback?.onResponse(request, responseToReturn)
+                try {
+                    callback?.onSuccess(responseToReturn)
+                } catch (e: Exception) {
+                    callback?.onError(e)
+                }
             }
         })
 
