@@ -2516,6 +2516,7 @@ class MusicService :
         const val PLAYLIST = "playlist"
         const val YOUTUBE_PLAYLIST = "youtube_playlist"
         const val SEARCH = "search"
+        const val SHUFFLE_ACTION = "__shuffle__"
 
         const val CHANNEL_ID = "music_channel_01"
         const val NOTIFICATION_ID = 888
