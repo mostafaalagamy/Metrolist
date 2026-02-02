@@ -81,7 +81,10 @@ object SimpMusicLyrics {
             tracks.firstOrNull()
         }
 
-        val lyrics = bestMatch?.syncedLyrics ?: bestMatch?.plainLyrics
+        // Prioritize richSyncLyrics for word-by-word sync, then syncedLyrics, then plainLyrics
+        val lyrics = bestMatch?.richSyncLyrics?.takeIf { it.isNotBlank() }
+            ?: bestMatch?.syncedLyrics?.takeIf { it.isNotBlank() }
+            ?: bestMatch?.plainLyrics?.takeIf { it.isNotBlank() }
             ?: throw IllegalStateException("Lyrics unavailable")
         
         lyrics
@@ -104,11 +107,18 @@ object SimpMusicLyrics {
 
         sortedTracks.forEach { track ->
             if (count <= 4) {
-                if (track.syncedLyrics != null && abs((track.duration ?: 0) - duration) <= 5) {
+                // Check duration match - relaxed to 10 seconds or skip if duration is 0
+                val durationMatch = duration <= 0 || abs((track.duration ?: 0) - duration) <= 10
+
+                // Prioritize richSyncLyrics for word-by-word sync
+                if (track.richSyncLyrics != null && track.richSyncLyrics.isNotBlank() && durationMatch) {
+                    count++
+                    callback(track.richSyncLyrics)
+                } else if (track.syncedLyrics != null && track.syncedLyrics.isNotBlank() && durationMatch) {
                     count++
                     callback(track.syncedLyrics)
                 }
-                if (track.plainLyrics != null && abs((track.duration ?: 0) - duration) <= 5 && plain == 0) {
+                if (track.plainLyrics != null && track.plainLyrics.isNotBlank() && durationMatch && plain == 0) {
                     count++
                     plain++
                     callback(track.plainLyrics)
