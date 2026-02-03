@@ -254,30 +254,8 @@ fun PlayerMenu(
     ) {
         item {
             val startingRadioText = stringResource(R.string.starting_radio)
-            val isInLibrary = librarySong?.song?.inLibrary != null
             NewActionGrid(
                 actions = listOf(
-                    NewAction(
-                        icon = {
-                            Icon(
-                                painter = painterResource(
-                                    if (isInLibrary) R.drawable.library_add_check
-                                    else R.drawable.library_add
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier.size(28.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        text = stringResource(
-                            if (isInLibrary) R.string.remove_from_library
-                            else R.string.add_to_library
-                        ),
-                        onClick = {
-                            playerConnection.toggleLibrary()
-                            onDismiss()
-                        }
-                    ),
                     NewAction(
                         icon = {
                             Icon(
@@ -388,6 +366,34 @@ fun PlayerMenu(
                             )
                         )
                     }
+                    // Add to Library option
+                    val isInLibrary = librarySong?.song?.inLibrary != null
+                    add(
+                        Material3MenuItemData(
+                            title = { 
+                                Text(
+                                    text = stringResource(
+                                        if (isInLibrary) R.string.remove_from_library
+                                        else R.string.add_to_library
+                                    )
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(
+                                        if (isInLibrary) R.drawable.library_add_check
+                                        else R.drawable.library_add
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                playerConnection.toggleLibrary()
+                                onDismiss()
+                            }
+                        )
+                    )
                 }
             )
         }
