@@ -49,7 +49,8 @@ fun CastButton(
     modifier: Modifier = Modifier,
     tintColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    val context: android.content.Context = LocalContext.current
+    val localContext = LocalContext.current
+    val context: android.content.Context = localContext
     val playerConnection = LocalPlayerConnection.current
     val menuState = LocalMenuState.current
     
