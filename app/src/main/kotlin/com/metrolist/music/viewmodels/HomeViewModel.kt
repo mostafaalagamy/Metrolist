@@ -270,8 +270,8 @@ class HomeViewModel @Inject constructor(
 
         allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
             .filter { it is Song || it is Album }
-        allYtItems.value = similarRecommendations.value?.flatMap { rec -> rec.items }.orEmpty() +
-                homePage.value?.sections?.flatMap { section -> section.items }.orEmpty()
+        allYtItems.value = similarRecommendations.value?.flatMap { rec: SimilarRecommendation -> rec.items.toList() }.orEmpty() +
+                homePage.value?.sections?.flatMap { section: HomePage.Section -> section.items.toList() }.orEmpty()
 
         isLoading.value = false
     }
