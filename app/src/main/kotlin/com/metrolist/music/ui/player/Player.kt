@@ -279,8 +279,14 @@ fun BottomSheetPlayer(
     val listenTogetherRoleState = listenTogetherManager?.role?.collectAsState(initial = RoomRole.NONE)
     val isListenTogetherGuest = listenTogetherRoleState?.value == RoomRole.GUEST
     
-    // Cast state
-    val castHandler = playerConnection.service.castConnectionHandler
+    // Cast state - safely access castConnectionHandler to prevent crashes during service lifecycle changes
+    val castHandler = remember(playerConnection) {
+        try {
+            playerConnection.service.castConnectionHandler
+        } catch (e: Exception) {
+            null
+        }
+    }
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
     val castPosition by castHandler?.castPosition?.collectAsState() ?: remember { mutableStateOf(0L) }
     val castDuration by castHandler?.castDuration?.collectAsState() ?: remember { mutableStateOf(0L) }
