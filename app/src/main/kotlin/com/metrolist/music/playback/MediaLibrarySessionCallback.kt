@@ -39,8 +39,8 @@ import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.MediaSessionConstants
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
-import com.metrolist.music.db.entities.AlbumEntity
-import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.Album
+import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.Song
@@ -435,11 +435,11 @@ constructor(
                     song.album?.title?.contains(query, ignoreCase = true) == true
                 }
                 
-                val artistSongs = database.searchArtists(query).first().flatMap { artist: ArtistEntity ->
+                val artistSongs = database.searchArtists(query).first().flatMap { artist: Artist ->
                     database.artistSongsByCreateDateAsc(artist.id).first()
                 }
                 
-                val albumSongs = database.searchAlbums(query).first().flatMap { album: AlbumEntity ->
+                val albumSongs = database.searchAlbums(query).first().flatMap { album: Album ->
                     database.albumSongs(album.id).first()
                 }
                 
@@ -641,11 +641,11 @@ constructor(
                         song.album?.title?.contains(searchQuery, ignoreCase = true) == true
                     }
                     
-                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist: ArtistEntity ->
+                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist: Artist ->
                         database.artistSongsByCreateDateAsc(artist.id).first()
                     }
                     
-                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album: AlbumEntity ->
+                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album: Album ->
                         database.albumSongs(album.id).first()
                     }
                     
