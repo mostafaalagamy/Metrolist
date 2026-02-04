@@ -119,3 +119,13 @@
 
 ## JSoup re2j optional dependency
 -dontwarn com.google.re2j.**
+
+## Compose Rules
+-keep class androidx.compose.runtime.** { *; }
+-keep class androidx.compose.ui.** { *; }
+-keepclassmembers class androidx.compose.runtime.CompositionLocal {
+    public ** getCurrent();
+}
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable <methods>;
+}

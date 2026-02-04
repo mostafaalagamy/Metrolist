@@ -140,7 +140,7 @@ fun WrappedIntro(onNext: () -> Unit) {
             BoxWithConstraints {
                 AutoResizingText(
                     text = stringResource(id = R.string.wrapped_year),
-                    style = TextStyle(
+                    style = TextStyle.Default.copy(
                         fontFamily = bbhBartle,
                         fontSize = 800.sp, // Increased size
                         color = Color.White,
@@ -179,7 +179,7 @@ fun WrappedIntro(onNext: () -> Unit) {
                 enter = fadeIn(animationSpec = tween(FADE_IN_DURATION, delayMillis = TITLE_DELAY)) + slideInVertically(animationSpec = tween(SLIDE_IN_DURATION, delayMillis = TITLE_DELAY))
             ) {
                 BoxWithConstraints {
-                    val baseStyle = TextStyle(
+                    val baseStyle = TextStyle.Default.copy(
                         fontFamily = bbhBartle,
                         textAlign = TextAlign.Center,
                         letterSpacing = 2.sp,
