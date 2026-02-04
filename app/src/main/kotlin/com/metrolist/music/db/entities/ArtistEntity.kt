@@ -40,7 +40,12 @@ data class ArtistEntity(
 
     fun toggleLike() = localToggleLike().also {
         CoroutineScope(Dispatchers.IO).launch {
-            val targetChannelId = channelId ?: YouTube.getChannelId(id)
+            // If id starts with "UC", it's already a channel ID
+            val targetChannelId = when {
+                channelId?.startsWith("UC") == true -> channelId
+                id.startsWith("UC") -> id
+                else -> channelId ?: YouTube.getChannelId(id)
+            }
             if (targetChannelId.isNotEmpty()) {
                 YouTube.subscribeChannel(targetChannelId, bookmarkedAt == null)
             }

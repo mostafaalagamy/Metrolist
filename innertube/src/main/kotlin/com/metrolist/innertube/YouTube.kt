@@ -956,8 +956,12 @@ object YouTube {
     }
 
     suspend fun getChannelId(browseId: String): String {
+        // If browseId already starts with "UC", it's already a channel ID
+        if (browseId.startsWith("UC")) {
+            return browseId
+        }
         artist(browseId).onSuccess {
-            return it.artist.channelId ?: ""
+            return it.artist.channelId ?: browseId.takeIf { id -> id.startsWith("UC") } ?: ""
         }
         return ""
     }
