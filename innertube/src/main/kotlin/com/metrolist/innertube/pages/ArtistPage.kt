@@ -75,7 +75,7 @@ data class ArtistPage(
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
                 }
-            
+
             // Extract album from last flexColumn (like SimpMusic)
             val album = renderer.flexColumns.lastOrNull()
                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
@@ -87,7 +87,10 @@ data class ArtistPage(
                         )
                     } else null
                 }
-            
+
+            // Extract library tokens using the new method that properly handles multiple toggle items
+            val libraryTokens = PageHelper.extractLibraryTokensFromMenuItems(renderer.menu?.menuRenderer?.items)
+
             return SongItem(
                 id = renderer.playlistItemData?.videoId ?: return null,
                 title = renderer.flexColumns.firstOrNull()
@@ -103,27 +106,31 @@ data class ArtistPage(
                 } != null,
                 endpoint = renderer.overlay?.musicItemThumbnailOverlayRenderer?.content
                     ?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint,
-                libraryAddToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
-                    PageHelper.isLibraryIcon(it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType)
-                }?.toggleMenuServiceItemRenderer, "LIBRARY_ADD"),
-                libraryRemoveToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
-                    PageHelper.isLibraryIcon(it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType)
-                }?.toggleMenuServiceItemRenderer, "LIBRARY_REMOVE")
+                libraryAddToken = libraryTokens.addToken,
+                libraryRemoveToken = libraryTokens.removeToken
             )
         }
 
         private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
             return when {
                 renderer.isSong -> {
+                    val subtitleRuns = renderer.subtitle?.runs?.oddElements() ?: return null
                     SongItem(
                         id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                        artists = listOfNotNull(renderer.subtitle?.runs?.firstOrNull()?.let {
+                        artists = subtitleRuns.filter { 
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true ||
+                            it.navigationEndpoint?.browseEndpoint != null
+                        }.map {
                             Artist(
                                 name = it.text,
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
                             )
-                        }),
+                        }.ifEmpty {
+                            subtitleRuns.firstOrNull()?.let { 
+                                listOf(Artist(name = it.text, id = null)) 
+                            } ?: emptyList()
+                        },
                         album = null,
                         duration = null,
                         musicVideoType = renderer.musicVideoType,
@@ -156,7 +163,7 @@ data class ArtistPage(
                         id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                         author = Artist(
-                            name = renderer.subtitle?.runs?.lastOrNull()?.text ?: return null,
+                            name = renderer.subtitle?.runs?.firstOrNull()?.text ?: return null,
                             id = null
                         ),
                         songCountText = null,

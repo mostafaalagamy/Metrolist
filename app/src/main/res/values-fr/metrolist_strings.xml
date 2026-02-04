@@ -134,7 +134,7 @@
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L’ajout de titres locaux à des playlists synchronisées/distantes n’est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
@@ -302,14 +302,14 @@
     <string name="wrapped_total_songs_subtitle">titres uniques</string>
     <string name="wrapped_intro_title">METROLIST</string>
     <string name="wrapped_intro_subtitle">Il est temps de voir ce que vous avez écouté</string>
-    <string name="wrapped_intro_button">allons-y !</string>
-    <string name="wrapped_end_thanks">Merci d\'avoir écouté Metrolist !</string>
+    <string name="wrapped_intro_button">allons-y !</string>
+    <string name="wrapped_end_thanks">Merci d\'avoir écouté Metrolist !</string>
     <string name="wrapped_end_create_playlist">Créez votre playlist personnalisée</string>
     <string name="wrapped_end_creating_playlist">Création...</string>
     <string name="wrapped_end_playlist_saved">Playlist Enregistrée</string>
     <string name="wrapped_logo_content_description">Logo Metrolist</string>
     <string name="wrapped_year">2025</string>
-    <string name="wrapped_ready_title">VOTRE CADEAU EST PRÊT À ÊTRE DÉVOILÉ !</string>
+    <string name="wrapped_ready_title">VOTRE CADEAU EST PRÊT À ÊTRE DÉVOILÉ !</string>
     <string name="wrapped_ready_subtitle">Il est temps de voir ce que vous avez aimé cette année.</string>
     <string name="wrapped_thank_you">Merci de votre écoute</string>
     <string name="wrapped_special_thanks">Remerciements particuliers à MO Agamy pour la création de Metrolist</string>
@@ -323,7 +323,7 @@
     <string name="listen_on_youtube_music">Écoutez sur YouTube Music</string>
     <string name="visit_metrolist">Découvrez Metrolist</string>
     <string name="open">Ouvrir</string>
-    <string name="failed_to_create_image">Échec de la création de l\'image : %s</string>
+    <string name="failed_to_create_image">Échec de la création de l\'image : %s</string>
     <string name="copied_title">Titre copié</string>
     <string name="copied_artist">Artiste copié</string>
     <string name="error_playing">Erreur de lecture</string>
@@ -342,9 +342,9 @@
     <string name="import_profile">Importer un profil</string>
     <string name="eq_disabled">Désactivé</string>
     <string name="delete_profile_desc">Supprimer le profil</string>
-    <string name="delete_profile_confirmation">Êtes-vous sûr de vouloir supprimer %1$s ? Cette action est irréversible.</string>
+    <string name="delete_profile_confirmation">Êtes-vous sûr de vouloir supprimer %1$s ? Cette action est irréversible.</string>
     <string name="error_file_read">Impossible de lire le fichier</string>
-    <string name="error_file_open">Impossible d\'ouvrir le fichier : %1$s</string>
+    <string name="error_file_open">Impossible d\'ouvrir le fichier : %1$s</string>
     <string name="import_error_title">Erreur d\'importation</string>
     <plurals name="band_count">
         <item quantity="one">%d bande</item>
@@ -385,7 +385,7 @@
     <string name="copy_error">Erreur de copie</string>
     <string name="error_copy_hint">Copier les informations d\'erreur pour aider les développeurs à déboguer le problème</string>
     <string name="error_title">Erreur</string>
-    <string name="error_eq_apply_failed">Échec de l\'application du profil d\'égalisation : %1$s</string>
+    <string name="error_eq_apply_failed">Échec de l\'application du profil d\'égalisation : %1$s</string>
     <string name="player_client_android_vr">Android VR</string>
     <string name="player_client_android_vr_desc">Option la plus rapide. URL de flux direct sans décryptage de signature. Recommandé pour la plupart des utilisateurs.</string>
     <string name="player_client_web_remix">Remix Web</string>
@@ -425,7 +425,7 @@
     <string name="listen_together_logs">Journaux de connexion</string>
     <string name="listen_together_no_logs">Aucun journal d\'activité pour le moment</string>
     <string name="listen_together_description">Écoutez de la musique avec vos amis en temps réel. Créez une salle pour accueillir d\'autres personnes ou rejoignez une salle existante à l\'aide d\'un code.</string>
-    <string name="listen_together_background_disconnect_note">Remarque : vous risquez d\'être déconnecté si vous créez une salle sans écouter de musique, puis passez à une autre application.</string>
+    <string name="listen_together_background_disconnect_note">Remarque : vous risquez d\'être déconnecté si vous créez une salle sans écouter de musique, puis passez à une autre application.</string>
     <string name="join_existing_room">Rejoindre une salle existante</string>
     <string name="room_code">Code de la salle</string>
     <string name="leave_room">Quitter la salle</string>
@@ -433,7 +433,7 @@
     <string name="create_room">Créer</string>
     <string name="joining_room">Rejoindre la salle %s…</string>
     <string name="creating_room">Création de la salle…</string>
-    <string name="listen_together_not_configured">L\'option « Écouter ensemble » n\'est pas configurée. Veuillez configurer l\'URL du serveur dans Paramètres → Intégrations → Écouter ensemble.</string>
+    <string name="listen_together_not_configured">L\'option « Écouter ensemble » n\'est pas configurée. Veuillez configurer l\'URL du serveur dans Paramètres → Intégrations → Écouter ensemble.</string>
     <string name="connect">Connecter</string>
     <string name="disconnect">Déconnecter</string>
     <string name="create">Créer</string>
@@ -447,4 +447,21 @@
     <string name="pending_requests">Demandes en attente</string>
     <string name="pending_suggestions">Suggestions en attente</string>
     <string name="listen_together_suggestion_received">%1$s demandés %2$s</string>
+    <string name="hosting_room">Salle d\'accueil</string>
+    <string name="in_room">Dans la salle</string>
+    <string name="listen_together_join_request_notification">%1$s souhaite rejoindre la salle</string>
+    <string name="listen_together_notification_channel_name">Écouter ensemble</string>
+    <string name="listen_together_notification_channel_desc">Notifications pour les événements « Écouter ensemble »</string>
+    <string name="listen_together_room_created">Salle créée : %s</string>
+    <string name="suggest_to_host">Suggérer à l\'hôte</string>
+    <string name="kick_user">Coup</string>
+    <string name="host_label">Hôte</string>
+    <string name="you_label">Vous</string>
+    <string name="connected_users">Utilisateurs connectés</string>
+    <string name="enter_username">Entrez votre nom d\'utilisateur</string>
+    <string name="change">Changer</string>
+    <string name="listen_together_cannot_edit_username_in_room">Impossible de modifier le nom d\'utilisateur lorsque vous êtes dans une salle</string>
+    <string name="error_username_empty">Le nom d\'utilisateur est obligatoire.</string>
+    <string name="listen_together_suggestion_sent">Suggestion envoyée à l\'hôte !</string>
+    <string name="resync">Resynchronisation</string>
 </resources>

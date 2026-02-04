@@ -352,4 +352,36 @@
         <item quantity="other">%d bandas</item>
     </plurals>
     <string name="pause_music_when_media_is_muted">Pausar a música quando a multimédia está silenciada</string>
+    <string name="about_artist">Sobre</string>
+    <string name="show_more">Mostrar mais</string>
+    <string name="show_less">Mostrar menos</string>
+    <string name="artist_page_settings">Página do artista</string>
+    <string name="show_artist_description">Mostrar descrição do artista</string>
+    <string name="show_artist_subscriber_count">Mostrar contador de subscritores</string>
+    <string name="show_artist_monthly_listeners">Mostrar ouvintes mensais</string>
+    <string name="crop_album_art">Cortar Capa do Álbum</string>
+    <string name="crop_album_art_desc">Forçar uma proporção quadrada cortando as miniaturas de vídeos</string>
+    <string name="enable_simpmusic">Habilitar SimpMusic Lyrics</string>
+    <string name="enable_simpmusic_desc">Usar o provedor SimpMusic Lyrics para letras sincronizadas</string>
+    <string name="skip_silence_instant">Saltar instantâneamente silêncio</string>
+    <string name="persistent_shuffle_title">Modo aleatório persistente</string>
+    <string name="persistent_shuffle_desc">Manter o modo aleatório ligado quando começarem novas músicas ou listas de reprodução</string>
+    <string name="remember_shuffle_and_repeat">Lembrar modo aleatório e repetir</string>
+    <string name="remember_shuffle_and_repeat_desc">Lembrar modo aleatório e modo repetir quando a aplicação reiniciar</string>
+    <string name="keep_screen_on_when_player_is_expanded">Manter ecrã ligado quando o reprodutor estiver expandido</string>
+    <string name="system_equalizer">Equalizador do Sistema</string>
+    <string name="error_title">Erro</string>
+    <string name="error_playback_failed">Erro na reprodução</string>
+    <string name="error_copied">Informação do erro copiada para a área de transferência</string>
+    <string name="copy_error">Copiar erro</string>
+    <string name="error_copy_hint">Copiar informação do erro para ajudar os desenvolvedores a depurar o problema</string>
+    <string name="album_art">Arte do álbum</string>
+    <string name="no_song_playing">Sem música a tocar</string>
+    <string name="tap_to_open">Toca para abrir o Metrolist</string>
+    <string name="previous">Retroceder</string>
+    <string name="play_pause">Reproduzir/Pausar</string>
+    <string name="next">Próximo</string>
+    <string name="like">Gosto</string>
+    <string name="widget_description">Widget de reprodutor de música com controlos de reprodução</string>
+    <string name="turntable_widget_description">Acesso rápido para a tua faixa mais reproduzida recentemente</string>
 </resources>

@@ -2,20 +2,40 @@ name: Bug report
 description: Create a bug report to help us improve
 labels: [ bug ]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ IMPORTANT WARNING
+        
+        **Duplicate or incomplete issues will be closed immediately without any response from developers.**
+        
+        - Check existing issues before opening a new one
+        - All required checkboxes below must be checked
+        - Duplicate issues will be closed instantly with no response
+
   - type: checkboxes
     id: checklist
     attributes:
-      label: Checklist
-      description: You should ensure the completion of the task before proceeding to check it off the checklist. Neglecting to do so may impede the efficiency of the issue resolution process. The developer has the right to delete the issue directly if you check the list blindly.
+      label: "⚠️ Checklist - Required"
+      description: |
+        **READ CAREFULLY:** You must complete these checks before submitting. Failing to do so will result in your issue being closed immediately without any response from developers.
+        
+        **Duplicate issues = Instant closure with no response**
       options:
-        - label: I am able to reproduce the bug with the [latest debug version](https://github.com/mostafaalagamy/Metrolist/actions).
+        - label: " I am able to reproduce the bug with the [latest debug version](https://github.com/mostafaalagamy/Metrolist/actions)."
           required: true
-        - label: I've checked that there is no open or closed issue about this bug.
+        - label: " I've checked that there is NO open or closed issue about this bug. (Duplicate issues will be closed immediately without response)"
           required: true
-        - label: This issue contains only one bug.
+        - label: " This issue contains only ONE bug."
           required: true
-        - label: The title of this issue accurately describes the bug.
+        - label: " The title of this issue accurately describes the bug."
           required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## Bug Details
 
   - type: textarea
     id: reproduce-steps
@@ -76,7 +96,7 @@ body:
       description: |
         You can find your Metrolist version in **Settings**.
       placeholder: |
-        Example: "0.5.3"
+        Example: "1.5.0"
     validations:
       required: true
 

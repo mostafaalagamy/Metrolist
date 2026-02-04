@@ -76,13 +76,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -108,6 +104,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.HideExplicitKey
@@ -235,37 +232,6 @@ inline fun ListItem(
         trailingContent()
     }
 }
-
-@Composable
-fun ListItem(
-    modifier: Modifier = Modifier,
-    title: String,
-    subtitle: AnnotatedString?,
-    badges: @Composable RowScope.() -> Unit = {},
-    thumbnailContent: @Composable () -> Unit,
-    trailingContent: @Composable RowScope.() -> Unit = {},
-    isSelected: Boolean? = false,
-    isActive: Boolean = false,
-) = ListItem(
-    title = title,
-    subtitle = {
-        badges()
-        if (subtitle != null) {
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    },
-    thumbnailContent = thumbnailContent,
-    trailingContent = trailingContent,
-    modifier = modifier,
-    isSelected = isSelected,
-    isActive = isActive
-)
 
 // merge badges and subtitle text and pass to basic list item
 @Composable
@@ -942,24 +908,10 @@ fun MediaMetadataListItem(
 ) {
     ListItem(
         title = mediaMetadata.title,
-        subtitle = if (mediaMetadata.suggestedBy != null) {
-            buildAnnotatedString {
-                append(mediaMetadata.artists.joinToString { it.name })
-                append(" • ")
-                append(makeTimeString(mediaMetadata.duration * 1000L))
-                append(" • ")
-                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(mediaMetadata.suggestedBy)
-                }
-            }
-        } else {
-            AnnotatedString(
-                joinByBullet(
-                    mediaMetadata.artists.joinToString { it.name },
-                    makeTimeString(mediaMetadata.duration * 1000L)
-                )
-            )
-        },
+        subtitle = joinByBullet(
+            mediaMetadata.artists.joinToString { it.name },
+            makeTimeString(mediaMetadata.duration * 1000L)
+        ),
         badges = { if (mediaMetadata.explicit) Icon.Explicit()},
         thumbnailContent = {
             ItemThumbnail(
@@ -1255,6 +1207,8 @@ fun ItemThumbnail(
     isSelected: Boolean = false,
     thumbnailRatio: Float = 1f
 ) {
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
+    
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -1271,6 +1225,7 @@ fun ItemThumbnail(
                     .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                     .build(),
                 contentDescription = null,
+                contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(shape)
@@ -1334,6 +1289,8 @@ fun LocalThumbnail(
     playButtonVisible: Boolean = false,
     thumbnailRatio: Float = 1f
 ) {
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
+    
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -1348,6 +1305,7 @@ fun LocalThumbnail(
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .build(),
             contentDescription = null,
+            contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -1437,6 +1395,8 @@ fun PlaylistThumbnail(
     shape: Shape,
     cacheKey: String? = null
 ) {
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
+    
     when (thumbnails.size) {
         0 -> Box(
             contentAlignment = Alignment.Center,
@@ -1456,7 +1416,7 @@ fun PlaylistThumbnail(
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .build(),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
             placeholder = painterResource(R.drawable.queue_music),
             error = painterResource(R.drawable.queue_music),
             modifier = Modifier
@@ -1483,7 +1443,7 @@ fun PlaylistThumbnail(
                         .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .build(),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                    contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                     placeholder = painterResource(R.drawable.queue_music),
                     error = painterResource(R.drawable.queue_music),
                     modifier = Modifier

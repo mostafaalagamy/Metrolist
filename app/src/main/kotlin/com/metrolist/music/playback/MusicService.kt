@@ -97,11 +97,7 @@ import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
-import com.metrolist.music.constants.DecryptionLibrary
-import com.metrolist.music.constants.DecryptionLibraryKey
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.PlayerClient
-import com.metrolist.music.constants.PlayerClientKey
 import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.LastFMUseNowPlaying
@@ -242,8 +238,6 @@ class MusicService :
     private val isNetworkConnected = MutableStateFlow(false)
 
     private lateinit var audioQuality: com.metrolist.music.constants.AudioQuality
-    private lateinit var playerClient: com.metrolist.music.constants.PlayerClient
-    private lateinit var decryptionLibrary: com.metrolist.music.constants.DecryptionLibrary
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
@@ -260,12 +254,6 @@ class MusicService :
         }
 
     lateinit var playerVolume: MutableStateFlow<Float>
-    val isMuted = MutableStateFlow(false)
-
-    fun toggleMute() {
-        isMuted.value = !isMuted.value
-    }
-
 
     lateinit var sleepTimer: SleepTimer
 
@@ -429,8 +417,6 @@ class MusicService :
         connectivityManager = getSystemService()!!
         connectivityObserver = NetworkConnectivityObserver(this)
         audioQuality = dataStore.get(AudioQualityKey).toEnum(com.metrolist.music.constants.AudioQuality.AUTO)
-        playerClient = dataStore.get(PlayerClientKey).toEnum(PlayerClient.ANDROID_VR)
-        decryptionLibrary = dataStore.get(DecryptionLibraryKey).toEnum(DecryptionLibrary.NEWPIPE_EXTRACTOR)
         playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
         // Initialize Google Cast
@@ -476,9 +462,7 @@ class MusicService :
             }
         }
 
-        combine(playerVolume, isMuted) { volume, muted ->
-            if (muted) 0f else volume
-        }.collectLatest(scope) {
+        playerVolume.collectLatest(scope) {
             player.volume = it
         }
 
@@ -660,7 +644,7 @@ class MusicService :
                     delay(1000) // Wait for queue to be loaded
                     player.repeatMode = playerState.repeatMode
                     player.shuffleModeEnabled = playerState.shuffleModeEnabled
-                    playerVolume.value = playerState.volume
+                    player.volume = playerState.volume
 
                     // Restore position if it's still valid
                     if (playerState.currentMediaItemIndex < player.mediaItemCount) {
@@ -728,7 +712,7 @@ class MusicService :
                     }
                 }
 
-                player.volume = if (isMuted.value) 0f else playerVolume.value
+                player.volume = playerVolume.value
                 lastAudioFocusState = focusChange
             }
 
@@ -755,14 +739,14 @@ class MusicService :
                 hasAudioFocus = false
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
                 if (player.isPlaying) {
-                    player.volume = if (isMuted.value) 0f else (playerVolume.value * 0.2f)
+                    player.volume = (playerVolume.value * 0.2f)
                 }
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
-                player.volume = if (isMuted.value) 0f else playerVolume.value
+                player.volume = playerVolume.value
                 lastAudioFocusState = focusChange
             }
         }
@@ -1287,10 +1271,23 @@ class MusicService :
         player.prepare()
     }
 
-    private fun toggleLibrary() {
-        database.query {
-            currentSong.value?.let {
-                update(it.song.toggleLibrary())
+    fun toggleLibrary() {
+        scope.launch {
+            val songToToggle = currentSong.first()
+            songToToggle?.let {
+                val isInLibrary = it.song.inLibrary != null
+                val token = if (isInLibrary) it.song.libraryRemoveToken else it.song.libraryAddToken
+                
+                // Call YouTube API with feedback token if available
+                token?.let { feedbackToken ->
+                    YouTube.feedback(listOf(feedbackToken))
+                }
+                
+                // Update local database
+                database.query {
+                    update(it.song.toggleLibrary())
+                }
+                currentMediaMetadata.value = player.currentMetadata
             }
         }
     }
@@ -2152,8 +2149,6 @@ class MusicService :
                     mediaId,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
-                    playerClient = playerClient,
-                    decryptionLibrary = decryptionLibrary,
                 )
             }.getOrElse { throwable ->
                 when (throwable) {
@@ -2279,17 +2274,17 @@ class MusicService :
                 } catch (_: SQLException) {
                 }
             }
-        }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-            playbackUrl?.let {
-                YouTube.registerPlayback(null, playbackUrl)
-                    .onFailure {
-                        reportException(it)
-                    }
+            CoroutineScope(Dispatchers.IO).launch {
+                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                playbackUrl?.let {
+                    YouTube.registerPlayback(null, playbackUrl)
+                        .onFailure {
+                            reportException(it)
+                        }
+                }
             }
         }
     }
@@ -2502,8 +2497,6 @@ class MusicService :
                     videoId = mediaId,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
-                    playerClient = playerClient,
-                    decryptionLibrary = decryptionLibrary,
                 ).getOrNull()
                 playbackData?.streamUrl
             } catch (e: Exception) {

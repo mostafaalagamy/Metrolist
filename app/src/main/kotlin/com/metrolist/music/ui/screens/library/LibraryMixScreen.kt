@@ -168,7 +168,8 @@ fun LibraryMixScreen(
     val (showDownloaded) = rememberPreference(ShowDownloadedPlaylistKey, true)
     val (showTop) = rememberPreference(ShowTopPlaylistKey, true)
     val (showCached) = rememberPreference(ShowCachedPlaylistKey, true)
-    val (showUploaded) = rememberPreference(ShowUploadedPlaylistKey, true)
+    // Uploaded songs feature is temporarily disabled
+    val showUploaded = false // rememberPreference(ShowUploadedPlaylistKey, true)
 
     val albums = viewModel.albums.collectAsState()
     val artist = viewModel.artists.collectAsState()

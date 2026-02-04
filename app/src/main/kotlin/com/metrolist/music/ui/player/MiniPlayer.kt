@@ -80,9 +80,9 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
 import com.metrolist.music.LocalDatabase
-import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.CropAlbumArtKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
@@ -91,7 +91,6 @@ import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.db.entities.ArtistEntity
-import com.metrolist.music.listentogether.ListenTogetherManager
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.CastConnectionHandler
 import com.metrolist.music.playback.PlayerConnection
@@ -182,12 +181,7 @@ private fun NewMiniPlayer(
 
     // Swipe settings
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
-    val swipeThumbnailPref by rememberPreference(SwipeThumbnailKey, true)
-    
-    // Disable swipe for Listen Together guests
-    val listenTogetherManager = LocalListenTogetherManager.current
-    val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
-    val swipeThumbnail = swipeThumbnailPref && !isListenTogetherGuest
+    val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
     
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
@@ -305,8 +299,7 @@ private fun NewMiniPlayer(
                     playerConnection = playerConnection,
                     mediaMetadata = mediaMetadata,
                     primaryColor = primaryColor,
-                    outlineColor = outlineColor,
-                    listenTogetherManager = listenTogetherManager
+                    outlineColor = outlineColor
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -359,15 +352,11 @@ private fun NewMiniPlayerPlayButton(
     playerConnection: PlayerConnection,
     mediaMetadata: MediaMetadata?,
     primaryColor: Color,
-    outlineColor: Color,
-    listenTogetherManager: ListenTogetherManager?
+    outlineColor: Color
 ) {
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
-    val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
-    val isMuted by playerConnection.isMuted.collectAsState()
-
     
     val trackColor = outlineColor.copy(alpha = 0.2f)
     val strokeWidth = 3.dp
@@ -416,10 +405,6 @@ private fun NewMiniPlayerPlayButton(
                 .clip(CircleShape)
                 .border(1.dp, outlineColor.copy(alpha = 0.3f), CircleShape)
                 .clickable {
-                    if (isListenTogetherGuest) {
-                        playerConnection.toggleMute()
-                        return@clickable
-                    }
                     if (isCasting) {
                         if (castIsPlaying) castHandler?.pause() else castHandler?.play()
                     } else if (playbackState == Player.STATE_ENDED) {
@@ -442,8 +427,8 @@ private fun NewMiniPlayerPlayButton(
                 )
             }
 
-            // Overlay for paused state or muted (guest)
-            if (isListenTogetherGuest && isMuted || (!isListenTogetherGuest && (!effectiveIsPlaying || playbackState == Player.STATE_ENDED))) {
+            // Overlay for paused state
+            if (!effectiveIsPlaying || playbackState == Player.STATE_ENDED) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -451,9 +436,7 @@ private fun NewMiniPlayerPlayButton(
                 )
                 Icon(
                     painter = painterResource(
-                        if (isListenTogetherGuest) {
-                            if (isMuted) R.drawable.volume_off else R.drawable.volume_up
-                        } else if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play
+                        if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play
                     ),
                     contentDescription = null,
                     tint = Color.White,
@@ -541,12 +524,7 @@ private fun LegacyMiniPlayer(
     val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
 
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
-    val swipeThumbnailPref by rememberPreference(SwipeThumbnailKey, true)
-    
-    // Disable swipe for Listen Together guests
-    val listenTogetherManager = LocalListenTogetherManager.current
-    val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
-    val swipeThumbnail = swipeThumbnailPref && !isListenTogetherGuest
+    val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
 
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
@@ -671,8 +649,7 @@ private fun LegacyMiniPlayer(
                 playbackState = playbackState,
                 isCasting = isCasting,
                 castHandler = castHandler,
-                playerConnection = playerConnection,
-                listenTogetherManager = listenTogetherManager
+                playerConnection = playerConnection
             )
 
             IconButton(
@@ -710,22 +687,14 @@ private fun LegacyPlayPauseButton(
     playbackState: Int,
     isCasting: Boolean,
     castHandler: CastConnectionHandler?,
-    playerConnection: PlayerConnection,
-    listenTogetherManager: ListenTogetherManager?
+    playerConnection: PlayerConnection
 ) {
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val castIsPlaying by castHandler?.castIsPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
-    val isListenTogetherGuest = listenTogetherManager?.let { it.isInRoom && !it.isHost } ?: false
-    val isMuted by playerConnection.isMuted.collectAsState()
-
 
     IconButton(
         onClick = {
-            if (isListenTogetherGuest) {
-                playerConnection.toggleMute()
-                return@IconButton
-            }
             if (isCasting) {
                 if (castIsPlaying) castHandler?.pause() else castHandler?.play()
             } else if (playbackState == Player.STATE_ENDED) {
@@ -739,7 +708,6 @@ private fun LegacyPlayPauseButton(
         Icon(
             painter = painterResource(
                 when {
-                    isListenTogetherGuest -> if (isMuted) R.drawable.volume_off else R.drawable.volume_up
                     playbackState == Player.STATE_ENDED -> R.drawable.replay
                     effectiveIsPlaying -> R.drawable.pause
                     else -> R.drawable.play
@@ -757,6 +725,7 @@ private fun LegacyMiniMediaInfo(
     modifier: Modifier = Modifier,
 ) {
     val error by LocalPlayerConnection.current?.error?.collectAsState() ?: remember { mutableStateOf(null) }
+    val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
     
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -780,7 +749,7 @@ private fun LegacyMiniMediaInfo(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),

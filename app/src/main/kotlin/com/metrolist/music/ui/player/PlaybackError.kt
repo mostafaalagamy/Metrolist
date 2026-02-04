@@ -56,10 +56,26 @@ fun PlaybackError(
     val mediaMetadata by playerConnection?.mediaMetadata?.collectAsState() ?: return
     
     // Build detailed error info for debugging
-    val errorMessage = error.cause?.cause?.message 
+    val rawErrorMessage = error.cause?.cause?.message 
         ?: error.cause?.message 
         ?: error.message 
         ?: stringResource(R.string.error_unknown)
+    
+    // Check if this is an age-restricted content error
+    // Age-restricted content typically returns 403 Forbidden or contains age-related messages
+    val isAgeRestricted = rawErrorMessage.contains("age", ignoreCase = true) ||
+            rawErrorMessage.contains("Sign in to confirm your age", ignoreCase = true) ||
+            rawErrorMessage.contains("LOGIN_REQUIRED", ignoreCase = true) ||
+            rawErrorMessage.contains("confirm your age", ignoreCase = true) ||
+            rawErrorMessage.contains("403", ignoreCase = true) ||
+            rawErrorMessage.contains("Response code: 403", ignoreCase = true) ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS
+    
+    val errorMessage = if (isAgeRestricted) {
+        "This app does not support playing age-restricted songs. We are working on fixing this issue."
+    } else {
+        rawErrorMessage
+    }
     
     val songId = mediaMetadata?.id ?: "Unknown"
     val songTitle = mediaMetadata?.title ?: "Unknown"

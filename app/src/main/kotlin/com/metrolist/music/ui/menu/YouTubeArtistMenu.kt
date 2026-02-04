@@ -54,7 +54,6 @@ import com.metrolist.music.ui.component.Material3MenuItemData
 import com.metrolist.music.ui.component.Material3MenuGroup
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
-import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.ui.component.YouTubeListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,8 +66,6 @@ fun YouTubeArtistMenu(
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val libraryArtist by database.artist(artist.id).collectAsState(initial = null)
-    val listenTogetherManager = LocalListenTogetherManager.current
-    val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
 
     YouTubeListItem(
         item = artist,
@@ -93,45 +90,44 @@ fun YouTubeArtistMenu(
         item {
             NewActionGrid(
                 actions = buildList {
-                    if (!isGuest) {
-                        artist.radioEndpoint?.let { watchEndpoint ->
-                            add(
-                                NewAction(
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.radio),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(28.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    },
-                                    text = stringResource(R.string.start_radio),
-                                    onClick = {
-                                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                                        onDismiss()
-                                    }
-                                )
+                    artist.radioEndpoint?.let { watchEndpoint ->
+                        add(
+                            NewAction(
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.radio),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                text = stringResource(R.string.start_radio),
+                                onClick = {
+                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                                    onDismiss()
+                                }
                             )
-                        }
-                        artist.shuffleEndpoint?.let { watchEndpoint ->
-                            add(
-                                NewAction(
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.shuffle),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(28.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    },
-                                    text = stringResource(R.string.shuffle),
-                                    onClick = {
-                                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                                        onDismiss()
-                                    }
-                                )
+                        )
+                    }
+
+                    artist.shuffleEndpoint?.let { watchEndpoint ->
+                        add(
+                            NewAction(
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.shuffle),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                text = stringResource(R.string.shuffle),
+                                onClick = {
+                                    playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                                    onDismiss()
+                                }
                             )
-                        }
+                        )
                     }
 
                     add(
@@ -157,8 +153,7 @@ fun YouTubeArtistMenu(
                         )
                     )
                 },
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp),
-                columns = if (isGuest) 1 else 3
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
             )
         }
 
