@@ -38,7 +38,7 @@ class BrowseViewModel @Inject constructor(
                     title.value = result.title
  
                     // Flatten the nested structure to get all YTItems
-                    val allItems = result.items.flatMap { it.items }
+                    val allItems = result.items.flatMap { section -> section.items }
                     items.value = allItems
                 }.onFailure {
                     reportException(it)
