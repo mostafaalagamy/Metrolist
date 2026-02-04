@@ -300,6 +300,17 @@ object YouTube {
             ?.let(::mapRuns)
             ?: response.header?.musicImmersiveHeaderRenderer?.description?.runs?.let(::mapRuns)
 
+        // Extract channelId from subscriptionButton or from menu items (fallback for artists without thumbnail)
+        val channelId = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.channelId
+            ?: response.header?.musicImmersiveHeaderRenderer?.menu?.menuRenderer?.items?.find {
+                it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType == "SUBSCRIBE"
+            }?.toggleMenuServiceItemRenderer?.defaultServiceEndpoint?.subscribeEndpoint?.channelIds?.firstOrNull()
+            ?: response.header?.musicHeaderRenderer?.buttons?.flatMap { button -> 
+                button.menuRenderer?.items ?: emptyList() 
+            }?.find {
+                it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType == "SUBSCRIBE"
+            }?.toggleMenuServiceItemRenderer?.defaultServiceEndpoint?.subscribeEndpoint?.channelIds?.firstOrNull()
+
         ArtistPage(
             artist = ArtistItem(
                 id = browseId,
@@ -309,7 +320,7 @@ object YouTube {
                 thumbnail = response.header?.musicImmersiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                     ?: response.header?.musicVisualHeaderRenderer?.foregroundThumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                     ?: response.header?.musicDetailHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl(),
-                channelId = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.channelId,
+                channelId = channelId,
                 playEndpoint = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
                     ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer
                     ?.contents?.firstOrNull()?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer
