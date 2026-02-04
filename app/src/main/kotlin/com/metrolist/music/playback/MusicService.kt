@@ -1271,10 +1271,23 @@ class MusicService :
         player.prepare()
     }
 
-    private fun toggleLibrary() {
-        database.query {
-            currentSong.value?.let {
-                update(it.song.toggleLibrary())
+    fun toggleLibrary() {
+        scope.launch {
+            val songToToggle = currentSong.first()
+            songToToggle?.let {
+                val isInLibrary = it.song.inLibrary != null
+                val token = if (isInLibrary) it.song.libraryRemoveToken else it.song.libraryAddToken
+                
+                // Call YouTube API with feedback token if available
+                token?.let { feedbackToken ->
+                    YouTube.feedback(listOf(feedbackToken))
+                }
+                
+                // Update local database
+                database.query {
+                    update(it.song.toggleLibrary())
+                }
+                currentMediaMetadata.value = player.currentMetadata
             }
         }
     }
@@ -2516,6 +2529,7 @@ class MusicService :
         const val PLAYLIST = "playlist"
         const val YOUTUBE_PLAYLIST = "youtube_playlist"
         const val SEARCH = "search"
+        const val SHUFFLE_ACTION = "__shuffle__"
 
         const val CHANNEL_ID = "music_channel_01"
         const val NOTIFICATION_ID = 888
