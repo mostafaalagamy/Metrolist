@@ -39,6 +39,9 @@ import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.MediaSessionConstants
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.AlbumEntity
+import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
@@ -220,7 +223,7 @@ constructor(
                         val downloadedSongCount = downloadUtil.downloads.value.size
                         val youtubePlaylists = try {
                             YouTube.home().getOrNull()?.sections
-                                ?.flatMap { it.items }
+                                ?.flatMap { section -> section.items }
                                 ?.filterIsInstance<PlaylistItem>()
                                 ?.take(10)
                                 ?: emptyList()
@@ -432,22 +435,22 @@ constructor(
                     song.album?.title?.contains(query, ignoreCase = true) == true
                 }
                 
-                val artistSongs = database.searchArtists(query).first().flatMap { artist ->
+                val artistSongs = database.searchArtists(query).first().flatMap { artist: ArtistEntity ->
                     database.artistSongsByCreateDateAsc(artist.id).first()
                 }
                 
-                val albumSongs = database.searchAlbums(query).first().flatMap { album ->
+                val albumSongs = database.searchAlbums(query).first().flatMap { album: AlbumEntity ->
                     database.albumSongs(album.id).first()
                 }
                 
-                val playlistSongs = database.searchPlaylists(query).first().flatMap { playlist ->
-                    database.playlistSongs(playlist.id).first().map { it.song }
+                val playlistSongs = database.searchPlaylists(query).first().flatMap { playlist: Playlist ->
+                    database.playlistSongs(playlist.id).first().map { playlistSong -> playlistSong.song }
                 }
 
                 val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                    .distinctBy { it.id }
+                    .distinctBy { song -> song.id }
                 
-                allLocalSongs.forEach { song ->
+                allLocalSongs.forEach { song: Song ->
                     searchResults.add(song.toMediaItem(
                         path = "${MusicService.SEARCH}/$query",
                         isPlayable = true,
@@ -463,12 +466,12 @@ constructor(
                         ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
                         ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
                         ?.filter { onlineSong ->
-                            !allLocalSongs.any { localSong ->
+                            allLocalSongs.none { localSong ->
                                 localSong.id == onlineSong.id ||
                                 (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
                                  localSong.artists.any { artist ->
-                                     onlineSong.artists.any {
-                                         it.name.equals(artist.name, ignoreCase = true)
+                                     onlineSong.artists.any { onlineArtist ->
+                                         onlineArtist.name.equals(artist.name, ignoreCase = true)
                                      }
                                  })
                             }
@@ -638,20 +641,20 @@ constructor(
                         song.album?.title?.contains(searchQuery, ignoreCase = true) == true
                     }
                     
-                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist ->
+                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist: ArtistEntity ->
                         database.artistSongsByCreateDateAsc(artist.id).first()
                     }
                     
-                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album ->
+                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album: AlbumEntity ->
                         database.albumSongs(album.id).first()
                     }
                     
-                    val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist ->
-                        database.playlistSongs(playlist.id).first().map { it.song }
+                    val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist: Playlist ->
+                        database.playlistSongs(playlist.id).first().map { playlistSong -> playlistSong.song }
                     }
 
                     val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                        .distinctBy { it.id }
+                        .distinctBy { song -> song.id }
                     
                     searchResults.addAll(allLocalSongs)
                     
@@ -663,12 +666,12 @@ constructor(
                             ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
                             ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
                             ?.filter { onlineSong ->
-                                !allLocalSongs.any { localSong ->
+                                allLocalSongs.none { localSong ->
                                     localSong.id == onlineSong.id ||
                                     (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
                                      localSong.artists.any { artist ->
-                                         onlineSong.artists.any {
-                                             it.name.equals(artist.name, ignoreCase = true)
+                                         onlineSong.artists.any { onlineArtist ->
+                                             onlineArtist.name.equals(artist.name, ignoreCase = true)
                                          }
                                      })
                                 }
