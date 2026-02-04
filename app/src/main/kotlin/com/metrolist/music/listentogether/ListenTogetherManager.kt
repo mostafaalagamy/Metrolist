@@ -49,6 +49,8 @@ class ListenTogetherManager @Inject constructor(
     private var eventCollectorJob: Job? = null
     private var queueObserverJob: Job? = null
     private var playerListenerRegistered = false
+
+    private var lastRole: RoomRole = RoomRole.NONE
     
     // Whether we're currently syncing (to prevent feedback loops)
     @Volatile
@@ -253,6 +255,12 @@ class ListenTogetherManager @Inject constructor(
         // Role change listener
         scope.launch {
             role.collect { newRole ->
+                val previousRole = lastRole
+                lastRole = newRole
+
+                if (previousRole == RoomRole.GUEST && newRole != RoomRole.GUEST) {
+                    playerConnection?.setMuted(false)
+                }
                 val wasHost = isHost
                 if (newRole == RoomRole.HOST && !wasHost && playerConnection != null) {
                     Log.d(TAG, "Role changed to HOST, starting sync services")
@@ -466,6 +474,9 @@ class ListenTogetherManager @Inject constructor(
     }
     
     private fun cleanup() {
+        if (lastRole == RoomRole.GUEST) {
+            playerConnection?.setMuted(false)
+        }
         if (playerListenerRegistered) {
             playerConnection?.player?.removeListener(playerListener)
             playerListenerRegistered = false
@@ -478,6 +489,7 @@ class ListenTogetherManager @Inject constructor(
         bufferingTrackId = null
         isSyncing = false
         bufferCompleteReceivedForTrack = null
+        lastRole = RoomRole.NONE
     }
 
     private fun applyPendingSyncIfReady() {

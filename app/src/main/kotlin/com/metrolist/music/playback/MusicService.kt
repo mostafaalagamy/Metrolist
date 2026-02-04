@@ -260,6 +260,10 @@ class MusicService :
         isMuted.value = !isMuted.value
     }
 
+    fun setMuted(muted: Boolean) {
+        isMuted.value = muted
+    }
+
 
     lateinit var sleepTimer: SleepTimer
 
@@ -622,12 +626,20 @@ class MusicService :
                     }
                 }
             }.onSuccess { queue ->
-                // Convert back to proper queue type
-                val restoredQueue = queue.toQueue()
-                playQueue(
-                    queue = restoredQueue,
-                    playWhenReady = false,
-                )
+                runCatching {
+                    // Convert back to proper queue type
+                    val restoredQueue = queue.toQueue()
+                    playQueue(
+                        queue = restoredQueue,
+                        playWhenReady = false,
+                    )
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to restore persisted queue, clearing data", error)
+                    clearPersistedQueueFiles()
+                }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read persisted queue, clearing data", error)
+                clearPersistedQueueFiles()
             }
             runCatching {
                 filesDir.resolve(PERSISTENT_AUTOMIX_FILE).inputStream().use { fis ->
@@ -636,7 +648,15 @@ class MusicService :
                     }
                 }
             }.onSuccess { queue ->
-                automixItems.value = queue.items.map { it.toMediaItem() }
+                runCatching {
+                    automixItems.value = queue.items.map { it.toMediaItem() }
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to restore automix queue, clearing data", error)
+                    clearPersistedQueueFiles()
+                }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read automix queue, clearing data", error)
+                clearPersistedQueueFiles()
             }
 
             // Restore player state
@@ -659,6 +679,9 @@ class MusicService :
                         player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
                     }
                 }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read player state, clearing data", error)
+                clearPersistedQueueFiles()
             }
         }
 
@@ -778,6 +801,12 @@ class MusicService :
                 hasAudioFocus = false
             }
         }
+    }
+
+    private fun clearPersistedQueueFiles() {
+        runCatching { filesDir.resolve(PERSISTENT_QUEUE_FILE).delete() }
+        runCatching { filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete() }
+        runCatching { filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).delete() }
     }
 
     fun hasAudioFocusForPlayback(): Boolean {

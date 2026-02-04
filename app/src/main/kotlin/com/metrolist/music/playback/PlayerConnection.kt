@@ -167,6 +167,10 @@ class PlayerConnection(
         service.toggleMute()
     }
 
+    fun setMuted(muted: Boolean) {
+        service.setMuted(muted)
+    }
+
     fun toggleLibrary() {
         service.toggleLibrary()
     }
