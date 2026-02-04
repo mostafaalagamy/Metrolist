@@ -742,13 +742,13 @@ constructor(
                 .build(),
         ).build()
 
-    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false): MediaItem {
-        val artworkUri = song.thumbnailUrl?.let {
-            val snapshot = context.imageLoader.diskCache?.openSnapshot(it)
+    private fun LocalSong.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false): MediaItem {
+        val artworkUri = song.thumbnailUrl?.let { url: String ->
+            val snapshot = context.imageLoader.diskCache?.openSnapshot(url)
             if (snapshot != null) {
-                snapshot.use { snapshot -> snapshot.data.toFile().toUri() }
+                snapshot.use { s -> s.data.toFile().toUri() }
             } else {
-                it.toUri()
+                url.toUri()
             }
         }
 
@@ -759,8 +759,8 @@ constructor(
                 MediaMetadata
                     .Builder()
                     .setTitle(song.title)
-                    .setSubtitle(artists.joinToString { it.name })
-                    .setArtist(artists.joinToString { it.name })
+                    .setSubtitle(artists.joinToString { artist -> artist.name })
+                    .setArtist(artists.joinToString { artist -> artist.name })
                     .setArtworkUri(artworkUri)
                     .setIsPlayable(isPlayable)
                     .setIsBrowsable(isBrowsable)
