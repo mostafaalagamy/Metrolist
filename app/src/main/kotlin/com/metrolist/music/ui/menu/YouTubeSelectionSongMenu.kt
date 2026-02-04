@@ -71,9 +71,6 @@ fun YouTubeSelectionSongMenu(
         mutableStateOf(false)
     }
 
-    val listenTogetherManager = com.metrolist.music.LocalListenTogetherManager.current
-    val isGuest = listenTogetherManager?.isInRoom == true && listenTogetherManager.isHost == false
-
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
     }
@@ -216,8 +213,8 @@ fun YouTubeSelectionSongMenu(
     ) {
         item {
             Material3MenuGroup(
-                listOfNotNull(
-                    if (!isGuest) Material3MenuItemData(
+                listOf(
+                    Material3MenuItemData(
                         icon = { Icon(painterResource(R.drawable.play), null) },
                         title = { Text(stringResource(R.string.play)) },
                         onClick = {
@@ -230,8 +227,8 @@ fun YouTubeSelectionSongMenu(
                             clearAction()
                             onDismiss()
                         },
-                    ) else null,
-                    if (!isGuest) Material3MenuItemData(
+                    ),
+                    Material3MenuItemData(
                         icon = { Icon(painterResource(R.drawable.shuffle), null) },
                         title = { Text(stringResource(R.string.shuffle)) },
                         onClick = {
@@ -244,8 +241,8 @@ fun YouTubeSelectionSongMenu(
                             clearAction()
                             onDismiss()
                         },
-                    ) else null,
-                    if (!isGuest) Material3MenuItemData(
+                    ),
+                    Material3MenuItemData(
                         icon = { Icon(painterResource(R.drawable.queue_music), null) },
                         title = { Text(stringResource(R.string.add_to_queue)) },
                         onClick = {
@@ -253,7 +250,7 @@ fun YouTubeSelectionSongMenu(
                             clearAction()
                             onDismiss()
                         },
-                    ) else null,
+                    ),
                     Material3MenuItemData(
                         icon = { Icon(painterResource(R.drawable.playlist_add), null) },
                         title = { Text(stringResource(R.string.add_to_playlist)) },
@@ -285,9 +282,9 @@ fun YouTubeSelectionSongMenu(
                                     }
                                 }
                                 coroutineScope.launch {
-                                    val tokens = songSelection.mapNotNull { it.toMediaMetadata().libraryRemoveToken }
-                                    tokens.chunked(20).forEach {
-                                        YouTube.feedback(it)
+                                    // Use the new reliable method that fetches fresh tokens
+                                    songSelection.forEach { song ->
+                                        YouTube.toggleSongLibrary(song.id, false)
                                     }
                                 }
                             } else {
@@ -298,11 +295,11 @@ fun YouTubeSelectionSongMenu(
                                     }
                                 }
                                 coroutineScope.launch {
-                                    val tokens = songSelection.filter { song ->
+                                    // Use the new reliable method that fetches fresh tokens
+                                    songSelection.filter { song ->
                                         song.toMediaMetadata().inLibrary == null
-                                    }.mapNotNull { it.toMediaMetadata().libraryAddToken }
-                                    tokens.chunked(20).forEach {
-                                        YouTube.feedback(it)
+                                    }.forEach { song ->
+                                        YouTube.toggleSongLibrary(song.id, true)
                                     }
                                 }
                             }

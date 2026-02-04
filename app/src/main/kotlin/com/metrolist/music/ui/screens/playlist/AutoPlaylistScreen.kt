@@ -142,7 +142,8 @@ fun AutoPlaylistScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val playlist = when (viewModel.playlist) {
         "liked" -> stringResource(R.string.liked)
-        "uploaded" -> stringResource(R.string.uploaded_playlist)
+        // Uploaded feature is temporarily disabled
+        // "uploaded" -> stringResource(R.string.uploaded_playlist)
         else -> stringResource(R.string.offline)
     }
 
@@ -175,7 +176,8 @@ fun AutoPlaylistScreen(
     val playlistType = when (playlistId) {
         "liked" -> PlaylistType.LIKE
         "downloaded" -> PlaylistType.DOWNLOAD
-        "uploaded" -> PlaylistType.UPLOADED
+        // Uploaded feature is temporarily disabled
+        // "uploaded" -> PlaylistType.UPLOADED
         else -> PlaylistType.OTHER
     }
 
@@ -215,7 +217,8 @@ fun AutoPlaylistScreen(
         if (ytmSync) {
             withContext(Dispatchers.IO) {
                 if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
-                if (playlistType == PlaylistType.UPLOADED) viewModel.syncUploadedSongs()
+                // Uploaded feature is temporarily disabled
+                // if (playlistType == PlaylistType.UPLOADED) viewModel.syncUploadedSongs()
             }
         }
     }

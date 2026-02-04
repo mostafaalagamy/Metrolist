@@ -261,10 +261,11 @@ class SyncUtils @Inject constructor(
         }
     }
 
+    // Uploaded feature is temporarily disabled
     fun syncUploadedSongs() {
-        syncScope.launch {
-            syncChannel.send(SyncOperation.UploadedSongs)
-        }
+        // syncScope.launch {
+        //     syncChannel.send(SyncOperation.UploadedSongs)
+        // }
     }
 
     fun syncLikedAlbums() {
@@ -273,10 +274,11 @@ class SyncUtils @Inject constructor(
         }
     }
 
+    // Uploaded feature is temporarily disabled
     fun syncUploadedAlbums() {
-        syncScope.launch {
-            syncChannel.send(SyncOperation.UploadedAlbums)
-        }
+        // syncScope.launch {
+        //     syncChannel.send(SyncOperation.UploadedAlbums)
+        // }
     }
 
     fun syncArtistsSubscriptions() {
@@ -300,7 +302,8 @@ class SyncUtils @Inject constructor(
     fun syncAllAlbums() {
         syncScope.launch {
             syncChannel.send(SyncOperation.LikedAlbums)
-            syncChannel.send(SyncOperation.UploadedAlbums)
+            // Uploaded feature is temporarily disabled
+            // syncChannel.send(SyncOperation.UploadedAlbums)
         }
     }
 
@@ -326,9 +329,11 @@ class SyncUtils @Inject constructor(
 
     suspend fun syncLikedSongsSuspend() = executeSyncLikedSongs()
     suspend fun syncLibrarySongsSuspend() = executeSyncLibrarySongs()
-    suspend fun syncUploadedSongsSuspend() = executeSyncUploadedSongs()
+    // Uploaded feature is temporarily disabled
+    suspend fun syncUploadedSongsSuspend() { /* executeSyncUploadedSongs() */ }
     suspend fun syncLikedAlbumsSuspend() = executeSyncLikedAlbums()
-    suspend fun syncUploadedAlbumsSuspend() = executeSyncUploadedAlbums()
+    // Uploaded feature is temporarily disabled
+    suspend fun syncUploadedAlbumsSuspend() { /* executeSyncUploadedAlbums() */ }
     suspend fun syncArtistsSubscriptionsSuspend() = executeSyncArtistsSubscriptions()
     suspend fun syncSavedPlaylistsSuspend() = executeSyncSavedPlaylists()
     suspend fun syncAutoSyncPlaylistsSuspend() = executeSyncAutoSyncPlaylists()
@@ -337,7 +342,8 @@ class SyncUtils @Inject constructor(
 
     suspend fun syncAllAlbumsSuspend() {
         executeSyncLikedAlbums()
-        executeSyncUploadedAlbums()
+        // Uploaded feature is temporarily disabled
+        // executeSyncUploadedAlbums()
     }
 
     suspend fun syncAllArtistsSuspend() {
@@ -362,14 +368,16 @@ class SyncUtils @Inject constructor(
             executeSyncLibrarySongs()
             delay(DB_OPERATION_DELAY_MS)
 
-            executeSyncUploadedSongs()
-            delay(DB_OPERATION_DELAY_MS)
+            // Uploaded feature is temporarily disabled
+            // executeSyncUploadedSongs()
+            // delay(DB_OPERATION_DELAY_MS)
 
             executeSyncLikedAlbums()
             delay(DB_OPERATION_DELAY_MS)
 
-            executeSyncUploadedAlbums()
-            delay(DB_OPERATION_DELAY_MS)
+            // Uploaded feature is temporarily disabled
+            // executeSyncUploadedAlbums()
+            // delay(DB_OPERATION_DELAY_MS)
 
             executeSyncArtistsSubscriptions()
             delay(DB_OPERATION_DELAY_MS)
@@ -548,7 +556,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedSongs = SyncStatus.Syncing, currentOperation = "Syncing uploaded songs") }
 
         withRetry {
-            YouTube.libraryUploaded("FEmusic_library_privately_owned_tracks").completed()
+            YouTube.library("FEmusic_library_privately_owned_tracks").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {
@@ -667,7 +675,7 @@ class SyncUtils @Inject constructor(
         updateState { copy(uploadedAlbums = SyncStatus.Syncing, currentOperation = "Syncing uploaded albums") }
 
         withRetry {
-            YouTube.libraryUploaded("FEmusic_library_privately_owned_releases").completed()
+            YouTube.library("FEmusic_library_privately_owned_releases").completed()
         }.onSuccess { result ->
             result.onSuccess { page ->
                 try {

@@ -420,7 +420,7 @@ private fun OnlinePlaylistHeader(
         Spacer(modifier = Modifier.height(12.dp))
 
         // Metadata - Song Count • Duration
-        val totalDuration = songs.sumOf { it.duration ?: 0 }
+        val totalDuration = songs.sumOf { song: SongItem -> (song.duration ?: 0).toInt() }
         Text(
             text = buildString {
                 append(pluralStringResource(R.plurals.n_song, songs.size, songs.size))
