@@ -49,7 +49,7 @@ fun CastButton(
     modifier: Modifier = Modifier,
     tintColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    val context = LocalContext.current
+    val context: android.content.Context = LocalContext.current
     val playerConnection = LocalPlayerConnection.current
     val menuState = LocalMenuState.current
     
@@ -65,12 +65,16 @@ fun CastButton(
     
     // Get cast state from service
     val castHandler = playerConnection?.service?.castConnectionHandler
-    val isCasting by castHandler?.isCasting?.collectAsState() ?: remember { mutableStateOf(false) }
-    val isConnecting by castHandler?.isConnecting?.collectAsState() ?: remember { mutableStateOf(false) }
-    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: remember { mutableStateOf(null) }
+    val defaultCastingState = remember { mutableStateOf(false) }
+    val defaultConnectingState = remember { mutableStateOf(false) }
+    val defaultDeviceName = remember { mutableStateOf<String?>(null) }
+    val isCasting by castHandler?.isCasting?.collectAsState() ?: defaultCastingState
+    val isConnecting by castHandler?.isConnecting?.collectAsState() ?: defaultConnectingState
+    val castDeviceName by castHandler?.castDeviceName?.collectAsState() ?: defaultDeviceName
     
     // Get current media metadata
-    val currentMetadata by playerConnection?.mediaMetadata?.collectAsState() ?: remember { mutableStateOf(null) }
+    val defaultMetadata = remember { mutableStateOf<com.metrolist.music.models.MediaMetadata?>(null) }
+    val currentMetadata by playerConnection?.mediaMetadata?.collectAsState() ?: defaultMetadata
 
     // Check if Cast is available and disconnect if disabled while casting
     LaunchedEffect(enableGoogleCast) {
