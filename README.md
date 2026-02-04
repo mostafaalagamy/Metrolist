@@ -61,6 +61,7 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 - Reorder songs in playlist or queue 
 - Light - Dark - black - Dynamic theme
 - Sleep timer
+- **Home screen widget** with playback controls
 - Material 3 
 - etc.
 
@@ -160,6 +161,9 @@ Or other
 
 **OuterTune**
 [Davide Garberi](https://github.com/DD3Boh) • [Michael Zh](https://github.com/mikooomich)
+
+**Widget Fixes**
+[md4n4s28](https://github.com/md4n4s28) – Fixed widget visibility issues and Android compatibility
 
 Credits:
 
