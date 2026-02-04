@@ -202,9 +202,13 @@ class ListenTogetherManager @Inject constructor(
         
         // Add listener if in room
         if (connection != null && isInRoom) {
-            connection.player.addListener(playerListener)
-            playerListenerRegistered = true
-            Log.d(TAG, "Added player listener for room sync")
+            try {
+                connection.player.addListener(playerListener)
+                playerListenerRegistered = true
+                Log.d(TAG, "Added player listener for room sync")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to add player listener", e)
+            }
             
             // Hook up skip actions
             connection.onSkipPrevious = {
@@ -262,14 +266,21 @@ class ListenTogetherManager @Inject constructor(
                     playerConnection?.setMuted(false)
                 }
                 val wasHost = isHost
-                if (newRole == RoomRole.HOST && !wasHost && playerConnection != null) {
-                    Log.d(TAG, "Role changed to HOST, starting sync services")
-                    startQueueSyncObservation()
-                    startHeartbeat()
-                    // Re-register listener if needed
-                    if (!playerListenerRegistered) {
-                        playerConnection!!.player.addListener(playerListener)
-                        playerListenerRegistered = true
+                if (newRole == RoomRole.HOST && !wasHost) {
+                    val connection = playerConnection
+                    if (connection != null) {
+                        Log.d(TAG, "Role changed to HOST, starting sync services")
+                        startQueueSyncObservation()
+                        startHeartbeat()
+                        // Re-register listener if needed
+                        if (!playerListenerRegistered) {
+                            try {
+                                connection.player.addListener(playerListener)
+                                playerListenerRegistered = true
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Failed to add player listener on role change", e)
+                            }
+                        }
                     }
                 } else if (newRole != RoomRole.HOST && wasHost) {
                     Log.d(TAG, "Role changed from HOST, stopping sync services")
@@ -499,20 +510,21 @@ class ListenTogetherManager @Inject constructor(
 
         if (completeForTrack != pendingTrackId) return
 
-        val player = playerConnection?.player ?: return
+        val connection = playerConnection ?: return
+        val player = connection.player
 
         Log.d(TAG, "Applying pending sync: track=$pendingTrackId, pos=${pending.position}, play=${pending.isPlaying}")
         isSyncing = true
 
         val targetPos = pending.position
         if (kotlin.math.abs(player.currentPosition - targetPos) > 100) {
-            playerConnection?.seekTo(targetPos)
+            connection.seekTo(targetPos)
         }
 
         if (pending.isPlaying) {
-            playerConnection?.play()
+            connection.play()
         } else {
-            playerConnection?.pause()
+            connection.pause()
         }
 
         scope.launch {
@@ -526,11 +538,12 @@ class ListenTogetherManager @Inject constructor(
     }
 
     private fun handlePlaybackSync(action: PlaybackActionPayload) {
-        val player = playerConnection?.player
-        if (player == null) {
+        val connection = playerConnection
+        if (connection == null) {
             Log.w(TAG, "Cannot sync playback - no player connection")
             return
         }
+        val player = connection.player
         
         Log.d(TAG, "Handling playback sync: ${action.action}, position: ${action.position}")
         
@@ -543,11 +556,11 @@ class ListenTogetherManager @Inject constructor(
                     Log.d(TAG, "Guest: PLAY at position $pos")
                     // Seek first for precision, then play
                     if (kotlin.math.abs(player.currentPosition - pos) > 100) {
-                        playerConnection?.seekTo(pos)
+                        connection.seekTo(pos)
                     }
                     if (bufferingTrackId == null) {
                         // Start playback immediately for tighter sync
-                        playerConnection?.play()
+                        connection.play()
                     }
                 }
                 
@@ -555,16 +568,16 @@ class ListenTogetherManager @Inject constructor(
                     val pos = action.position ?: 0L
                     Log.d(TAG, "Guest: PAUSE at position $pos")
                     // Pause first, then seek for accuracy
-                    playerConnection?.pause()
+                    connection.pause()
                     if (kotlin.math.abs(player.currentPosition - pos) > 100) {
-                        playerConnection?.seekTo(pos)
+                        connection.seekTo(pos)
                     }
                 }
                 
                 PlaybackActions.SEEK -> {
                     val pos = action.position ?: 0L
                     Log.d(TAG, "Guest: SEEK to $pos")
-                    playerConnection?.seekTo(pos)
+                    connection.seekTo(pos)
                 }
                 
                 PlaybackActions.CHANGE_TRACK -> {
@@ -591,12 +604,12 @@ class ListenTogetherManager @Inject constructor(
                 
                 PlaybackActions.SKIP_NEXT -> {
                     Log.d(TAG, "Guest: SKIP_NEXT")
-                    playerConnection?.seekToNext()
+                    connection.seekToNext()
                 }
                 
                 PlaybackActions.SKIP_PREV -> {
                     Log.d(TAG, "Guest: SKIP_PREV")
-                    playerConnection?.seekToPrevious()
+                    connection.seekToPrevious()
                 }
 
                 PlaybackActions.QUEUE_ADD -> {
@@ -614,13 +627,13 @@ class ListenTogetherManager @Inject constructor(
                                 if (mediaItem != null) {
                                     launch(Dispatchers.Main) {
                                         // Allow internal sync to bypass guest restrictions
-                                        playerConnection?.allowInternalSync = true
+                                        connection.allowInternalSync = true
                                         if (action.insertNext == true) {
-                                            playerConnection?.playNext(mediaItem)
+                                            connection.playNext(mediaItem)
                                         } else {
-                                            playerConnection?.addToQueue(mediaItem)
+                                            connection.addToQueue(mediaItem)
                                         }
-                                        playerConnection?.allowInternalSync = false
+                                        connection.allowInternalSync = false
                                     }
                                 } else {
                                     Log.w(TAG, "QUEUE_ADD failed to resolve media item for ${track.id}")
@@ -637,36 +650,30 @@ class ListenTogetherManager @Inject constructor(
                     if (removeId.isNullOrEmpty()) {
                         Log.w(TAG, "QUEUE_REMOVE missing trackId")
                     } else {
-                        val player = playerConnection?.player
-                        if (player != null) {
-                            // Find first queue item with matching mediaId after current index
-                            val startIndex = player.currentMediaItemIndex + 1
-                            var removeIndex = -1
-                            val total = player.mediaItemCount
-                            for (i in startIndex until total) {
-                                val id = player.getMediaItemAt(i).mediaId
-                                if (id == removeId) { removeIndex = i; break }
-                            }
-                            if (removeIndex >= 0) {
-                                Log.d(TAG, "Guest: QUEUE_REMOVE index=$removeIndex id=$removeId")
-                                player.removeMediaItem(removeIndex)
-                            } else {
-                                Log.w(TAG, "QUEUE_REMOVE id not found in queue: $removeId")
-                            }
+                        // Find first queue item with matching mediaId after current index
+                        val startIndex = player.currentMediaItemIndex + 1
+                        var removeIndex = -1
+                        val total = player.mediaItemCount
+                        for (i in startIndex until total) {
+                            val id = player.getMediaItemAt(i).mediaId
+                            if (id == removeId) { removeIndex = i; break }
+                        }
+                        if (removeIndex >= 0) {
+                            Log.d(TAG, "Guest: QUEUE_REMOVE index=$removeIndex id=$removeId")
+                            player.removeMediaItem(removeIndex)
+                        } else {
+                            Log.w(TAG, "QUEUE_REMOVE id not found in queue: $removeId")
                         }
                     }
                 }
 
                 PlaybackActions.QUEUE_CLEAR -> {
-                    val player = playerConnection?.player
-                    if (player != null) {
-                        val currentIndex = player.currentMediaItemIndex
-                        val count = player.mediaItemCount
-                        val itemsAfter = count - (currentIndex + 1)
-                        if (itemsAfter > 0) {
-                            Log.d(TAG, "Guest: QUEUE_CLEAR removing $itemsAfter items after current")
-                            player.removeMediaItems(currentIndex + 1, count - (currentIndex + 1))
-                        }
+                    val currentIndex = player.currentMediaItemIndex
+                    val count = player.mediaItemCount
+                    val itemsAfter = count - (currentIndex + 1)
+                    if (itemsAfter > 0) {
+                        Log.d(TAG, "Guest: QUEUE_CLEAR removing $itemsAfter items after current")
+                        player.removeMediaItems(currentIndex + 1, count - (currentIndex + 1))
                     }
                 }
 
@@ -679,7 +686,8 @@ class ListenTogetherManager @Inject constructor(
                         activeSyncJob?.cancel()
                         
                         scope.launch(Dispatchers.Main) {
-                            val player = playerConnection?.player ?: return@launch
+                            if (playerConnection !== connection) return@launch
+                            val player = connection.player
                             
                             // Map TrackInfo to MediaItems
                             val mediaItems = queue.map { track ->
@@ -696,21 +704,25 @@ class ListenTogetherManager @Inject constructor(
                             val currentPos = player.currentPosition
                             val wasPlaying = player.isPlaying
                             
-                            playerConnection?.allowInternalSync = true
+                            connection.allowInternalSync = true
                             if (newIndex != -1) {
                                 player.setMediaItems(mediaItems, newIndex, currentPos)
                             } else {
                                 player.setMediaItems(mediaItems)
                             }
-                            playerConnection?.allowInternalSync = false
+                            connection.allowInternalSync = false
                             
                             // Restore playing state if needed
                             if (wasPlaying && !player.isPlaying) {
-                                playerConnection?.play()
+                                connection.play()
                             }
                             
                             // Sync queue title
-                            playerConnection?.service?.queueTitle = queueTitle
+                            try {
+                                connection.service.queueTitle = queueTitle
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Failed to set queue title during SYNC_QUEUE", e)
+                            }
                         }
                     }
                 }
@@ -743,11 +755,12 @@ class ListenTogetherManager @Inject constructor(
         queueTitle: String? = null,  // New param
         bypassBuffer: Boolean = false
     ) {
-        val player = playerConnection?.player
-        if (player == null) {
+        val connection = playerConnection
+        if (connection == null) {
             Log.w(TAG, "Cannot apply playback state - no player")
             return
         }
+        val player = connection.player
 
         Log.d(TAG, "Applying playback state: track=${currentTrack?.id}, pos=$position, queue=${queue?.size}, bypassBuffer=$bypassBuffer")
 
@@ -758,17 +771,22 @@ class ListenTogetherManager @Inject constructor(
         if (currentTrack == null) {
             Log.d(TAG, "No track in state, pausing")
             scope.launch(Dispatchers.Main) {
+                if (playerConnection !== connection) return@launch
                 isSyncing = true
-                playerConnection?.allowInternalSync = true
+                connection.allowInternalSync = true
                 if (queue != null && queue.isNotEmpty()) {
                     val mediaItems = queue.map { it.toMediaMetadata().toMediaItem() }
                     player.setMediaItems(mediaItems)
                 } else if (queue != null) {
                     player.clearMediaItems()
                 }
-                playerConnection?.pause()
-                playerConnection?.service?.queueTitle = queueTitle
-                playerConnection?.allowInternalSync = false
+                connection.pause()
+                try {
+                    connection.service.queueTitle = queueTitle
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to set queue title for empty state", e)
+                }
+                connection.allowInternalSync = false
                 isSyncing = false
             }
             return
@@ -777,8 +795,9 @@ class ListenTogetherManager @Inject constructor(
         bufferingTrackId = currentTrack.id
         
         scope.launch(Dispatchers.Main) {
+            if (playerConnection !== connection) return@launch
             isSyncing = true
-            playerConnection?.allowInternalSync = true
+            connection.allowInternalSync = true
             
             try {
                 // Apply queue/media (same)
@@ -806,10 +825,14 @@ class ListenTogetherManager @Inject constructor(
                     player.setMediaItems(listOf(item), 0, position)
                 }
                 
-                playerConnection?.seekTo(position)  // Always seek immediately to target pos
+                connection.seekTo(position)  // Always seek immediately to target pos
                 
                 // Sync queue title
-                playerConnection?.service?.queueTitle = queueTitle ?: "Listen Together"
+                try {
+                    connection.service.queueTitle = queueTitle ?: "Listen Together"
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to set queue title during applyPlaybackState", e)
+                }
                 
                 if (bypassBuffer) {
                     // Manual sync/reconnect: apply play/pause immediately, no buffer protocol
@@ -825,10 +848,10 @@ class ListenTogetherManager @Inject constructor(
                         Log.d(TAG, "Player ready after ${attempts * 50}ms, seeking to $position")
                         player.seekTo(position)
                         if (isPlaying) {
-                            playerConnection?.play()
+                            connection.play()
                             Log.d(TAG, "Bypass: PLAY issued")
                         } else {
-                            playerConnection?.pause()
+                            connection.pause()
                             Log.d(TAG, "Bypass: PAUSE issued")
                         }
                     } else {
@@ -841,7 +864,7 @@ class ListenTogetherManager @Inject constructor(
                     bufferCompleteReceivedForTrack = null
                 } else {
                     // Normal sync: pause, store pending, send buffer_ready
-                    playerConnection?.pause()
+                    connection.pause()
                     pendingSyncState = SyncStatePayload(
                         currentTrack = currentTrack,
                         isPlaying = isPlaying,
@@ -855,7 +878,7 @@ class ListenTogetherManager @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "Error applying playback state", e)
             } finally {
-                playerConnection?.allowInternalSync = false
+                connection.allowInternalSync = false
                 delay(200)
                 isSyncing = false
             }
@@ -875,24 +898,41 @@ class ListenTogetherManager @Inject constructor(
                 YouTube.queue(listOf(track.id)).onSuccess { queue ->
                     Log.d(TAG, "Got queue for track ${track.id}")
                     launch(Dispatchers.Main) {
+                        val connection = playerConnection ?: run {
+                            isSyncing = false
+                            return@launch
+                        }
+                        if (playerConnection !== connection) {
+                            isSyncing = false
+                            return@launch
+                        }
                         isSyncing = true
                         // Allow internal sync to bypass playback blocking for guests
-                        playerConnection?.allowInternalSync = true
-                        playerConnection?.playQueue(
+                        connection.allowInternalSync = true
+                        connection.playQueue(
                             YouTubeQueue(
                                 endpoint = WatchEndpoint(videoId = track.id),
                                 preloadItem = queue.firstOrNull()?.toMediaMetadata()
                             )
                         )
-                        playerConnection?.service?.queueTitle = "Listen Together" // Set default title
-                        playerConnection?.allowInternalSync = false
+                        try {
+                            connection.service.queueTitle = "Listen Together" // Set default title
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to set queue title", e)
+                        }
+                        connection.allowInternalSync = false
                         
                         // Wait for player to be ready - monitor actual player state
                         var waitCount = 0
                         while (waitCount < 40) { // Max 2 seconds (40 * 50ms)
-                            val player = playerConnection?.player
-                            if (player != null && player.playbackState == Player.STATE_READY) {
-                                Log.d(TAG, "Player ready after ${waitCount * 50}ms")
+                            try {
+                                val player = connection.player
+                                if (player.playbackState == Player.STATE_READY) {
+                                    Log.d(TAG, "Player ready after ${waitCount * 50}ms")
+                                    break
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error checking player state", e)
                                 break
                             }
                             delay(50)
@@ -901,7 +941,7 @@ class ListenTogetherManager @Inject constructor(
 
                         // Do NOT seek here; defer the exact seek until after the server signals buffer-complete
                         // Ensure paused state before signaling ready
-                        playerConnection?.pause()
+                        connection.pause()
 
                         // Store pending sync (guest will apply seek + play/pause after BufferComplete)
                         pendingSyncState = SyncStatePayload(
@@ -1024,8 +1064,18 @@ class ListenTogetherManager @Inject constructor(
         Log.d(TAG, "Sending track change: ${trackInfo.title}, duration: $durationMs")
         
         // Also grab current queue to send along with track change
-        val currentQueue = playerConnection?.queueWindows?.value?.map { it.toTrackInfo() }
-        val currentTitle = playerConnection?.queueTitle?.value
+        val currentQueue = try {
+            playerConnection?.queueWindows?.value?.map { it.toTrackInfo() }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to get current queue", e)
+            null
+        }
+        val currentTitle = try {
+            playerConnection?.queueTitle?.value
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to get current title", e)
+            null
+        }
         
         client.sendPlaybackAction(
             PlaybackActions.CHANGE_TRACK,
@@ -1051,9 +1101,15 @@ class ListenTogetherManager @Inject constructor(
                     delay(500) // Debounce rapid playlist manipulations
                 
                     Log.d(TAG, "Sending SYNC_QUEUE with ${tracks.size} items")
+                    val queueTitle = try {
+                        playerConnection?.queueTitle?.value
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to get queue title", e)
+                        null
+                    }
                     client.sendPlaybackAction(
                         PlaybackActions.SYNC_QUEUE,
-                        queueTitle = playerConnection?.queueTitle?.value,
+                        queueTitle = queueTitle,
                         queue = tracks
                     )
                 }
