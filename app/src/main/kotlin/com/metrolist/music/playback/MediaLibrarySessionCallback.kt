@@ -31,6 +31,13 @@ import com.google.common.util.concurrent.SettableFuture
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.pages.HomePage
+import com.metrolist.music.db.entities.Album
+import com.metrolist.music.db.entities.Artist
+import com.metrolist.music.db.entities.Playlist
+import com.metrolist.music.db.entities.PlaylistSong
+import com.metrolist.music.db.entities.Song
+import kotlinx.coroutines.runBlocking
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.music.R
@@ -223,7 +230,7 @@ constructor(
                         val downloadedSongCount = downloadUtil.downloads.value.size
                         val youtubePlaylists = try {
                             YouTube.home().getOrNull()?.sections
-                                ?.flatMap { section -> section.items }
+                                ?.flatMap { section: HomePage.Section -> section.items.toList() }
                                 ?.filterIsInstance<PlaylistItem>()
                                 ?.take(10)
                                 ?: emptyList()
@@ -436,19 +443,19 @@ constructor(
                 }
                 
                 val artistSongs = database.searchArtists(query).first().flatMap { artist: Artist ->
-                    database.artistSongsByCreateDateAsc(artist.id).first()
+                    runBlocking { database.artistSongsByCreateDateAsc(artist.id).first() }
                 }
                 
                 val albumSongs = database.searchAlbums(query).first().flatMap { album: Album ->
-                    database.albumSongs(album.id).first()
+                    runBlocking { database.albumSongs(album.id).first() }
                 }
                 
                 val playlistSongs = database.searchPlaylists(query).first().flatMap { playlist: Playlist ->
-                    database.playlistSongs(playlist.id).first().map { playlistSong -> playlistSong.song }
+                    runBlocking { database.playlistSongs(playlist.id).first().map { playlistSong: PlaylistSong -> playlistSong.song } }
                 }
 
                 val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                    .distinctBy { song -> song.id }
+                    .distinctBy { song: Song -> song.id }
                 
                 allLocalSongs.forEach { song: Song ->
                     searchResults.add(song.toMediaItem(
@@ -465,12 +472,12 @@ constructor(
                         ?.filterIsInstance<SongItem>()
                         ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
                         ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
-                        ?.filter { onlineSong ->
-                            allLocalSongs.none { localSong ->
+                        ?.filter { onlineSong: SongItem ->
+                            allLocalSongs.none { localSong: Song ->
                                 localSong.id == onlineSong.id ||
                                 (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
-                                 localSong.artists.any { artist ->
-                                     onlineSong.artists.any { onlineArtist ->
+                                 localSong.artists.any { artist: com.metrolist.music.db.entities.ArtistEntity ->
+                                     onlineSong.artists.any { onlineArtist: com.metrolist.innertube.models.Artist ->
                                          onlineArtist.name.equals(artist.name, ignoreCase = true)
                                      }
                                  })
@@ -642,19 +649,19 @@ constructor(
                     }
                     
                     val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist: Artist ->
-                        database.artistSongsByCreateDateAsc(artist.id).first()
+                        runBlocking { database.artistSongsByCreateDateAsc(artist.id).first() }
                     }
                     
                     val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album: Album ->
-                        database.albumSongs(album.id).first()
+                        runBlocking { database.albumSongs(album.id).first() }
                     }
                     
                     val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist: Playlist ->
-                        database.playlistSongs(playlist.id).first().map { playlistSong -> playlistSong.song }
+                        runBlocking { database.playlistSongs(playlist.id).first().map { playlistSong: PlaylistSong -> playlistSong.song } }
                     }
 
                     val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                        .distinctBy { song -> song.id }
+                        .distinctBy { song: Song -> song.id }
                     
                     searchResults.addAll(allLocalSongs)
                     

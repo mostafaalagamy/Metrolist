@@ -111,7 +111,7 @@ interface DatabaseDao {
                             album.artists.joinToString(
                                 "",
                             ) { artist -> artist.name }
-                        }
+                        }.toList()
                     }
             }
 
@@ -161,7 +161,7 @@ interface DatabaseDao {
                             album.artists.joinToString(
                                 "",
                             ) { artist -> artist.name }
-                        }
+                        }.toList()
                     }
             }
 
@@ -1084,7 +1084,7 @@ interface DatabaseDao {
                             album.artists.joinToString(
                                 "",
                             ) { artist -> artist.name }
-                        }
+                        }.toList()
                     }
             }
 
@@ -1313,7 +1313,7 @@ interface DatabaseDao {
                     year = albumPage.album.year,
                     thumbnailUrl = albumPage.album.thumbnail,
                     songCount = albumPage.songs.size,
-                    duration = albumPage.songs.sumOf { song -> song.duration ?: 0 },
+                    duration = albumPage.songs.sumOf { song: SongItem -> (song.duration ?: 0).toInt() },
                     explicit = albumPage.album.explicit || albumPage.songs.any { it.explicit },
                 ),
             ) == -1L
@@ -1432,7 +1432,7 @@ interface DatabaseDao {
                 year = albumPage.album.year,
                 thumbnailUrl = albumPage.album.thumbnail,
                 songCount = albumPage.songs.size,
-                duration = albumPage.songs.sumOf { song -> song.duration ?: 0 },
+                duration = albumPage.songs.sumOf { song: SongItem -> (song.duration ?: 0).toInt() },
                 explicit = albumPage.album.explicit || albumPage.songs.any { song -> song.explicit },
             ),
         )
