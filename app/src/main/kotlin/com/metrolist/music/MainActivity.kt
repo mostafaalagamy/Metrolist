@@ -165,6 +165,7 @@ import com.metrolist.music.ui.screens.navigationBuilder
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
+import com.metrolist.music.constants.SelectedThemeColorKey
 import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.ui.theme.extractThemeColor
@@ -387,14 +388,23 @@ class MainActivity : ComponentActivity() {
             pureBlackEnabled && useDarkTheme
         }
 
+        val (selectedThemeColorInt) = rememberPreference(SelectedThemeColorKey, defaultValue = DefaultThemeColor.toArgb())
+        val selectedThemeColor = Color(selectedThemeColorInt)
+
         var themeColor by rememberSaveable(stateSaver = ColorSaver) {
-            mutableStateOf(DefaultThemeColor)
+            mutableStateOf(selectedThemeColor)
         }
 
-        LaunchedEffect(playerConnection, enableDynamicTheme) {
+        LaunchedEffect(selectedThemeColor) {
+            if (!enableDynamicTheme) {
+                themeColor = selectedThemeColor
+            }
+        }
+
+        LaunchedEffect(playerConnection, enableDynamicTheme, selectedThemeColor) {
             val playerConnection = playerConnection
             if (!enableDynamicTheme || playerConnection == null) {
-                themeColor = DefaultThemeColor
+                themeColor = selectedThemeColor
                 return@LaunchedEffect
             }
 
@@ -412,14 +422,14 @@ class MainActivity : ComponentActivity() {
                                     .crossfade(false)
                                     .build()
                             )
-                            themeColor = result.image?.toBitmap()?.extractThemeColor() ?: DefaultThemeColor
+                            themeColor = result.image?.toBitmap()?.extractThemeColor() ?: selectedThemeColor
                         } catch (e: Exception) {
                             // Fallback to default on error
-                            themeColor = DefaultThemeColor
+                            themeColor = selectedThemeColor
                         }
                     }
                 } else {
-                    themeColor = DefaultThemeColor
+                    themeColor = selectedThemeColor
                 }
             }
         }
