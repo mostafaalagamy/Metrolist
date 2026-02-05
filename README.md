@@ -58,7 +58,8 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 - Audio normalization 
 - Adjust tempo/pitch 
 - Local playlist management
-- Reorder songs in playlist or queue 
+- Reorder songs in playlist or queue
+- Home screen widget with playback controls
 - Light - Dark - black - Dynamic theme
 - Sleep timer
 - Material 3 

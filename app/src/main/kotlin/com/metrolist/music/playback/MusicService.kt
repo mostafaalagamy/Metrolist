@@ -2415,11 +2415,10 @@ class MusicService :
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Intercept Widget Commands (both legacy and Glance widgets use same actions)
         when (intent?.action) {
             MusicWidgetActions.ACTION_PLAY_PAUSE -> {
                 if (player.isPlaying) player.pause() else player.play()
-                updateWidgetUI(player.isPlaying) // Instant UI update
+                updateWidgetUI(player.isPlaying)
             }
             MusicWidgetActions.ACTION_NEXT -> {
                 player.seekToNext()
@@ -2441,11 +2440,12 @@ class MusicService :
             }
         }
 
-        // IMPORTANT: Pass everything else to Media3 so notification buttons still work!
         return super.onStartCommand(intent, flags, startId)
     }
 
-    // --- WIDGET UPDATE HELPER ---
+    /**
+     * Updates all app widgets with current playback state
+     */
     private fun updateWidgetUI(isPlaying: Boolean) {
         try {
             val context = this
@@ -2457,7 +2457,6 @@ class MusicService :
                 val artistName = songData?.artists?.joinToString(", ") { it.name } ?: getString(R.string.tap_to_open)
                 val isLiked = songData?.song?.liked == true
 
-                // Update Music Widget
                 try {
                     MusicWidget.updateWidget(
                         context = context,
@@ -2467,11 +2466,10 @@ class MusicService :
                         albumArtUrl = song?.thumbnailUrl,
                         isLiked = isLiked
                     )
-                } catch (e: Exception) {
-                    // Glance widget may not be added
+                } catch (_: Exception) {
+                    // Widget not added to home screen
                 }
 
-                // Update Turntable Widget
                 try {
                     TurntableWidget.updateWidget(
                         context = context,
@@ -2479,12 +2477,11 @@ class MusicService :
                         albumArtUrl = song?.thumbnailUrl,
                         isLiked = isLiked
                     )
-                } catch (e: Exception) {
-                    // Turntable widget may not be added
+                } catch (_: Exception) {
+                    // Widget not added to home screen
                 }
             }
         } catch (e: Exception) {
-            // Fail silently on Wear OS or other platforms without widget support
             reportException(e)
         }
     }
