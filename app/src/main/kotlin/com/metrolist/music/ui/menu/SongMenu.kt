@@ -155,7 +155,7 @@ fun SongMenu(
             title = stringResource(R.string.confirm_block_song, song.title),
             onDismiss = { showBlockSongDialog = false },
             onConfirm = {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     database.insert(BlockedSong(song.id, song.title, song.artists.joinToString { it.name }, song.thumbnailUrl))
                     if (download != null) {
                         DownloadService.sendRemoveDownload(
@@ -167,9 +167,11 @@ fun SongMenu(
                     }
                     // Remove from queue
                     val player = playerConnection.player
-                    for (i in player.mediaItemCount - 1 downTo 0) {
-                        if (player.getMediaItemAt(i).mediaId == song.id) {
-                            player.removeMediaItem(i)
+                    withContext(Dispatchers.Main) {
+                        for (i in player.mediaItemCount - 1 downTo 0) {
+                            if (player.getMediaItemAt(i).mediaId == song.id) {
+                                player.removeMediaItem(i)
+                            }
                         }
                     }
                 }
@@ -189,17 +191,19 @@ fun SongMenu(
                 title = stringResource(R.string.confirm_block_artist, primaryArtist.name),
                 onDismiss = { showBlockArtistDialog = false },
                 onConfirm = {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         database.insert(BlockedArtist(primaryArtist.id, primaryArtist.name, null))
                         // Remove all songs by this artist from queue
                         val player = playerConnection.player
-                        for (i in player.mediaItemCount - 1 downTo 0) {
-                            val item = player.getMediaItemAt(i)
-                            // Check media metadata for artist
-                            // mediaMetadata.artist is CharSequence?
-                            if (item.mediaMetadata.artist.toString() == primaryArtist.name) { 
-                                // This is a loose check, ideal would be artist ID but MediaItem metadata might only have name
-                                player.removeMediaItem(i)
+                        withContext(Dispatchers.Main) {
+                            for (i in player.mediaItemCount - 1 downTo 0) {
+                                val item = player.getMediaItemAt(i)
+                                // Check media metadata for artist
+                                // mediaMetadata.artist is CharSequence?
+                                if (item.mediaMetadata.artist.toString() == primaryArtist.name) { 
+                                    // This is a loose check, ideal would be artist ID but MediaItem metadata might only have name
+                                    player.removeMediaItem(i)
+                                }
                             }
                         }
                     }

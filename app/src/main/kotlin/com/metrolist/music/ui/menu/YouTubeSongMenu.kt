@@ -90,6 +90,7 @@ import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -126,7 +127,7 @@ fun YouTubeSongMenu(
             title = stringResource(R.string.confirm_block_song, song.title),
             onDismiss = { showBlockSongDialog = false },
             onConfirm = {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     database.insert(BlockedSong(song.id, song.title, song.artists.joinToString { it.name }, song.thumbnail))
                     if (download != null) {
                         DownloadService.sendRemoveDownload(
@@ -137,9 +138,11 @@ fun YouTubeSongMenu(
                         )
                     }
                     val player = playerConnection.player
-                    for (i in player.mediaItemCount - 1 downTo 0) {
-                        if (player.getMediaItemAt(i).mediaId == song.id) {
-                            player.removeMediaItem(i)
+                    withContext(Dispatchers.Main) {
+                        for (i in player.mediaItemCount - 1 downTo 0) {
+                            if (player.getMediaItemAt(i).mediaId == song.id) {
+                                player.removeMediaItem(i)
+                            }
                         }
                     }
                 }
@@ -158,15 +161,17 @@ fun YouTubeSongMenu(
                 title = stringResource(R.string.confirm_block_artist, primaryArtist.name),
                 onDismiss = { showBlockArtistDialog = false },
                 onConfirm = {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         // artist.id might be null in some cases, handle safety
                         primaryArtist.id?.let { artistId ->
                             database.insert(BlockedArtist(artistId, primaryArtist.name, null))
                             val player = playerConnection.player
-                            for (i in player.mediaItemCount - 1 downTo 0) {
-                                val item = player.getMediaItemAt(i)
-                                if (item.mediaMetadata.artist.toString() == primaryArtist.name) {
-                                    player.removeMediaItem(i)
+                            withContext(Dispatchers.Main) {
+                                for (i in player.mediaItemCount - 1 downTo 0) {
+                                    val item = player.getMediaItemAt(i)
+                                    if (item.mediaMetadata.artist.toString() == primaryArtist.name) {
+                                        player.removeMediaItem(i)
+                                    }
                                 }
                             }
                         }

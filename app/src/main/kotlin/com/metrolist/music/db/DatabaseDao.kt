@@ -1289,22 +1289,22 @@ interface DatabaseDao {
     fun blockedAlbums(): Flow<List<BlockedAlbum>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(blockedSong: BlockedSong)
+    suspend fun insert(blockedSong: BlockedSong)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(blockedArtist: BlockedArtist)
+    suspend fun insert(blockedArtist: BlockedArtist)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(blockedAlbum: BlockedAlbum)
+    suspend fun insert(blockedAlbum: BlockedAlbum)
 
     @Query("DELETE FROM blocked_song WHERE songId = :songId")
-    fun deleteBlockedSong(songId: String)
+    suspend fun deleteBlockedSong(songId: String)
 
     @Query("DELETE FROM blocked_artist WHERE artistId = :artistId")
-    fun deleteBlockedArtist(artistId: String)
+    suspend fun deleteBlockedArtist(artistId: String)
 
     @Query("DELETE FROM blocked_album WHERE albumId = :albumId")
-    fun deleteBlockedAlbum(albumId: String)
+    suspend fun deleteBlockedAlbum(albumId: String)
 
     @Query("SELECT EXISTS(SELECT 1 FROM blocked_song WHERE songId = :songId)")
     fun isSongBlocked(songId: String): Flow<Boolean>
