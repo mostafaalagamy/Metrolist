@@ -9,9 +9,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -780,21 +782,46 @@ fun ListenTogetherDialog(
     
     // Handle case where manager is not available
     if (listenTogetherManager == null) {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            title = { Text(stringResource(R.string.listen_together)) },
-            text = {
-                Text(
-                    text = stringResource(R.string.listen_together_not_configured),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(android.R.string.ok))
+        ListDialog(onDismiss = onDismiss) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.group),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.listen_together),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.listen_together_not_configured),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(stringResource(android.R.string.ok))
+                    }
                 }
             }
-        )
+        }
         return
     }
     
@@ -859,49 +886,71 @@ fun ListenTogetherDialog(
     val isInRoom = listenTogetherManager.isInRoom
     val isHost = roomState?.hostId == userId
     
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ListDialog(onDismiss = onDismiss) {
+        // Header
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.share),
+                    painter = painterResource(R.drawable.group),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(40.dp)
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = if (isInRoom) {
                         if (isHost) stringResource(R.string.hosting_room) else stringResource(R.string.in_room)
                     } else {
                         stringResource(R.string.listen_together)
-                    }
+                    },
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
-        },
-        text = {
-            Column(
+        }
+        
+        // Connection status
+        item {
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                color = when (connectionState) {
+                    ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
+                    ConnectionState.ERROR -> MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                    ConnectionState.DISCONNECTED -> MaterialTheme.colorScheme.surfaceVariant
+                }
             ) {
-                // Connection status indicator and controls
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = when (connectionState) {
-                            ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primaryContainer
-                            ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> MaterialTheme.colorScheme.secondaryContainer
-                            ConnectionState.ERROR -> MaterialTheme.colorScheme.errorContainer
-                            ConnectionState.DISCONNECTED -> MaterialTheme.colorScheme.surfaceVariant
-                        }
-                    )
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(
+                                    color = when (connectionState) {
+                                        ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primary
+                                        ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> MaterialTheme.colorScheme.secondary
+                                        ConnectionState.ERROR -> MaterialTheme.colorScheme.error
+                                        ConnectionState.DISCONNECTED -> MaterialTheme.colorScheme.outline
+                                    },
+                                    shape = RoundedCornerShape(50)
+                                )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = when (connectionState) {
                                 ConnectionState.CONNECTED -> stringResource(R.string.listen_together_connected)
@@ -910,434 +959,618 @@ fun ListenTogetherDialog(
                                 ConnectionState.ERROR -> stringResource(R.string.listen_together_error)
                                 ConnectionState.DISCONNECTED -> stringResource(R.string.listen_together_disconnected)
                             },
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = when (connectionState) {
+                                ConnectionState.CONNECTED -> MaterialTheme.colorScheme.primary
+                                ConnectionState.CONNECTING, ConnectionState.RECONNECTING -> MaterialTheme.colorScheme.secondary
+                                ConnectionState.ERROR -> MaterialTheme.colorScheme.error
+                                ConnectionState.DISCONNECTED -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
                         )
-                        
-                        if (connectionState == ConnectionState.CONNECTING || connectionState == ConnectionState.RECONNECTING) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        }
-                        
+                    }
+                    
+                    if (connectionState == ConnectionState.CONNECTING || connectionState == ConnectionState.RECONNECTING) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (connectionState == ConnectionState.DISCONNECTED || connectionState == ConnectionState.ERROR) {
+                            Button(
+                                onClick = { listenTogetherManager.connect() },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(stringResource(R.string.connect), fontWeight = FontWeight.SemiBold)
+                            }
+                        } else {
+                            Button(
+                                onClick = { listenTogetherManager.disconnect() },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(stringResource(R.string.disconnect), fontWeight = FontWeight.SemiBold)
+                            }
+                            FilledTonalButton(
+                                onClick = { listenTogetherManager.forceReconnect() },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Reconnect", fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+        
+        if (connectionState == ConnectionState.CONNECTED && !isInRoom) {
+            item {
+                Text(
+                    text = stringResource(R.string.listen_together_background_disconnect_note),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+        }
+
+        if (isInRoom) {
+            // Room status card
+            roomState?.let { room ->
+                item {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if (connectionState == ConnectionState.DISCONNECTED || connectionState == ConnectionState.ERROR) {
-                                Button(
-                                    onClick = { listenTogetherManager.connect() },
-                                    modifier = Modifier.weight(1f)
+                            Text(
+                                text = stringResource(R.string.room_code),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = room.roomCode,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 6.sp
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                IconButton(
+                                    onClick = {
+                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                        val clip = android.content.ClipData.newPlainText("Room Code", room.roomCode)
+                                        clipboard.setPrimaryClip(clip)
+                                        Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                                    }
                                 ) {
-                                    Text(stringResource(R.string.connect))
-                                }
-                            } else {
-                                Button(
-                                    onClick = { listenTogetherManager.disconnect() },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(stringResource(R.string.disconnect))
-                                }
-                                FilledTonalButton(
-                                    onClick = { listenTogetherManager.forceReconnect() },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Reconnect")
+                                    Icon(
+                                        painter = painterResource(R.drawable.content_copy),
+                                        contentDescription = stringResource(R.string.copy),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
                                 }
                             }
                         }
                     }
                 }
                 
-                if (connectionState == ConnectionState.CONNECTED && !isInRoom) {
-                    Text(
-                        text = stringResource(R.string.listen_together_background_disconnect_note),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                if (isInRoom) {
-                    // Room status card
-                    roomState?.let { room ->
-                        Surface(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = stringResource(R.string.room_code),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                                )
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = room.roomCode,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        fontWeight = FontWeight.Bold,
-                                        letterSpacing = 4.sp
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                                            val clip = android.content.ClipData.newPlainText("Room Code", room.roomCode)
-                                            clipboard.setPrimaryClip(clip)
-                                            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.content_copy),
-                                            contentDescription = stringResource(R.string.copy),
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Connected users (filter out disconnected users in grace period)
-                        val connectedUsers = room.users.filter { it.isConnected }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                
+                // Connected users - horizontal layout
+                val connectedUsers = room.users.filter { it.isConnected }
+                
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
                         Text(
                             text = stringResource(R.string.connected_users, connectedUsers.size),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Medium
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(bottom = 12.dp)
                         )
                         
-                        room.users.forEach { user ->
-                            // Only show connected users in the UI
-                            if (!user.isConnected) return@forEach
-                            
-                            Surface(
-                                color = if (user.isHost) {
-                                    MaterialTheme.colorScheme.tertiaryContainer
-                                } else {
-                                    MaterialTheme.colorScheme.surfaceVariant
-                                },
-                                shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.padding(12.dp)
+                        // Horizontal scrollable row for users
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            connectedUsers.forEach { user ->
+                                // User avatar card
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.width(72.dp)
                                 ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        modifier = Modifier.weight(1f)
+                                    // Circular avatar
+                                    Box(
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.person),
-                                            contentDescription = null,
-                                            tint = if (user.isHost) {
-                                                MaterialTheme.colorScheme.onTertiaryContainer
-                                            } else {
-                                                MaterialTheme.colorScheme.onSurfaceVariant
-                                            },
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                        Column {
-                                            Text(
-                                                text = user.username,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                fontWeight = if (user.userId == userId) FontWeight.Bold else FontWeight.Normal,
-                                                color = if (user.isHost) {
-                                                    MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.9f)
-                                                } else {
-                                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                                }
-                                            )
-                                            if (user.isHost) {
-                                                Text(
-                                                    text = stringResource(R.string.host_label),
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
-                                                )
+                                        Surface(
+                                            modifier = Modifier.size(52.dp),
+                                            shape = RoundedCornerShape(50),
+                                            color = if (user.isHost) {
+                                                MaterialTheme.colorScheme.primary
                                             } else if (user.userId == userId) {
+                                                MaterialTheme.colorScheme.secondary
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceVariant
+                                            }
+                                        ) {
+                                            Box(
+                                                contentAlignment = Alignment.Center,
+                                                modifier = Modifier.fillMaxSize()
+                                            ) {
                                                 Text(
-                                                    text = stringResource(R.string.you_label),
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                                    text = user.username.take(1).uppercase(),
+                                                    style = MaterialTheme.typography.titleLarge,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (user.isHost) {
+                                                        MaterialTheme.colorScheme.onPrimary
+                                                    } else if (user.userId == userId) {
+                                                        MaterialTheme.colorScheme.onSecondary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                                    }
                                                 )
+                                            }
+                                        }
+                                        
+                                        // Host/You badge
+                                        if (user.isHost || user.userId == userId) {
+                                            Surface(
+                                                modifier = Modifier
+                                                    .align(Alignment.BottomEnd)
+                                                    .offset(x = 4.dp, y = 4.dp)
+                                                    .size(18.dp),
+                                                shape = RoundedCornerShape(50),
+                                                color = if (user.isHost) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier.fillMaxSize()
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            if (user.isHost) R.drawable.mic else R.drawable.person
+                                                        ),
+                                                        contentDescription = null,
+                                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                                        modifier = Modifier.size(12.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Kick button for host
+                                        if (isHost && user.userId != userId) {
+                                            Surface(
+                                                modifier = Modifier
+                                                    .align(Alignment.TopEnd)
+                                                    .offset(x = 4.dp, y = (-4).dp)
+                                                    .size(20.dp)
+                                                    .clickable {
+                                                        listenTogetherManager.kickUser(user.userId, "Removed by host")
+                                                    },
+                                                shape = RoundedCornerShape(50),
+                                                color = MaterialTheme.colorScheme.error
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier.fillMaxSize()
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.close),
+                                                        contentDescription = stringResource(R.string.kick_user),
+                                                        tint = MaterialTheme.colorScheme.onError,
+                                                        modifier = Modifier.size(12.dp)
+                                                    )
+                                                }
                                             }
                                         }
                                     }
                                     
-                                    // Kick button (only show for host and not for themselves)
-                                    if (isHost && user.userId != userId) {
-                                        IconButton(
-                                            onClick = {
-                                                listenTogetherManager.kickUser(user.userId, "Removed by host")
-                                            }
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.close),
-                                                contentDescription = stringResource(R.string.kick_user),
-                                                tint = MaterialTheme.colorScheme.error,
-                                                modifier = Modifier.size(18.dp)
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Pending join requests (host only)
-                        if (isHost && pendingJoinRequests.isNotEmpty()) {
-                            HorizontalDivider()
-                            Text(
-                                text = stringResource(R.string.pending_requests),
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            
-                            pendingJoinRequests.forEach { request ->
-                                Surface(
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.padding(12.dp)
-                                    ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.group_add),
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                                modifier = Modifier.size(20.dp)
-                                            )
-                                            Text(
-                                                text = request.username,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                                            )
-                                        }
-                                        
-                                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                            IconButton(
-                                                onClick = {
-                                                    listenTogetherManager.approveJoin(request.userId)
-                                                }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.check),
-                                                    contentDescription = stringResource(R.string.approve),
-                                                    tint = MaterialTheme.colorScheme.primary,
-                                                    modifier = Modifier.size(18.dp)
-                                                )
-                                            }
-                                            IconButton(
-                                                onClick = {
-                                                    listenTogetherManager.rejectJoin(request.userId, "Rejected by host")
-                                                }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.close),
-                                                    contentDescription = stringResource(R.string.reject),
-                                                    tint = MaterialTheme.colorScheme.error,
-                                                    modifier = Modifier.size(18.dp)
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Pending suggestions (host only)
-                        if (isHost && pendingSuggestions.isNotEmpty()) {
-                            HorizontalDivider()
-                            Text(
-                                text = stringResource(R.string.pending_suggestions),
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-
-                            pendingSuggestions.forEach { suggestion ->
-                                Surface(
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.padding(12.dp)
-                                    ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.queue_music),
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                                modifier = Modifier.size(20.dp)
-                                            )
-                                            Column(modifier = Modifier.weight(1f)) {
-                                                Text(
-                                                    text = suggestion.trackInfo.title,
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = suggestion.fromUsername,
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
-                                        }
-
-                                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                            IconButton(
-                                                onClick = {
-                                                    listenTogetherManager.approveSuggestion(suggestion.suggestionId)
-                                                }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.check),
-                                                    contentDescription = stringResource(R.string.approve),
-                                                    tint = MaterialTheme.colorScheme.primary,
-                                                    modifier = Modifier.size(18.dp)
-                                                )
-                                            }
-                                            IconButton(
-                                                onClick = {
-                                                    listenTogetherManager.rejectSuggestion(suggestion.suggestionId, "Rejected by host")
-                                                }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.close),
-                                                    contentDescription = stringResource(R.string.reject),
-                                                    tint = MaterialTheme.colorScheme.error,
-                                                    modifier = Modifier.size(18.dp)
-                                                )
-                                            }
-                                        }
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    
+                                    // Username
+                                    Text(
+                                        text = user.username,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = if (user.userId == userId) FontWeight.Bold else FontWeight.Medium,
+                                        color = if (user.isHost) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface
+                                        },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    
+                                    // Role label
+                                    if (user.isHost) {
+                                        Text(
+                                            text = stringResource(R.string.host_label),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                                        )
+                                    } else if (user.userId == userId) {
+                                        Text(
+                                            text = stringResource(R.string.you_label),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+                                        )
                                     }
                                 }
                             }
                         }
                     }
-                } else {
-                    // Quick join card
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(20.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                }
+                
+                // Pending join requests (host only)
+                if (isHost && pendingJoinRequests.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(R.string.pending_requests),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    
+                    items(pendingJoinRequests) { request ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
                         ) {
-                            Text(
-                                text = stringResource(R.string.listen_together_description),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                            )
-                            OutlinedTextField(
-                                value = usernameInput,
-                                onValueChange = { usernameInput = it },
-                                label = { Text(stringResource(R.string.username)) },
-                                placeholder = { Text(stringResource(R.string.enter_username)) },
-                                leadingIcon = {
-                                    Icon(painterResource(R.drawable.person), null)
-                                },
-                                trailingIcon = {
-                                    if (usernameInput.isNotBlank()) {
-                                        IconButton(onClick = { usernameInput = "" }) {
-                                            Icon(painterResource(R.drawable.close), null)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.padding(12.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Surface(
+                                        modifier = Modifier.size(36.dp),
+                                        shape = RoundedCornerShape(50),
+                                        color = MaterialTheme.colorScheme.secondary
+                                    ) {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier.fillMaxSize()
+                                        ) {
+                                            Text(
+                                                text = request.username.take(1).uppercase(),
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSecondary
+                                            )
                                         }
                                     }
-                                },
-                                singleLine = true,
-                                shape = RoundedCornerShape(12.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(
-                                    text = stringResource(R.string.join_existing_room),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                                
-                                OutlinedTextField(
-                                    value = roomCodeInput,
-                                    onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
-                                    label = { Text(stringResource(R.string.room_code)) },
-                                    placeholder = { Text("ABCD1234") },
-                                    supportingText = {
-                                        Text(
-                                            text = "${roomCodeInput.length}/8",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
-                                        )
-                                    },
-                                    leadingIcon = {
-                                        Icon(painterResource(R.drawable.token), null)
-                                    },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-
-                            // Status messages
-                            if (isJoiningRoom) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Icon(
-                                        painterResource(R.drawable.hourglass_empty),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
                                     Text(
-                                        text = waitingForApprovalText,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.primary
+                                        text = request.username,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
+                                
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    IconButton(
+                                        onClick = { listenTogetherManager.approveJoin(request.userId) }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.check),
+                                            contentDescription = stringResource(R.string.approve),
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { listenTogetherManager.rejectJoin(request.userId, "Rejected by host") }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.close),
+                                            contentDescription = stringResource(R.string.reject),
+                                            tint = MaterialTheme.colorScheme.error,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
                             }
-                            joinErrorMessage?.let { msg ->
+                        }
+                    }
+                }
+
+                // Pending suggestions (host only)
+                if (isHost && pendingSuggestions.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(R.string.pending_suggestions),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    items(pendingSuggestions) { suggestion ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.padding(12.dp)
+                            ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.queue_music),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = suggestion.trackInfo.title,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Medium,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = suggestion.fromUsername,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    IconButton(
+                                        onClick = { listenTogetherManager.approveSuggestion(suggestion.suggestionId) }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.check),
+                                            contentDescription = stringResource(R.string.approve),
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { listenTogetherManager.rejectSuggestion(suggestion.suggestionId, "Rejected by host") }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.close),
+                                            contentDescription = stringResource(R.string.reject),
+                                            tint = MaterialTheme.colorScheme.error,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Leave room button
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        TextButton(
+                            onClick = onDismiss,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                stringResource(R.string.cancel),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                listenTogetherManager.leaveRoom()
+                                onDismiss()
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.logout),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.leave_room), fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        } else {
+            // Join/Create room section
+            item {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.listen_together_description),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        OutlinedTextField(
+                            value = usernameInput,
+                            onValueChange = { usernameInput = it },
+                            label = { Text(stringResource(R.string.username)) },
+                            placeholder = { Text(stringResource(R.string.enter_username)) },
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(R.drawable.person),
+                                    null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            },
+                            trailingIcon = {
+                                if (usernameInput.isNotBlank()) {
+                                    IconButton(onClick = { usernameInput = "" }) {
+                                        Icon(painterResource(R.drawable.close), null)
+                                    }
+                                }
+                            },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        
+                        HorizontalDivider()
+                        
+                        Text(
+                            text = stringResource(R.string.join_existing_room),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        
+                        OutlinedTextField(
+                            value = roomCodeInput,
+                            onValueChange = { roomCodeInput = it.uppercase().filter { c -> c.isLetterOrDigit() }.take(8) },
+                            label = { Text(stringResource(R.string.room_code)) },
+                            placeholder = { Text("ABCD1234") },
+                            supportingText = {
+                                Text(
+                                    text = "${roomCodeInput.length}/8",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(R.drawable.token),
+                                    null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Status messages
+                        if (isJoiningRoom) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = waitingForApprovalText,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                        
+                        joinErrorMessage?.let { msg ->
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(12.dp)
                                 ) {
                                     Icon(
                                         painterResource(R.drawable.error),
@@ -1345,10 +1578,12 @@ fun ListenTogetherDialog(
                                         modifier = Modifier.size(18.dp),
                                         tint = MaterialTheme.colorScheme.error
                                     )
+                                    Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = msg,
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.error
+                                        color = MaterialTheme.colorScheme.error,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                             }
@@ -1356,100 +1591,102 @@ fun ListenTogetherDialog(
                     }
                 }
             }
-        },
-        confirmButton = {
-            if (isInRoom) {
-                FilledTonalButton(
-                    onClick = {
-                        listenTogetherManager.leaveRoom()
-                        onDismiss()
-                    },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer
-                    )
+            
+            // Action buttons
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.logout),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.leave_room))
-                }
-            } else {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (roomCodeInput.length == 8) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        if (roomCodeInput.length == 8) {
+                            Button(
+                                onClick = {
+                                    val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
+                                    val finalUsername = username.trim()
+                                    if (finalUsername.isNotBlank()) {
+                                        savedUsername = finalUsername
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.joining_room, roomCodeInput),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        isJoiningRoom = true
+                                        isCreatingRoom = false
+                                        joinErrorMessage = null
+                                        listenTogetherManager.connect()
+                                        listenTogetherManager.joinRoom(roomCodeInput, finalUsername)
+                                    } else {
+                                        Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
+                                enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank()),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.secondary
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.login),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.join_room), fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                        
                         Button(
                             onClick = {
                                 val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
                                 val finalUsername = username.trim()
                                 if (finalUsername.isNotBlank()) {
                                     savedUsername = finalUsername
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.joining_room, roomCodeInput),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    // Keep the dialog open while waiting for host approval
-                                    isJoiningRoom = true
-                                    isCreatingRoom = false
+                                    Toast.makeText(context, R.string.creating_room, Toast.LENGTH_SHORT).show()
+                                    isCreatingRoom = true
+                                    isJoiningRoom = false
                                     joinErrorMessage = null
                                     listenTogetherManager.connect()
-                                    listenTogetherManager.joinRoom(roomCodeInput, finalUsername)
+                                    listenTogetherManager.createRoom(finalUsername)
                                 } else {
                                     Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
                                 }
                             },
-                            enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank())
+                            modifier = Modifier.weight(1f),
+                            enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank()),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.login),
+                                painter = painterResource(R.drawable.add),
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.join_room))
+                            Text(stringResource(R.string.create_room), fontWeight = FontWeight.SemiBold)
                         }
                     }
-                    Button(
-                        onClick = {
-                            val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
-                            val finalUsername = username.trim()
-                            if (finalUsername.isNotBlank()) {
-                                savedUsername = finalUsername
-                                Toast.makeText(
-                                    context,
-                                    R.string.creating_room,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                // Keep the dialog open while creating the room
-                                isCreatingRoom = true
-                                isJoiningRoom = false
-                                joinErrorMessage = null
-                                listenTogetherManager.connect()
-                                listenTogetherManager.createRoom(finalUsername)
-                            } else {
-                                Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank())
+                    
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add),
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                        Text(
+                            stringResource(R.string.cancel),
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.create_room))
                     }
                 }
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
-    )
+    }
 }
