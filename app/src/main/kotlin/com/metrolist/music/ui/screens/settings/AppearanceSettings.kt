@@ -113,6 +113,10 @@ import android.content.Intent
 import android.app.Activity
 import androidx.compose.material3.SnackbarHostState
 import com.metrolist.music.constants.CropAlbumArtKey
+import com.metrolist.music.constants.SelectedThemeColorKey
+import com.metrolist.music.ui.theme.DefaultThemeColor
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,6 +134,12 @@ fun AppearanceSettings(
         EnableDynamicIconKey,
         defaultValue = true
     )
+    val (selectedThemeColorInt) = rememberPreference(
+        SelectedThemeColorKey,
+        defaultValue = DefaultThemeColor.toArgb()
+    )
+    // Check if user has selected a custom color (not the default/dynamic color)
+    val isUsingCustomColor = selectedThemeColorInt != DefaultThemeColor.toArgb()
     val coroutineScope = rememberCoroutineScope()
 
     fun handleIconChange(enabled: Boolean) {
@@ -806,28 +816,32 @@ fun AppearanceSettings(
                         onClick = { handleIconChange(!enableDynamicIcon) }
                     )
                 )
-                add(
-                    Material3SettingsItem(
-                        icon = painterResource(R.drawable.palette),
-                        title = { Text(stringResource(R.string.enable_dynamic_theme)) },
-                        trailingContent = {
-                            Switch(
-                                checked = dynamicTheme,
-                                onCheckedChange = onDynamicThemeChange,
-                                thumbContent = {
-                                    Icon(
-                                        painter = painterResource(
-                                            id = if (dynamicTheme) R.drawable.check else R.drawable.close
-                                        ),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(SwitchDefaults.IconSize)
-                                    )
-                                }
-                            )
-                        },
-                        onClick = { onDynamicThemeChange(!dynamicTheme) }
+                // Only show dynamic theme option when using the default/dynamic color
+                // When a custom color is selected, dynamic theme is automatically disabled
+                if (!isUsingCustomColor) {
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.palette),
+                            title = { Text(stringResource(R.string.enable_dynamic_theme)) },
+                            trailingContent = {
+                                Switch(
+                                    checked = dynamicTheme,
+                                    onCheckedChange = onDynamicThemeChange,
+                                    thumbContent = {
+                                        Icon(
+                                            painter = painterResource(
+                                                id = if (dynamicTheme) R.drawable.check else R.drawable.close
+                                            ),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(SwitchDefaults.IconSize)
+                                        )
+                                    }
+                                )
+                            },
+                            onClick = { onDynamicThemeChange(!dynamicTheme) }
+                        )
                     )
-                )
+                }
                 add(
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.palette),

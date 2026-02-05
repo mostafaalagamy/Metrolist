@@ -77,6 +77,7 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.rememberDynamicColorScheme
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SelectedThemeColorKey
@@ -135,11 +136,21 @@ fun ThemeScreen(
         SelectedThemeColorKey,
         DefaultThemeColor.toArgb()
     )
+    val (_, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
 
     val selectedThemeColor = Color(selectedThemeColorInt)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // Helper function to handle color selection with dynamic theme toggle
+    val handleColorSelection: (Color) -> Unit = { color ->
+        onSelectedThemeColorChange(color.toArgb())
+        // Enable dynamic theme only when selecting the default/dynamic color
+        // Disable it when selecting any other color
+        val isDynamicColor = color == DefaultThemeColor
+        onDynamicThemeChange(isDynamicColor)
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -166,7 +177,7 @@ fun ThemeScreen(
                 pureBlack = pureBlack,
                 onPureBlackChange = onPureBlackChange,
                 selectedThemeColor = selectedThemeColor,
-                onSelectedThemeColorChange = { onSelectedThemeColorChange(it.toArgb()) }
+                onSelectedThemeColorChange = handleColorSelection
             )
         } else {
             PortraitThemeLayout(
@@ -176,7 +187,7 @@ fun ThemeScreen(
                 pureBlack = pureBlack,
                 onPureBlackChange = onPureBlackChange,
                 selectedThemeColor = selectedThemeColor,
-                onSelectedThemeColorChange = { onSelectedThemeColorChange(it.toArgb()) }
+                onSelectedThemeColorChange = handleColorSelection
             )
         }
     }
