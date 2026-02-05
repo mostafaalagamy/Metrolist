@@ -1605,6 +1605,39 @@ fun ListenTogetherDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        // Create Room button (left side)
+                        Button(
+                            onClick = {
+                                val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
+                                val finalUsername = username.trim()
+                                if (finalUsername.isNotBlank()) {
+                                    savedUsername = finalUsername
+                                    Toast.makeText(context, R.string.creating_room, Toast.LENGTH_SHORT).show()
+                                    isCreatingRoom = true
+                                    isJoiningRoom = false
+                                    joinErrorMessage = null
+                                    listenTogetherManager.connect()
+                                    listenTogetherManager.createRoom(finalUsername)
+                                } else {
+                                    Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank()),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.create_room), fontWeight = FontWeight.SemiBold)
+                        }
+                        
+                        // Join Room button (right side - only visible when room code is complete)
                         if (roomCodeInput.length == 8) {
                             Button(
                                 onClick = {
@@ -1640,37 +1673,6 @@ fun ListenTogetherDialog(
                                 Spacer(Modifier.width(8.dp))
                                 Text(stringResource(R.string.join_room), fontWeight = FontWeight.SemiBold)
                             }
-                        }
-                        
-                        Button(
-                            onClick = {
-                                val username = usernameInput.takeIf { it.isNotBlank() } ?: savedUsername
-                                val finalUsername = username.trim()
-                                if (finalUsername.isNotBlank()) {
-                                    savedUsername = finalUsername
-                                    Toast.makeText(context, R.string.creating_room, Toast.LENGTH_SHORT).show()
-                                    isCreatingRoom = true
-                                    isJoiningRoom = false
-                                    joinErrorMessage = null
-                                    listenTogetherManager.connect()
-                                    listenTogetherManager.createRoom(finalUsername)
-                                } else {
-                                    Toast.makeText(context, R.string.error_username_empty, Toast.LENGTH_SHORT).show()
-                                }
-                            },
-                            modifier = Modifier.weight(1f),
-                            enabled = (usernameInput.trim().isNotBlank() || savedUsername.isNotBlank()),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.add),
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.create_room), fontWeight = FontWeight.SemiBold)
                         }
                     }
                     
