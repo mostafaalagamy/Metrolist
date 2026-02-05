@@ -1164,7 +1164,7 @@ fun ListenTogetherDialog(
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(
-                                                            if (user.isHost) R.drawable.mic else R.drawable.person
+                                                            if (user.isHost) R.drawable.crown else R.drawable.person
                                                         ),
                                                         contentDescription = null,
                                                         tint = MaterialTheme.colorScheme.onPrimary,
