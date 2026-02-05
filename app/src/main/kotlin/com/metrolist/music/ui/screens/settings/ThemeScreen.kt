@@ -78,6 +78,7 @@ import com.materialkolor.rememberDynamicColorScheme
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SelectedThemeColorKey
 import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
@@ -118,7 +119,18 @@ fun ThemeScreen(
     navController: NavController,
 ) {
     val (darkMode, onDarkModeChange) = rememberEnumPreference(DarkModeKey, DarkMode.AUTO)
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
+    val (pureBlack, onPureBlackChangeRaw) = rememberPreference(PureBlackKey, defaultValue = false)
+    val (_, onPureBlackMiniPlayerChange) = rememberPreference(
+        PureBlackMiniPlayerKey,
+        defaultValue = false
+    )
+
+    val onPureBlackChange: (Boolean) -> Unit = { enabled ->
+        onPureBlackChangeRaw(enabled)
+        if (enabled) {
+            onPureBlackMiniPlayerChange(true)
+        }
+    }
     val (selectedThemeColorInt, onSelectedThemeColorChange) = rememberPreference(
         SelectedThemeColorKey,
         DefaultThemeColor.toArgb()
