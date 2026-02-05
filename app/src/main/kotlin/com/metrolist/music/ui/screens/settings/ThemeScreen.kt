@@ -77,7 +77,9 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.rememberDynamicColorScheme
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.SelectedThemeColorKey
 import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
@@ -118,16 +120,35 @@ fun ThemeScreen(
     navController: NavController,
 ) {
     val (darkMode, onDarkModeChange) = rememberEnumPreference(DarkModeKey, DarkMode.AUTO)
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
+    val (pureBlack, onPureBlackChangeRaw) = rememberPreference(PureBlackKey, defaultValue = false)
+    val (_, onPureBlackMiniPlayerChange) = rememberPreference(
+        PureBlackMiniPlayerKey,
+        defaultValue = false
+    )
+
+    val onPureBlackChange: (Boolean) -> Unit = { enabled ->
+        onPureBlackChangeRaw(enabled)
+        onPureBlackMiniPlayerChange(enabled)
+    }
     val (selectedThemeColorInt, onSelectedThemeColorChange) = rememberPreference(
         SelectedThemeColorKey,
         DefaultThemeColor.toArgb()
     )
+    val (_, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
 
     val selectedThemeColor = Color(selectedThemeColorInt)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // Helper function to handle color selection with dynamic theme toggle
+    val handleColorSelection: (Color) -> Unit = { color ->
+        onSelectedThemeColorChange(color.toArgb())
+        // Enable dynamic theme only when selecting the default/dynamic color
+        // Disable it when selecting any other color
+        val isDynamicColor = color == DefaultThemeColor
+        onDynamicThemeChange(isDynamicColor)
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -154,7 +175,7 @@ fun ThemeScreen(
                 pureBlack = pureBlack,
                 onPureBlackChange = onPureBlackChange,
                 selectedThemeColor = selectedThemeColor,
-                onSelectedThemeColorChange = { onSelectedThemeColorChange(it.toArgb()) }
+                onSelectedThemeColorChange = handleColorSelection
             )
         } else {
             PortraitThemeLayout(
@@ -164,7 +185,7 @@ fun ThemeScreen(
                 pureBlack = pureBlack,
                 onPureBlackChange = onPureBlackChange,
                 selectedThemeColor = selectedThemeColor,
-                onSelectedThemeColorChange = { onSelectedThemeColorChange(it.toArgb()) }
+                onSelectedThemeColorChange = handleColorSelection
             )
         }
     }
