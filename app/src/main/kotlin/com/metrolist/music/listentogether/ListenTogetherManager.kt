@@ -89,74 +89,92 @@ class ListenTogetherManager @Inject constructor(
     
     private val playerListener = object : Player.Listener {
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-            if (isSyncing || !isHost || !isInRoom) return
-            
-            Log.d(TAG, "Play state changed: $playWhenReady (reason: $reason)")
-            
-            // ALWAYS ensure track is synced before play/pause
-            val currentTrackId = playerConnection?.player?.currentMediaItem?.mediaId
-            if (currentTrackId != null && currentTrackId != lastSyncedTrackId) {
-                Log.d(TAG, "[SYNC] Sending track change before play state: track = $currentTrackId")
-                playerConnection?.player?.currentMetadata?.let { metadata ->
-                    sendTrackChangeInternal(metadata)
-                    lastSyncedTrackId = currentTrackId
-                    // Reset play state since server resets IsPlaying on track change
-                    lastSyncedIsPlaying = false
+            try {
+                if (isSyncing || !isHost || !isInRoom) return
+                
+                val connection = playerConnection ?: return
+                val player = connection.player
+                
+                Log.d(TAG, "Play state changed: $playWhenReady (reason: $reason)")
+                
+                // ALWAYS ensure track is synced before play/pause
+                val currentTrackId = player.currentMediaItem?.mediaId
+                if (currentTrackId != null && currentTrackId != lastSyncedTrackId) {
+                    Log.d(TAG, "[SYNC] Sending track change before play state: track = $currentTrackId")
+                    player.currentMetadata?.let { metadata ->
+                        sendTrackChangeInternal(metadata)
+                        lastSyncedTrackId = currentTrackId
+                        // Reset play state since server resets IsPlaying on track change
+                        lastSyncedIsPlaying = false
+                    }
+                    // ALWAYS send play state after track change if host is playing
+                    // Server sets IsPlaying=false on track change, so we must send it
+                    if (playWhenReady) {
+                        Log.d(TAG, "[SYNC] Host is playing, sending PLAY after track change")
+                        lastSyncedIsPlaying = true
+                        val position = player.currentPosition
+                        client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                    }
+                    return
                 }
-                // ALWAYS send play state after track change if host is playing
-                // Server sets IsPlaying=false on track change, so we must send it
-                if (playWhenReady) {
-                    Log.d(TAG, "[SYNC] Host is playing, sending PLAY after track change")
-                    lastSyncedIsPlaying = true
-                    val position = playerConnection?.player?.currentPosition ?: 0
-                    client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
-                }
-                return
+                
+                // Only send play/pause if track is already synced
+                sendPlayState(playWhenReady, player)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in onPlayWhenReadyChanged", e)
             }
-            
-            // Only send play/pause if track is already synced
-            sendPlayState(playWhenReady)
         }
         
-        private fun sendPlayState(playWhenReady: Boolean) {
-            val position = playerConnection?.player?.currentPosition ?: 0
-            
-            if (playWhenReady) {
-                Log.d(TAG, "Host sending PLAY at position $position")
-                client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
-                lastSyncedIsPlaying = true
-            } else if (!playWhenReady && (lastSyncedIsPlaying == true)) {
-                Log.d(TAG, "Host sending PAUSE at position $position")
-                client.sendPlaybackAction(PlaybackActions.PAUSE, position = position)
-                lastSyncedIsPlaying = false
+        private fun sendPlayState(playWhenReady: Boolean, player: Player) {
+            try {
+                val position = player.currentPosition
+                
+                if (playWhenReady) {
+                    Log.d(TAG, "Host sending PLAY at position $position")
+                    client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                    lastSyncedIsPlaying = true
+                } else if (!playWhenReady && (lastSyncedIsPlaying == true)) {
+                    Log.d(TAG, "Host sending PAUSE at position $position")
+                    client.sendPlaybackAction(PlaybackActions.PAUSE, position = position)
+                    lastSyncedIsPlaying = false
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in sendPlayState", e)
             }
         }
         
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            if (isSyncing || !isHost || !isInRoom) return
-            if (mediaItem == null) return
-            
-            val trackId = mediaItem.mediaId
-            if (trackId == lastSyncedTrackId) return
-            
-            lastSyncedTrackId = trackId
-            // Reset play state tracking since server resets IsPlaying on track change
-            lastSyncedIsPlaying = false
-            
-            // Get metadata and send track change
-            playerConnection?.player?.currentMetadata?.let { metadata ->
-                Log.d(TAG, "Host sending track change: ${metadata.title}")
-                sendTrackChange(metadata)
+            try {
+                if (isSyncing || !isHost || !isInRoom) return
+                if (mediaItem == null) return
                 
-                // ALWAYS send PLAY after track change if host is currently playing
-                // Server sets IsPlaying=false on track change, so we must re-send it
-                val isPlaying = playerConnection?.player?.playWhenReady == true
-                if (isPlaying) {
-                    Log.d(TAG, "Host is playing during track change, sending PLAY")
-                    lastSyncedIsPlaying = true
-                    val position = playerConnection?.player?.currentPosition ?: 0
-                    client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                val connection = playerConnection ?: return
+                val player = connection.player
+                
+                val trackId = mediaItem.mediaId
+                if (trackId == lastSyncedTrackId) return
+                
+                lastSyncedTrackId = trackId
+                // Reset play state tracking since server resets IsPlaying on track change
+                lastSyncedIsPlaying = false
+                
+                // Get metadata and send track change
+                player.currentMetadata?.let { metadata ->
+                    Log.d(TAG, "Host sending track change: ${metadata.title}")
+                    sendTrackChange(metadata)
+                    
+                    // ALWAYS send PLAY after track change if host is currently playing
+                    // Server sets IsPlaying=false on track change, so we must re-send it
+                    val isPlaying = player.playWhenReady
+                    if (isPlaying) {
+                        Log.d(TAG, "Host is playing during track change, sending PLAY")
+                        lastSyncedIsPlaying = true
+                        val position = player.currentPosition
+                        client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in onMediaItemTransition", e)
             }
         }
         
@@ -165,12 +183,16 @@ class ListenTogetherManager @Inject constructor(
             newPosition: Player.PositionInfo,
             reason: Int
         ) {
-            if (isSyncing || !isHost || !isInRoom) return
-            
-            // Only send seek if it was a user-initiated seek
-            if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-                Log.d(TAG, "Host sending SEEK to ${newPosition.positionMs}")
-                client.sendPlaybackAction(PlaybackActions.SEEK, position = newPosition.positionMs)
+            try {
+                if (isSyncing || !isHost || !isInRoom) return
+                
+                // Only send seek if it was a user-initiated seek
+                if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+                    Log.d(TAG, "Host sending SEEK to ${newPosition.positionMs}")
+                    client.sendPlaybackAction(PlaybackActions.SEEK, position = newPosition.positionMs)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in onPositionDiscontinuity", e)
             }
         }
     }
@@ -182,64 +204,86 @@ class ListenTogetherManager @Inject constructor(
     fun setPlayerConnection(connection: PlayerConnection?) {
         Log.d(TAG, "setPlayerConnection: ${connection != null}, isInRoom: $isInRoom")
         
-        // Remove old listener and callback
-        if (playerListenerRegistered && playerConnection != null) {
-            playerConnection?.player?.removeListener(playerListener)
-            playerListenerRegistered = false
-        }
-        playerConnection?.shouldBlockPlaybackChanges = null
-        playerConnection?.onSkipPrevious = null
-        playerConnection?.onSkipNext = null
-        playerConnection?.onRestartSong = null
-        
-        playerConnection = connection
-        
-        // Set up playback blocking for guests
-        connection?.shouldBlockPlaybackChanges = {
-            // Block if we're in a room as a guest (not host)
-            isInRoom && !isHost
-        }
-        
-        // Add listener if in room
-        if (connection != null && isInRoom) {
-            try {
-                connection.player.addListener(playerListener)
-                playerListenerRegistered = true
-                Log.d(TAG, "Added player listener for room sync")
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to add player listener", e)
+        try {
+            // Remove old listener and callback safely
+            val oldConnection = playerConnection
+            if (playerListenerRegistered && oldConnection != null) {
+                try {
+                    oldConnection.player.removeListener(playerListener)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error removing old player listener", e)
+                }
+                playerListenerRegistered = false
+            }
+            oldConnection?.shouldBlockPlaybackChanges = null
+            oldConnection?.onSkipPrevious = null
+            oldConnection?.onSkipNext = null
+            oldConnection?.onRestartSong = null
+            
+            playerConnection = connection
+            
+            // Set up playback blocking for guests
+            connection?.shouldBlockPlaybackChanges = {
+                // Block if we're in a room as a guest (not host)
+                isInRoom && !isHost
             }
             
-            // Hook up skip actions
-            connection.onSkipPrevious = {
-                if (isHost && !isSyncing) {
-                    Log.d(TAG, "Host Skip Previous triggered")
-                    client.sendPlaybackAction(PlaybackActions.SKIP_PREV)
+            // Add listener if in room
+            if (connection != null && isInRoom) {
+                try {
+                    connection.player.addListener(playerListener)
+                    playerListenerRegistered = true
+                    Log.d(TAG, "Added player listener for room sync")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to add player listener", e)
+                    playerListenerRegistered = false
+                }
+                
+                // Hook up skip actions
+                connection.onSkipPrevious = {
+                    try {
+                        if (isHost && !isSyncing) {
+                            Log.d(TAG, "Host Skip Previous triggered")
+                            client.sendPlaybackAction(PlaybackActions.SKIP_PREV)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onSkipPrevious", e)
+                    }
+                }
+                connection.onSkipNext = {
+                    try {
+                        if (isHost && !isSyncing) {
+                            Log.d(TAG, "Host Skip Next triggered")
+                            client.sendPlaybackAction(PlaybackActions.SKIP_NEXT)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onSkipNext", e)
+                    }
+                }
+                
+                // Hook up restart action
+                connection.onRestartSong = {
+                    try {
+                        if (isHost && !isSyncing) {
+                            Log.d(TAG, "Host Restart Song triggered (sending 1ms as 0ms workaround)")
+                            client.sendPlaybackAction(PlaybackActions.SEEK, position = 1L)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onRestartSong", e)
+                    }
                 }
             }
-            connection.onSkipNext = {
-                if (isHost && !isSyncing) {
-                    Log.d(TAG, "Host Skip Next triggered")
-                    client.sendPlaybackAction(PlaybackActions.SKIP_NEXT)
-                }
-            }
-            
-            // Hook up restart action
-            connection.onRestartSong = {
-                if (isHost && !isSyncing) {
-                    Log.d(TAG, "Host Restart Song triggered (sending 1ms as 0ms workaround)")
-                    client.sendPlaybackAction(PlaybackActions.SEEK, position = 1L)
-                }
-            }
-        }
 
-        // Start/stop queue observation based on role
-        if (connection != null && isInRoom && isHost) {
-            startQueueSyncObservation()
-            startHeartbeat()
-        } else {
-            stopQueueSyncObservation()
-            stopHeartbeat()
+            // Start/stop queue observation based on role
+            if (connection != null && isInRoom && isHost) {
+                startQueueSyncObservation()
+                startHeartbeat()
+            } else {
+                stopQueueSyncObservation()
+                stopHeartbeat()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in setPlayerConnection", e)
         }
     }
 
@@ -251,41 +295,53 @@ class ListenTogetherManager @Inject constructor(
         eventCollectorJob?.cancel()
         eventCollectorJob = scope.launch {
             client.events.collect { event ->
-                Log.d(TAG, "Received event: $event")
-                handleEvent(event)
+                try {
+                    Log.d(TAG, "Received event: $event")
+                    handleEvent(event)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error handling event: $event", e)
+                }
             }
         }
         
         // Role change listener
         scope.launch {
             role.collect { newRole ->
-                val previousRole = lastRole
-                lastRole = newRole
+                try {
+                    val previousRole = lastRole
+                    lastRole = newRole
 
-                if (previousRole == RoomRole.GUEST && newRole != RoomRole.GUEST) {
-                    playerConnection?.setMuted(false)
-                }
-                val wasHost = isHost
-                if (newRole == RoomRole.HOST && !wasHost) {
-                    val connection = playerConnection
-                    if (connection != null) {
-                        Log.d(TAG, "Role changed to HOST, starting sync services")
-                        startQueueSyncObservation()
-                        startHeartbeat()
-                        // Re-register listener if needed
-                        if (!playerListenerRegistered) {
-                            try {
-                                connection.player.addListener(playerListener)
-                                playerListenerRegistered = true
-                            } catch (e: Exception) {
-                                Log.e(TAG, "Failed to add player listener on role change", e)
-                            }
+                    if (previousRole == RoomRole.GUEST && newRole != RoomRole.GUEST) {
+                        try {
+                            playerConnection?.setMuted(false)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error unmuting player on role change", e)
                         }
                     }
-                } else if (newRole != RoomRole.HOST && wasHost) {
-                    Log.d(TAG, "Role changed from HOST, stopping sync services")
-                    stopQueueSyncObservation()
-                    stopHeartbeat()
+                    val wasHost = isHost
+                    if (newRole == RoomRole.HOST && !wasHost) {
+                        val connection = playerConnection
+                        if (connection != null) {
+                            Log.d(TAG, "Role changed to HOST, starting sync services")
+                            startQueueSyncObservation()
+                            startHeartbeat()
+                            // Re-register listener if needed
+                            if (!playerListenerRegistered) {
+                                try {
+                                    connection.player.addListener(playerListener)
+                                    playerListenerRegistered = true
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Failed to add player listener on role change", e)
+                                }
+                            }
+                        }
+                    } else if (newRole != RoomRole.HOST && wasHost) {
+                        Log.d(TAG, "Role changed from HOST, stopping sync services")
+                        stopQueueSyncObservation()
+                        stopHeartbeat()
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error in role change handler", e)
                 }
             }
         }
@@ -299,34 +355,42 @@ class ListenTogetherManager @Inject constructor(
             
             is ListenTogetherEvent.RoomCreated -> {
                 Log.d(TAG, "Room created: ${event.roomCode}")
-                // Register player listener for host
-                playerConnection?.player?.let { player ->
-                    if (!playerListenerRegistered) {
-                        player.addListener(playerListener)
-                        playerListenerRegistered = true
-                        Log.d(TAG, "Added player listener as host")
+                try {
+                    // Register player listener for host
+                    val connection = playerConnection
+                    val player = connection?.player
+                    if (player != null && !playerListenerRegistered) {
+                        try {
+                            player.addListener(playerListener)
+                            playerListenerRegistered = true
+                            Log.d(TAG, "Added player listener as host")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to add player listener on room create", e)
+                        }
                     }
-                }
-                // Initialize sync state
-                lastSyncedIsPlaying = playerConnection?.player?.playWhenReady
-                lastSyncedTrackId = playerConnection?.player?.currentMediaItem?.mediaId
-                
-                // If there's already a track loaded, send it to the server
-                playerConnection?.player?.currentMetadata?.let { metadata ->
-                    Log.d(TAG, "Room created with existing track: ${metadata.title}")
-                    // Send track change so server has the current track info
-                    sendTrackChangeInternal(metadata)
-                    // If host is already playing, immediately send PLAY with current position
-                    val isPlaying = playerConnection?.player?.playWhenReady == true
-                    if (isPlaying) {
-                        lastSyncedIsPlaying = true
-                        val position = playerConnection?.player?.currentPosition ?: 0
-                        Log.d(TAG, "Host already playing on room create, sending PLAY at $position")
-                        client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                    // Initialize sync state
+                    lastSyncedIsPlaying = player?.playWhenReady
+                    lastSyncedTrackId = player?.currentMediaItem?.mediaId
+                    
+                    // If there's already a track loaded, send it to the server
+                    player?.currentMetadata?.let { metadata ->
+                        Log.d(TAG, "Room created with existing track: ${metadata.title}")
+                        // Send track change so server has the current track info
+                        sendTrackChangeInternal(metadata)
+                        // If host is already playing, immediately send PLAY with current position
+                        val isPlaying = player.playWhenReady
+                        if (isPlaying) {
+                            lastSyncedIsPlaying = true
+                            val position = player.currentPosition
+                            Log.d(TAG, "Host already playing on room create, sending PLAY at $position")
+                            client.sendPlaybackAction(PlaybackActions.PLAY, position = position)
+                        }
                     }
+                    startQueueSyncObservation()
+                    startHeartbeat()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error handling RoomCreated event", e)
                 }
-                startQueueSyncObservation()
-                startHeartbeat()
             }
             
             is ListenTogetherEvent.JoinApproved -> {
@@ -357,16 +421,22 @@ class ListenTogetherManager @Inject constructor(
                 Log.d(TAG, "[SYNC] User joined: ${event.username}")
                 // When a new user joins, host should send current track immediately
                 if (isHost) {
-                    playerConnection?.player?.currentMetadata?.let { metadata ->
-                        Log.d(TAG, "[SYNC] Sending current track to newly joined user: ${metadata.title}")
-                        sendTrackChangeInternal(metadata)
-                        // If host is currently playing, also send PLAY with current position so the guest jumps to the live position
-                        if (playerConnection?.player?.playWhenReady == true) {
-                            val pos = playerConnection?.player?.currentPosition ?: 0
-                            Log.d(TAG, "[SYNC] Host playing, sending PLAY at $pos for new joiner")
-                            client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                    try {
+                        val connection = playerConnection
+                        val player = connection?.player
+                        player?.currentMetadata?.let { metadata ->
+                            Log.d(TAG, "[SYNC] Sending current track to newly joined user: ${metadata.title}")
+                            sendTrackChangeInternal(metadata)
+                            // If host is currently playing, also send PLAY with current position so the guest jumps to the live position
+                            if (player.playWhenReady) {
+                                val pos = player.currentPosition
+                                Log.d(TAG, "[SYNC] Host playing, sending PLAY at $pos for new joiner")
+                                client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                            }
+                            // Don't send play state - let buffering complete first
                         }
-                        // Don't send play state - let buffering complete first
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error handling UserJoined event", e)
                     }
                 }
             }
@@ -407,61 +477,74 @@ class ListenTogetherManager @Inject constructor(
             
             is ListenTogetherEvent.Reconnected -> {
                 Log.d(TAG, "Reconnected to room: ${event.roomCode}, isHost: ${event.isHost}")
-                // Re-register player listener
-                playerConnection?.player?.let { player ->
-                    if (!playerListenerRegistered) {
-                        player.addListener(playerListener)
-                        playerListenerRegistered = true
-                        Log.d(TAG, "Re-added player listener after reconnect")
-                    }
-                }
-                
-                // Sync state based on role
-                if (event.isHost) {
-                    // Host: only send sync if necessary
-                    lastSyncedIsPlaying = playerConnection?.player?.playWhenReady
-                    lastSyncedTrackId = playerConnection?.player?.currentMediaItem?.mediaId
-                    
-                    val currentMetadata = playerConnection?.player?.currentMetadata
-                    if (currentMetadata != null) {
-                        // Check if server already has the right track (from event.state)
-                        val serverTrackId = event.state.currentTrack?.id
-                        if (serverTrackId != currentMetadata.id) {
-                            Log.d(TAG, "Reconnected as host, server track ($serverTrackId) differs from local (${currentMetadata.id}), syncing")
-                            sendTrackChangeInternal(currentMetadata)
-                        } else {
-                            Log.d(TAG, "Reconnected as host, server already has current track $serverTrackId")
+                try {
+                    // Re-register player listener
+                    val connection = playerConnection
+                    val player = connection?.player
+                    if (player != null && !playerListenerRegistered) {
+                        try {
+                            player.addListener(playerListener)
+                            playerListenerRegistered = true
+                            Log.d(TAG, "Re-added player listener after reconnect")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to re-add player listener after reconnect", e)
                         }
+                    }
+                    
+                    // Sync state based on role
+                    if (event.isHost) {
+                        // Host: only send sync if necessary
+                        lastSyncedIsPlaying = player?.playWhenReady
+                        lastSyncedTrackId = player?.currentMediaItem?.mediaId
                         
-                        // Small delay before sending play state to let connection stabilize
+                        val currentMetadata = player?.currentMetadata
+                        if (currentMetadata != null) {
+                            // Check if server already has the right track (from event.state)
+                            val serverTrackId = event.state.currentTrack?.id
+                            if (serverTrackId != currentMetadata.id) {
+                                Log.d(TAG, "Reconnected as host, server track ($serverTrackId) differs from local (${currentMetadata.id}), syncing")
+                                sendTrackChangeInternal(currentMetadata)
+                            } else {
+                                Log.d(TAG, "Reconnected as host, server already has current track $serverTrackId")
+                            }
+                            
+                            // Small delay before sending play state to let connection stabilize
+                            scope.launch {
+                                delay(500)
+                                try {
+                                    val currentPlayer = playerConnection?.player
+                                    if (currentPlayer?.playWhenReady == true) {
+                                        val pos = currentPlayer.currentPosition
+                                        Log.d(TAG, "Reconnected host is playing, sending PLAY at $pos")
+                                        client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error sending play state after reconnect", e)
+                                }
+                            }
+                        }
+                    } else {
+                        // Guest: ALWAYS sync to host's state after reconnection
+                        Log.d(TAG, "Reconnected as guest, syncing to host's current state")
+                        applyPlaybackState(
+                            currentTrack = event.state.currentTrack,
+                            isPlaying = event.state.isPlaying,
+                            position = event.state.position,
+                            queue = event.state.queue,
+                            bypassBuffer = true  // Reconnect: bypass buffer protocol
+                        )
+                        
+                        // Immediately request fresh sync after a short delay to catch live position
                         scope.launch {
-                            delay(500)
-                            if (playerConnection?.player?.playWhenReady == true) {
-                                val pos = playerConnection?.player?.currentPosition ?: 0
-                                Log.d(TAG, "Reconnected host is playing, sending PLAY at $pos")
-                                client.sendPlaybackAction(PlaybackActions.PLAY, position = pos)
+                            delay(1000)
+                            if (isInRoom && !isHost) {
+                                Log.d(TAG, "Requesting fresh sync after reconnect")
+                                requestSync()
                             }
                         }
                     }
-                } else {
-                    // Guest: ALWAYS sync to host's state after reconnection
-                    Log.d(TAG, "Reconnected as guest, syncing to host's current state")
-                    applyPlaybackState(
-                        currentTrack = event.state.currentTrack,
-                        isPlaying = event.state.isPlaying,
-                        position = event.state.position,
-                        queue = event.state.queue,
-                        bypassBuffer = true  // Reconnect: bypass buffer protocol
-                    )
-                    
-                    // Immediately request fresh sync after a short delay to catch live position
-                    scope.launch {
-                        delay(1000)
-                        if (isInRoom && !isHost) {
-                            Log.d(TAG, "Requesting fresh sync after reconnect")
-                            requestSync()
-                        }
-                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error handling Reconnected event", e)
                 }
             }
             
