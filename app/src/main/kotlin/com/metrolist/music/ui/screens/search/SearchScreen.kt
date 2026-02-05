@@ -24,7 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,12 +39,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalIsPlayerExpanded
@@ -72,13 +75,14 @@ fun SearchScreen(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val isPlayerExpanded = LocalIsPlayerExpanded.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     
     var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
     val pauseSearchHistory by rememberPreference(PauseSearchHistoryKey, defaultValue = false)
-    var hasRequestedInitialFocus by rememberSaveable { mutableStateOf(false) }
+    var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
 
     val onSearch: (String) -> Unit = remember {
         { searchQuery ->
@@ -232,18 +236,43 @@ fun SearchScreen(
         }
     }
 
-    // Hide keyboard when player is expanded
-    LaunchedEffect(isPlayerExpanded) {
+    // Handle lifecycle events to manage keyboard visibility
+    DisposableEffect(lifecycleOwner, isPlayerExpanded) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    // Always hide keyboard when resuming if player is expanded
+                    if (isPlayerExpanded) {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    } else if (isFirstLaunch) {
+                        // Only request focus on first launch when player is not expanded
+                        try {
+                            focusRequester.requestFocus()
+                        } catch (e: Exception) {
+                            // Ignore focus request failures
+                        }
+                        isFirstLaunch = false
+                    }
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    // Clear focus when pausing to prevent keyboard from showing on resume
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        
+        // Initial check - hide keyboard if player is expanded
         if (isPlayerExpanded) {
             keyboardController?.hide()
+            focusManager.clearFocus()
         }
-    }
-
-    // Request focus only on initial composition when player is not expanded
-    LaunchedEffect(Unit) {
-        if (!isPlayerExpanded && !hasRequestedInitialFocus) {
-            focusRequester.requestFocus()
-            hasRequestedInitialFocus = true
+        
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
