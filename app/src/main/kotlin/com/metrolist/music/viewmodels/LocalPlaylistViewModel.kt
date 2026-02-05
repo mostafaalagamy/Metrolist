@@ -79,7 +79,7 @@ constructor(
                         .flatMap { entry: Map.Entry<String?, List<PlaylistSong>> ->
                             entry.value.sortedBy { song ->
                                 song.song.artists.joinToString("") { artist -> artist.name }
-                            }.toList()
+                            }
                         }
                 }
 

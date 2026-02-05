@@ -14,7 +14,6 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.YTItem
-import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.innertube.utils.completed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +38,7 @@ class BrowseViewModel @Inject constructor(
                     title.value = result.title
  
                     // Flatten the nested structure to get all YTItems
-                    val allItems = result.items.flatMap { section: BrowseResult.Item -> section.items.toList() }
+                    val allItems = result.items.flatMap { section -> section.items }
                     items.value = allItems
                 }.onFailure {
                     reportException(it)

@@ -68,11 +68,11 @@ fun NavGraphBuilder.navigationBuilder(
     activity: Activity,
     snackbarHostState: SnackbarHostState
 ) {
-    composable(route = Screens.Home.route) {
+    composable(route = Screens.Home.route, content = {
         HomeScreen(navController = navController, snackbarHostState = snackbarHostState)
-    }
+    })
 
-    composable(route = Screens.Search.route) {
+    composable(route = Screens.Search.route, content = {
         val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
         val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
         val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -86,35 +86,35 @@ fun NavGraphBuilder.navigationBuilder(
             navController = navController,
             pureBlack = pureBlack
         )
-    }
+    })
 
-    composable(route = Screens.Library.route) {
+    composable(route = Screens.Library.route, content = {
         LibraryScreen(navController)
-    }
+    })
 
-    composable(route = "history") {
+    composable(route = "history", content = {
         HistoryScreen(navController)
-    }
+    })
 
-    composable(route = "stats") {
+    composable(route = "stats", content = {
         StatsScreen(navController)
-    }
+    })
 
-    composable(route = "mood_and_genres") {
+    composable(route = "mood_and_genres", content = {
         MoodAndGenresScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "account") {
+    composable(route = "account", content = {
         AccountScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "new_release") {
+    composable(route = "new_release", content = {
         NewReleaseScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "charts_screen") {
+    composable(route = "charts_screen", content = {
         ChartsScreen(navController)
-    }
+    })
 
     composable(
         route = "browse/{browseId}",
@@ -122,14 +122,15 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("browseId") {
                 type = NavType.StringType
             }
-        )
-    ) { backStackEntry ->
-        BrowseScreen(
-            navController,
-            scrollBehavior,
-            backStackEntry.arguments?.getString("browseId")
-        )
-    }
+        ),
+        content = { backStackEntry ->
+            BrowseScreen(
+                navController,
+                scrollBehavior,
+                backStackEntry.arguments?.getString("browseId")
+            )
+        }
+    )
 
     composable(
         route = "search/{query}",
@@ -157,10 +158,11 @@ fun NavGraphBuilder.navigationBuilder(
         },
         popExitTransition = {
             fadeOut(tween(200))
+        },
+        content = {
+            OnlineSearchResult(navController)
         }
-    ) {
-        OnlineSearchResult(navController)
-    }
+    )
 
     composable(
         route = "album/{albumId}",
@@ -168,10 +170,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("albumId") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        AlbumScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            AlbumScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "artist/{artistId}",
@@ -179,10 +182,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("artistId") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        ArtistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            ArtistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "artist/{artistId}/songs",
@@ -190,10 +194,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("artistId") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        ArtistSongsScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            ArtistSongsScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "artist/{artistId}/albums",
@@ -201,10 +206,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("artistId") {
                 type = NavType.StringType
             }
-        )
-    ) {
-        ArtistAlbumsScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            ArtistAlbumsScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "artist/{artistId}/items?browseId={browseId}?params={params}",
@@ -220,10 +226,11 @@ fun NavGraphBuilder.navigationBuilder(
                 type = NavType.StringType
                 nullable = true
             },
-        )
-    ) {
-        ArtistItemsScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            ArtistItemsScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "online_playlist/{playlistId}",
@@ -231,10 +238,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("playlistId") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        OnlinePlaylistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            OnlinePlaylistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "local_playlist/{playlistId}",
@@ -242,10 +250,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("playlistId") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        LocalPlaylistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            LocalPlaylistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "auto_playlist/{playlist}",
@@ -253,10 +262,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("playlist") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        AutoPlaylistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            AutoPlaylistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "cache_playlist/{playlist}",
@@ -264,10 +274,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("playlist") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        CachePlaylistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            CachePlaylistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "top_playlist/{top}",
@@ -275,10 +286,11 @@ fun NavGraphBuilder.navigationBuilder(
             navArgument("top") {
                 type = NavType.StringType
             },
-        )
-    ) {
-        TopPlaylistScreen(navController, scrollBehavior)
-    }
+        ),
+        content = {
+            TopPlaylistScreen(navController, scrollBehavior)
+        }
+    )
 
     composable(
         route = "youtube_browse/{browseId}?params={params}",
@@ -291,78 +303,79 @@ fun NavGraphBuilder.navigationBuilder(
                 type = NavType.StringType
                 nullable = true
             },
-        )
-    ) {
-        YouTubeBrowseScreen(navController)
-    }
+        ),
+        content = {
+            YouTubeBrowseScreen(navController)
+        }
+    )
 
-    composable(route = "settings") {
+    composable(route = "settings", content = {
         SettingsScreen(navController, scrollBehavior, latestVersionName)
-    }
+    })
 
-    composable(route = "settings/appearance") {
+    composable(route = "settings/appearance", content = {
         AppearanceSettings(navController, scrollBehavior, activity, snackbarHostState)
-    }
+    })
 
     composable(route = "settings/appearance/theme") {
         ThemeScreen(navController)
     }
 
-    composable(route = "settings/content") {
+    composable(route = "settings/content", content = {
         ContentSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/content/romanization") {
+    composable(route = "settings/content/romanization", content = {
         RomanizationSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/player") {
+    composable(route = "settings/player", content = {
         PlayerSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/storage") {
+    composable(route = "settings/storage", content = {
         StorageSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/privacy") {
+    composable(route = "settings/privacy", content = {
         PrivacySettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/backup_restore") {
+    composable(route = "settings/backup_restore", content = {
         BackupAndRestore(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/integrations") {
+    composable(route = "settings/integrations", content = {
         IntegrationScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/integrations/discord") {
+    composable(route = "settings/integrations/discord", content = {
         DiscordSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/integrations/lastfm") {
+    composable(route = "settings/integrations/lastfm", content = {
         LastFMSettings(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/discord/login") {
+    composable(route = "settings/discord/login", content = {
         DiscordLoginScreen(navController)
-    }
+    })
 
-    composable(route = "settings/updater") {
+    composable(route = "settings/updater", content = {
         UpdaterScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "settings/about") {
+    composable(route = "settings/about", content = {
         AboutScreen(navController, scrollBehavior)
-    }
+    })
 
-    composable(route = "login") {
+    composable(route = "login", content = {
         LoginScreen(navController)
-    }
+    })
 
-    composable(route = "wrapped") {
+    composable(route = "wrapped", content = {
         WrappedScreen(navController)
-    }
+    })
 
     dialog("equalizer") {
         EqScreen()
