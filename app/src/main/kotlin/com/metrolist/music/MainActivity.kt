@@ -686,6 +686,7 @@ class MainActivity : ComponentActivity() {
                     LocalDownloadUtil provides downloadUtil,
                     LocalShimmerTheme provides ShimmerTheme,
                     LocalSyncUtils provides syncUtils,
+                    LocalIsPlayerExpanded provides (!playerBottomSheetState.isCollapsed && !playerBottomSheetState.isDismissed),
                 ) {
                     Scaffold(
                         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -1126,3 +1127,4 @@ val LocalPlayerConnection = staticCompositionLocalOf<PlayerConnection?> { error(
 val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
+val LocalIsPlayerExpanded = compositionLocalOf { false }

@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalDatabase
+import com.metrolist.music.LocalIsPlayerExpanded
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.PauseSearchHistoryKey
@@ -68,13 +69,14 @@ fun SearchScreen(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val isPlayerExpanded = LocalIsPlayerExpanded.current
     
     var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
     val pauseSearchHistory by rememberPreference(PauseSearchHistoryKey, defaultValue = false)
-    var hasFocusBeenRequested by rememberSaveable { mutableStateOf(false) }
+    var hasRequestedInitialFocus by rememberSaveable { mutableStateOf(false) }
 
     val onSearch: (String) -> Unit = remember {
         { searchQuery ->
@@ -228,10 +230,10 @@ fun SearchScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (!hasFocusBeenRequested) {
+    LaunchedEffect(isPlayerExpanded) {
+        if (!isPlayerExpanded && !hasRequestedInitialFocus) {
             focusRequester.requestFocus()
-            hasFocusBeenRequested = true
+            hasRequestedInitialFocus = true
         }
     }
 }
