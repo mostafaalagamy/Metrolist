@@ -30,6 +30,7 @@ data class MediaMetadata(
     val inLibrary: LocalDateTime? = null,
     val libraryAddToken: String? = null,
     val libraryRemoveToken: String? = null,
+    val suggestedBy: String? = null,
 ) : Serializable {
     val isVideoSong: Boolean
         get() = musicVideoType != null && musicVideoType != MUSIC_VIDEO_TYPE_ATV
@@ -90,6 +91,7 @@ fun Song.toMediaMetadata() =
         explicit = song.explicit,
         // Use a non-ATV type if isVideo is true to indicate it's a video song
         musicVideoType = if (song.isVideo) "MUSIC_VIDEO_TYPE_OMV" else null,
+        suggestedBy = null,
     )
 
 fun SongItem.toMediaMetadata() =
@@ -116,5 +118,6 @@ fun SongItem.toMediaMetadata() =
         setVideoId = setVideoId,
         musicVideoType = musicVideoType,
         libraryAddToken = libraryAddToken,
-        libraryRemoveToken = libraryRemoveToken
+        libraryRemoveToken = libraryRemoveToken,
+        suggestedBy = null
     )
