@@ -38,6 +38,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -69,6 +70,7 @@ fun SearchScreen(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     val isPlayerExpanded = LocalIsPlayerExpanded.current
     
     var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
@@ -230,7 +232,15 @@ fun SearchScreen(
         }
     }
 
+    // Hide keyboard when player is expanded
     LaunchedEffect(isPlayerExpanded) {
+        if (isPlayerExpanded) {
+            keyboardController?.hide()
+        }
+    }
+
+    // Request focus only on initial composition when player is not expanded
+    LaunchedEffect(Unit) {
         if (!isPlayerExpanded && !hasRequestedInitialFocus) {
             focusRequester.requestFocus()
             hasRequestedInitialFocus = true
