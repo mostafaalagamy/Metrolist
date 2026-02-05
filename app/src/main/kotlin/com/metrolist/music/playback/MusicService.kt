@@ -151,6 +151,7 @@ import com.metrolist.music.playback.queues.EmptyQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
+import com.metrolist.music.playback.queues.filterBlocked
 import com.metrolist.music.playback.queues.filterVideoSongs
 import com.metrolist.music.playback.audio.SilenceDetectorAudioProcessor
 import com.metrolist.music.utils.CoilBitmapLoader
@@ -975,11 +976,16 @@ class MusicService :
             player.playWhenReady = playWhenReady
         }
         scope.launch(SilentHandler) {
+            val blockedSongs = withContext(Dispatchers.IO) { database.blockedSongs().first().map { it.songId }.toSet() }
+            val blockedArtists = withContext(Dispatchers.IO) { database.blockedArtists().first().map { it.artistId }.toSet() }
+            val blockedAlbums = withContext(Dispatchers.IO) { database.blockedAlbums().first().map { it.albumId }.toSet() }
+
             val initialStatus =
                 withContext(Dispatchers.IO) {
                     queue.getInitialStatus()
                         .filterExplicit(dataStore.get(HideExplicitKey, false))
                         .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                        .filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                 }
             if (queue.preloadItem != null && player.playbackState == STATE_IDLE) return@launch
             if (initialStatus.title != null) {
@@ -1039,10 +1045,15 @@ class MusicService :
             )
             
             try {
+                val blockedSongs = withContext(Dispatchers.IO) { database.blockedSongs().first().map { it.songId }.toSet() }
+                val blockedArtists = withContext(Dispatchers.IO) { database.blockedArtists().first().map { it.artistId }.toSet() }
+                val blockedAlbums = withContext(Dispatchers.IO) { database.blockedAlbums().first().map { it.albumId }.toSet() }
+
                 val initialStatus = withContext(Dispatchers.IO) {
                     radioQueue.getInitialStatus()
                         .filterExplicit(dataStore.get(HideExplicitKey, false))
                         .filterVideoSongs(dataStore.get(HideVideoSongsKey, false))
+                        .filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                 }
 
                 if (initialStatus.title != null) {
@@ -1112,6 +1123,10 @@ class MusicService :
         if (dataStore.get(SimilarContent, true) &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
+                val blockedSongs = withContext(Dispatchers.IO) { database.blockedSongs().first().map { it.songId }.toSet() }
+                val blockedArtists = withContext(Dispatchers.IO) { database.blockedArtists().first().map { it.artistId }.toSet() }
+                val blockedAlbums = withContext(Dispatchers.IO) { database.blockedAlbums().first().map { it.albumId }.toSet() }
+
                 try {
                     // Try primary method
                     YouTube.next(WatchEndpoint(playlistId = playlistId))
@@ -1120,14 +1135,14 @@ class MusicService :
                                 .onSuccess { secondResult ->
                                     automixItems.value = secondResult.items.map { song ->
                                         song.toMediaItem()
-                                    }
+                                    }.filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                                 }
                                 .onFailure {
                                     // Fallback: use first result items
                                     if (firstResult.items.isNotEmpty()) {
                                         automixItems.value = firstResult.items.map { song ->
                                             song.toMediaItem()
-                                        }
+                                        }.filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                                     }
                                 }
                         }
@@ -1143,6 +1158,7 @@ class MusicService :
                                     val filteredItems = radioResult.items
                                         .filter { it.id != currentSong.id }
                                         .map { it.toMediaItem() }
+                                        .filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                                     if (filteredItems.isNotEmpty()) {
                                         automixItems.value = filteredItems
                                     }
@@ -1153,6 +1169,7 @@ class MusicService :
                                             val relatedItems = relatedPage.songs
                                                 .filter { it.id != currentSong.id }
                                                 .map { it.toMediaItem() }
+                                                .filterBlocked(blockedSongs, blockedArtists, blockedAlbums)
                                             if (relatedItems.isNotEmpty()) {
                                                 automixItems.value = relatedItems
                                             }

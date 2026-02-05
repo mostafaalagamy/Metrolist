@@ -16,6 +16,8 @@ import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.extensions.filterVideoSongs
+import com.metrolist.music.repositories.BlockedContentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +38,7 @@ class LocalSearchViewModel
 constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
+    private val blockedRepository: BlockedContentRepository,
 ) : ViewModel() {
     val query = MutableStateFlow("")
     val filter = MutableStateFlow(LocalFilter.ALL)
@@ -54,9 +57,9 @@ constructor(
                 when (filter) {
                     LocalFilter.ALL ->
                         combine(
-                            database.searchSongs(query, PREVIEW_SIZE),
-                            database.searchAlbums(query, PREVIEW_SIZE),
-                            database.searchArtists(query, PREVIEW_SIZE),
+                            database.searchSongs(query, PREVIEW_SIZE).map { blockedRepository.filterBlocked(it) },
+                            database.searchAlbums(query, PREVIEW_SIZE).map { blockedRepository.filterBlockedAlbums(it) },
+                            database.searchArtists(query, PREVIEW_SIZE).map { blockedRepository.filterBlockedArtists(it) },
                             database.searchPlaylists(query, PREVIEW_SIZE),
                         ) { songs, albums, artists, playlists ->
                             val filteredSongs = if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
@@ -64,10 +67,11 @@ constructor(
                         }
 
                     LocalFilter.SONG -> database.searchSongs(query).map { songs ->
-                        if (hideVideoSongs) songs.filter { !it.song.isVideo } else songs
+                        val filtered = blockedRepository.filterBlocked(songs)
+                        if (hideVideoSongs) filtered.filter { !it.song.isVideo } else filtered
                     }
-                    LocalFilter.ALBUM -> database.searchAlbums(query)
-                    LocalFilter.ARTIST -> database.searchArtists(query)
+                    LocalFilter.ALBUM -> database.searchAlbums(query).map { blockedRepository.filterBlockedAlbums(it) }
+                    LocalFilter.ARTIST -> database.searchArtists(query).map { blockedRepository.filterBlockedArtists(it) }
                     LocalFilter.PLAYLIST -> database.searchPlaylists(query)
                 }.map { list ->
                     LocalSearchResult(
@@ -80,6 +84,7 @@ constructor(
                                 is Album -> LocalFilter.ALBUM
                                 is Artist -> LocalFilter.ARTIST
                                 is Playlist -> LocalFilter.PLAYLIST
+                                else -> LocalFilter.ALL
                             }
                         },
                     )

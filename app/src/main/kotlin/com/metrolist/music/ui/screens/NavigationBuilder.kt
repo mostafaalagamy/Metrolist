@@ -46,6 +46,7 @@ import com.metrolist.music.ui.screens.settings.BackupAndRestore
 import com.metrolist.music.ui.screens.settings.ContentSettings
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.DiscordLoginScreen
+import com.metrolist.music.ui.screens.settings.LibrarySettings
 import com.metrolist.music.ui.screens.settings.PlayerSettings
 import com.metrolist.music.ui.screens.settings.PrivacySettings
 import com.metrolist.music.ui.screens.settings.RomanizationSettings
@@ -305,6 +306,10 @@ fun NavGraphBuilder.navigationBuilder(
 
     composable(route = "settings/content") {
         ContentSettings(navController, scrollBehavior)
+    }
+
+    composable(route = "settings/library") {
+        LibrarySettings(navController)
     }
 
     composable(route = "settings/content/romanization") {

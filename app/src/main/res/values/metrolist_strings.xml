@@ -539,4 +539,26 @@
     <string name="crash_report_subject">Metrolist Crash Report</string>
     <string name="crash_close">Close</string>
     <string name="crash_no_log">No crash log available</string>
+
+    <!-- Blocked Content -->
+    <string name="library">Library</string>
+    <string name="blocked_content">Blocked Content</string>
+    <string name="blocked_songs">Blocked Songs</string>
+    <string name="blocked_artists">Blocked Artists</string>
+    <string name="blocked_albums">Blocked Albums</string>
+    <string name="block_song">Block song</string>
+    <string name="block_artist">Block artist</string>
+    <string name="block_album">Block album</string>
+    <string name="unblock">Unblock</string>
+    <string name="confirm_block_song">Block %s?</string>
+    <string name="confirm_block_artist">Block %s?</string>
+    <string name="confirm_block_album">Block %s?</string>
+    <string name="block_warning">This will remove it from your queue and prevent it from playing.</string>
+    <string name="delete_downloads_prompt">Delete downloaded content?</string>
+    <string name="delete_downloads_message">This item is downloaded. Do you want to delete it from storage?</string>
+    <string name="song_blocked">Song blocked</string>
+    <string name="artist_blocked">Artist blocked</string>
+    <string name="album_blocked">Album blocked</string>
+    <string name="blocked_item">Blocked Item</string>
+    <string name="no_blocked_content">No blocked content</string>
 </resources>

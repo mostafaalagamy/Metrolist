@@ -96,7 +96,10 @@ import com.metrolist.music.ui.component.Material3MenuGroup
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.SongListItem
+import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.db.entities.BlockedSong
+import com.metrolist.music.db.entities.BlockedArtist
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.viewmodels.CachePlaylistViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -141,6 +144,71 @@ fun SongMenu(
                 song.artists.firstOrNull { it.id == map.artistId }
             }
             value = sorted
+        }
+    }
+
+    var showBlockSongDialog by rememberSaveable { mutableStateOf(false) }
+    var showBlockArtistDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (showBlockSongDialog) {
+        ActionPromptDialog(
+            title = stringResource(R.string.confirm_block_song, song.title),
+            onDismiss = { showBlockSongDialog = false },
+            onConfirm = {
+                coroutineScope.launch {
+                    database.insert(BlockedSong(song.id, song.title, song.artists.joinToString { it.name }, song.thumbnailUrl))
+                    if (download != null) {
+                        DownloadService.sendRemoveDownload(
+                            context,
+                            ExoDownloadService::class.java,
+                            song.id,
+                            false,
+                        )
+                    }
+                    // Remove from queue
+                    val player = playerConnection.player
+                    for (i in player.mediaItemCount - 1 downTo 0) {
+                        if (player.getMediaItemAt(i).mediaId == song.id) {
+                            player.removeMediaItem(i)
+                        }
+                    }
+                }
+                showBlockSongDialog = false
+                onDismiss()
+            }
+        ) {
+            Text(stringResource(R.string.block_warning))
+        }
+    }
+
+    if (showBlockArtistDialog) {
+        // If multiple artists, maybe show list? For now just block primary.
+        val primaryArtist = song.artists.firstOrNull()
+        if (primaryArtist != null) {
+            ActionPromptDialog(
+                title = stringResource(R.string.confirm_block_artist, primaryArtist.name),
+                onDismiss = { showBlockArtistDialog = false },
+                onConfirm = {
+                    coroutineScope.launch {
+                        database.insert(BlockedArtist(primaryArtist.id, primaryArtist.name, null))
+                        // Remove all songs by this artist from queue
+                        val player = playerConnection.player
+                        for (i in player.mediaItemCount - 1 downTo 0) {
+                            val item = player.getMediaItemAt(i)
+                            // Check media metadata for artist
+                            // mediaMetadata.artist is CharSequence?
+                            if (item.mediaMetadata.artist.toString() == primaryArtist.name) { 
+                                // This is a loose check, ideal would be artist ID but MediaItem metadata might only have name
+                                player.removeMediaItem(i)
+                            }
+                        }
+                    }
+                    showBlockArtistDialog = false
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(R.string.block_warning))
+            }
         }
     }
 
@@ -706,6 +774,34 @@ fun SongMenu(
                                             }
                                         }
                                     }
+                                }
+                            }
+                        )
+                    )
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.block_song)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.block),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = { showBlockSongDialog = true }
+                        )
+                    )
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(R.string.block_artist)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.block),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = { 
+                                if (song.artists.isNotEmpty()) {
+                                    showBlockArtistDialog = true 
                                 }
                             }
                         )

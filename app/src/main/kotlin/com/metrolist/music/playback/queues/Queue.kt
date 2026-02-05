@@ -41,6 +41,12 @@ interface Queue {
             } else {
                 this
             }
+
+        fun filterBlocked(
+            blockedSongs: Set<String>,
+            blockedArtists: Set<String>,
+            blockedAlbums: Set<String>
+        ) = copy(items = items.filterBlocked(blockedSongs, blockedArtists, blockedAlbums))
     }
 }
 
@@ -59,3 +65,19 @@ fun List<MediaItem>.filterVideoSongs(disableVideos: Boolean = false) =
     } else {
         this
     }
+
+fun List<MediaItem>.filterBlocked(
+    blockedSongs: Set<String>,
+    blockedArtists: Set<String>,
+    blockedAlbums: Set<String>
+) = filterNot { item ->
+    val meta = item.metadata ?: return@filterNot false
+    if (meta.id in blockedSongs) return@filterNot true
+    if (meta.album?.id in blockedAlbums) return@filterNot true
+    
+    // Check primary artist
+    // MediaMetadata.artist is Artist object { id, name }
+    meta.artists.firstOrNull()?.id?.let { if (it in blockedArtists) return@filterNot true }
+    
+    false
+}

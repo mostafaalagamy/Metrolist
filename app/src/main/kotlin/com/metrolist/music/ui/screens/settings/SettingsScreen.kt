@@ -92,6 +92,11 @@ fun SettingsScreen(
                     icon = painterResource(R.drawable.language),
                     title = { Text(stringResource(R.string.content)) },
                     onClick = { navController.navigate("settings/content") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.library_music_outlined),
+                    title = { Text(stringResource(R.string.library)) },
+                    onClick = { navController.navigate("settings/library") }
                 )
             )
         )

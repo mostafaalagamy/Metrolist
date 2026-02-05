@@ -23,6 +23,7 @@ import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.repositories.BlockedContentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ class OnlineSearchViewModel
 constructor(
     @ApplicationContext val context: Context,
     savedStateHandle: SavedStateHandle,
+    private val blockedRepository: BlockedContentRepository,
 ) : ViewModel() {
     val query = URLDecoder.decode(savedStateHandle.get<String>("query")!!, "UTF-8")
     val filter = MutableStateFlow<YouTube.SearchFilter?>(null)
@@ -52,10 +54,12 @@ constructor(
                             .onSuccess {
                                 val hideExplicit = context.dataStore.get(HideExplicitKey, false)
                                 val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
-                                summaryPage =
-                                    it.filterExplicit(
-                                        hideExplicit,
-                                    ).filterVideoSongs(hideVideoSongs)
+                                val filtered = it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs)
+                                summaryPage = filtered.copy(
+                                    summaries = filtered.summaries.map { summary ->
+                                        summary.copy(items = blockedRepository.filterBlockedYTItems(summary.items))
+                                    }.filter { summary -> summary.items.isNotEmpty() }
+                                )
                             }.onFailure {
                                 reportException(it)
                             }
@@ -69,12 +73,14 @@ constructor(
                                 val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
                                 viewStateMap[filter.value] =
                                     ItemsPage(
-                                        result.items
-                                            .distinctBy { it.id }
-                                            .filterExplicit(
-                                                hideExplicit,
-                                            )
-                                            .filterVideoSongs(hideVideoSongs),
+                                        blockedRepository.filterBlockedYTItems(
+                                            result.items
+                                                .distinctBy { it.id }
+                                                .filterExplicit(
+                                                    hideExplicit,
+                                                )
+                                                .filterVideoSongs(hideVideoSongs)
+                                        ),
                                         result.continuation,
                                     )
                             }.onFailure {
@@ -97,9 +103,11 @@ constructor(
                     YouTube.searchContinuation(continuation).getOrNull() ?: return@launch
                 val hideExplicit = context.dataStore.get(HideExplicitKey, false)
                 val hideVideoSongs = context.dataStore.get(HideVideoSongsKey, false)
-                val newItems = searchResult.items
-                    .filterExplicit(hideExplicit)
-                    .filterVideoSongs(hideVideoSongs)
+                val newItems = blockedRepository.filterBlockedYTItems(
+                    searchResult.items
+                        .filterExplicit(hideExplicit)
+                        .filterVideoSongs(hideVideoSongs)
+                )
                 viewStateMap[filter] = ItemsPage(
                     (viewState.items + newItems).distinctBy { it.id },
                     searchResult.continuation

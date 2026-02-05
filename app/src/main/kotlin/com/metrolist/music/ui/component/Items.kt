@@ -157,6 +157,7 @@ inline fun ListItem(
     isSelected: Boolean? = false,
     isActive: Boolean = false,
     isAvailable: Boolean = true,
+    isBlocked: Boolean = false,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -180,7 +181,7 @@ inline fun ListItem(
             modifier // default
                 .height(ListItemHeight)
                 .padding(horizontal = 8.dp)
-        }
+        }.let { if (isBlocked) it.alpha(0.5f) else it }
     ) {
         Box(
             modifier = Modifier.padding(6.dp),
@@ -199,6 +200,26 @@ inline fun ListItem(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.offline),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(ListThumbnailSize / 2)
+                            .align(Alignment.Center)
+                            .graphicsLayer { alpha = 1f }
+                    )
+                }
+            } else if (isBlocked) {
+                Box(
+                    modifier = Modifier
+                        .size(ListThumbnailSize)
+                        .align(Alignment.Center)
+                        .background(
+                            Color.Black.copy(alpha = 0.4f),
+                            RoundedCornerShape(ThumbnailCornerRadius)
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.block),
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
@@ -244,6 +265,7 @@ fun ListItem(
     trailingContent: @Composable RowScope.() -> Unit = {},
     isSelected: Boolean? = false,
     isActive: Boolean = false,
+    isBlocked: Boolean = false,
 ) = ListItem(
     title = title,
     subtitle = {
@@ -263,7 +285,8 @@ fun ListItem(
     trailingContent = trailingContent,
     modifier = modifier,
     isSelected = isSelected,
-    isActive = isActive
+    isActive = isActive,
+    isBlocked = isBlocked
 )
 
 @Composable
@@ -379,6 +402,8 @@ fun SongListItem(
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
     val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+    val database = LocalDatabase.current
+    val isBlocked by database.isSongBlocked(song.id).collectAsState(initial = false)
 
     val content: @Composable () -> Unit = {
         ListItem(
@@ -402,7 +427,8 @@ fun SongListItem(
             trailingContent = trailingContent,
             modifier = modifier,
             isSelected = isSelected,
-            isActive = isActive
+            isActive = isActive,
+            isBlocked = isBlocked
         )
     }
 
@@ -966,6 +992,20 @@ fun YouTubeListItem(
     },
 ) {
     val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+    val database = LocalDatabase.current
+    // For online items, we might need to check various things. For simplicity, just check if the ID is blocked.
+    // Ideally we check artist/album too, but that requires async lookups or a unified check.
+    // Let's check song ID if it is a song.
+    val isBlocked by produceState(initialValue = false, item.id) {
+        if (item is SongItem) {
+            value = database.isSongBlocked(item.id).first() || 
+                    database.isArtistBlocked(item.artists.firstOrNull()?.id ?: "").first()
+        } else if (item is ArtistItem) {
+            value = database.isArtistBlocked(item.id).first()
+        } else if (item is AlbumItem) {
+            value = database.isAlbumBlocked(item.id).first()
+        }
+    }
 
     val content: @Composable () -> Unit = {
         ListItem(
@@ -990,7 +1030,8 @@ fun YouTubeListItem(
             },
             trailingContent = trailingContent,
             modifier = modifier,
-            isActive = isActive
+            isActive = isActive,
+            isBlocked = isBlocked
         )
     }
 

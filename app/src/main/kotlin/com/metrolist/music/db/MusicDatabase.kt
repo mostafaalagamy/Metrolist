@@ -24,6 +24,9 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.metrolist.music.db.entities.AlbumArtistMap
 import com.metrolist.music.db.entities.AlbumEntity
 import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.BlockedAlbum
+import com.metrolist.music.db.entities.BlockedArtist
+import com.metrolist.music.db.entities.BlockedSong
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.LyricsEntity
@@ -97,14 +100,17 @@ class MusicDatabase(
         Event::class,
         RelatedSongMap::class,
         SetVideoIdEntity::class,
-        PlayCountEntity::class
+        PlayCountEntity::class,
+        BlockedSong::class,
+        BlockedArtist::class,
+        BlockedAlbum::class
     ],
     views = [
         SortedSongArtistMap::class,
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 30,
+    version = 31,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -135,6 +141,7 @@ class MusicDatabase(
         AutoMigration(from = 27, to = 28),
         AutoMigration(from = 28, to = 29),
         AutoMigration(from = 29, to = 30, spec = Migration29To30::class),
+        AutoMigration(from = 30, to = 31, spec = Migration30To31::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -698,5 +705,48 @@ class Migration29To30 : AutoMigrationSpec {
         if (!hasProvider) {
             db.execSQL("ALTER TABLE lyrics ADD COLUMN provider TEXT NOT NULL DEFAULT 'Unknown'")
         }
+    }
+}
+
+class Migration30To31 : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // Create blocked content tables
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `blocked_song` (
+                `songId` TEXT NOT NULL,
+                `songTitle` TEXT NOT NULL,
+                `artistName` TEXT,
+                `thumbnailUrl` TEXT,
+                `blockedAt` INTEGER NOT NULL,
+                PRIMARY KEY(`songId`)
+            )
+            """.trimIndent()
+        )
+
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `blocked_artist` (
+                `artistId` TEXT NOT NULL,
+                `artistName` TEXT NOT NULL,
+                `thumbnailUrl` TEXT,
+                `blockedAt` INTEGER NOT NULL,
+                PRIMARY KEY(`artistId`)
+            )
+            """.trimIndent()
+        )
+
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `blocked_album` (
+                `albumId` TEXT NOT NULL,
+                `albumTitle` TEXT NOT NULL,
+                `artistName` TEXT,
+                `thumbnailUrl` TEXT,
+                `blockedAt` INTEGER NOT NULL,
+                PRIMARY KEY(`albumId`)
+            )
+            """.trimIndent()
+        )
     }
 }

@@ -33,6 +33,9 @@ import com.metrolist.music.db.entities.PlayCountEntity
 import com.metrolist.music.db.entities.AlbumWithSongs
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.BlockedAlbum
+import com.metrolist.music.db.entities.BlockedArtist
+import com.metrolist.music.db.entities.BlockedSong
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.EventWithSong
 import com.metrolist.music.db.entities.FormatEntity
@@ -1274,6 +1277,43 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(playCountEntity: PlayCountEntity): Long
+
+    // Blocked Content
+    @Query("SELECT * FROM blocked_song ORDER BY blockedAt DESC")
+    fun blockedSongs(): Flow<List<BlockedSong>>
+
+    @Query("SELECT * FROM blocked_artist ORDER BY blockedAt DESC")
+    fun blockedArtists(): Flow<List<BlockedArtist>>
+
+    @Query("SELECT * FROM blocked_album ORDER BY blockedAt DESC")
+    fun blockedAlbums(): Flow<List<BlockedAlbum>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(blockedSong: BlockedSong)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(blockedArtist: BlockedArtist)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(blockedAlbum: BlockedAlbum)
+
+    @Query("DELETE FROM blocked_song WHERE songId = :songId")
+    fun deleteBlockedSong(songId: String)
+
+    @Query("DELETE FROM blocked_artist WHERE artistId = :artistId")
+    fun deleteBlockedArtist(artistId: String)
+
+    @Query("DELETE FROM blocked_album WHERE albumId = :albumId")
+    fun deleteBlockedAlbum(albumId: String)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM blocked_song WHERE songId = :songId)")
+    fun isSongBlocked(songId: String): Flow<Boolean>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM blocked_artist WHERE artistId = :artistId)")
+    fun isArtistBlocked(artistId: String): Flow<Boolean>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM blocked_album WHERE albumId = :albumId)")
+    fun isAlbumBlocked(albumId: String): Flow<Boolean>
 
     @Transaction
     fun insert(
