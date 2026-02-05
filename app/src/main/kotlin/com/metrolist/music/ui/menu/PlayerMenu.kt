@@ -887,13 +887,14 @@ fun ListenTogetherDialog(
     val isHost = roomState?.hostId == userId
     
     ListDialog(onDismiss = onDismiss) {
-        // Header
+        // Header - Icon on left, text left-aligned
         item {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
                 Icon(
                     painter = painterResource(R.drawable.group),
@@ -901,7 +902,7 @@ fun ListenTogetherDialog(
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(40.dp)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = if (isInRoom) {
                         if (isHost) stringResource(R.string.hosting_room) else stringResource(R.string.in_room)
