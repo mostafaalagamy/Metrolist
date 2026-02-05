@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -165,8 +166,11 @@ import com.metrolist.music.ui.screens.navigationBuilder
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
+import com.metrolist.music.constants.SelectedThemeColorKey
 import com.metrolist.music.ui.theme.DefaultThemeColor
 import com.metrolist.music.ui.theme.MetrolistTheme
+import com.metrolist.music.ui.menu.ListenTogetherDialog
+
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
 import com.metrolist.music.ui.utils.resetHeightOffset
@@ -209,6 +213,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var syncUtils: SyncUtils
+    
+    @Inject
+    lateinit var listenTogetherManager: com.metrolist.music.listentogether.ListenTogetherManager
 
     private lateinit var navController: NavHostController
     private var pendingIntent: Intent? = null
@@ -220,10 +227,14 @@ class MainActivity : ComponentActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is MusicBinder) {
                 playerConnection = PlayerConnection(this@MainActivity, service, database, lifecycleScope)
+                // Connect Listen Together manager to player
+                listenTogetherManager.setPlayerConnection(playerConnection)
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
+            // Disconnect Listen Together manager
+            listenTogetherManager.setPlayerConnection(null)
             playerConnection?.dispose()
             playerConnection = null
         }
@@ -280,6 +291,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        // Initialize Listen Together manager
+        listenTogetherManager.initialize()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             val locale = dataStore[AppLanguageKey]
@@ -387,14 +401,23 @@ class MainActivity : ComponentActivity() {
             pureBlackEnabled && useDarkTheme
         }
 
+        val (selectedThemeColorInt) = rememberPreference(SelectedThemeColorKey, defaultValue = DefaultThemeColor.toArgb())
+        val selectedThemeColor = Color(selectedThemeColorInt)
+
         var themeColor by rememberSaveable(stateSaver = ColorSaver) {
-            mutableStateOf(DefaultThemeColor)
+            mutableStateOf(selectedThemeColor)
         }
 
-        LaunchedEffect(playerConnection, enableDynamicTheme) {
+        LaunchedEffect(selectedThemeColor) {
+            if (!enableDynamicTheme) {
+                themeColor = selectedThemeColor
+            }
+        }
+
+        LaunchedEffect(playerConnection, enableDynamicTheme, selectedThemeColor) {
             val playerConnection = playerConnection
             if (!enableDynamicTheme || playerConnection == null) {
-                themeColor = DefaultThemeColor
+                themeColor = selectedThemeColor
                 return@LaunchedEffect
             }
 
@@ -412,14 +435,14 @@ class MainActivity : ComponentActivity() {
                                     .crossfade(false)
                                     .build()
                             )
-                            themeColor = result.image?.toBitmap()?.extractThemeColor() ?: DefaultThemeColor
+                            themeColor = result.image?.toBitmap()?.extractThemeColor() ?: selectedThemeColor
                         } catch (e: Exception) {
                             // Fallback to default on error
-                            themeColor = DefaultThemeColor
+                            themeColor = selectedThemeColor
                         }
                     }
                 } else {
-                    themeColor = DefaultThemeColor
+                    themeColor = selectedThemeColor
                 }
             }
         }
@@ -675,6 +698,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 var showAccountDialog by remember { mutableStateOf(false) }
+                var showListenTogetherDialog by rememberSaveable { mutableStateOf(false) }
+                val pendingSuggestions by listenTogetherManager.pendingSuggestions.collectAsState()
+                val mediaMetadata by playerConnection?.mediaMetadata?.collectAsState() ?: remember { mutableStateOf(null) }
+                val listenTogetherRole by listenTogetherManager.role.collectAsState()
+                val listenTogetherStatus by listenTogetherManager.connectionState.collectAsState()
+
+
 
                 val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
 
@@ -686,7 +716,14 @@ class MainActivity : ComponentActivity() {
                     LocalDownloadUtil provides downloadUtil,
                     LocalShimmerTheme provides ShimmerTheme,
                     LocalSyncUtils provides syncUtils,
+                    LocalListenTogetherManager provides listenTogetherManager,
                 ) {
+                    ListenTogetherDialog(
+                        visible = showListenTogetherDialog,
+                        mediaMetadata = mediaMetadata,
+                        onDismiss = { showListenTogetherDialog = false }
+                    )
+
                     Scaffold(
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                         topBar = {
@@ -715,6 +752,43 @@ class MainActivity : ComponentActivity() {
                                                     painter = painterResource(R.drawable.stats),
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
+                                            }
+                                            IconButton(onClick = { showListenTogetherDialog = true }) {
+                                                BadgedBox(badge = {
+                                                    if (pendingSuggestions.isNotEmpty()) {
+                                                        Badge {
+                                                            Text(text = pendingSuggestions.size.toString())
+                                                        }
+                                                    }
+                                                }) {
+                                                    Box {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.group),
+                                                            contentDescription = stringResource(R.string.listen_together),
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+
+                                                        if (listenTogetherStatus == com.metrolist.music.listentogether.ConnectionState.CONNECTED &&
+                                                            listenTogetherRole != com.metrolist.music.listentogether.RoomRole.NONE
+                                                        ) {
+                                                            Icon(
+                                                                painter = painterResource(
+                                                                    if (listenTogetherRole == com.metrolist.music.listentogether.RoomRole.HOST) {
+                                                                        R.drawable.crown
+                                                                    } else {
+                                                                        R.drawable.share
+                                                                    }
+                                                                ),
+                                                                contentDescription = null,
+                                                                modifier = Modifier
+                                                                    .size(12.dp)
+                                                                    .align(Alignment.BottomEnd)
+                                                                    .offset(x = 4.dp, y = 4.dp),
+                                                                tint = MaterialTheme.colorScheme.primary
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
                                             IconButton(onClick = { showAccountDialog = true }) {
                                                 BadgedBox(badge = {
@@ -1126,3 +1200,5 @@ val LocalPlayerConnection = staticCompositionLocalOf<PlayerConnection?> { error(
 val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
+val LocalListenTogetherManager = staticCompositionLocalOf<com.metrolist.music.listentogether.ListenTogetherManager?> { null }
+val LocalIsPlayerExpanded = compositionLocalOf { false }

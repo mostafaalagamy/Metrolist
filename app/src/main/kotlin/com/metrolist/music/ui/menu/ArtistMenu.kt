@@ -52,6 +52,7 @@ import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.ArtistListItem
 import com.metrolist.music.ui.component.Material3MenuItemData
 import com.metrolist.music.ui.component.Material3MenuGroup
+import com.metrolist.music.LocalListenTogetherManager
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +70,8 @@ fun ArtistMenu(
     val context = LocalContext.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
+    val listenTogetherManager = LocalListenTogetherManager.current
+    val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
     val artistState = database.artist(originalArtist.id).collectAsState(initial = originalArtist)
     val artist = artistState.value ?: originalArtist
 
@@ -96,69 +99,71 @@ fun ArtistMenu(
         item {
             NewActionGrid(
                 actions = buildList {
-                    if (artist.songCount > 0) {
-                        add(
-                            NewAction(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.play),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(28.dp),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                },
-                                text = stringResource(R.string.play),
-                                onClick = {
-                                    coroutineScope.launch {
-                                        val songs = withContext(Dispatchers.IO) {
-                                            database
-                                                .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
-                                                .first()
-                                                .map { it.toMediaItem() }
-                                        }
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = artist.artist.name,
-                                                items = songs,
-                                            ),
+                    if (!isGuest) {
+                        if (artist.songCount > 0) {
+                            add(
+                                NewAction(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.play),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(28.dp),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
+                                    },
+                                    text = stringResource(R.string.play),
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            val songs = withContext(Dispatchers.IO) {
+                                                database
+                                                    .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
+                                                    .first()
+                                                    .map { it.toMediaItem() }
+                                            }
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = artist.artist.name,
+                                                    items = songs,
+                                                ),
+                                            )
+                                        }
+                                        onDismiss()
                                     }
-                                    onDismiss()
-                                }
+                                )
                             )
-                        )
 
-                        add(
-                            NewAction(
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.shuffle),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(28.dp),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                },
-                                text = stringResource(R.string.shuffle),
-                                onClick = {
-                                    coroutineScope.launch {
-                                        val songs = withContext(Dispatchers.IO) {
-                                            database
-                                                .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
-                                                .first()
-                                                .map { it.toMediaItem() }
-                                                .shuffled()
-                                        }
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = artist.artist.name,
-                                                items = songs,
-                                            ),
+                            add(
+                                NewAction(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.shuffle),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(28.dp),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
+                                    },
+                                    text = stringResource(R.string.shuffle),
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            val songs = withContext(Dispatchers.IO) {
+                                                database
+                                                    .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
+                                                    .first()
+                                                    .map { it.toMediaItem() }
+                                                    .shuffled()
+                                            }
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = artist.artist.name,
+                                                    items = songs,
+                                                ),
+                                            )
+                                        }
+                                        onDismiss()
                                     }
-                                    onDismiss()
-                                }
+                                )
                             )
-                        )
+                        }
                     }
 
                     if (artist.artist.isYouTubeArtist) {
@@ -189,7 +194,8 @@ fun ArtistMenu(
                         )
                     }
                 },
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp),
+                columns = if (isGuest) 1 else 3
             )
         }
 

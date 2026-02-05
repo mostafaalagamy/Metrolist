@@ -31,7 +31,6 @@ import com.google.common.util.concurrent.SettableFuture
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.filterVideoSongs
 import com.metrolist.music.R
@@ -40,13 +39,8 @@ import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.MediaSessionConstants
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
-import com.metrolist.music.db.entities.Album as LocalAlbum
-import com.metrolist.music.db.entities.Artist as LocalArtist
-import com.metrolist.music.db.entities.Playlist as LocalPlaylist
 import com.metrolist.music.db.entities.PlaylistEntity
-import com.metrolist.music.db.entities.PlaylistSong
-import com.metrolist.music.db.entities.Song as LocalSong
-import kotlinx.coroutines.runBlocking
+import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.extensions.metadata
@@ -226,7 +220,7 @@ constructor(
                         val downloadedSongCount = downloadUtil.downloads.value.size
                         val youtubePlaylists = try {
                             YouTube.home().getOrNull()?.sections
-                                ?.flatMap { section: HomePage.Section -> section.items.toList() }
+                                ?.flatMap { it.items }
                                 ?.filterIsInstance<PlaylistItem>()
                                 ?.take(10)
                                 ?: emptyList()
@@ -438,22 +432,22 @@ constructor(
                     song.album?.title?.contains(query, ignoreCase = true) == true
                 }
                 
-                val artistSongs = database.searchArtists(query).first().flatMap { artist: LocalArtist ->
-                    runBlocking { database.artistSongsByCreateDateAsc(artist.id).first() }
+                val artistSongs = database.searchArtists(query).first().flatMap { artist ->
+                    database.artistSongsByCreateDateAsc(artist.id).first()
                 }
                 
-                val albumSongs = database.searchAlbums(query).first().flatMap { album: LocalAlbum ->
-                    runBlocking { database.albumSongs(album.id).first() }
+                val albumSongs = database.searchAlbums(query).first().flatMap { album ->
+                    database.albumSongs(album.id).first()
                 }
                 
-                val playlistSongs = database.searchPlaylists(query).first().flatMap { playlist: LocalPlaylist ->
-                    runBlocking { database.playlistSongs(playlist.id).first().map { playlistSong: PlaylistSong -> playlistSong.song } }
+                val playlistSongs = database.searchPlaylists(query).first().flatMap { playlist ->
+                    database.playlistSongs(playlist.id).first().map { it.song }
                 }
 
                 val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                    .distinctBy { song: LocalSong -> song.id }
+                    .distinctBy { it.id }
                 
-                allLocalSongs.forEach { song: LocalSong ->
+                allLocalSongs.forEach { song ->
                     searchResults.add(song.toMediaItem(
                         path = "${MusicService.SEARCH}/$query",
                         isPlayable = true,
@@ -468,13 +462,13 @@ constructor(
                         ?.filterIsInstance<SongItem>()
                         ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
                         ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
-                        ?.filter { onlineSong: SongItem ->
-                            allLocalSongs.none { localSong: LocalSong ->
+                        ?.filter { onlineSong ->
+                            !allLocalSongs.any { localSong ->
                                 localSong.id == onlineSong.id ||
                                 (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
-                                 localSong.artists.any { artist: com.metrolist.music.db.entities.ArtistEntity ->
-                                     onlineSong.artists.any { onlineArtist: com.metrolist.innertube.models.Artist ->
-                                         onlineArtist.name.equals(artist.name, ignoreCase = true)
+                                 localSong.artists.any { artist ->
+                                     onlineSong.artists.any {
+                                         it.name.equals(artist.name, ignoreCase = true)
                                      }
                                  })
                             }
@@ -636,7 +630,7 @@ constructor(
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val searchQuery = path.getOrNull(1) ?: return@future defaultResult
                     
-                    val searchResults = mutableListOf<LocalSong>()
+                    val searchResults = mutableListOf<Song>()
 
                     val localSongs = database.allSongs().first().filter { song ->
                         song.song.title.contains(searchQuery, ignoreCase = true) ||
@@ -644,20 +638,20 @@ constructor(
                         song.album?.title?.contains(searchQuery, ignoreCase = true) == true
                     }
                     
-                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist: LocalArtist ->
-                        runBlocking { database.artistSongsByCreateDateAsc(artist.id).first() }
+                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist ->
+                        database.artistSongsByCreateDateAsc(artist.id).first()
                     }
                     
-                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album: LocalAlbum ->
-                        runBlocking { database.albumSongs(album.id).first() }
+                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album ->
+                        database.albumSongs(album.id).first()
                     }
                     
-                    val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist: LocalPlaylist ->
-                        runBlocking { database.playlistSongs(playlist.id).first().map { playlistSong: PlaylistSong -> playlistSong.song } }
+                    val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist ->
+                        database.playlistSongs(playlist.id).first().map { it.song }
                     }
 
                     val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                        .distinctBy { song: LocalSong -> song.id }
+                        .distinctBy { it.id }
                     
                     searchResults.addAll(allLocalSongs)
                     
@@ -669,12 +663,12 @@ constructor(
                             ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
                             ?.filterVideoSongs(context.dataStore.get(HideVideoSongsKey, false))
                             ?.filter { onlineSong ->
-                                allLocalSongs.none { localSong ->
+                                !allLocalSongs.any { localSong ->
                                     localSong.id == onlineSong.id ||
                                     (localSong.song.title.equals(onlineSong.title, ignoreCase = true) &&
                                      localSong.artists.any { artist ->
-                                         onlineSong.artists.any { onlineArtist ->
-                                             onlineArtist.name.equals(artist.name, ignoreCase = true)
+                                         onlineSong.artists.any {
+                                             it.name.equals(artist.name, ignoreCase = true)
                                          }
                                      })
                                 }
@@ -742,13 +736,13 @@ constructor(
                 .build(),
         ).build()
 
-    private fun LocalSong.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false): MediaItem {
-        val artworkUri = song.thumbnailUrl?.let { url: String ->
-            val snapshot = context.imageLoader.diskCache?.openSnapshot(url)
+    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false): MediaItem {
+        val artworkUri = song.thumbnailUrl?.let {
+            val snapshot = context.imageLoader.diskCache?.openSnapshot(it)
             if (snapshot != null) {
-                snapshot.use { s -> s.data.toFile().toUri() }
+                snapshot.use { snapshot -> snapshot.data.toFile().toUri() }
             } else {
-                url.toUri()
+                it.toUri()
             }
         }
 
@@ -759,8 +753,8 @@ constructor(
                 MediaMetadata
                     .Builder()
                     .setTitle(song.title)
-                    .setSubtitle(artists.joinToString { artist -> artist.name })
-                    .setArtist(artists.joinToString { artist -> artist.name })
+                    .setSubtitle(artists.joinToString { it.name })
+                    .setArtist(artists.joinToString { it.name })
                     .setArtworkUri(artworkUri)
                     .setIsPlayable(isPlayable)
                     .setIsBrowsable(isBrowsable)

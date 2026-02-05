@@ -570,4 +570,34 @@
     <string name="crash_report_subject">Metrolist Crash Report</string>
     <string name="crash_close">Close</string>
     <string name="crash_no_log">No crash log available</string>
+
+    <!-- Theme Palette Names -->
+    <string name="palette_dynamic">Dynamic</string>
+    <string name="palette_crimson">Crimson</string>
+    <string name="palette_rose">Rose</string>
+    <string name="palette_purple">Purple</string>
+    <string name="palette_deep_purple">Deep Purple</string>
+    <string name="palette_indigo">Indigo</string>
+    <string name="palette_blue">Blue</string>
+    <string name="palette_sky_blue">Sky Blue</string>
+    <string name="palette_cyan">Cyan</string>
+    <string name="palette_teal">Teal</string>
+    <string name="palette_green">Green</string>
+    <string name="palette_light_green">Light Green</string>
+    <string name="palette_lime">Lime</string>
+    <string name="palette_yellow">Yellow</string>
+    <string name="palette_amber">Amber</string>
+    <string name="palette_orange">Orange</string>
+    <string name="palette_deep_orange">Deep Orange</string>
+    <string name="palette_brown">Brown</string>
+    <string name="palette_grey">Grey</string>
+    <string name="palette_blue_grey">Blue Grey</string>
+
+    <!-- Theme Content Descriptions -->
+    <string name="cd_back">Back</string>
+    <string name="cd_pure_black_mode">Pure Black mode</string>
+    <string name="cd_light_mode">Light mode</string>
+    <string name="cd_dark_mode">Dark mode</string>
+    <string name="cd_system_mode">System mode</string>
+    <string name="cd_palette_item">%1$s palette</string>
 </resources>
