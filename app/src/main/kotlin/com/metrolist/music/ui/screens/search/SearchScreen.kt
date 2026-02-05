@@ -74,6 +74,7 @@ fun SearchScreen(
         mutableStateOf(TextFieldValue())
     }
     val pauseSearchHistory by rememberPreference(PauseSearchHistoryKey, defaultValue = false)
+    var hasFocusBeenRequested by rememberSaveable { mutableStateOf(false) }
 
     val onSearch: (String) -> Unit = remember {
         { searchQuery ->
@@ -228,6 +229,9 @@ fun SearchScreen(
     }
 
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+        if (!hasFocusBeenRequested) {
+            focusRequester.requestFocus()
+            hasFocusBeenRequested = true
+        }
     }
 }
