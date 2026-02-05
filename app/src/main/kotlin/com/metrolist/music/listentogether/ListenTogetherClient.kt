@@ -194,25 +194,30 @@ class ListenTogetherClient @Inject constructor(
      */
     private fun observeNetworkChanges() {
         scope.launch {
-            connectivityObserver.networkStatus.collect { available: Boolean ->
-                val previous = isNetworkAvailable
-                isNetworkAvailable = available
-                
-                if (available && !previous) {
-                    log(LogLevel.INFO, "Network restored, checking if reconnection needed")
-                    // Reset attempts when network is restored to allow a fresh set of retries
-                    if (_connectionState.value == ConnectionState.ERROR || 
-                        _connectionState.value == ConnectionState.DISCONNECTED) {
-                        
-                        if (sessionToken != null || _roomState.value != null || pendingAction != null) {
-                            log(LogLevel.INFO, "Network restored, triggering reconnection")
-                            reconnectAttempts = 0 // Reset attempts for a fresh start
-                            connect()
+            try {
+                val observer = connectivityObserver ?: return@launch
+                observer.networkStatus.collect { available: Boolean ->
+                    val previous = isNetworkAvailable
+                    isNetworkAvailable = available
+                    
+                    if (available && !previous) {
+                        log(LogLevel.INFO, "Network restored, checking if reconnection needed")
+                        // Reset attempts when network is restored to allow a fresh set of retries
+                        if (_connectionState.value == ConnectionState.ERROR || 
+                            _connectionState.value == ConnectionState.DISCONNECTED) {
+                            
+                            if (sessionToken != null || _roomState.value != null || pendingAction != null) {
+                                log(LogLevel.INFO, "Network restored, triggering reconnection")
+                                reconnectAttempts = 0 // Reset attempts for a fresh start
+                                connect()
+                            }
                         }
+                    } else if (!available && previous) {
+                        log(LogLevel.WARNING, "Network lost")
                     }
-                } else if (!available && previous) {
-                    log(LogLevel.WARNING, "Network lost")
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error observing network changes", e)
             }
         }
     }
@@ -316,9 +321,20 @@ class ListenTogetherClient @Inject constructor(
     // Track notification IDs for suggestions to dismiss them similarly
     private val suggestionNotifications = mutableMapOf<String, Int>()
 
-    // Network connectivity monitoring
-    private val connectivityObserver = NetworkConnectivityObserver(context)
-    private var isNetworkAvailable = connectivityObserver.isCurrentlyConnected()
+    // Network connectivity monitoring - use lazy to avoid initialization order issues
+    private val connectivityObserver: NetworkConnectivityObserver? by lazy {
+        try {
+            NetworkConnectivityObserver(context)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to create NetworkConnectivityObserver", e)
+            null
+        }
+    }
+    private var isNetworkAvailable = try { 
+        connectivityObserver?.isCurrentlyConnected() ?: true 
+    } catch (e: Exception) { 
+        true 
+    }
 
     // State flows
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
