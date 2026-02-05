@@ -128,9 +128,7 @@ fun ThemeScreen(
 
     val onPureBlackChange: (Boolean) -> Unit = { enabled ->
         onPureBlackChangeRaw(enabled)
-        if (enabled) {
-            onPureBlackMiniPlayerChange(true)
-        }
+        onPureBlackMiniPlayerChange(enabled)
     }
     val (selectedThemeColorInt, onSelectedThemeColorChange) = rememberPreference(
         SelectedThemeColorKey,
