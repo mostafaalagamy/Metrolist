@@ -476,10 +476,10 @@ private fun CachePlaylistHeader(
                     .size(240.dp)
                     .shadow(
                         elevation = 24.dp,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(4.dp),
                         spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                     ),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(4.dp)
             ) {
                 AsyncImage(
                     model = songs.first().thumbnailUrl,
