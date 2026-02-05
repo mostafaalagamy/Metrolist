@@ -105,7 +105,6 @@ import kotlin.math.pow
 import kotlin.math.round
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
-import com.metrolist.music.listentogether.ConnectionState
 
 @Composable
 fun PlayerMenu(
