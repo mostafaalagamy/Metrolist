@@ -151,10 +151,7 @@ fun AppearanceSettings(
         }
     }
 
-    val (darkMode, onDarkModeChange) = rememberEnumPreference(
-        DarkModeKey,
-        defaultValue = DarkMode.AUTO
-    )
+
     val (useNewPlayerDesign, onUseNewPlayerDesignChange) = rememberPreference(
         UseNewPlayerDesignKey,
         defaultValue = true
@@ -176,7 +173,7 @@ fun AppearanceSettings(
             PlayerBackgroundStyleKey,
             defaultValue = PlayerBackgroundStyle.DEFAULT,
         )
-    val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
+
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(
         DefaultOpenTabKey,
         defaultValue = NavigationTab.HOME
@@ -263,11 +260,7 @@ fun AppearanceSettings(
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
 
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    val useDarkTheme =
-        remember(darkMode, isSystemInDarkTheme) {
-            if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
-        }
+
 
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(
         key = ChipSortTypeKey,
@@ -278,9 +271,7 @@ fun AppearanceSettings(
         mutableStateOf(false)
     }
 
-    var showDarkModeDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+
 
     var showPlayerBackgroundDialog by rememberSaveable {
         mutableStateOf(false)
@@ -517,25 +508,6 @@ fun AppearanceSettings(
         )
     }
 
-    if (showDarkModeDialog) {
-        EnumDialog(
-            onDismiss = { showDarkModeDialog = false },
-            onSelect = {
-                onDarkModeChange(it)
-                showDarkModeDialog = false
-            },
-            title = stringResource(R.string.dark_theme),
-            current = darkMode,
-            values = DarkMode.values().toList(),
-            valueText = {
-                when (it) {
-                    DarkMode.ON -> stringResource(R.string.dark_theme_on)
-                    DarkMode.OFF -> stringResource(R.string.dark_theme_off)
-                    DarkMode.AUTO -> stringResource(R.string.dark_theme_follow_system)
-                }
-            }
-        )
-    }
 
     var showDefaultOpenTabDialog by rememberSaveable {
         mutableStateOf(false)
@@ -858,44 +830,12 @@ fun AppearanceSettings(
                 )
                 add(
                     Material3SettingsItem(
-                        icon = painterResource(R.drawable.dark_mode),
-                        title = { Text(stringResource(R.string.dark_theme)) },
-                        description = {
-                            Text(
-                                when (darkMode) {
-                                    DarkMode.ON -> stringResource(R.string.dark_theme_on)
-                                    DarkMode.OFF -> stringResource(R.string.dark_theme_off)
-                                    DarkMode.AUTO -> stringResource(R.string.dark_theme_follow_system)
-                                }
-                            )
-                        },
-                        onClick = { showDarkModeDialog = true }
+                        icon = painterResource(R.drawable.palette),
+                        title = { Text(stringResource(R.string.theme)) },
+                        description = { Text(stringResource(R.string.theme_desc)) },
+                        onClick = { navController.navigate("settings/appearance/theme") }
                     )
                 )
-                if (useDarkTheme) {
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(R.drawable.contrast),
-                            title = { Text(stringResource(R.string.pure_black)) },
-                            trailingContent = {
-                                Switch(
-                                    checked = pureBlack,
-                                    onCheckedChange = onPureBlackChange,
-                                    thumbContent = {
-                                        Icon(
-                                            painter = painterResource(
-                                                id = if (pureBlack) R.drawable.check else R.drawable.close
-                                            ),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize)
-                                        )
-                                    }
-                                )
-                            },
-                            onClick = { onPureBlackChange(!pureBlack) }
-                        )
-                    )
-                }
             }
         )
 
