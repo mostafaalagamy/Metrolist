@@ -476,7 +476,7 @@ fun SongProgressBar(currentTimeMillis: Long, durationMillis: Long) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
+                .clip(RoundedCornerShape(5.dp))
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
