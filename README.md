@@ -48,7 +48,6 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 
 </div>
 
-</div>
 <div align="center">
 <h1>Nightly Build</h1>
 
