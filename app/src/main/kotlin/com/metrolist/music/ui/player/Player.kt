@@ -172,7 +172,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.saket.squiggles.SquigglySlider
+import com.metrolist.music.ui.component.SquigglySlider
 import kotlin.math.max
 import kotlin.math.roundToInt
 import com.metrolist.music.ui.component.Icon as MIcon
@@ -1171,10 +1171,8 @@ fun BottomSheetPlayer(
                                 sliderPosition = null
                             },
                             modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                            squigglesSpec = SquigglySlider.SquigglesSpec(
-                                amplitude = if (effectiveIsPlaying) 2.dp else 0.dp,
-                                strokeWidth = 3.dp,
-                            ),
+                            colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                            isPlaying = effectiveIsPlaying,
                         )
                     } else {
                         WavySlider(
