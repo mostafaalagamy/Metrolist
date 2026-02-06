@@ -35,7 +35,6 @@ materialKolor = "4.1.1"
 kuromojiIpadic = "0.9.0"
 newpipeextractor = "c1336db"
 tinypinyin = "2.0.3"
-squigglyslider = "1.0.0"
 glance = "1.1.1"
 
 [libraries]
@@ -113,7 +112,6 @@ newpipeextractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 tinypinyin = { module = "com.github.promeG:tinypinyin", version.ref = "tinypinyin" }
-squigglyslider = { module = "me.saket.squigglyslider:squigglyslider", version.ref = "squigglyslider" }
 
 glance = { module = "androidx.glance:glance", version.ref = "glance" }
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
