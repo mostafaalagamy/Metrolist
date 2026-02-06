@@ -351,14 +351,14 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                         modifier =
                         Modifier
                             .size(96.dp)
-                            .clip(RoundedCornerShape(5.dp))
+                            .clip(RoundedCornerShape(3.dp))
                             .align(Alignment.TopStart)
                             .run {
                                 if (song == null) {
                                     border(
                                         2.dp,
                                         MaterialTheme.colorScheme.onSurface,
-                                        RoundedCornerShape(5.dp)
+                                        RoundedCornerShape(3.dp)
                                     )
                                 } else {
                                     this
@@ -476,7 +476,7 @@ fun SongProgressBar(currentTimeMillis: Long, durationMillis: Long) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
-                .clip(RoundedCornerShape(5.dp))
+                .clip(RoundedCornerShape(3.dp))
         )
         Row(
             modifier = Modifier.fillMaxWidth(),

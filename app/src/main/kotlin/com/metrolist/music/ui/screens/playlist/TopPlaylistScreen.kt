@@ -540,10 +540,10 @@ private fun TopPlaylistHeader(
                     .size(240.dp)
                     .shadow(
                         elevation = 24.dp,
-                        shape = RoundedCornerShape(5.dp),
+                        shape = RoundedCornerShape(3.dp),
                         spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                     ),
-                shape = RoundedCornerShape(5.dp)
+                shape = RoundedCornerShape(3.dp)
             ) {
                 AsyncImage(
                     model = songs[0].thumbnailUrl,

@@ -297,7 +297,7 @@ class MusicWidget : GlanceAppWidget() {
                         Image(
                             provider = ImageProvider(R.mipmap.ic_launcher),
                             contentDescription = context.getString(R.string.app_name),
-                            modifier = GlanceModifier.size(20.dp).cornerRadius(5.dp)
+                            modifier = GlanceModifier.size(20.dp).cornerRadius(3.dp)
                         )
                     }
 
