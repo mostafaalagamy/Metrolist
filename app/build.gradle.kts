@@ -83,7 +83,7 @@ android {
 
     signingConfigs {
         create("persistentDebug") {
-            storeFile = file("persistent-debug.keystore")
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
@@ -263,5 +263,6 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
 
+    implementation(libs.mlkit.language.id)
     implementation(libs.timber)
 }
