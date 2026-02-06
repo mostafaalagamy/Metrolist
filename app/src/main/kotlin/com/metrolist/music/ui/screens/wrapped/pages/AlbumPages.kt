@@ -173,7 +173,7 @@ fun WrappedTopAlbumScreen(topAlbum: Album?, isVisible: Boolean) {
                     contentDescription = stringResource(R.string.album_art_for, topAlbum?.title ?: ""),
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .clip(RoundedCornerShape(5.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -268,7 +268,7 @@ fun WrappedTop5AlbumsScreen(topAlbums: List<Album>, isVisible: Boolean) {
                                 contentDescription = stringResource(R.string.album_art_for, album.title),
                                 modifier = Modifier
                                     .size(64.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
+                                    .clip(RoundedCornerShape(5.dp)),
                                 contentScale = ContentScale.Crop
                             )
                             Spacer(modifier = Modifier.width(16.dp))

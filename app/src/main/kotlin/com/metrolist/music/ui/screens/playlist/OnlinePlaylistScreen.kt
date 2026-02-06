@@ -392,10 +392,10 @@ private fun OnlinePlaylistHeader(
                 .size(240.dp)
                 .shadow(
                     elevation = 24.dp,
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(5.dp),
                     spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 ),
-            shape = RoundedCornerShape(4.dp)
+            shape = RoundedCornerShape(5.dp)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(playlist.thumbnail).build(),

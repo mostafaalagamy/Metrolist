@@ -618,10 +618,10 @@ private fun AutoPlaylistHeader(
                     .size(240.dp)
                     .shadow(
                         elevation = 24.dp,
-                        shape = RoundedCornerShape(4.dp),
+                        shape = RoundedCornerShape(5.dp),
                         spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                     ),
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(5.dp)
             ) {
                 AsyncImage(
                     model = songs[0].song.thumbnailUrl,

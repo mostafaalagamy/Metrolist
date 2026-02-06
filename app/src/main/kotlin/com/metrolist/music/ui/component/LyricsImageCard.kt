@@ -182,8 +182,8 @@ fun LyricsImageCard(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(coverArtSize)
-                            .clip(RoundedCornerShape(4.dp))
-                            .border(1.dp, mainTextColor.copy(alpha = 0.16f), RoundedCornerShape(4.dp))
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, mainTextColor.copy(alpha = 0.16f), RoundedCornerShape(5.dp))
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
