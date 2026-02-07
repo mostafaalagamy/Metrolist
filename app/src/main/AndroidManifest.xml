@@ -62,6 +62,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <!-- Listen Together invite link -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="mostafaalagamy.github.io" />
+                <data android:pathPrefix="/listen" />
+            </intent-filter>
+
             <!-- Youtube filter -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

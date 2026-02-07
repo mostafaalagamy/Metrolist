@@ -141,6 +141,7 @@ import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.UpdateNotificationsEnabledKey
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
+import com.metrolist.music.constants.ListenTogetherUsernameKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import com.metrolist.music.extensions.toEnum
@@ -1103,6 +1104,16 @@ class MainActivity : ComponentActivity() {
         intent.data = null
         intent.removeExtra(Intent.EXTRA_TEXT)
         val coroutineScope = lifecycle.coroutineScope
+
+        val listenCode = uri.getQueryParameter("code")
+            ?: uri.getQueryParameter("room")
+            ?: uri.pathSegments.getOrNull(1)
+        val isListenLink = uri.pathSegments.firstOrNull() == "listen" || uri.host?.equals("listen", ignoreCase = true) == true
+        if (!listenCode.isNullOrBlank() && isListenLink) {
+            val username = dataStore.get(ListenTogetherUsernameKey, "").ifBlank { "Guest" }
+            listenTogetherManager.joinRoom(listenCode, username)
+            return
+        }
 
         when (val path = uri.pathSegments.firstOrNull()) {
             "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->

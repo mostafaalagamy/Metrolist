@@ -397,8 +397,7 @@ fun Queue(
                         ),
                 ) {
                     TextButton(
-                        onClick = { if (!isListenTogetherGuest) state.expandSoft() },
-                        enabled = !isListenTogetherGuest,
+                            onClick = { state.expandSoft() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Row(

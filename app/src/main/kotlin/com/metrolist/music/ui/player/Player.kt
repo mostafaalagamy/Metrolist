@@ -1451,7 +1451,7 @@ fun BottomSheetPlayer(
                             Box(modifier = Modifier.weight(1f)) {
                                 ResizableIconButton(
                                     icon = R.drawable.skip_previous,
-                                    enabled = canSkipPrevious,
+                                        enabled = canSkipPrevious && !isListenTogetherGuest,
                                     color = TextBackgroundColor,
                                     modifier =
                                     Modifier
@@ -1517,7 +1517,7 @@ fun BottomSheetPlayer(
                             Box(modifier = Modifier.weight(1f)) {
                                 ResizableIconButton(
                                     icon = R.drawable.skip_next,
-                                    enabled = canSkipNext,
+                                        enabled = canSkipNext && !isListenTogetherGuest,
                                     color = TextBackgroundColor,
                                     modifier =
                                     Modifier

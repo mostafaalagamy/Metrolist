@@ -261,6 +261,10 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)
 
+    // Protobuf for message serialization (lite version for Android)
+    implementation(libs.protobuf.javalite)
+    implementation(libs.protobuf.kotlin.lite)
+
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
