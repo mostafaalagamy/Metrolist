@@ -452,7 +452,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        "https://github.com/mostafaalagamy/Metrolist".toUri()
+                        "https://github.com/MetrolistGroup/Metrolist".toUri()
                     )
                     context.startActivity(intent)
                 },
