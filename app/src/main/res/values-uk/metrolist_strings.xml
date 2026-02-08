@@ -404,9 +404,4 @@
     <string name="decryption_library_newpipe_desc">Офіційна бібліотека TeamNewPipe. Найактуальніша з урахуванням змін YouTube. Рекомендована за замовчуванням. Автоматичне повернення до PipePipe API у разі невдачі.</string>
     <string name="decryption_library_pipepipe_api">PipePipe API</string>
     <string name="decryption_library_pipepipe_api_desc">Розшифровка на основі API за допомогою MetroExtractor. Швидша, але залежить від зовнішнього API. Автоматичне повернення до NewPipe у разі невдачі.</string>
-    <string name="listen_together">Слухайте разом</string>
-    <string name="listen_together_desc">Слухайте музику з друзями в режимі реального часу</string>
-    <string name="listen_together_server_url">URL-адреса сервера</string>
-    <string name="listen_together_username">Ім\'я користувача</string>
-    <string name="listen_together_connected">Підключено</string>
 </resources>
