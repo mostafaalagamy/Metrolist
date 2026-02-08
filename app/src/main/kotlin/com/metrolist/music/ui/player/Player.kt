@@ -564,6 +564,10 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
 
+    LaunchedEffect(mediaMetadata?.id) {
+        showInlineLyrics = false
+    }
+
     var isFullScreen by rememberSaveable {
         mutableStateOf(false)
     }

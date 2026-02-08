@@ -172,6 +172,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -275,8 +276,12 @@ class MusicService :
     @DownloadCache
     lateinit var downloadCache: SimpleCache
 
-    lateinit var player: ExoPlayer
+    private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaLibrarySession
+    
+    // Tracks if player has been properly initilized
+    private val playerInitialized = MutableStateFlow(false)
+    val isPlayerReady: kotlinx.coroutines.flow.StateFlow<Boolean> = playerInitialized.asStateFlow()
 
     // Custom Audio Processor
     private val customEqualizerAudioProcessor = CustomEqualizerAudioProcessor()
@@ -322,7 +327,10 @@ class MusicService :
 
     override fun onCreate() {
         super.onCreate()
-
+        
+        // Player rediness reset to false
+        playerInitialized.value = false
+        
         // 3. Connect the processor to the service
         equalizerService.setAudioProcessor(customEqualizerAudioProcessor)
 
@@ -352,6 +360,7 @@ class MusicService :
                 .build()
             startForeground(NOTIFICATION_ID, notification)
         } catch (e: Exception) {
+            Log.e(TAG, "Failed to create foreground notification", e)
             reportException(e)
         }
 
@@ -391,6 +400,10 @@ class MusicService :
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
                     setOffloadEnabled(dataStore.get(AudioOffload, false))
                 }
+        
+        // Mark player as initialized after successful creation
+        playerInitialized.value = true
+        Log.d(TAG, "Player successfully initialized")
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         setupAudioFocusRequest()
@@ -997,6 +1010,17 @@ class MusicService :
         playWhenReady: Boolean = true,
     ) {
         if (!scope.isActive) scope = CoroutineScope(Dispatchers.Main) + Job()
+        
+        // Safety Check : Ensuring player is initilized
+        if (!playerInitialized.value) {
+            Log.w(TAG, "playQueue called before player initialization, queuing request")
+            scope.launch {
+                playerInitialized.first { it }
+                playQueue(queue, playWhenReady)
+            }
+            return
+        }
+        
         currentQueue = queue
         queueTitle = null
         val persistShuffleAcrossQueues = dataStore.get(PersistentShuffleAcrossQueuesKey, false)
@@ -1060,6 +1084,12 @@ class MusicService :
     }
 
     fun startRadioSeamlessly() {
+        // Safety Check: Ensure Player is initilized
+        if (!playerInitialized.value) {
+            Log.w(TAG, "startRadioSeamlessly called before player initialization")
+            return
+        }
+        
         val currentMediaMetadata = player.currentMetadata ?: return
 
         val currentIndex = player.currentMediaItemIndex
@@ -1807,8 +1837,14 @@ class MusicService :
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         
+        // Safety check : ensuring player is still initialized
+        if (!playerInitialized.value) {
+            Log.e(TAG, "Player error occurred but player not initialized", error)
+            return
+        }
+        
         val mediaId = player.currentMediaItem?.mediaId
-        Log.w(TAG, "Player error occurred for $mediaId: ${error.message}", error)
+        Log.w(TAG, "Player error occurred for $mediaId: errorCode=${error.errorCode}, message=${error.message}", error)
         reportException(error)
         
         // Check if this song has failed too many times
