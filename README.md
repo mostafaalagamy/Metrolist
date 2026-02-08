@@ -3,10 +3,8 @@
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 
-<div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
-<h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
-If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
-</div>
+> [!WARNING]
+> If you're in a region where YouTube Music is not supported, you won't be able to use this app **unless** you have a proxy or VPN to connect to a YTM-supported region.
 
 <h1>Screenshots</h1>
 
@@ -28,11 +26,40 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 </div>
 
 <div align="center">
+<h1>Download Now</h1>
+
+<table>
+<tr>
+<td align="center">
+<a href="https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"></a><br/>
+<a href="https://www.openapk.net/metrolist/com.metrolist.music/"><img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"></a>
+</td>
+<td align="center">
+<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/"><img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="50"></a>
+</td>
+<td align="center">
+<a href="https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"></a><br/>
+<a href="https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA"><img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"></a>
+</td>
+</tr>
+</table>
+
+</div>
+
+<div align="center">
+<h1>Nightly Build</h1>
+
+<a href="https://nightly.link/mostafaalagamy/Metrolist/workflows/build/main/app-universal-with-Google-Cast.zip">
+  <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82">
+</a>
+
+</div>
+
+<div align="center">
 <h1>Table of Contents</h1>
 </div>
 
 - [Features](#features)
-- [Download Now](#download-now)
 - [FAQ](#faq)
 - [Development Setup](#development-setup)
 - [Translations](#translations)
@@ -58,32 +85,12 @@ If you're in a region where YouTube Music is not supported, you won't be able to
 - Audio normalization 
 - Adjust tempo/pitch 
 - Local playlist management
-- Reorder songs in playlist or queue 
+- Reorder songs in playlist or queue
+- Home screen widget with playback controls
 - Light - Dark - black - Dynamic theme
 - Sleep timer
 - Material 3 
 - etc.
-
-<div align="center">
-<h1>Download Now</h1>
-
-<table>
-<tr>
-<td align="center">
-<a href="https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"></a><br/>
-<a href="https://www.openapk.net/metrolist/com.metrolist.music/"><img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"></a>
-</td>
-<td align="center">
-<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/"><img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="50"></a>
-</td>
-<td align="center">
-<a href="https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"></a><br/>
-<a href="https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA"><img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"></a>
-</td>
-</tr>
-</table>
-
-</div>
 
 <div align="center">
 <h1>Translations</h1>

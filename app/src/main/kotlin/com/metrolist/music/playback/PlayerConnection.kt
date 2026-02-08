@@ -161,7 +161,19 @@ class PlayerConnection(
     val canSkipNext = MutableStateFlow(true)
 
     val error = MutableStateFlow<PlaybackException?>(null)
+    val isMuted = service.isMuted
+
     val waitingForNetworkConnection = service.waitingForNetworkConnection
+    
+    // Callback to check if playback changes should be blocked (e.g., Listen Together guest)
+    var shouldBlockPlaybackChanges: (() -> Boolean)? = null
+    
+    // Flag to allow internal sync operations to bypass blocking (set by ListenTogetherManager)
+    @Volatile
+    var allowInternalSync: Boolean = false
+
+    var onSkipPrevious: (() -> Unit)? = null
+    var onSkipNext: (() -> Unit)? = null
 
     init {
         try {
@@ -211,6 +223,21 @@ class PlayerConnection(
             Log.e(TAG, "Error in startRadioSeamlessly", e)
             throw e
         }
+        // Block if Listen Together guest (but allow internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "playQueue blocked - Listen Together guest")
+            return
+        }
+        service.playQueue(queue)
+    }
+
+    fun startRadioSeamlessly() {
+        // Block if Listen Together guest
+        if (shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "startRadioSeamlessly blocked - Listen Together guest")
+            return
+        }
+        service.startRadioSeamlessly()
     }
 
     fun playNext(item: MediaItem) = playNext(listOf(item))
@@ -222,6 +249,12 @@ class PlayerConnection(
             Log.e(TAG, "Error in playNext", e)
             throw e
         }
+        // Block if Listen Together guest (unless internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "playNext blocked - Listen Together guest")
+            return
+        }
+        service.playNext(items)
     }
 
     fun addToQueue(item: MediaItem) = addToQueue(listOf(item))
@@ -233,6 +266,12 @@ class PlayerConnection(
             Log.e(TAG, "Error in addToQueue", e)
             throw e
         }
+        // Block if Listen Together guest (unless internal sync)
+        if (!allowInternalSync && shouldBlockPlaybackChanges?.invoke() == true) {
+            android.util.Log.d("PlayerConnection", "addToQueue blocked - Listen Together guest")
+            return
+        }
+        service.addToQueue(items)
     }
 
     fun toggleLike() {
@@ -241,6 +280,14 @@ class PlayerConnection(
         } catch (e: Exception) {
             Log.e(TAG, "Error in toggleLike", e)
         }
+    }
+
+    fun toggleMute() {
+        service.toggleMute()
+    }
+
+    fun setMuted(muted: Boolean) {
+        service.setMuted(muted)
     }
 
     fun toggleLibrary() {
@@ -336,7 +383,15 @@ class PlayerConnection(
         } catch (e: Exception) {
             Log.e(TAG, "Error in seekToNext", e)
         }
+        player.seekToNext()
+        if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+            player.prepare()
+        }
+        player.playWhenReady = true
+        onSkipNext?.invoke()
     }
+
+    var onRestartSong: (() -> Unit)? = null
 
     fun seekToPrevious() {
         try {
@@ -351,6 +406,25 @@ class PlayerConnection(
             player.playWhenReady = true
         } catch (e: Exception) {
             Log.e(TAG, "Error in seekToPrevious", e)
+        }
+
+        // Logic to mimic standard seekToPrevious behavior but with explicit callbacks
+        // If we are more than 3 seconds in, just restart the song
+        if (player.currentPosition > 3000 || !player.hasPreviousMediaItem()) {
+            player.seekTo(0)
+            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+            onRestartSong?.invoke()
+        } else {
+            // Otherwise go to previous media item
+            player.seekToPreviousMediaItem()
+            if (player.playbackState == Player.STATE_IDLE || player.playbackState == Player.STATE_ENDED) {
+                player.prepare()
+            }
+            player.playWhenReady = true
+            onSkipPrevious?.invoke()
         }
     }
 

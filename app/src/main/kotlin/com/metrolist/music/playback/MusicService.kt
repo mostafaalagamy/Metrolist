@@ -255,6 +255,16 @@ class MusicService :
         }
 
     lateinit var playerVolume: MutableStateFlow<Float>
+    val isMuted = MutableStateFlow(false)
+
+    fun toggleMute() {
+        isMuted.value = !isMuted.value
+    }
+
+    fun setMuted(muted: Boolean) {
+        isMuted.value = muted
+    }
+
 
     lateinit var sleepTimer: SleepTimer
 
@@ -475,7 +485,9 @@ class MusicService :
             }
         }
 
-        playerVolume.collectLatest(scope) {
+        combine(playerVolume, isMuted) { volume, muted ->
+            if (muted) 0f else volume
+        }.collectLatest(scope) {
             player.volume = it
         }
 
@@ -627,12 +639,20 @@ class MusicService :
                     }
                 }
             }.onSuccess { queue ->
-                // Convert back to proper queue type
-                val restoredQueue = queue.toQueue()
-                playQueue(
-                    queue = restoredQueue,
-                    playWhenReady = false,
-                )
+                runCatching {
+                    // Convert back to proper queue type
+                    val restoredQueue = queue.toQueue()
+                    playQueue(
+                        queue = restoredQueue,
+                        playWhenReady = false,
+                    )
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to restore persisted queue, clearing data", error)
+                    clearPersistedQueueFiles()
+                }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read persisted queue, clearing data", error)
+                clearPersistedQueueFiles()
             }
             runCatching {
                 filesDir.resolve(PERSISTENT_AUTOMIX_FILE).inputStream().use { fis ->
@@ -641,7 +661,15 @@ class MusicService :
                     }
                 }
             }.onSuccess { queue ->
-                automixItems.value = queue.items.map { it.toMediaItem() }
+                runCatching {
+                    automixItems.value = queue.items.map { it.toMediaItem() }
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to restore automix queue, clearing data", error)
+                    clearPersistedQueueFiles()
+                }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read automix queue, clearing data", error)
+                clearPersistedQueueFiles()
             }
 
             // Restore player state
@@ -657,13 +685,16 @@ class MusicService :
                     delay(1000) // Wait for queue to be loaded
                     player.repeatMode = playerState.repeatMode
                     player.shuffleModeEnabled = playerState.shuffleModeEnabled
-                    player.volume = playerState.volume
+                    playerVolume.value = playerState.volume
 
                     // Restore position if it's still valid
                     if (playerState.currentMediaItemIndex < player.mediaItemCount) {
                         player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
                     }
                 }
+            }.onFailure { error ->
+                Log.w(TAG, "Failed to read player state, clearing data", error)
+                clearPersistedQueueFiles()
             }
         }
 
@@ -725,7 +756,7 @@ class MusicService :
                     }
                 }
 
-                player.volume = playerVolume.value
+                player.volume = if (isMuted.value) 0f else playerVolume.value
                 lastAudioFocusState = focusChange
             }
 
@@ -752,14 +783,14 @@ class MusicService :
                 hasAudioFocus = false
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * 0.2f)
+                    player.volume = if (isMuted.value) 0f else (playerVolume.value * 0.2f)
                 }
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
-                player.volume = playerVolume.value
+                player.volume = if (isMuted.value) 0f else playerVolume.value
                 lastAudioFocusState = focusChange
             }
         }
@@ -783,6 +814,12 @@ class MusicService :
                 hasAudioFocus = false
             }
         }
+    }
+
+    private fun clearPersistedQueueFiles() {
+        runCatching { filesDir.resolve(PERSISTENT_QUEUE_FILE).delete() }
+        runCatching { filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete() }
+        runCatching { filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).delete() }
     }
 
     fun hasAudioFocusForPlayback(): Boolean {
@@ -2434,11 +2471,10 @@ class MusicService :
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Intercept Widget Commands (both legacy and Glance widgets use same actions)
         when (intent?.action) {
             MusicWidgetActions.ACTION_PLAY_PAUSE -> {
                 if (player.isPlaying) player.pause() else player.play()
-                updateWidgetUI(player.isPlaying) // Instant UI update
+                updateWidgetUI(player.isPlaying)
             }
             MusicWidgetActions.ACTION_NEXT -> {
                 player.seekToNext()
@@ -2460,11 +2496,12 @@ class MusicService :
             }
         }
 
-        // IMPORTANT: Pass everything else to Media3 so notification buttons still work!
         return super.onStartCommand(intent, flags, startId)
     }
 
-    // --- WIDGET UPDATE HELPER ---
+    /**
+     * Updates all app widgets with current playback state
+     */
     private fun updateWidgetUI(isPlaying: Boolean) {
         try {
             val context = this
@@ -2476,7 +2513,6 @@ class MusicService :
                 val artistName = songData?.artists?.joinToString(", ") { it.name } ?: getString(R.string.tap_to_open)
                 val isLiked = songData?.song?.liked == true
 
-                // Update Music Widget
                 try {
                     MusicWidget.updateWidget(
                         context = context,
@@ -2486,11 +2522,10 @@ class MusicService :
                         albumArtUrl = song?.thumbnailUrl,
                         isLiked = isLiked
                     )
-                } catch (e: Exception) {
-                    // Glance widget may not be added
+                } catch (_: Exception) {
+                    // Widget not added to home screen
                 }
 
-                // Update Turntable Widget
                 try {
                     TurntableWidget.updateWidget(
                         context = context,
@@ -2498,12 +2533,11 @@ class MusicService :
                         albumArtUrl = song?.thumbnailUrl,
                         isLiked = isLiked
                     )
-                } catch (e: Exception) {
-                    // Turntable widget may not be added
+                } catch (_: Exception) {
+                    // Widget not added to home screen
                 }
             }
         } catch (e: Exception) {
-            // Fail silently on Wear OS or other platforms without widget support
             reportException(e)
         }
     }
